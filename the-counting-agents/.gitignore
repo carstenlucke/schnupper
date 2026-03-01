@@ -1,1 +1,7 @@
 .DS_Store
+bus/numbers.log
+bus/control.log
+state/counter.json
+state/odd.json
+state/even.json
+state/prime.json
