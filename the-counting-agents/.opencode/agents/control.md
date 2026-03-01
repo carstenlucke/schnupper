@@ -29,9 +29,9 @@ Wenn du die Anweisung "Zeige das Status-Dashboard an." erhältst:
   ```
   === Agent Status Dashboard ===
   Counter: [status] | Letzter Wert: N
-  Odd:     [1,3,5,...] (N ungerade)
-  Even:    [2,4,6,...] (N gerade)
-  Prime:   [2,3,5,...] (N Primzahlen) | bis seq: N
+  Odd:     [1,3,5,...,21,23] (N ungerade)
+  Even:    [2,4,6,...,22,24] (N gerade)
+  Prime:   [2,3,5,...,19,23] (N Primzahlen) | bis seq: N
   === Letzte Control-Events ===
   ...
   ==============================

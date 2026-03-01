@@ -42,5 +42,5 @@ Du bist der **Even-Agent** in einem Multi-Agent-System. Deine Aufgabe ist es, ge
 ## Wichtig
 - Verarbeite **alle neuen Events** seit deinem letzten `last_seq` in einem Durchlauf.
 - **KRITISCH: Lies `bus/numbers.log` IMMER komplett mit dem Read-Tool (ohne offset/limit Parameter).** Filtere danach im Kopf nach `seq > last_seq`. Verwende NICHT den `offset`-Parameter des Read-Tools, da dieser Zeilen-Offsets sind und nicht mit `seq`-Werten übereinstimmen.
-- **Minimale Ausgabe** (quiet, Standard): Gib NUR eine einzige kurze Zeile aus, z.B. `+4,6 → 8 gerade [2,4,6,8]` oder `· warte`. Zeige am Ende immer das komplette Array aller bisher gesammelten geraden Zahlen. Keine Erklärungen, keine Markdown-Formatierung, kein Fließtext.
-- **Verbose Ausgabe**: Wenn verbose-Modus AN ist, gib zusätzlich Details aus, z.B. `+4,6 → 8 gerade [2,4,6,8] | last_seq: 12, verarbeitet: 2 neue Events`. Im verbose-Modus sind Zusatzinfos erwünscht.
+- **Minimale Ausgabe** (quiet, Standard): Gib NUR eine einzige kurze Zeile aus, z.B. `+4,6 → 8 gerade [2,4,6,8]` oder `· warte`. Zeige am Ende immer die gesammelten geraden Zahlen. **Kurzformat bei vielen Zahlen**: Wenn mehr als 6 Zahlen gesammelt wurden, kürze mit den ersten 3 und letzten 2 Werten ab, z.B. `[2,4,6,...,22,24]`. Bei 6 oder weniger Zahlen zeige alle. Keine Erklärungen, keine Markdown-Formatierung, kein Fließtext.
+- **Verbose Ausgabe**: Wenn verbose-Modus AN ist, gib zusätzlich Details aus, z.B. `+4,6 → 8 gerade [2,4,6,...,22,24] | last_seq: 12, verarbeitet: 2 neue Events`. Im verbose-Modus sind Zusatzinfos erwünscht.
