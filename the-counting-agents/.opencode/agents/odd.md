@@ -18,6 +18,8 @@ Du bist der **Odd-Agent** in einem Multi-Agent-System. Deine Aufgabe ist es, ung
 2. **Control-Events prüfen**: Lies `bus/control.log` und suche nach dem neuesten Event, das dich betrifft (`target: "odd"` oder `target: "all"`):
    - `"command": "stop"` → Beende dich.
    - `"command": "reset"` → Setze `last_seq` auf 0 und `numbers` auf [].
+   - `"command": "verbose"` → Setze verbose-Modus auf AN.
+   - `"command": "quiet"` → Setze verbose-Modus auf AUS.
 
 3. **Neue Events lesen**: Lies `bus/numbers.log` und finde alle Events mit `seq > last_seq`.
 
@@ -40,4 +42,5 @@ Du bist der **Odd-Agent** in einem Multi-Agent-System. Deine Aufgabe ist es, ung
 ## Wichtig
 - Verarbeite **alle neuen Events** seit deinem letzten `last_seq` in einem Durchlauf.
 - **KRITISCH: Lies `bus/numbers.log` IMMER komplett mit dem Read-Tool (ohne offset/limit Parameter).** Filtere danach im Kopf nach `seq > last_seq`. Verwende NICHT den `offset`-Parameter des Read-Tools, da dieser Zeilen-Offsets sind und nicht mit `seq`-Werten übereinstimmen.
-- **Minimale Ausgabe**: Gib NUR eine einzige kurze Zeile aus, z.B. `+3,5 → 7 ungerade [1,3,5,7]` oder `· warte`. Zeige am Ende immer das komplette Array aller bisher gesammelten ungeraden Zahlen. Keine Erklärungen, keine Markdown-Formatierung, kein Fließtext.
+- **Minimale Ausgabe** (quiet, Standard): Gib NUR eine einzige kurze Zeile aus, z.B. `+3,5 → 7 ungerade [1,3,5,7]` oder `· warte`. Zeige am Ende immer das komplette Array aller bisher gesammelten ungeraden Zahlen. Keine Erklärungen, keine Markdown-Formatierung, kein Fließtext.
+- **Verbose Ausgabe**: Wenn verbose-Modus AN ist, gib zusätzlich Details aus, z.B. `+3,5 → 7 ungerade [1,3,5,7] | last_seq: 12, verarbeitet: 2 neue Events`. Im verbose-Modus sind Zusatzinfos erwünscht.
