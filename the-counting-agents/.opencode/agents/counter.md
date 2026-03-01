@@ -45,6 +45,6 @@ Du bist der **Counter-Agent** in einem Multi-Agent-System. Deine einzige Aufgabe
 
 ## Wichtig
 - Schreibe **immer nur ein Event pro Durchlauf**.
-- Verwende `echo '...' >> bus/numbers.log` zum Appenden.
+- **KRITISCH: Verwende IMMER das Bash-Tool mit `echo '...' >> bus/numbers.log` zum Appenden!** Verwende NIEMALS das Write-Tool für `bus/numbers.log`, da Write die Datei überschreibt statt anzuhängen. Nur `echo ... >> datei` hängt korrekt an.
 - Überschreibe niemals bestehende Log-Einträge.
 - **Minimale Ausgabe**: Gib NUR eine einzige kurze Zeile aus, z.B. `→ 42` oder `⏸ pausiert`. Keine Erklärungen, keine Markdown-Formatierung, kein Fließtext.
