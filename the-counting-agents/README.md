@@ -49,8 +49,10 @@ tmux attach -t agents
 
 ## Steuerung
 
+Im Control-Pane (rechts) erscheint ein interaktives Menü mit Pfeiltasten-Navigation. Dort können Status-Dashboard, Pause/Resume, Stop/Reset und Custom-Anweisungen ausgeführt werden.
+
 ```bash
-# Session beenden
+# Session beenden (von außen)
 ./scripts/stop.sh
 
 # State und Logs zurücksetzen
@@ -59,6 +61,8 @@ tmux attach -t agents
 # Reset + Neustart
 ./scripts/reset.sh --restart
 ```
+
+Detaillierte Script-Dokumentation: [docs/scripts.md](docs/scripts.md)
 
 ## Verzeichnisstruktur
 
@@ -75,11 +79,12 @@ the-counting-agents/
 │   ├── numbers.log     # Zahlen-Events
 │   └── control.log     # Steuerungs-Events
 ├── state/              # Agent-State (JSON)
-├── scripts/            # Shell-Skripte
+├── scripts/            # Shell-Skripte (Details: docs/scripts.md)
 │   ├── start.sh        # tmux-Session starten
 │   ├── stop.sh         # Session beenden
 │   ├── reset.sh        # State zurücksetzen
-│   └── run-agent.sh    # Agent-Loop-Wrapper
+│   ├── run-agent.sh    # Agent-Loop-Wrapper
+│   └── run-control.sh  # Interaktives Control-Menü
 └── spec/               # Spezifikationen
 ```
 

@@ -67,7 +67,7 @@ tmux send-keys -t "$SESSION:.0" "$PROJECT_DIR/scripts/run-agent.sh counter 3" C-
 tmux send-keys -t "$SESSION:.1" "$PROJECT_DIR/scripts/run-agent.sh odd 3" C-m
 tmux send-keys -t "$SESSION:.2" "$PROJECT_DIR/scripts/run-agent.sh even 3" C-m
 tmux send-keys -t "$SESSION:.3" "$PROJECT_DIR/scripts/run-agent.sh prime 5" C-m
-tmux send-keys -t "$SESSION:.4" "$PROJECT_DIR/scripts/run-agent.sh control 4" C-m
+tmux send-keys -t "$SESSION:.4" "$PROJECT_DIR/scripts/run-control.sh" C-m
 
 # --- Focus the control pane (right side) for user input ---
 tmux select-pane -t "$SESSION:.4"
