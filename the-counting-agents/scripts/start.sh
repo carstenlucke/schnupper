@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # start.sh — Start the multi-agent tmux session
 #
-# Creates a tmux session "agents" with 5 panes:
-# +----------+----------+------------------+
-# | counter  |   odd    |                  |
-# |          |          |     control      |
-# +----------+----------+                  |
-# |   even   |  prime   |                  |
-# |          |          |                  |
-# +----------+----------+------------------+
+# Creates a tmux session "agents" with 5 panes (3 equal columns):
+# +----------+----------+----------+
+# | counter  |   odd    |          |
+# |          |          | control  |
+# +----------+----------+          |
+# |   even   |  prime   |          |
+# |          |          |          |
+# +----------+----------+----------+
 
 set -euo pipefail
 
@@ -40,32 +40,34 @@ cd "$PROJECT_DIR"
 # Create session with first pane (counter)
 tmux new-session -d -s "$SESSION" -x 200 -y 50
 
-# Split into left and right (60/40)
-tmux split-window -h -t "$SESSION" -p 40
+# Split into 3 equal columns: left (pane 0) | middle | right
+# First split: left 67% | right 33%
+tmux split-window -h -t "$SESSION" -p 33
 
-# In the left pane (0), split horizontally to get top-left and bottom-left
+# Second split: left half into two equal columns (50/50)
+tmux select-pane -t "$SESSION:.0"
+tmux split-window -h -t "$SESSION" -p 50
+
+# Now we have 3 equal columns: pane 0 | pane 1 | pane 2
+# Split left column (pane 0) vertically: counter (top) | even (bottom)
 tmux select-pane -t "$SESSION:.0"
 tmux split-window -v -t "$SESSION"
 
-# Now split top-left pane vertically to get counter | odd
-tmux select-pane -t "$SESSION:.0"
-tmux split-window -h -t "$SESSION"
-
-# Split bottom-left pane vertically to get even | prime
+# Split middle column (pane 2) vertically: odd (top) | prime (bottom)
 tmux select-pane -t "$SESSION:.2"
-tmux split-window -h -t "$SESSION"
+tmux split-window -v -t "$SESSION"
 
 # Result pane layout:
-# 0: counter (top-left-left)
-# 1: odd (top-left-right)
-# 2: even (bottom-left-left)
-# 3: prime (bottom-left-right)
+# 0: counter (top-left)
+# 1: even (bottom-left)
+# 2: odd (top-middle)
+# 3: prime (bottom-middle)
 # 4: control (right)
 
 # --- Start agents in panes ---
 tmux send-keys -t "$SESSION:.0" "$PROJECT_DIR/scripts/run-agent.sh counter 3" C-m
-tmux send-keys -t "$SESSION:.1" "$PROJECT_DIR/scripts/run-agent.sh odd 3" C-m
-tmux send-keys -t "$SESSION:.2" "$PROJECT_DIR/scripts/run-agent.sh even 3" C-m
+tmux send-keys -t "$SESSION:.1" "$PROJECT_DIR/scripts/run-agent.sh even 3" C-m
+tmux send-keys -t "$SESSION:.2" "$PROJECT_DIR/scripts/run-agent.sh odd 3" C-m
 tmux send-keys -t "$SESSION:.3" "$PROJECT_DIR/scripts/run-agent.sh prime 5" C-m
 tmux send-keys -t "$SESSION:.4" "$PROJECT_DIR/scripts/run-control.sh" C-m
 
