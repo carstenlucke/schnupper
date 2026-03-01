@@ -1,20 +1,20 @@
 # The Counting Agents
 
-Terminal-basierte Demo eines Multi-Agent-Systems. Autonome LLM-Agents kommunizieren über Filesystem-basierte Event-Logs und laufen in einer tmux-Session.
+A terminal-based demo of a multi-agent system. Autonomous LLM agents communicate via filesystem-based event logs and run inside a tmux session.
 
-## Konzept
+## Concept
 
-Fünf Agents arbeiten zusammen:
+Five agents work together:
 
-- **Counter** — Erzeugt fortlaufende Zahlen und schreibt sie in den Event-Bus
-- **Odd** — Filtert und sammelt ungerade Zahlen
-- **Even** — Filtert und sammelt gerade Zahlen
-- **Prime** — Erkennt Primzahlen (absichtlich langsamer)
-- **Control** — Zeigt Status-Dashboard, sendet Steuerungsbefehle
+- **Counter** — Generates a sequential stream of numbers and writes them to the event bus
+- **Odd** — Filters and collects odd numbers
+- **Even** — Filters and collects even numbers
+- **Prime** — Detects prime numbers (intentionally slower)
+- **Control** — Displays a status dashboard and sends control commands
 
-Die Agents kommunizieren ausschließlich über append-only JSONL-Dateien im `bus/`-Verzeichnis. Jeder Agent speichert seinen Zustand in `state/`.
+Agents communicate exclusively through append-only JSONL files in the `bus/` directory. Each agent persists its state in `state/`.
 
-## Architektur
+## Architecture
 
 ```
 +----------+----------+------------------+
@@ -26,71 +26,71 @@ Die Agents kommunizieren ausschließlich über append-only JSONL-Dateien im `bus
 +----------+----------+------------------+
 ```
 
-Jeder Agent wird über `opencode run --agent <name>` in einer Shell-Schleife ausgeführt. Die Agent-Rollen sind als Custom Modes in `.opencode/modes/` definiert.
+Each agent runs via `opencode run --agent <name>` inside a shell loop. Agent roles are defined as custom modes in `.opencode/modes/`.
 
-## Voraussetzungen
+## Prerequisites
 
 - [tmux](https://github.com/tmux/tmux)
 - [opencode](https://github.com/opencode-ai/opencode) CLI
-- GitHub Copilot Zugang (authentifiziert via `gh auth login`)
+- GitHub Copilot access (authenticated via `gh auth login`)
 
 ## Quickstart
 
 ```bash
-# 1. Repository klonen
+# 1. Clone the repository
 git clone <repo-url> && cd the-counting-agents
 
-# 2. Starten
+# 2. Start
 ./scripts/start.sh
 
-# 3. tmux-Session anzeigen
+# 3. Attach to the tmux session
 tmux attach -t agents
 ```
 
-## Steuerung
+## Control
 
-Im Control-Pane (rechts) erscheint ein interaktives Menü mit Pfeiltasten-Navigation. Dort können Status-Dashboard, Pause/Resume, Stop/Reset und Custom-Anweisungen ausgeführt werden.
+The Control pane (right side) shows an interactive menu navigable with the arrow keys. From there you can access the status dashboard, pause/resume, stop/reset, and send custom instructions.
 
 ```bash
-# Session beenden (von außen)
+# Stop the session from outside
 ./scripts/stop.sh
 
-# State und Logs zurücksetzen
+# Clear state and logs
 ./scripts/reset.sh
 
-# Reset + Neustart
+# Reset + restart
 ./scripts/reset.sh --restart
 ```
 
-Detaillierte Script-Dokumentation: [docs/scripts.md](docs/scripts.md)
+Detailed script documentation: [docs/scripts.md](docs/scripts.md)
 
-Hintergründe zum Experiment und den bewussten Architektur-Entscheidungen: [docs/experiment.md](docs/experiment.md)
+Background on the experiment and deliberate architectural decisions: [docs/experiment.md](docs/experiment.md)
 
-## Verzeichnisstruktur
+## Directory Structure
 
 ```
 the-counting-agents/
-├── .opencode/modes/    # Agent-Definitionen (Custom Modes)
+├── .opencode/modes/    # Agent definitions (custom modes)
 │   ├── counter.md
 │   ├── odd.md
 │   ├── even.md
 │   ├── prime.md
 │   └── control.md
-├── opencode.json       # opencode Konfiguration
-├── bus/                # Event-Bus (JSONL-Dateien)
-│   ├── numbers.log     # Zahlen-Events
-│   └── control.log     # Steuerungs-Events
-├── state/              # Agent-State (JSON)
-├── scripts/            # Shell-Skripte (Details: docs/scripts.md)
-│   ├── start.sh        # tmux-Session starten
-│   ├── stop.sh         # Session beenden
-│   ├── reset.sh        # State zurücksetzen
-│   ├── run-agent.sh    # Agent-Loop-Wrapper
-│   └── run-control.sh  # Interaktives Control-Menü
-└── spec/               # Spezifikationen
+├── opencode.json       # opencode configuration
+├── bus/                # Event bus (JSONL files)
+│   ├── numbers.log     # Number events
+│   └── control.log     # Control events
+├── state/              # Agent state (JSON)
+├── scripts/            # Shell scripts (details: docs/scripts.md)
+│   ├── start.sh        # Start the tmux session
+│   ├── stop.sh         # Stop the session
+│   ├── reset.sh        # Reset state
+│   ├── run-agent.sh    # Agent loop wrapper
+│   └── run-control.sh  # Interactive control menu
+└── spec/               # Specifications
 ```
 
-## Event-Formate
+## Event Formats
 
 ### Number Event (bus/numbers.log)
 ```json
@@ -102,9 +102,9 @@ the-counting-agents/
 {"type":"control","target":"all","command":"stop","timestamp":"2025-01-01T00:00:00Z"}
 ```
 
-## Konfiguration
+## Configuration
 
-Das Model kann in `opencode.json` angepasst werden:
+The model can be changed in `opencode.json`:
 
 ```json
 {
@@ -112,7 +112,7 @@ Das Model kann in `opencode.json` angepasst werden:
 }
 ```
 
-## Varianten
+## Variants
 
-- **LLM-Variante** (Standard): Agents nutzen `opencode` mit LLM-Entscheidungen
-- **Shell-Variante** (geplant): Reine Bash-Skripte ohne LLM — siehe `spec/Shell-Script-Variant-Spec.md`
+- **LLM variant** (default): Agents use `opencode` with LLM-based decisions
+- **Shell variant** (planned): Pure Bash scripts without LLM — see `spec/Shell-Script-Variant-Spec.md`

@@ -1,22 +1,22 @@
-# Scripts-Dokumentation
+# Scripts Documentation
 
-Alle Skripte befinden sich in `scripts/` und sind als ausführbare Bash-Skripte mit `set -euo pipefail` implementiert.
+All scripts are located in `scripts/` and implemented as executable Bash scripts with `set -euo pipefail`.
 
 ## start.sh
 
-Erstellt und startet die tmux-Session `agents` mit 5 Panes (siehe Layout in der README).
+Creates and starts the tmux session `agents` with 5 panes (see layout in the README).
 
-**Was passiert beim Start:**
-1. Prüft, ob `tmux` und `opencode` installiert sind
-2. Beendet eine evtl. vorhandene alte Session
-3. Erstellt `bus/` und `state/`-Verzeichnisse, leert die Log-Dateien
-4. Initialisiert State-Dateien (`state/*.json`) mit Standardwerten
-5. Erstellt das tmux-Layout (4 Agent-Panes links, Control-Pane rechts)
-6. Startet die Agents:
-   - Pane 0–3: `run-agent.sh <name> <interval>` für counter, odd, even, prime
-   - Pane 4: `run-control.sh` (interaktives Menü)
+**What happens on startup:**
+1. Checks that `tmux` and `opencode` are installed
+2. Terminates any existing session with the same name
+3. Creates `bus/` and `state/` directories and clears the log files
+4. Initializes state files (`state/*.json`) with default values
+5. Builds the tmux layout (4 agent panes on the left, Control pane on the right)
+6. Starts the agents:
+   - Panes 0–3: `run-agent.sh <name> <interval>` for counter, odd, even, prime
+   - Pane 4: `run-control.sh` (interactive menu)
 
-**Verwendung:**
+**Usage:**
 ```bash
 ./scripts/start.sh
 tmux attach -t agents
@@ -24,46 +24,46 @@ tmux attach -t agents
 
 ## stop.sh
 
-Beendet alle Agents und die tmux-Session.
+Stops all agents and terminates the tmux session.
 
-1. Schreibt ein `{"command":"stop","target":"all"}` Event in `bus/control.log`
-2. Wartet 2 Sekunden, damit Agents das Stop-Event erkennen
-3. Beendet die tmux-Session `agents`
+1. Writes a `{"command":"stop","target":"all"}` event to `bus/control.log`
+2. Waits 2 seconds to allow agents to pick up the stop event
+3. Kills the tmux session `agents`
 
-**Verwendung:**
+**Usage:**
 ```bash
 ./scripts/stop.sh
 ```
 
 ## reset.sh
 
-Setzt Logs und State-Dateien zurück.
+Clears logs and state files.
 
-1. Leert `bus/numbers.log` und `bus/control.log`
-2. Löscht alle State-Dateien (`state/*.json`)
+1. Empties `bus/numbers.log` and `bus/control.log`
+2. Deletes all state files (`state/*.json`)
 
-Mit `--restart` wird zusätzlich die Session gestoppt und neu gestartet.
+With `--restart` the session is also stopped and restarted.
 
-**Verwendung:**
+**Usage:**
 ```bash
-./scripts/reset.sh            # Nur Reset
-./scripts/reset.sh --restart  # Reset + Neustart
+./scripts/reset.sh            # Reset only
+./scripts/reset.sh --restart  # Reset + restart
 ```
 
 ## run-agent.sh
 
-Generischer Loop-Wrapper für die Filter-Agents (counter, odd, even, prime).
+Generic loop wrapper for the filter agents (counter, odd, even, prime).
 
-**Parameter:**
-- `$1` — Agent-Name (z.B. `counter`, `odd`)
-- `$2` — Interval in Sekunden (Standard: 3)
+**Parameters:**
+- `$1` — Agent name (e.g. `counter`, `odd`)
+- `$2` — Interval in seconds (default: 3)
 
-**Verhalten:**
-1. Prüft vor jedem Durchlauf, ob ein Stop-Befehl in `bus/control.log` steht (für `all` oder den eigenen Agent-Namen)
-2. Ruft `opencode run --agent <name> "Führe deinen nächsten Schritt aus."` auf
-3. Wartet das konfigurierte Intervall, dann nächster Durchlauf
+**Behavior:**
+1. Before each cycle, checks whether a stop command for `all` or the agent's own name is present in `bus/control.log`
+2. Calls `opencode run --agent <name> "Execute your next step."`
+3. Waits the configured interval, then starts the next cycle
 
-**Verwendung:**
+**Usage:**
 ```bash
 ./scripts/run-agent.sh counter 3
 ./scripts/run-agent.sh prime 5
@@ -71,22 +71,22 @@ Generischer Loop-Wrapper für die Filter-Agents (counter, odd, even, prime).
 
 ## run-control.sh
 
-Interaktives Steuerungsmenü für den Control-Pane. Ersetzt den generischen `run-agent.sh`-Wrapper für den Control-Agent.
+Interactive control menu for the Control pane. Replaces the generic `run-agent.sh` wrapper for the control agent.
 
-**Menüpunkte:**
-| # | Aktion | Implementierung |
-|---|--------|-----------------|
-| 1 | Status Dashboard anzeigen | `opencode run --agent control` |
-| 2 | Counter pausieren | Direktes Schreiben in `bus/control.log` |
-| 3 | Counter fortsetzen | Direktes Schreiben in `bus/control.log` |
-| 4 | Alle Agents stoppen | Direktes Schreiben in `bus/control.log` |
-| 5 | Alle Agents zurücksetzen | Direktes Schreiben in `bus/control.log` |
-| 6 | Verbose/Quiet umschalten | Submenu: Agent + Modus wählen, dann in `bus/control.log` |
-| 7 | Custom-Anweisung eingeben | Freies Textfeld, wird an `opencode run --agent control` weitergeleitet |
+**Menu items:**
+| # | Action | Implementation |
+|---|--------|----------------|
+| 1 | Show status dashboard | `opencode run --agent control` |
+| 2 | Pause counter | Writes directly to `bus/control.log` |
+| 3 | Resume counter | Writes directly to `bus/control.log` |
+| 4 | Stop all agents | Writes directly to `bus/control.log` |
+| 5 | Reset all agents | Writes directly to `bus/control.log` |
+| 6 | Toggle verbose/quiet | Submenu: choose agent + mode, then writes to `bus/control.log` |
+| 7 | Enter custom instruction | Free text input, forwarded to `opencode run --agent control` |
 
-**Bedienung:**
-- Pfeiltasten hoch/runter: Auswahl bewegen
-- Enter: Aktion ausführen
-- `q`: Menü beenden
+**Navigation:**
+- Arrow keys up/down: move selection
+- Enter: execute action
+- `q`: exit menu
 
-**Design-Entscheidung:** Einfache Befehle (pause, resume, stop, reset, verbose, quiet) werden direkt per `echo` in `bus/control.log` geschrieben, ohne einen LLM-Aufruf. Nur das Status-Dashboard und Custom-Anweisungen nutzen `opencode run`.
+**Design decision:** Simple commands (pause, resume, stop, reset, verbose, quiet) are written directly via `echo` to `bus/control.log` without an LLM call. Only the status dashboard and custom instructions use `opencode run`.
