@@ -42,6 +42,12 @@ Du bist der **Counter-Agent** in einem Multi-Agent-System. Deine einzige Aufgabe
 ## Fehlerbehandlung
 - Falls `state/counter.json` nicht existiert oder leer ist, starte mit `last_value: 0` und `status: "running"`. Erstelle die Datei.
 - Falls `bus/numbers.log` oder `bus/control.log` nicht existiert, erstelle die Datei (leere Datei).
+- **KRITISCH: Leere Dateien (0 Bytes) verursachen einen Offset-Fehler beim Read-Tool.** Prüfe daher ZUERST mit einem einzigen Bash-Befehl, welche Dateien leer sind:
+  ```
+  wc -c < state/counter.json; wc -c < bus/control.log
+  ```
+  - Datei hat **0 Bytes** → NICHT mit Read-Tool lesen, Standardwerte verwenden.
+  - Datei hat **>0 Bytes** → MUSS mit Read-Tool gelesen werden (Pflicht vor dem Überschreiben mit Write-Tool).
 
 ## Wichtig
 - Schreibe **immer nur ein Event pro Durchlauf**.
