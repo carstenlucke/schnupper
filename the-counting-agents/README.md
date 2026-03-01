@@ -64,6 +64,8 @@ Im Control-Pane (rechts) erscheint ein interaktives Menü mit Pfeiltasten-Naviga
 
 Detaillierte Script-Dokumentation: [docs/scripts.md](docs/scripts.md)
 
+Hintergründe zum Experiment und den bewussten Architektur-Entscheidungen: [docs/experiment.md](docs/experiment.md)
+
 ## Verzeichnisstruktur
 
 ```
