@@ -17,13 +17,13 @@ Agents communicate exclusively through append-only JSONL files in the `bus/` dir
 ## Architecture
 
 ```
-+----------+----------+------------------+
-| counter  |   odd    |                  |
-|          |          |     control      |
-+----------+----------+                  |
-|   even   |  prime   |                  |
-|          |          |                  |
-+----------+----------+------------------+
++--------------------+----------+
+|     counter        | control  |
+|      (2/3)         |  (1/3)   |
++----------+---------+----------+
+|   odd    |  even   |  prime   |
+|  (1/3)   |  (1/3)  |  (1/3)  |
++----------+---------+----------+
 ```
 
 Each agent runs via `opencode run --agent <name>` inside a shell loop. Agent roles are defined as custom modes in `.opencode/modes/`.
@@ -49,7 +49,7 @@ tmux attach -t agents
 
 ## Control
 
-The Control pane (right side) shows an interactive menu navigable with the arrow keys. From there you can access the status dashboard, pause/resume, stop/reset, and send custom instructions.
+The Control pane (top-right) shows an interactive menu navigable with the arrow keys. From there you can access the status dashboard, pause/resume, stop/reset, and send custom instructions.
 
 ```bash
 # Stop the session from outside

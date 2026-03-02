@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # start.sh — Start the multi-agent tmux session
 #
-# Creates a tmux session "agents" with 5 panes (3 equal columns):
-# +----------+----------+----------+
-# | counter  |   odd    |          |
-# |          |          | control  |
-# +----------+----------+          |
-# |   even   |  prime   |          |
-# |          |          |          |
-# +----------+----------+----------+
+# Creates a tmux session "agents" with 5 panes (2 rows):
+# +--------------------+----------+
+# |     counter        | control  |
+# |      (2/3)         |  (1/3)   |
+# +----------+---------+----------+
+# |   odd    |  even   |  prime   |
+# |  (1/3)   |  (1/3)  |  (1/3)  |
+# +----------+---------+----------+
 
 set -euo pipefail
 
@@ -37,42 +37,39 @@ echo "{\"agent\":\"prime\",\"last_seq\":0,\"primes\":[],\"count\":0,\"updated_at
 # --- Create tmux session ---
 cd "$PROJECT_DIR"
 
-# Create session with first pane (counter)
+# Create session with first pane (full width)
 tmux new-session -d -s "$SESSION" -x 200 -y 50
 
-# Split into 3 equal columns: left (pane 0) | middle | right
-# First split: left 67% | right 33%
-tmux split-window -h -t "$SESSION" -p 33
+# Split vertically: top row (50%) | bottom row (50%)
+tmux split-window -v -t "$SESSION:.0" -p 50
 
-# Second split: left half into two equal columns (50/50)
-tmux select-pane -t "$SESSION:.0"
-tmux split-window -h -t "$SESSION" -p 50
+# Split top row: counter (2/3) | control (1/3)
+tmux split-window -h -t "$SESSION:.0" -p 33
 
-# Now we have 3 equal columns: pane 0 | pane 1 | pane 2
-# Split left column (pane 0) vertically: counter (top) | even (bottom)
-tmux select-pane -t "$SESSION:.0"
-tmux split-window -v -t "$SESSION"
+# After vertical split:  pane 0 (top), pane 1 (bottom)
+# After horizontal split of top: pane 0 (top-left), pane 1 (top-right), pane 2 (bottom)
+# So bottom row is now pane 2
 
-# Split middle column (pane 2) vertically: odd (top) | prime (bottom)
-tmux select-pane -t "$SESSION:.2"
-tmux split-window -v -t "$SESSION"
+# Split bottom row into 3 equal columns: odd | even | prime
+tmux split-window -h -t "$SESSION:.2" -p 67
+tmux split-window -h -t "$SESSION:.3" -p 50
 
 # Result pane layout:
-# 0: counter (top-left)
-# 1: even (bottom-left)
-# 2: odd (top-middle)
-# 3: prime (bottom-middle)
-# 4: control (right)
+# 0: counter (top-left, 2/3 wide)
+# 1: control (top-right, 1/3 wide)
+# 2: odd (bottom-left, 1/3 wide)
+# 3: even (bottom-middle, 1/3 wide)
+# 4: prime (bottom-right, 1/3 wide)
 
 # --- Start agents in panes ---
 tmux send-keys -t "$SESSION:.0" "$PROJECT_DIR/scripts/run-agent.sh counter 3" C-m
-tmux send-keys -t "$SESSION:.1" "$PROJECT_DIR/scripts/run-agent.sh even 3" C-m
+tmux send-keys -t "$SESSION:.1" "$PROJECT_DIR/scripts/run-control.sh" C-m
 tmux send-keys -t "$SESSION:.2" "$PROJECT_DIR/scripts/run-agent.sh odd 3" C-m
-tmux send-keys -t "$SESSION:.3" "$PROJECT_DIR/scripts/run-agent.sh prime 5" C-m
-tmux send-keys -t "$SESSION:.4" "$PROJECT_DIR/scripts/run-control.sh" C-m
+tmux send-keys -t "$SESSION:.3" "$PROJECT_DIR/scripts/run-agent.sh even 3" C-m
+tmux send-keys -t "$SESSION:.4" "$PROJECT_DIR/scripts/run-agent.sh prime 5" C-m
 
-# --- Focus the control pane (right side) for user input ---
-tmux select-pane -t "$SESSION:.4"
+# --- Focus the control pane (top-right) for user input ---
+tmux select-pane -t "$SESSION:.1"
 
 echo "tmux-Session '$SESSION' gestartet."
 echo ""

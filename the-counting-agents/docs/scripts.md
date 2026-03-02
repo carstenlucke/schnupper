@@ -11,10 +11,11 @@ Creates and starts the tmux session `agents` with 5 panes (see layout in the REA
 2. Terminates any existing session with the same name
 3. Creates `bus/` and `state/` directories and clears the log files
 4. Initializes state files (`state/*.json`) with default values
-5. Builds the tmux layout (4 agent panes on the left, Control pane on the right)
+5. Builds the tmux layout (Counter + Control in the top row, Odd/Even/Prime in the bottom row)
 6. Starts the agents:
-   - Panes 0–3: `run-agent.sh <name> <interval>` for counter, odd, even, prime
-   - Pane 4: `run-control.sh` (interactive menu)
+   - Pane 0: Counter (top-left, 2/3 wide)
+   - Pane 1: Control (top-right, 1/3 wide) via `run-control.sh`
+   - Panes 2–4: `run-agent.sh <name> <interval>` for odd, even, prime (bottom row, each 1/3 wide)
 
 **Usage:**
 ```bash
