@@ -66,6 +66,8 @@ Detailed script documentation: [docs/scripts.md](docs/scripts.md)
 
 Background on the experiment and deliberate architectural decisions: [docs/experiment.md](docs/experiment.md)
 
+Using opencode as a custom agent platform: [docs/opencode-custom-agents.md](docs/opencode-custom-agents.md)
+
 ## Directory Structure
 
 ```
