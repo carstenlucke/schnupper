@@ -53,7 +53,7 @@ AGENT_PATHS = {
             "marketing/konzept.md",
             "kalkulation/preiskalkulation.md",
         ],
-        "outputs": ["website/index.html"],
+        "outputs": ["website/website-prompt.md", "website/index.html"],
     },
     "app-prototyp": {
         "inputs": [

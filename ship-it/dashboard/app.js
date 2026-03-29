@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------
 let currentSlug = null;
 let currentAgent = null;
+let currentFile = null;  // aktuell ausgewählte Datei
 let agents = [];
 let terminals = {};      // agent-name → Terminal instance
 let eventSources = {};   // agent-name → EventSource
@@ -91,6 +92,8 @@ const $feedbackBtn = document.getElementById("feedback-btn");
 const $tabTerminal = document.getElementById("tab-terminal");
 const $tabResult = document.getElementById("tab-result");
 const $tabPreview = document.getElementById("tab-preview");
+const $artifactList = document.getElementById("artifact-list");
+const $artifactAgentName = document.getElementById("artifact-agent-name");
 
 // ---------------------------------------------------------------------------
 // Initialisierung
@@ -261,6 +264,7 @@ function canAgentStart(agentName) {
 // ---------------------------------------------------------------------------
 function selectAgent(agentName) {
   currentAgent = agentName;
+  currentFile = null;
   const agent = agents.find(a => a.name === agentName);
   if (!agent) return;
 
@@ -270,12 +274,13 @@ function selectAgent(agentName) {
   });
 
   $activeAgentLabel.textContent = agent.label;
+  $artifactAgentName.textContent = agent.label;
 
   // Terminal anzeigen
   showTerminal(agentName);
 
-  // Ergebnis laden
-  loadResults(agentName);
+  // Artefakt-Liste + erste Datei laden
+  loadArtifactList(agentName);
 }
 
 // ---------------------------------------------------------------------------
@@ -399,59 +404,96 @@ async function handleStartAgent(agentName, feedback = null) {
 }
 
 // ---------------------------------------------------------------------------
-// Ergebnisse laden
+// Artefakt-Liste (mittlere Spalte)
 // ---------------------------------------------------------------------------
-async function loadResults(agentName) {
+async function loadArtifactList(agentName) {
   if (!currentSlug) return;
 
   const files = await fetchFiles(currentSlug, agentName);
   const existingFiles = files.filter(f => f.exists);
 
+  $artifactList.innerHTML = "";
+
   if (existingFiles.length === 0) {
-    $resultContent.innerHTML = `
-      <div class="flex flex-col items-center justify-center h-full text-center py-16">
-        <span class="material-symbols-outlined text-white/10 text-6xl mb-4">hourglass_empty</span>
-        <p class="text-white/30 text-sm">Noch keine Ergebnisse für diesen Agenten.</p>
+    $artifactList.innerHTML = `
+      <div class="p-6 text-center mt-8">
+        <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3 opacity-20">
+          <span class="material-symbols-outlined text-[24px]">hourglass_empty</span>
+        </div>
+        <p class="text-[10px] text-white/30 font-medium">Noch keine Artefakte vorhanden.</p>
       </div>
     `;
+    $resultContent.innerHTML = "";
     $previewIframe.srcdoc = "";
     $previewFilename.textContent = "";
     return;
   }
 
-  // Markdown-Dateien rendern
-  let mdContent = "";
-  let htmlFile = null;
-
   for (const file of existingFiles) {
-    const content = await fetchFileContent(currentSlug, agentName, file.name);
-    if (file.name.endsWith(".html")) {
-      htmlFile = { name: file.name, content };
-    } else {
-      mdContent += content + "\n\n---\n\n";
-    }
+    const icon = file.name.endsWith(".html") ? "code" : "description";
+    const div = document.createElement("div");
+    div.className = `artifact-item flex items-center gap-3 p-3 rounded-sm cursor-pointer hover:bg-white/5 transition-colors`;
+    div.dataset.file = file.name;
+    div.innerHTML = `
+      <span class="material-symbols-outlined text-white/60 text-[20px]">${icon}</span>
+      <div class="flex flex-col overflow-hidden">
+        <span class="text-sm text-white font-medium truncate">${file.name}</span>
+        <span class="text-[10px] text-white/40">${formatSize(file.size)}</span>
+      </div>
+    `;
+    div.addEventListener("click", () => selectFile(agentName, file.name));
+    $artifactList.appendChild(div);
   }
 
-  if (mdContent) {
-    $resultContent.innerHTML = marked.parse(mdContent);
-  } else if (htmlFile) {
+  // Erste Datei automatisch auswählen
+  if (!currentFile || !existingFiles.find(f => f.name === currentFile)) {
+    selectFile(agentName, existingFiles[0].name);
+  } else {
+    selectFile(agentName, currentFile);
+  }
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+// ---------------------------------------------------------------------------
+// Einzelne Datei anzeigen
+// ---------------------------------------------------------------------------
+async function selectFile(agentName, fileName) {
+  currentFile = fileName;
+
+  // Highlight in Artefakt-Liste
+  document.querySelectorAll(".artifact-item").forEach(el => {
+    const selected = el.dataset.file === fileName;
+    el.classList.toggle("bg-white/10", selected);
+    el.classList.toggle("border-l-2", selected);
+    el.classList.toggle("border-thm-light-blue", selected);
+  });
+
+  if (!currentSlug) return;
+
+  const content = await fetchFileContent(currentSlug, agentName, fileName);
+
+  if (fileName.endsWith(".html")) {
+    // HTML → Ergebnis-Tab zeigt Hinweis, Vorschau-Tab zeigt iframe
     $resultContent.innerHTML = `
       <div class="flex flex-col items-center justify-center h-full text-center py-16">
         <span class="material-symbols-outlined text-thm-green text-4xl mb-4">preview</span>
-        <p class="text-white/60 text-sm">HTML-Datei verfügbar – wechsle zum <strong>Vorschau</strong>-Tab.</p>
+        <p class="text-white/60 text-sm">HTML-Datei – wechsle zum <strong>Vorschau</strong>-Tab.</p>
       </div>
     `;
-  }
-
-  // HTML-Vorschau
-  if (htmlFile) {
-    $previewIframe.srcdoc = htmlFile.content;
-    $previewFilename.textContent = htmlFile.name;
+    $previewIframe.srcdoc = content;
+    $previewFilename.textContent = fileName;
     $previewOpenBtn.onclick = () => {
-      const blob = new Blob([htmlFile.content], { type: "text/html" });
+      const blob = new Blob([content], { type: "text/html" });
       window.open(URL.createObjectURL(blob), "_blank");
     };
   } else {
+    // Markdown → rendern im Ergebnis-Tab
+    $resultContent.innerHTML = marked.parse(content);
     $previewIframe.srcdoc = "";
     $previewFilename.textContent = "";
   }
@@ -503,10 +545,10 @@ async function refreshAgents() {
     agents = newAgents;
     renderAgentList();
 
-    // Ergebnisse des aktuellen Agenten neu laden wenn er fertig ist
+    // Artefakt-Liste des aktuellen Agenten neu laden wenn er fertig ist
     const current = agents.find(a => a.name === currentAgent);
     if (current && (current.status === "done" || current.status === "error")) {
-      loadResults(currentAgent);
+      loadArtifactList(currentAgent);
     }
   }
 }
