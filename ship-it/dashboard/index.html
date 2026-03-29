@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="dark" lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Ship It! Dashboard</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <!-- xterm.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.min.js"></script>
+
+  <!-- marked.js -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#9cd842",
+            "primary-container": "#80ba24",
+            "surface": "#000f3b",
+            "surface-container": "#001a55",
+            "surface-container-low": "#00174d",
+            "surface-container-high": "#00236c",
+            "surface-variant": "#0a2e7d",
+            "on-surface": "#dbe1ff",
+            "on-surface-variant": "#c2c9b2",
+            "outline": "#8c937e",
+            "outline-variant": "#424937",
+            "tertiary": "#57d5ff",
+            "tertiary-container": "#00b8e4",
+            "error": "#ffb4ab",
+            "error-container": "#93000a",
+            "thm-green": "#80ba24",
+            "thm-blue": "#002878",
+            "thm-gray": "#4a5c66",
+            "thm-yellow": "#f4aa00",
+            "thm-light-blue": "#00b8e4",
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk", "sans-serif"],
+            "body": ["Inter", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="text-[#f1f1f1] h-screen flex flex-col font-body overflow-hidden bg-surface">
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="fixed top-0 w-full h-12 z-50 bg-thm-blue shadow-sm flex items-center justify-between px-4">
+    <div class="flex items-center gap-3">
+      <span class="text-white font-headline font-bold text-lg tracking-tight">Ship It! Dashboard</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <!-- Projekt-Selector -->
+      <div class="relative" id="projekt-selector">
+        <button id="projekt-dropdown-btn" class="flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full hover:bg-white/20 transition-all">
+          <div id="projekt-status-dot" class="w-2 h-2 rounded-full bg-white/30"></div>
+          <span id="projekt-name-display" class="text-white text-xs font-medium">Kein Projekt</span>
+          <span class="material-symbols-outlined text-white/60 text-[16px]">expand_more</span>
+        </button>
+        <div id="projekt-dropdown" class="hidden absolute right-0 top-full mt-1 w-64 bg-surface-container-high border border-white/10 rounded-lg shadow-2xl overflow-hidden z-50">
+          <div id="projekt-list" class="max-h-60 overflow-y-auto"></div>
+          <div class="border-t border-white/10">
+            <button id="new-projekt-btn" class="w-full flex items-center gap-2 px-4 py-3 text-xs text-thm-green hover:bg-white/5 transition-colors">
+              <span class="material-symbols-outlined text-[16px]">add</span>
+              Neues Projekt
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Live Badge -->
+      <div class="flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full">
+        <div class="w-2 h-2 bg-thm-green rounded-full pulse-dot"></div>
+        <span class="text-white text-xs font-medium uppercase tracking-wider">Live</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== WELCOME SCREEN ===================== -->
+  <div id="welcome-screen" class="hidden flex-1 pt-12 flex items-center justify-center">
+    <div class="max-w-lg w-full mx-auto px-6 text-center">
+      <div class="mb-8">
+        <span class="material-symbols-outlined text-thm-green text-6xl mb-4 block">rocket_launch</span>
+        <h1 class="font-headline text-3xl font-bold text-white mb-2">Ship It!</h1>
+        <p class="text-white/60 text-sm">Starte dein erstes Produkt – 5 KI-Agenten erledigen den Launch.</p>
+      </div>
+      <form id="welcome-form" class="space-y-4">
+        <input type="text" id="welcome-name" placeholder="Produktname (z.B. Nachhaltige Sneaker)" required
+          class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 focus:border-thm-green focus:ring-1 focus:ring-thm-green outline-none text-sm"/>
+        <textarea id="welcome-desc" placeholder="Kurzbeschreibung – Was ist das Produkt? Was macht es besonders?" rows="3" required
+          class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 focus:border-thm-green focus:ring-1 focus:ring-thm-green outline-none text-sm resize-none"></textarea>
+        <button type="submit" class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-thm-green text-thm-blue font-bold rounded-lg hover:brightness-110 transition-all">
+          <span class="material-symbols-outlined text-[20px]">rocket_launch</span>
+          Projekt starten
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== MAIN DASHBOARD ===================== -->
+  <main id="dashboard" class="hidden flex-1 pt-12 flex h-full overflow-hidden">
+
+    <!-- Column 1: Agent List -->
+    <aside class="w-[220px] bg-thm-gray flex flex-col h-full border-r border-white/5 flex-shrink-0">
+      <div class="px-4 py-6 border-b border-white/5 bg-black/10 flex-1 overflow-y-auto scrollbar-hide">
+        <h2 class="text-[11px] font-bold text-white/50 uppercase tracking-[0.2em] mb-4">Agents Pool</h2>
+        <nav id="agent-list" class="space-y-1"></nav>
+      </div>
+    </aside>
+
+    <!-- Column 2: Artifact List -->
+    <section id="artifact-column" class="w-[250px] bg-[#354850] flex flex-col h-full shadow-2xl relative z-10 flex-shrink-0">
+      <div class="p-4 flex items-center justify-between border-b border-white/5">
+        <h3 id="artifact-agent-name" class="text-base font-bold text-white">–</h3>
+        <span class="material-symbols-outlined text-white/40 text-[18px]">folder_open</span>
+      </div>
+      <div id="artifact-list" class="p-2 space-y-1 overflow-y-auto flex-1 scrollbar-hide"></div>
+    </section>
+
+    <!-- Column 3: Content Area -->
+    <section class="flex-1 flex flex-col h-full overflow-hidden">
+
+      <!-- Tabs -->
+      <div class="flex items-center border-b border-white/5 bg-surface-container-low px-4">
+        <button class="tab-btn active px-4 py-3 text-xs font-medium transition-colors" data-tab="terminal">
+          <span class="material-symbols-outlined text-[16px] align-middle mr-1">terminal</span>Terminal
+        </button>
+        <button class="tab-btn px-4 py-3 text-xs font-medium transition-colors" data-tab="result">
+          <span class="material-symbols-outlined text-[16px] align-middle mr-1">description</span>Ergebnis
+        </button>
+        <button class="tab-btn px-4 py-3 text-xs font-medium transition-colors" data-tab="preview">
+          <span class="material-symbols-outlined text-[16px] align-middle mr-1">preview</span>Vorschau
+        </button>
+        <!-- Agent-Name im Tab-Bereich -->
+        <div class="ml-auto flex items-center gap-2">
+          <span id="active-agent-label" class="text-xs text-white/40"></span>
+        </div>
+      </div>
+
+      <!-- Tab: Terminal -->
+      <div id="tab-terminal" class="tab-content flex-1 overflow-hidden">
+        <div id="terminal-container" class="h-full w-full"></div>
+      </div>
+
+      <!-- Tab: Ergebnis (Markdown) -->
+      <div id="tab-result" class="tab-content hidden flex-1 overflow-y-auto scrollbar-hide">
+        <div id="result-content" class="max-w-4xl mx-auto px-10 py-8"></div>
+      </div>
+
+      <!-- Tab: Vorschau (HTML iframe) -->
+      <div id="tab-preview" class="tab-content hidden flex-1 overflow-hidden">
+        <div id="preview-container" class="h-full w-full flex flex-col">
+          <div id="preview-toolbar" class="flex items-center gap-2 px-4 py-2 bg-surface-container-low border-b border-white/5">
+            <span id="preview-filename" class="text-xs text-white/40"></span>
+            <button id="preview-open-btn" class="ml-auto flex items-center gap-1 px-3 py-1 text-xs bg-white/10 rounded hover:bg-white/20 transition-colors">
+              <span class="material-symbols-outlined text-[14px]">open_in_new</span>Im Browser öffnen
+            </button>
+          </div>
+          <iframe id="preview-iframe" class="flex-1 w-full bg-white" sandbox="allow-scripts"></iframe>
+        </div>
+      </div>
+
+      <!-- Feedback-Bereich -->
+      <div id="feedback-bar" class="border-t border-white/5 bg-surface-container-low px-4 py-3 flex gap-2">
+        <input type="text" id="feedback-input" placeholder="Feedback eingeben – Agent überarbeitet seine Ausgabe..."
+          class="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded text-xs text-white placeholder-white/30 focus:border-thm-green focus:ring-1 focus:ring-thm-green outline-none"/>
+        <button id="feedback-btn" class="flex items-center gap-1 px-4 py-2 bg-thm-yellow text-black text-xs font-bold rounded hover:brightness-110 transition-all">
+          <span class="material-symbols-outlined text-[16px]">refresh</span>Überarbeiten
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== NEW PROJECT MODAL ===================== -->
+  <div id="new-projekt-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60">
+    <div class="bg-surface-container-high border border-white/10 rounded-xl shadow-2xl w-full max-w-md mx-4 p-6">
+      <h2 class="font-headline text-lg font-bold text-white mb-4">Neues Projekt</h2>
+      <form id="new-projekt-form" class="space-y-4">
+        <input type="text" id="modal-name" placeholder="Produktname" required
+          class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 focus:border-thm-green focus:ring-1 focus:ring-thm-green outline-none text-sm"/>
+        <textarea id="modal-desc" placeholder="Kurzbeschreibung" rows="3" required
+          class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 focus:border-thm-green focus:ring-1 focus:ring-thm-green outline-none text-sm resize-none"></textarea>
+        <div class="flex gap-2">
+          <button type="button" id="modal-cancel" class="flex-1 px-4 py-2 text-xs text-white/60 border border-white/10 rounded-lg hover:bg-white/5 transition-colors">
+            Abbrechen
+          </button>
+          <button type="submit" class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-thm-green text-thm-blue text-xs font-bold rounded-lg hover:brightness-110 transition-all">
+            <span class="material-symbols-outlined text-[16px]">add</span>Anlegen
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

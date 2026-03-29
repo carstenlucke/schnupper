@@ -1,0 +1,8 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "github-copilot/gpt-4o",
+  "provider": {
+    "github-copilot": {},
+    "openai": {}
+  }
+}

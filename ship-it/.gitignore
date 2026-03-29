@@ -1,3 +1,13 @@
-# .gitignore file to exclude common files and directories from being tracked by Git
+# Runtime
+projekte/
+
+# OS
 .DS_Store
 thumbs.db
+
+# OpenCode
+.opencode/node_modules/
+
+# Python
+__pycache__/
+*.pyc
