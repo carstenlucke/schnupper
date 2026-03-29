@@ -77,6 +77,10 @@ AGENT_PATHS = {
             "marketing/konzept.md",
             "kalkulation/preiskalkulation.md",
         ],
+        "optional_inputs": [
+            "marketing/logo.png",
+            "social-media/instagram-bild.png",
+        ],
         "outputs": ["website/website-prompt.md", "website/index.html"],
     },
 }
@@ -150,6 +154,12 @@ def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
     paths = AGENT_PATHS[agent]
 
     eingaben = [f"{p}/{f}" for f in paths["inputs"]]
+    optional_inputs = set()
+    for f in paths.get("optional_inputs", []):
+        full = f"{p}/{f}"
+        if os.path.exists(os.path.join(BASE_DIR, full)):
+            eingaben.append(full)
+            optional_inputs.add(full)
     feedback_outputs = set()
     if feedback:
         for f in paths["outputs"]:
@@ -162,6 +172,8 @@ def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
     for e in eingaben:
         if e in feedback_outputs:
             eingaben_lines.append(f"- {e}  (deine bisherige Ausgabe)")
+        elif e in optional_inputs:
+            eingaben_lines.append(f"- {e}  (optional, falls vorhanden)")
         else:
             eingaben_lines.append(f"- {e}")
     eingaben_str = "\n".join(eingaben_lines)
@@ -323,47 +335,6 @@ def _call_image_api(api_key: str, prompt: str, quality: str = "low",
     b64_data = result["data"][0]["b64_json"]
     return base64.b64decode(b64_data)
 
-
-def _call_image_edit_api(api_key: str, prompt: str, reference_image: bytes,
-                         quality: str = "low", size: str = "1024x1024") -> bytes:
-    """Bild generieren mit Referenzbild (gpt-image-1 edits endpoint)."""
-    import uuid
-    url = "https://api.openai.com/v1/images/edits"
-    boundary = uuid.uuid4().hex
-
-    # Multipart-Form-Data manuell bauen (stdlib only)
-    parts = []
-    for name, value in [("model", "gpt-image-1"), ("prompt", prompt),
-                        ("quality", quality), ("size", size), ("n", "1")]:
-        parts.append(
-            f"--{boundary}\r\n"
-            f'Content-Disposition: form-data; name="{name}"\r\n\r\n'
-            f"{value}\r\n"
-        )
-    # Referenzbild als Datei
-    parts.append(f"--{boundary}\r\n")
-    file_header = (
-        'Content-Disposition: form-data; name="image[]"; filename="reference.png"\r\n'
-        "Content-Type: image/png\r\n\r\n"
-    )
-    parts.append(file_header)
-
-    body = b""
-    for p in parts[:-1]:
-        body += p.encode("utf-8")
-    body += parts[-1].encode("utf-8")
-    body += reference_image
-    body += f"\r\n--{boundary}--\r\n".encode("utf-8")
-
-    req = urllib.request.Request(url, data=body, method="POST")
-    req.add_header("Authorization", f"Bearer {api_key}")
-    req.add_header("Content-Type", f"multipart/form-data; boundary={boundary}")
-
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        result = json.loads(resp.read().decode("utf-8"))
-
-    b64_data = result["data"][0]["b64_json"]
-    return base64.b64decode(b64_data)
 
 
 def _get_all_outputs(agent: str) -> list[str]:
@@ -729,21 +700,23 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             self._send_json({"error": cfg["error_no_prompt"]}, 400)
             return
 
-        print(f"[image-gen] {slug}/{agent}: Prompt = {prompt[:100]}...", file=sys.stderr)
+        # Produktname aus produkt.md lesen
+        produkt_path = os.path.join(PROJEKTE_DIR, slug, "produkt.md")
+        produktname = slug
+        if os.path.exists(produkt_path):
+            with open(produkt_path, "r", encoding="utf-8") as f:
+                first_line = f.readline().strip()
+                if first_line.startswith("#"):
+                    produktname = first_line.lstrip("#").strip()
+
+        # Produktname immer mitgeben
+        prompt = f'Product: "{produktname}". {prompt}'
+
+
+        print(f"[image-gen] {slug}/{agent}: Prompt = {prompt[:150]}...", file=sys.stderr)
 
         try:
-            # Instagram-Bild: Logo als Referenz mitgeben, falls vorhanden
-            if agent == "social-media":
-                logo_path = os.path.join(PROJEKTE_DIR, slug, "marketing", "logo.png")
-                if os.path.exists(logo_path):
-                    with open(logo_path, "rb") as f:
-                        logo_data = f.read()
-                    print(f"[image-gen] {slug}: Mit Logo-Referenz ({len(logo_data)} Bytes)", file=sys.stderr)
-                    image_data = _call_image_edit_api(api_key, prompt, logo_data)
-                else:
-                    image_data = _call_image_api(api_key, prompt)
-            else:
-                image_data = _call_image_api(api_key, prompt)
+            image_data = _call_image_api(api_key, prompt)
         except Exception as e:
             print(f"[image-gen] Fehler: {e}", file=sys.stderr)
             self._send_json({"error": f"Bildgenerierung fehlgeschlagen: {e}"}, 500)
