@@ -285,11 +285,28 @@ Basiert auf dem bestehenden Mockup in `spec/ui-proto/dashboard.html` (THM-Design
 
 **Erweiterungen gegenüber dem Mockup:**
 
-1. **Projekt-Auswahl / Neues Projekt** (Startansicht oder Header)
-   - Beim ersten Öffnen: Eingabefeld für Produktname + Kurzbeschreibung, "Neues Projekt starten"-Button
-   - Bei bestehenden Projekten: Dropdown oder Liste im Header zum Umschalten
-   - Aktives Projekt wird im Header angezeigt (z.B. "Ship It! Dashboard — Nachhaltige Sneaker")
-   - Projektwechsel lädt alle Agent-Status und Artefakte des gewählten Projekts
+1. **Projekt-Auswahl / Neues Projekt**
+
+   **Header-Projekt-Selector:**
+   ```
+   ┌──────────────────────────────────────────────────────────────┐
+   │  Ship It! Dashboard  │ 🟢 Nachhaltige Sneaker ▾ │   ● Live  │
+   └──────────────────────┼──────────────────────────┼───────────┘
+                          │ ✓ Nachhaltige Sneaker    │
+                          │   Lern-Energy-Drink      │
+                          │ ──────────────────────── │
+                          │   + Neues Projekt         │
+                          └──────────────────────────┘
+   ```
+   - Dropdown im Header zeigt alle Projekte (via `GET /api/projekte`)
+   - Farbiger Dot pro Projekt: grau = frisch, gelb = in Arbeit, grün = alle Agenten fertig
+   - "**+ Neues Projekt**" im Dropdown öffnet Eingabe-Dialog (Produktname + Kurzbeschreibung)
+   - Projektwechsel lädt Agent-Status + Artefakte des gewählten Projekts neu
+   - URL enthält den Slug als Hash (`#nachhaltige-sneaker`) → Browser-Refresh behält Projekt bei
+
+   **Erster Start (kein Projekt vorhanden):**
+   - Statt 3-Spalten-Layout: zentrierter Willkommens-Screen mit Eingabefeld für die erste Produktidee
+   - Nach Anlegen des ersten Projekts: Wechsel zum normalen Dashboard-Layout
 
 2. **Agent-Steuerung** (linke Spalte)
    - Status-Dots: grau=idle, gelb-pulsierend=running, grün=done, rot=error
