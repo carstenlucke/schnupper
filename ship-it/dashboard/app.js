@@ -29,6 +29,11 @@ async function api(path, opts = {}) {
     ...opts,
   });
   if (opts.raw) return res;
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ error: res.statusText }));
+    console.error(`API ${res.status}: ${path}`, error);
+    return error;
+  }
   return res.json();
 }
 
@@ -101,6 +106,18 @@ const $tabResult = document.getElementById("tab-result");
 const $tabPreview = document.getElementById("tab-preview");
 const $artifactList = document.getElementById("artifact-list");
 const $artifactAgentName = document.getElementById("artifact-agent-name");
+
+// ---------------------------------------------------------------------------
+// Markdown-Konfiguration (HTML in Markdown escapen)
+// ---------------------------------------------------------------------------
+marked.use({
+  renderer: {
+    html(token) {
+      const text = typeof token === "string" ? token : token.text || "";
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  }
+});
 
 // ---------------------------------------------------------------------------
 // Initialisierung
@@ -190,10 +207,13 @@ function renderProjektDropdown(projekte) {
   for (const p of projekte) {
     const div = document.createElement("div");
     div.className = `flex items-center gap-2 px-4 py-2.5 cursor-pointer hover:bg-white/5 transition-colors ${p.slug === currentSlug ? 'bg-white/10' : ''}`;
-    div.innerHTML = `
-      <div class="w-2 h-2 rounded-full projekt-dot-${p.status}"></div>
-      <span class="text-xs text-white/80">${p.slug === currentSlug ? '✓ ' : ''}${p.name}</span>
-    `;
+    const statusDot = document.createElement("div");
+    statusDot.className = `w-2 h-2 rounded-full projekt-dot-${p.status}`;
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "text-xs text-white/80";
+    nameSpan.textContent = (p.slug === currentSlug ? "✓ " : "") + p.name;
+    div.appendChild(statusDot);
+    div.appendChild(nameSpan);
     div.addEventListener("click", () => {
       $projektDropdown.classList.add("hidden");
       loadProjekt(p.slug);
@@ -370,6 +390,12 @@ function streamAgent(slug, agentName) {
     refreshAgents();
   });
 
+  es.addEventListener("not_started", (event) => {
+    term.write(`\r\n\x1b[33m--- ${event.data} ---\x1b[0m\r\n`);
+    es.close();
+    delete eventSources[agentName];
+  });
+
   es.addEventListener("error", (event) => {
     if (es.readyState === EventSource.CLOSED) return;
     term.write("\r\n\x1b[31m--- Verbindung verloren ---\x1b[0m\r\n");
@@ -527,8 +553,8 @@ async function selectFile(agentName, fileName) {
       window.open(URL.createObjectURL(blob), "_blank");
     };
   } else {
-    // Markdown → rendern im Ergebnis-Tab
-    $resultContent.innerHTML = marked.parse(content);
+    // Markdown → rendern im Ergebnis-Tab (HTML in Markdown deaktiviert)
+    $resultContent.innerHTML = marked.parse(content, { breaks: true, gfm: true });
     $previewIframe.srcdoc = "";
     $previewFilename.textContent = "";
   }

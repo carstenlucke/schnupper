@@ -13,9 +13,8 @@ import signal
 import subprocess
 import threading
 import re
-import shlex
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse
 
 PORT = 8000
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -126,13 +125,21 @@ def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
     paths = AGENT_PATHS[agent]
 
     eingaben = [f"{p}/{f}" for f in paths["inputs"]]
+    feedback_outputs = set()
     if feedback:
         for f in paths["outputs"]:
             full = f"{p}/{f}"
             if full not in eingaben and os.path.exists(os.path.join(BASE_DIR, full)):
-                eingaben.append(f"{full}  ← deine bisherige Ausgabe")
+                eingaben.append(full)
+                feedback_outputs.add(full)
 
-    eingaben_str = "\n".join(f"- {e}" for e in eingaben)
+    eingaben_lines = []
+    for e in eingaben:
+        if e in feedback_outputs:
+            eingaben_lines.append(f"- {e}  (deine bisherige Ausgabe)")
+        else:
+            eingaben_lines.append(f"- {e}")
+    eingaben_str = "\n".join(eingaben_lines)
     ausgaben_str = "\n".join(f"- {p}/{f}" for f in paths["outputs"])
 
     if feedback:
@@ -244,8 +251,22 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
 # ---------------------------------------------------------------------------
 # HTTP-Handler
 # ---------------------------------------------------------------------------
+SAFE_SEGMENT_RE = re.compile(r'^[a-z0-9][a-z0-9-]*$')
+
+
 class ShipItHandler(SimpleHTTPRequestHandler):
     """Request-Handler für das Ship It! Dashboard."""
+
+    def _validate_slug(self, slug):
+        """Validiere Slug gegen Path-Traversal."""
+        if not SAFE_SEGMENT_RE.match(slug):
+            self._send_json({"error": "Ungültiger Projektname"}, 400)
+            return False
+        projekt_dir = os.path.realpath(os.path.join(PROJEKTE_DIR, slug))
+        if not projekt_dir.startswith(os.path.realpath(PROJEKTE_DIR)):
+            self._send_json({"error": "Ungültiger Pfad"}, 400)
+            return False
+        return True
 
     def log_message(self, format, *args):
         """Kompaktes Logging auf stderr."""
@@ -261,15 +282,18 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             self._handle_get_projekte()
         elif path.startswith("/api/projekte/") and path.endswith("/agents"):
             slug = path.split("/")[3]
+            if not self._validate_slug(slug): return
             self._handle_get_agents(slug)
         elif path.startswith("/api/projekte/") and "/agents/" in path and path.endswith("/stream"):
             parts = path.split("/")
             slug = parts[3]
+            if not self._validate_slug(slug): return
             agent = parts[5]
             self._handle_stream(slug, agent)
         elif path.startswith("/api/projekte/") and "/files/" in path:
             parts = path.split("/")
             slug = parts[3]
+            if not self._validate_slug(slug): return
             # /api/projekte/<slug>/files/<agent> oder /api/projekte/<slug>/files/<agent>/<datei>
             if len(parts) == 6:
                 agent = parts[5]
@@ -293,6 +317,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         elif path.startswith("/api/projekte/") and "/agents/" in path and path.endswith("/run"):
             parts = path.split("/")
             slug = parts[3]
+            if not self._validate_slug(slug): return
             agent = parts[5]
             self._handle_run_agent(slug, agent)
         else:
@@ -305,6 +330,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         if path.startswith("/api/projekte/") and "/files/" in path:
             parts = path.split("/")
             slug = parts[3]
+            if not self._validate_slug(slug): return
             if len(parts) == 6:
                 # DELETE /api/projekte/<slug>/files/<agent> → alle Dateien eines Agenten
                 agent = parts[5]
@@ -347,7 +373,11 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         self._send_json(projekte)
 
     def _handle_create_projekt(self):
-        body = self._read_body()
+        try:
+            body = self._read_body()
+        except json.JSONDecodeError:
+            self._send_json({"error": "Ungültiges JSON"}, 400)
+            return
         if not body:
             self._send_json({"error": "Kein Body"}, 400)
             return
@@ -401,7 +431,10 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             self._send_json({"error": "Unbekannter Agent"}, 400)
             return
 
-        body = self._read_body() or {}
+        try:
+            body = self._read_body() or {}
+        except json.JSONDecodeError:
+            body = {}
         feedback = body.get("feedback")
 
         result = start_agent(slug, agent, feedback)
@@ -429,7 +462,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                     proc_info = running_processes.get(key)
 
                 if not proc_info:
-                    self.wfile.write(b"event: error\ndata: Agent nicht gestartet\n\n")
+                    self.wfile.write(b"event: not_started\ndata: Agent nicht gestartet\n\n")
                     self.wfile.flush()
                     break
 
@@ -580,10 +613,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         if length == 0:
             return None
         raw = self.rfile.read(length)
-        try:
-            return json.loads(raw)
-        except json.JSONDecodeError:
-            return None
+        return json.loads(raw)
 
     def _send_json(self, data, status=200):
         body = json.dumps(data, ensure_ascii=False).encode("utf-8")

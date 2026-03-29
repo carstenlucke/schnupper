@@ -1,6 +1,6 @@
 # Ship It!
 
-Live-Demo für eine Schnuppervorlesung (90 Min, 12. Klasse FOS). Schüler wählen ein Produkt, 6 KI-Agenten erledigen den kompletten Produktlaunch – von der Zielgruppenanalyse bis zum funktionalen App-Prototyp.
+Live-Demo für eine Schnuppervorlesung (90 Min, 12. Klasse FOS). Schüler wählen ein Produkt, 5 KI-Agenten erledigen den kompletten Produktlaunch – von der Zielgruppenanalyse bis zur fertigen Landingpage.
 
 ## Quickstart
 
@@ -14,7 +14,7 @@ Live-Demo für eine Schnuppervorlesung (90 Min, 12. Klasse FOS). Schüler wähle
 
 - Python 3 (keine externen Dependencies)
 - [OpenCode CLI](https://opencode.ai) installiert und konfiguriert
-- Anthropic API-Key (in OpenCode konfiguriert)
+- GitHub-Copilot-Zugriff (in OpenCode als Provider konfiguriert)
 
 ## Ablauf
 
@@ -26,13 +26,13 @@ Live-Demo für eine Schnuppervorlesung (90 Min, 12. Klasse FOS). Schüler wähle
 5. Review
 6. [Start Social Media]         → drei Posts entstehen
 7. Review
-8. [Start Website + App-Prototyp]  → parallel
-9. Website + App im Browser öffnen → Wow-Effekt
+8. [Start Website]              → Landingpage entsteht
+9. Website im Browser öffnen    → Wow-Effekt
 ```
 
 Mehrere Produkte können parallel existieren – im Header zwischen Projekten umschalten.
 
-## Die 6 Agenten
+## Die 5 Agenten
 
 | # | Agent | Input | Output |
 |---|-------|-------|--------|
@@ -41,7 +41,6 @@ Mehrere Produkte können parallel existieren – im Header zwischen Projekten um
 | 3 | **Social-Media-Agent** | Produkt + Zielgruppe + Marketing | Posts für Instagram, LinkedIn, TikTok |
 | 4 | **Kalkulations-Agent** | Produktbeschreibung | Kostenaufstellung, Preisstrategien, Break-Even |
 | 5 | **Website-Agent** | Alle bisherigen Outputs | Responsive One-Page-Landingpage (HTML) |
-| 6 | **App-Prototyp-Agent** | Alle bisherigen Outputs | Interaktive Web-App (HTML/CSS/JS) |
 
 ### Abhängigkeiten
 
@@ -50,7 +49,7 @@ Zielgruppe ──→ Marketing ──→ Social Media
                   │
 Kalkulation ─────┤
                   ↓
-              Website / App-Prototyp
+               Website
 ```
 
 Zielgruppe und Kalkulation sind sofort startbar, alle anderen warten auf ihre Vorgänger.
@@ -77,7 +76,7 @@ projekte/<slug>/
 ```
 ship-it/
 ├── opencode.json              # OpenCode-Konfiguration
-├── .opencode/agents/          # 6 Agent-Systemprompts
+├── .opencode/agents/          # 5 Agent-Systemprompts
 ├── server.py                  # Python-Backend (stdlib only)
 ├── dashboard/
 │   ├── index.html             # Dashboard SPA
@@ -96,6 +95,10 @@ ship-it/
 - **Ergebnis-Tab** rendert Markdown-Artefakte
 - **Vorschau-Tab** zeigt HTML-Artefakte (Website, App) im iframe
 - **Feedback-Input** zum Überarbeiten von Agent-Outputs
+
+## Technical Debt
+
+Bekannte, bewusst nicht behobene Probleme sind in [TECHNICAL_DEBT.md](TECHNICAL_DEBT.md) dokumentiert.
 
 ## Lizenz
 
