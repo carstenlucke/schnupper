@@ -1,0 +1,3 @@
+# .gitignore file to exclude common files and directories from being tracked by Git
+.DS_Store
+thumbs.db
