@@ -146,44 +146,33 @@
     <!-- Column 3: Content Area -->
     <section class="flex-1 flex flex-col h-full overflow-hidden">
 
-      <!-- Tabs -->
-      <div class="flex items-center border-b border-on-surface/5 bg-surface-low px-4">
-        <button class="tab-btn active px-4 py-3 text-xs font-medium transition-colors" data-tab="terminal">
-          <span class="material-symbols-outlined text-[16px] align-middle mr-1">terminal</span>Terminal
-        </button>
-        <button class="tab-btn px-4 py-3 text-xs font-medium transition-colors" data-tab="result">
-          <span class="material-symbols-outlined text-[16px] align-middle mr-1">description</span>Ergebnis
-        </button>
-        <button class="tab-btn px-4 py-3 text-xs font-medium transition-colors" data-tab="preview">
-          <span class="material-symbols-outlined text-[16px] align-middle mr-1">preview</span>Vorschau
-        </button>
-        <!-- Agent-Name im Tab-Bereich -->
+      <!-- Inhalts-Header -->
+      <div class="flex items-center border-b border-on-surface/5 bg-surface-low px-4 py-2">
+        <span id="active-agent-label" class="text-xs text-on-surface/40"></span>
         <div class="ml-auto flex items-center gap-2">
-          <span id="active-agent-label" class="text-xs text-on-surface/40"></span>
+          <span id="preview-filename" class="text-xs text-on-surface/40"></span>
+          <button id="preview-open-btn" class="hidden items-center gap-1 px-3 py-1 text-xs bg-on-surface/10 rounded hover:bg-on-surface/20 transition-colors">
+            <span class="material-symbols-outlined text-[14px]">open_in_new</span>Im Browser öffnen
+          </button>
+          <button id="terminal-toggle" class="flex items-center gap-1 px-3 py-2 text-xs font-medium rounded transition-colors text-on-surface/40 hover:text-on-surface/70 hover:bg-on-surface/5" title="Terminal ein-/ausblenden" aria-label="Terminal ein-/ausblenden">
+            <span class="material-symbols-outlined text-[16px]">terminal</span>
+          </button>
         </div>
       </div>
 
-      <!-- Tab: Terminal -->
-      <div id="tab-terminal" class="tab-content flex-1 overflow-hidden">
-        <div id="terminal-container" class="h-full w-full"></div>
-      </div>
-
-      <!-- Tab: Ergebnis (Markdown) -->
-      <div id="tab-result" class="tab-content hidden flex-1 overflow-y-auto scrollbar-hide bg-surface">
-        <div id="result-content" class="max-w-4xl mx-auto px-10 py-8"></div>
-      </div>
-
-      <!-- Tab: Vorschau (HTML iframe) -->
-      <div id="tab-preview" class="tab-content hidden flex-1 overflow-hidden">
-        <div id="preview-container" class="h-full w-full flex flex-col">
-          <div id="preview-toolbar" class="flex items-center gap-2 px-4 py-2 bg-surface-low border-b border-on-surface/5">
-            <span id="preview-filename" class="text-xs text-on-surface/40"></span>
-            <button id="preview-open-btn" class="ml-auto flex items-center gap-1 px-3 py-1 text-xs bg-on-surface/10 rounded hover:bg-on-surface/20 transition-colors">
-              <span class="material-symbols-outlined text-[14px]">open_in_new</span>Im Browser öffnen
-            </button>
-          </div>
+      <!-- Ergebnis: Markdown- oder HTML-Vorschau -->
+      <div id="content-result" class="flex-1 overflow-hidden flex flex-col">
+        <div id="result-markdown" class="flex-1 overflow-y-auto scrollbar-hide bg-surface">
+          <div id="result-content" class="max-w-4xl mx-auto px-10 py-8"></div>
+        </div>
+        <div id="result-preview" class="hidden flex-1 flex flex-col overflow-hidden">
           <iframe id="preview-iframe" class="flex-1 w-full bg-white" sandbox="allow-scripts"></iframe>
         </div>
+      </div>
+
+      <!-- Terminal (standardmäßig ausgeblendet) -->
+      <div id="content-terminal" class="hidden flex-1 overflow-hidden bg-[#181f23]">
+        <div id="terminal-container" class="h-full w-full"></div>
       </div>
 
       <!-- Feedback-Bereich -->

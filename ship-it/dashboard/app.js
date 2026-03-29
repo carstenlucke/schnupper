@@ -101,9 +101,11 @@ const $previewOpenBtn = document.getElementById("preview-open-btn");
 const $activeAgentLabel = document.getElementById("active-agent-label");
 const $feedbackInput = document.getElementById("feedback-input");
 const $feedbackBtn = document.getElementById("feedback-btn");
-const $tabTerminal = document.getElementById("tab-terminal");
-const $tabResult = document.getElementById("tab-result");
-const $tabPreview = document.getElementById("tab-preview");
+const $contentResult = document.getElementById("content-result");
+const $contentTerminal = document.getElementById("content-terminal");
+const $resultMarkdown = document.getElementById("result-markdown");
+const $resultPreview = document.getElementById("result-preview");
+const $terminalToggle = document.getElementById("terminal-toggle");
 const $artifactList = document.getElementById("artifact-list");
 const $artifactAgentName = document.getElementById("artifact-agent-name");
 
@@ -437,7 +439,7 @@ async function handleStartAgent(agentName, feedback = null) {
 
   // Erst sichtbar machen, dann schreiben
   selectAgent(agentName);
-  switchTab("terminal");
+  showTerminalView();
 
   const { term } = getOrCreateTerminal(agentName);
   if (feedback) {
@@ -483,6 +485,10 @@ async function loadArtifactList(agentName) {
     $resultContent.innerHTML = "";
     $previewIframe.srcdoc = "";
     $previewFilename.textContent = "";
+    $previewOpenBtn.classList.add("hidden");
+    $previewOpenBtn.classList.remove("flex");
+    $resultMarkdown.classList.remove("hidden");
+    $resultPreview.classList.add("hidden");
     return;
   }
 
@@ -563,44 +569,60 @@ async function selectFile(agentName, fileName) {
   const content = await fetchFileContent(currentSlug, agentName, fileName);
 
   if (fileName.endsWith(".html")) {
-    // HTML → Ergebnis-Tab zeigt Hinweis, Vorschau-Tab zeigt iframe
-    $resultContent.innerHTML = `
-      <div class="flex flex-col items-center justify-center h-full text-center py-16">
-        <span class="material-symbols-outlined text-accent text-4xl mb-4">preview</span>
-        <p class="text-on-surface/60 text-sm">HTML-Datei – wechsle zum <strong>Vorschau</strong>-Tab.</p>
-      </div>
-    `;
+    // HTML → iframe-Vorschau
+    $resultMarkdown.classList.add("hidden");
+    $resultPreview.classList.remove("hidden");
     $previewIframe.srcdoc = content;
     $previewFilename.textContent = fileName;
+    $previewOpenBtn.classList.remove("hidden");
+    $previewOpenBtn.classList.add("flex");
     $previewOpenBtn.onclick = () => {
       const blob = new Blob([content], { type: "text/html" });
       window.open(URL.createObjectURL(blob), "_blank");
     };
   } else {
-    // Markdown → rendern im Ergebnis-Tab (HTML in Markdown deaktiviert)
+    // Markdown → rendern
+    $resultMarkdown.classList.remove("hidden");
+    $resultPreview.classList.add("hidden");
     $resultContent.innerHTML = marked.parse(content, { breaks: true, gfm: true });
-    $previewIframe.srcdoc = "";
     $previewFilename.textContent = "";
+    $previewOpenBtn.classList.add("hidden");
+    $previewOpenBtn.classList.remove("flex");
+  }
+
+  // Zur Ergebnis-Ansicht wechseln – aber nicht, wenn Terminal gerade aktiv ist
+  // (z.B. weil ein Agent läuft und loadArtifactList auto-selektiert)
+  if (!terminalVisible) {
+    showResultView();
   }
 }
 
 // ---------------------------------------------------------------------------
-// Tabs
+// Content-Ansicht umschalten (Ergebnis ↔ Terminal)
 // ---------------------------------------------------------------------------
-function switchTab(tabName) {
-  document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.tab === tabName);
-  });
-  $tabTerminal.classList.toggle("hidden", tabName !== "terminal");
-  $tabResult.classList.toggle("hidden", tabName !== "result");
-  $tabPreview.classList.toggle("hidden", tabName !== "preview");
+let terminalVisible = false;
 
-  // Terminal resize nach Tab-Wechsel
-  if (tabName === "terminal" && currentAgent && terminals[currentAgent]) {
-    requestAnimationFrame(() => {
-      terminals[currentAgent].fitAddon.fit();
-    });
+function showTerminalView() {
+  terminalVisible = true;
+  $contentTerminal.classList.remove("hidden");
+  $contentResult.classList.add("hidden");
+  $terminalToggle.classList.add("text-accent");
+  $terminalToggle.classList.remove("text-on-surface/40");
+  if (currentAgent && terminals[currentAgent]) {
+    requestAnimationFrame(() => terminals[currentAgent].fitAddon.fit());
   }
+}
+
+function showResultView() {
+  terminalVisible = false;
+  $contentResult.classList.remove("hidden");
+  $contentTerminal.classList.add("hidden");
+  $terminalToggle.classList.remove("text-accent");
+  $terminalToggle.classList.add("text-on-surface/40");
+}
+
+function toggleTerminalView() {
+  terminalVisible ? showResultView() : showTerminalView();
 }
 
 // ---------------------------------------------------------------------------
@@ -694,10 +716,8 @@ function setupEventListeners() {
     await loadProjekt(result.slug);
   });
 
-  // Tabs
-  document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
-  });
+  // Terminal-Toggle
+  $terminalToggle.addEventListener("click", toggleTerminalView);
 
   // Theme Toggle
   document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
