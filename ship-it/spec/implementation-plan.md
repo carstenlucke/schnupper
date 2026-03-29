@@ -235,21 +235,33 @@ def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
     p = f"projekte/{slug}"
     paths = AGENT_PATHS[agent]
 
-    eingaben = "\n".join(f"- {p}/{f}" for f in paths["inputs"])
-    ausgaben = "\n".join(f"- {p}/{f}" for f in paths["outputs"])
+    # Bei Refinement: eigene Outputs werden zusätzlich als Inputs aufgelistet,
+    # damit der Agent seine bisherige Arbeit lesen und überarbeiten kann
+    eingaben = [f"{p}/{f}" for f in paths["inputs"]]
+    if feedback:
+        for f in paths["outputs"]:
+            full = f"{p}/{f}"
+            if full not in eingaben and os.path.exists(full):
+                eingaben.append(f"{full}  ← deine bisherige Ausgabe")
+
+    eingaben_str = "\n".join(f"- {e}" for e in eingaben)
+    ausgaben_str = "\n".join(f"- {p}/{f}" for f in paths["outputs"])
 
     if feedback:
-        aufgabe = f"Überarbeite deine bisherige Ausgabe.\nFeedback: {feedback}"
+        aufgabe = (
+            "Überarbeite deine bisherige Ausgabe.\n"
+            f"Feedback vom Nutzer: \"{feedback}\""
+        )
     else:
         aufgabe = "Führe deine Aufgabe aus."
 
     return f"""Projektordner: {p}
 
 EINGABE (lies diese Dateien):
-{eingaben}
+{eingaben_str}
 
 AUSGABE (schreibe in diese Dateien, erstelle Verzeichnisse falls nötig):
-{ausgaben}
+{ausgaben_str}
 
 {aufgabe}"""
 
