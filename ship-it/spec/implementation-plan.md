@@ -17,7 +17,7 @@ Python-Server (server.py, nur stdlib)
     ↕ subprocess + pty
 OpenCode CLI (opencode run --agent <name> <prompt>)
     ↕ Datei-I/O
-produktlaunch/ (gemeinsames Output-Verzeichnis)
+projekte/<slug>/ (isoliertes Verzeichnis pro Produktidee)
 ```
 
 **Null externe Python-Dependencies.** Server nutzt `http.server.ThreadingHTTPServer` + `subprocess` + `pty` (alles stdlib). Frontend-Libraries (xterm.js, marked.js) via CDN.
@@ -42,19 +42,40 @@ ship-it/
 │   ├── index.html                   # Dashboard SPA
 │   ├── style.css                    # THM-Corporate-Design Styles
 │   └── app.js                       # Frontend-Logik
-├── produktlaunch/                   # Runtime: Agent-Outputs
-│   ├── input/
-│   │   └── produkt.md
-│   ├── zielgruppe/
-│   ├── marketing/
-│   ├── social-media/
-│   ├── kalkulation/
-│   ├── website/
-│   └── app-prototyp/
+├── projekte/                        # Runtime: ein Unterordner pro Produktidee
+│   ├── nachhaltige-sneaker/         # Beispiel: Projekt 1
+│   │   ├── produkt.md               # Produktbeschreibung (Input)
+│   │   ├── zielgruppe/
+│   │   │   └── analyse.md
+│   │   ├── marketing/
+│   │   │   └── konzept.md
+│   │   ├── social-media/
+│   │   │   ├── instagram.md
+│   │   │   ├── linkedin.md
+│   │   │   └── tiktok.md
+│   │   ├── kalkulation/
+│   │   │   └── preiskalkulation.md
+│   │   ├── website/
+│   │   │   └── index.html
+│   │   └── app-prototyp/
+│   │       ├── spec.md
+│   │       └── index.html
+│   └── lern-energy-drink/           # Beispiel: Projekt 2
+│       ├── produkt.md
+│       └── ...
 ├── start.sh                         # Einziges Start-Skript
 ├── spec/                            # Bestehende Spec + Mockup
 └── .gitignore
 ```
+
+### Projekt-/Session-Konzept
+
+- Jede Produktidee erhält ein eigenes Verzeichnis unter `projekte/<slug>/`
+- Der Slug wird beim Anlegen aus dem Produktnamen generiert (z.B. "Nachhaltige Sneaker" → `nachhaltige-sneaker`)
+- `produkt.md` liegt direkt im Projektordner (kein `input/`-Unterordner nötig)
+- Alle Agent-Outputs landen in ihren jeweiligen Unterordnern innerhalb des Projekts
+- Projekte sind vollständig voneinander isoliert
+- Im Dashboard kann man zwischen Projekten umschalten oder ein neues anlegen
 
 ---
 
@@ -65,7 +86,7 @@ ship-it/
 **Dateien:**
 - `opencode.json` – Provider + Modellkonfiguration
 - `.opencode/agents/` – Verzeichnis für Agent-Definitionen
-- `.gitignore` – produktlaunch/, node_modules, .opencode/node_modules, etc.
+- `.gitignore` – projekte/, node_modules, .opencode/node_modules, etc.
 
 ### Schritt 2: Agent-Systemprompts (6 Dateien)
 
@@ -82,22 +103,24 @@ tools:
 ---
 ```
 
+**Pfad-Konvention:** Agenten arbeiten mit einem Projektpfad, der beim Aufruf als Teil des Prompts übergeben wird. In den Systemprompts wird `{projekt}` als Platzhalter verwendet, den das Backend beim `opencode run`-Aufruf durch den tatsächlichen Pfad ersetzt (z.B. `projekte/nachhaltige-sneaker`).
+
 #### Agent 1: Zielgruppen-Agent (`zielgruppe.md`)
-- **Liest:** `produktlaunch/input/produkt.md`
-- **Schreibt:** `produktlaunch/zielgruppe/analyse.md`
+- **Liest:** `{projekt}/produkt.md`
+- **Schreibt:** `{projekt}/zielgruppe/analyse.md`
 - **Aufgabe:** Zielgruppenanalyse mit Personas (Name, Alter, Beruf, Interessen, Kaufmotivation, Schmerzpunkte), Marktsegmenten, Kaufkrafteinschätzung
 - **Stil:** Strukturiertes Markdown mit Überschriften, Listen, ggf. Tabellen
 - **Sprache:** Deutsch
 
 #### Agent 2: Marketing-Agent (`marketing.md`)
-- **Liest:** `produktlaunch/input/produkt.md` + `produktlaunch/zielgruppe/analyse.md`
-- **Schreibt:** `produktlaunch/marketing/konzept.md`
+- **Liest:** `{projekt}/produkt.md` + `{projekt}/zielgruppe/analyse.md`
+- **Schreibt:** `{projekt}/marketing/konzept.md`
 - **Aufgabe:** Produktname (3 Vorschläge + Empfehlung), Slogan, Kernbotschaft, Positionierung, Elevator Pitch, Werbetext (ca. 150 Wörter)
 - **Bezug:** Muss auf die Personas und Segmente der Zielgruppenanalyse eingehen
 
 #### Agent 3: Social-Media-Agent (`social-media.md`)
-- **Liest:** `produktlaunch/input/produkt.md` + `produktlaunch/zielgruppe/analyse.md` + `produktlaunch/marketing/konzept.md`
-- **Schreibt:** `produktlaunch/social-media/instagram.md`, `linkedin.md`, `tiktok.md`
+- **Liest:** `{projekt}/produkt.md` + `{projekt}/zielgruppe/analyse.md` + `{projekt}/marketing/konzept.md`
+- **Schreibt:** `{projekt}/social-media/instagram.md`, `linkedin.md`, `tiktok.md`
 - **Aufgabe:** Je ein plattformspezifischer Post:
   - Instagram: visuell beschrieben, Hashtags, Story-Idee, Bildvorschlag
   - LinkedIn: professionell, B2B-Perspektive, Thought-Leadership
@@ -105,20 +128,20 @@ tools:
 - **Bezug:** Nutzt Produktname/Slogan aus Marketing, spricht Personas gezielt an
 
 #### Agent 4: Kalkulations-Agent (`kalkulation.md`)
-- **Liest:** `produktlaunch/input/produkt.md`
-- **Schreibt:** `produktlaunch/kalkulation/preiskalkulation.md`
+- **Liest:** `{projekt}/produkt.md`
+- **Schreibt:** `{projekt}/kalkulation/preiskalkulation.md`
 - **Aufgabe:** Geschätzte Produktionskosten (Material, Fertigung, Verpackung), Vertriebskosten, Marge, Break-Even-Analyse, 3 Preisstrategien (Penetration, Skimming, Wettbewerb) mit Empfehlung
 - **Format:** Markdown-Tabellen für Kostenaufstellung, Fließtext für Strategieempfehlung
 
 #### Agent 5: Website-Agent (`website.md`)
-- **Liest:** `produktlaunch/input/produkt.md` + `produktlaunch/zielgruppe/analyse.md` + `produktlaunch/marketing/konzept.md` + `produktlaunch/kalkulation/preiskalkulation.md`
-- **Schreibt:** `produktlaunch/website/index.html` (+ ggf. `style.css`)
+- **Liest:** `{projekt}/produkt.md` + `{projekt}/zielgruppe/analyse.md` + `{projekt}/marketing/konzept.md` + `{projekt}/kalkulation/preiskalkulation.md`
+- **Schreibt:** `{projekt}/website/index.html` (+ ggf. `style.css`)
 - **Aufgabe:** One-Page-Landingpage mit Hero, Features, Pricing, Testimonial-Platzhalter, CTA
 - **Constraint:** Selbstständig lauffähiges HTML, modernes Design, responsive, Platzhalter-Bilder via CSS-Gradienten oder Emoji
 
 #### Agent 6: App-Prototyp-Agent (`app-prototyp.md`)
-- **Liest:** `produktlaunch/input/produkt.md` + alle bisherigen Outputs
-- **Schreibt:** `produktlaunch/app-prototyp/spec.md` + `produktlaunch/app-prototyp/index.html` (+ weitere Dateien)
+- **Liest:** `{projekt}/produkt.md` + alle bisherigen Outputs im Projektordner
+- **Schreibt:** `{projekt}/app-prototyp/spec.md` + `{projekt}/app-prototyp/index.html` (+ weitere Dateien)
 - **Aufgabe:** Erst eine kurze Spec (was die App kann), dann Implementierung als interaktiver Web-Prototyp (z.B. Konfigurator, Warenkorb, Rechner)
 - **Constraint:** Rein Frontend (HTML/CSS/JS), alle Daten in-memory/LocalStorage, visuell ansprechend
 
@@ -130,14 +153,15 @@ Kern-Komponenten:
 
 1. **Statischer Dateiserver** – liefert `dashboard/*` aus
 2. **API-Endpunkte:**
-   - `GET  /api/agents` – Liste aller Agenten mit Status + Dateianzahl
-   - `POST /api/product` – Produktidee speichern → `produktlaunch/input/produkt.md`
-   - `POST /api/agents/<name>/run` – Agent starten (optionaler Body: Refinement-Prompt)
-   - `GET  /api/agents/<name>/stream` – SSE-Stream des laufenden Agent-Prozesses
-   - `GET  /api/files/<agent>` – Liste der Artefakte eines Agenten
-   - `GET  /api/files/<agent>/<datei>` – Dateiinhalt
+   - `GET  /api/projekte` – Liste aller Projekte (Slug + Name)
+   - `POST /api/projekte` – Neues Projekt anlegen (Body: `{name, beschreibung}`) → erzeugt Verzeichnis + `produkt.md`
+   - `GET  /api/projekte/<slug>/agents` – Liste aller Agenten mit Status + Dateianzahl für dieses Projekt
+   - `POST /api/projekte/<slug>/agents/<name>/run` – Agent starten (optionaler Body: Refinement-Prompt)
+   - `GET  /api/projekte/<slug>/agents/<name>/stream` – SSE-Stream des laufenden Agent-Prozesses
+   - `GET  /api/projekte/<slug>/files/<agent>` – Liste der Artefakte eines Agenten
+   - `GET  /api/projekte/<slug>/files/<agent>/<datei>` – Dateiinhalt
 3. **Prozess-Management:**
-   - Pro Agent max. 1 laufender Prozess (dict: `agent_name → subprocess`)
+   - Pro Projekt+Agent max. 1 laufender Prozess (dict: `(slug, agent_name) → subprocess`)
    - Status-Tracking: `idle` | `running` | `done` | `error`
    - PTY für Subprocess → ANSI-Codes bleiben erhalten → xterm.js rendert Farben
 4. **SSE-Streaming:**
@@ -147,11 +171,16 @@ Kern-Komponenten:
 
 **Agent-Aufruf intern:**
 ```python
+# Der Projektpfad wird in den Prompt eingebettet
+projekt_pfad = f"projekte/{slug}"
+
 # Initialer Lauf
-opencode run --agent zielgruppe "Analysiere die Zielgruppe für das Produkt."
+opencode run --agent zielgruppe \
+  f"Projektordner: {projekt_pfad}. Analysiere die Zielgruppe für das Produkt."
 
 # Nacharbeiten
-opencode run --agent zielgruppe "Überarbeite deine Analyse. Feedback: <user input>"
+opencode run --agent zielgruppe \
+  f"Projektordner: {projekt_pfad}. Überarbeite deine Analyse. Feedback: <user input>"
 ```
 
 ### Schritt 4: Dashboard-Frontend (`dashboard/`)
@@ -160,13 +189,16 @@ Basiert auf dem bestehenden Mockup in `spec/ui-proto/dashboard.html` (THM-Design
 
 **Erweiterungen gegenüber dem Mockup:**
 
-1. **Produkteingabe-Screen** (Startansicht)
-   - Großes Eingabefeld für die Produktidee
-   - "Los geht's!"-Button → speichert Produkt via API
+1. **Projekt-Auswahl / Neues Projekt** (Startansicht oder Header)
+   - Beim ersten Öffnen: Eingabefeld für Produktname + Kurzbeschreibung, "Neues Projekt starten"-Button
+   - Bei bestehenden Projekten: Dropdown oder Liste im Header zum Umschalten
+   - Aktives Projekt wird im Header angezeigt (z.B. "Ship It! Dashboard — Nachhaltige Sneaker")
+   - Projektwechsel lädt alle Agent-Status und Artefakte des gewählten Projekts
 
 2. **Agent-Steuerung** (linke Spalte)
    - Status-Dots: grau=idle, gelb-pulsierend=running, grün=done, rot=error
    - "Start"-Button pro Agent (nur klickbar wenn Abhängigkeiten erfüllt)
+   - Status ist projektspezifisch – jedes Projekt hat seinen eigenen Agent-Fortschritt
    - Abhängigkeitslogik im Frontend:
      - Zielgruppe + Kalkulation: sofort startbar
      - Marketing: nach Zielgruppe
@@ -201,8 +233,8 @@ Basiert auf dem bestehenden Mockup in `spec/ui-proto/dashboard.html` (THM-Design
 #!/bin/bash
 set -euo pipefail
 
-# Output-Verzeichnisse anlegen
-mkdir -p produktlaunch/{input,zielgruppe,marketing,social-media,kalkulation,website,app-prototyp}
+# Projekte-Verzeichnis anlegen (Unterordner werden pro Projekt dynamisch erstellt)
+mkdir -p projekte
 
 # Server starten
 echo "Starting Ship It! Dashboard on http://localhost:8000"
@@ -223,16 +255,21 @@ wait $SERVER_PID
 ## Ablauf in der Demo
 
 ```
-1. ./start.sh                    → Server + Browser
-2. Produktidee eingeben           → "Nachhaltige Sneaker aus Apfelleder"
-3. [Start Zielgruppe]             → Terminal zeigt Live-Arbeit
+1. ./start.sh                       → Server + Browser
+2. "Neues Projekt" anlegen           → "Nachhaltige Sneaker aus Apfelleder"
+3. [Start Zielgruppe]                → Terminal zeigt Live-Arbeit
 4. Review → OK oder Nacharbeiten
-5. [Start Marketing + Kalkulation] → parallel, zwei Terminal-Tabs
+5. [Start Marketing + Kalkulation]   → parallel, zwei Terminal-Tabs
 6. Review
-7. [Start Social Media]           → drei Posts entstehen
+7. [Start Social Media]              → drei Posts entstehen
 8. Review
-9. [Start Website + App-Prototyp] → parallel
-10. Website + App im Browser öffnen → Wow-Effekt
+9. [Start Website + App-Prototyp]    → parallel
+10. Website + App im Browser öffnen  → Wow-Effekt
+
+--- Optional: Zweite Runde ---
+11. "Neues Projekt" anlegen          → "Lern-Energy-Drink"
+12. Gleicher Ablauf, altes Projekt bleibt erhalten
+13. Zwischen Projekten umschalten zum Vergleichen
 ```
 
 ---
@@ -252,8 +289,10 @@ wait $SERVER_PID
 ## Verifikation
 
 1. `./start.sh` ausführen → Browser öffnet Dashboard
-2. Produktidee eingeben → erscheint in `produktlaunch/input/produkt.md`
-3. Zielgruppen-Agent starten → Terminal-Stream sichtbar, Output in `produktlaunch/zielgruppe/analyse.md`
+2. Neues Projekt anlegen → Verzeichnis `projekte/<slug>/` wird erstellt, `produkt.md` geschrieben
+3. Zielgruppen-Agent starten → Terminal-Stream sichtbar, Output in `projekte/<slug>/zielgruppe/analyse.md`
 4. Ergebnis-Tab zeigt gerendertes Markdown
 5. Nacharbeiten testen → Agent überarbeitet Output
 6. Alle 6 Agenten durchspielen → Website + App im iframe/Browser öffnen
+7. Zweites Projekt anlegen → eigenes Verzeichnis, eigener Agent-Fortschritt
+8. Zwischen Projekten umschalten → Status und Artefakte wechseln korrekt
