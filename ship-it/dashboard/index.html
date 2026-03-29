@@ -67,7 +67,9 @@
 
   <!-- ===================== HEADER ===================== -->
   <header class="fixed top-0 w-full h-12 z-50 bg-header shadow-sm flex items-center justify-between px-4">
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2">
+      <img src="icon1.png" alt="Ship It!" class="h-7 hidden dark:block"/>
+      <img src="icon2.png" alt="Ship It!" class="h-7 block dark:hidden"/>
       <span class="text-on-header font-headline font-bold text-lg tracking-tight">Ship It! Dashboard</span>
     </div>
     <div class="flex items-center gap-4">
@@ -188,7 +190,7 @@
       <div id="feedback-bar" class="border-t border-on-surface/5 bg-surface-low px-4 py-3 flex gap-2">
         <input type="text" id="feedback-input" placeholder="Feedback eingeben – Agent überarbeitet seine Ausgabe..."
           class="flex-1 px-3 py-2 bg-on-surface/5 border border-on-surface/10 rounded text-xs text-on-surface placeholder-on-surface/30 focus:border-accent focus:ring-1 focus:ring-accent outline-none"/>
-        <button id="feedback-btn" class="flex items-center gap-1 px-4 py-2 bg-thm-yellow text-black text-xs font-bold rounded hover:brightness-110 transition-all">
+        <button id="feedback-btn" class="flex items-center gap-1 px-4 py-2 bg-accent text-on-accent text-xs font-bold rounded hover:brightness-110 transition-all">
           <span class="material-symbols-outlined text-[16px]">refresh</span>Überarbeiten
         </button>
       </div>
