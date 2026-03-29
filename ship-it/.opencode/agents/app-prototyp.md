@@ -1,6 +1,7 @@
 ---
 description: App-Prototyp – erstellt eine interaktive Web-App als funktionalen Prototyp
-model: github-copilot/gpt-4o
+model: openai/gpt-5.3-codex
+thinking: high
 tools:
   bash: true
   read: true

@@ -1,7 +1,7 @@
 ---
 description: Landingpage – erstellt eine responsive One-Page-Website für das Produkt
-model: openai/codex-5.3
-thinking: xhigh
+model: openai/gpt-5.3-codex
+thinking: high
 tools:
   bash: true
   read: true
