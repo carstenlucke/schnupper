@@ -135,6 +135,18 @@ function showDashboard() {
 // Projekt laden
 // ---------------------------------------------------------------------------
 async function loadProjekt(slug) {
+  // Alte Terminals + Streams aufräumen bei Projektwechsel
+  for (const [name, es] of Object.entries(eventSources)) {
+    es.close();
+  }
+  eventSources = {};
+  for (const entry of Object.values(terminals)) {
+    entry.term.dispose();
+    entry.div.remove();
+  }
+  terminals = {};
+  currentAgent = null;
+
   currentSlug = slug;
   location.hash = slug;
 
@@ -290,20 +302,28 @@ function getOrCreateTerminal(agentName) {
 
   const fitAddon = new FitAddon.FitAddon();
   term.loadAddon(fitAddon);
-  terminals[agentName] = { term, fitAddon };
+
+  // Persistentes Div erstellen – xterm.js kann open() nur einmal aufrufen
+  const div = document.createElement("div");
+  div.style.height = "100%";
+  div.style.width = "100%";
+  div.style.display = "none";
+  div.dataset.termAgent = agentName;
+  $terminalContainer.appendChild(div);
+  term.open(div);
+
+  terminals[agentName] = { term, fitAddon, div };
   return terminals[agentName];
 }
 
 function showTerminal(agentName) {
-  // Alle Terminals verstecken
-  $terminalContainer.innerHTML = "";
+  // Alle Terminal-Divs verstecken
+  for (const entry of Object.values(terminals)) {
+    entry.div.style.display = "none";
+  }
 
-  const { term, fitAddon } = getOrCreateTerminal(agentName);
-  const div = document.createElement("div");
-  div.style.height = "100%";
-  div.style.width = "100%";
-  $terminalContainer.appendChild(div);
-  term.open(div);
+  const { term, fitAddon, div } = getOrCreateTerminal(agentName);
+  div.style.display = "block";
 
   requestAnimationFrame(() => {
     fitAddon.fit();
@@ -353,7 +373,10 @@ async function handleStartAgent(agentName, feedback = null) {
   const agent = agents.find(a => a.name === agentName);
   if (!agent) return;
 
-  // Terminal vorbereiten
+  // Erst sichtbar machen, dann schreiben
+  selectAgent(agentName);
+  switchTab("terminal");
+
   const { term } = getOrCreateTerminal(agentName);
   if (feedback) {
     term.write(`\r\n\x1b[33m--- Überarbeitung mit Feedback ---\x1b[0m\r\n`);
@@ -361,9 +384,6 @@ async function handleStartAgent(agentName, feedback = null) {
     term.clear();
     term.write(`\x1b[36m--- ${agent.label} wird gestartet ---\x1b[0m\r\n\r\n`);
   }
-
-  selectAgent(agentName);
-  switchTab("terminal");
 
   const result = await runAgent(currentSlug, agentName, feedback);
   if (result.error) {
