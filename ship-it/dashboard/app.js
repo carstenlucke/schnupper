@@ -120,6 +120,30 @@ marked.use({
 });
 
 // ---------------------------------------------------------------------------
+// Farbthema (Hell/Dunkel)
+// ---------------------------------------------------------------------------
+function initTheme() {
+  const saved = localStorage.getItem("ship-it-theme");
+  if (saved === "light") {
+    document.documentElement.classList.remove("dark");
+  }
+  updateThemeIcon();
+}
+
+function toggleTheme() {
+  document.documentElement.classList.toggle("dark");
+  const isDark = document.documentElement.classList.contains("dark");
+  localStorage.setItem("ship-it-theme", isDark ? "dark" : "light");
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const isDark = document.documentElement.classList.contains("dark");
+  const icon = document.getElementById("theme-toggle-icon");
+  if (icon) icon.textContent = isDark ? "light_mode" : "dark_mode";
+}
+
+// ---------------------------------------------------------------------------
 // Initialisierung
 // ---------------------------------------------------------------------------
 async function init() {
@@ -206,11 +230,11 @@ function renderProjektDropdown(projekte) {
   $projektList.innerHTML = "";
   for (const p of projekte) {
     const div = document.createElement("div");
-    div.className = `flex items-center gap-2 px-4 py-2.5 cursor-pointer hover:bg-white/5 transition-colors ${p.slug === currentSlug ? 'bg-white/10' : ''}`;
+    div.className = `flex items-center gap-2 px-4 py-2.5 cursor-pointer hover:bg-on-surface/5 transition-colors ${p.slug === currentSlug ? 'bg-on-surface/10' : ''}`;
     const statusDot = document.createElement("div");
     statusDot.className = `w-2 h-2 rounded-full projekt-dot-${p.status}`;
     const nameSpan = document.createElement("span");
-    nameSpan.className = "text-xs text-white/80";
+    nameSpan.className = "text-xs text-on-surface/80";
     nameSpan.textContent = (p.slug === currentSlug ? "✓ " : "") + p.name;
     div.appendChild(statusDot);
     div.appendChild(nameSpan);
@@ -235,7 +259,7 @@ function renderAgentList() {
 
     let statusText = "";
     if (agent.status === "running") {
-      statusText = `<span class="text-thm-yellow">${agent.file_count} Dateien working...</span>`;
+      statusText = `<span class="text-warning">${agent.file_count} Dateien working...</span>`;
     } else if (agent.status === "done") {
       statusText = `${agent.file_count} ${agent.file_count === 1 ? 'Datei' : 'Dateien'}`;
     } else if (agent.status === "error") {
@@ -248,15 +272,15 @@ function renderAgentList() {
       <div class="flex items-center justify-between mb-1">
         <div class="flex items-center gap-2">
           <div class="status-dot ${agent.status}"></div>
-          <span class="text-xs font-medium text-white/80">${agent.label}</span>
+          <span class="text-xs font-medium text-on-surface/80">${agent.label}</span>
         </div>
         ${agent.status === "idle" && canStart ? `
-          <button class="start-btn w-6 h-6 flex items-center justify-center rounded bg-thm-green/20 text-thm-green hover:bg-thm-green/30 transition-colors" title="Agent starten">
+          <button class="start-btn w-6 h-6 flex items-center justify-center rounded bg-accent/20 text-accent hover:bg-accent/30 transition-colors" title="Agent starten">
             <span class="material-symbols-outlined text-[14px]">play_arrow</span>
           </button>
         ` : ""}
       </div>
-      <span class="text-[10px] text-white/40 ml-4 ${agent.status === 'running' ? 'italic' : ''}">${statusText}</span>
+      <span class="text-[10px] text-on-surface/40 ml-4 ${agent.status === 'running' ? 'italic' : ''}">${statusText}</span>
     `;
 
     // Click auf Item → Agent auswählen
@@ -311,17 +335,17 @@ function selectAgent(agentName) {
 }
 
 // ---------------------------------------------------------------------------
-// Terminal
+// Terminal (immer dunkel/Anthrazit, unabhängig vom Farbthema)
 // ---------------------------------------------------------------------------
 function getOrCreateTerminal(agentName) {
   if (terminals[agentName]) return terminals[agentName];
 
   const term = new Terminal({
     theme: {
-      background: "#0a1929",
-      foreground: "#dbe1ff",
+      background: "#181f23",
+      foreground: "#e0e3e5",
       cursor: "#80ba24",
-      cursorAccent: "#0a1929",
+      cursorAccent: "#181f23",
       selectionBackground: "rgba(128, 186, 36, 0.3)",
     },
     fontSize: 12,
@@ -450,10 +474,10 @@ async function loadArtifactList(agentName) {
   if (existingFiles.length === 0) {
     $artifactList.innerHTML = `
       <div class="p-6 text-center mt-8">
-        <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3 opacity-20">
+        <div class="w-12 h-12 rounded-full bg-on-surface/5 flex items-center justify-center mx-auto mb-3 opacity-20">
           <span class="material-symbols-outlined text-[24px]">hourglass_empty</span>
         </div>
-        <p class="text-[10px] text-white/30 font-medium">Noch keine Artefakte vorhanden.</p>
+        <p class="text-[10px] text-on-surface/30 font-medium">Noch keine Artefakte vorhanden.</p>
       </div>
     `;
     $resultContent.innerHTML = "";
@@ -464,7 +488,7 @@ async function loadArtifactList(agentName) {
 
   // "Alle löschen"-Button
   const deleteAllDiv = document.createElement("div");
-  deleteAllDiv.className = "px-2 pb-2 border-b border-white/5 mb-1";
+  deleteAllDiv.className = "px-2 pb-2 border-b border-on-surface/5 mb-1";
   deleteAllDiv.innerHTML = `
     <button class="delete-all-btn w-full flex items-center justify-center gap-1 px-2 py-1.5 text-[10px] text-error/70 hover:text-error hover:bg-error/10 rounded transition-colors">
       <span class="material-symbols-outlined text-[14px]">delete_sweep</span>Alle Artefakte löschen
@@ -480,15 +504,15 @@ async function loadArtifactList(agentName) {
   for (const file of existingFiles) {
     const icon = file.name.endsWith(".html") ? "code" : "description";
     const div = document.createElement("div");
-    div.className = `artifact-item flex items-center gap-3 p-3 rounded-sm cursor-pointer hover:bg-white/5 transition-colors group`;
+    div.className = `artifact-item flex items-center gap-3 p-3 rounded-sm cursor-pointer hover:bg-on-surface/5 transition-colors group`;
     div.dataset.file = file.name;
     div.innerHTML = `
-      <span class="material-symbols-outlined text-white/60 text-[20px]">${icon}</span>
+      <span class="material-symbols-outlined text-on-surface/60 text-[20px]">${icon}</span>
       <div class="flex flex-col overflow-hidden flex-1">
-        <span class="text-sm text-white font-medium truncate">${file.name}</span>
-        <span class="text-[10px] text-white/40">${formatSize(file.size)}</span>
+        <span class="text-sm text-on-surface font-medium truncate">${file.name}</span>
+        <span class="text-[10px] text-on-surface/40">${formatSize(file.size)}</span>
       </div>
-      <button class="delete-btn opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded hover:bg-error/20 text-white/30 hover:text-error transition-all" title="Datei löschen">
+      <button class="delete-btn opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded hover:bg-error/20 text-on-surface/30 hover:text-error transition-all" title="Datei löschen">
         <span class="material-symbols-outlined text-[14px]">close</span>
       </button>
     `;
@@ -529,9 +553,9 @@ async function selectFile(agentName, fileName) {
   // Highlight in Artefakt-Liste
   document.querySelectorAll(".artifact-item").forEach(el => {
     const selected = el.dataset.file === fileName;
-    el.classList.toggle("bg-white/10", selected);
+    el.classList.toggle("bg-on-surface/10", selected);
     el.classList.toggle("border-l-2", selected);
-    el.classList.toggle("border-thm-light-blue", selected);
+    el.classList.toggle("border-accent", selected);
   });
 
   if (!currentSlug) return;
@@ -542,8 +566,8 @@ async function selectFile(agentName, fileName) {
     // HTML → Ergebnis-Tab zeigt Hinweis, Vorschau-Tab zeigt iframe
     $resultContent.innerHTML = `
       <div class="flex flex-col items-center justify-center h-full text-center py-16">
-        <span class="material-symbols-outlined text-thm-green text-4xl mb-4">preview</span>
-        <p class="text-white/60 text-sm">HTML-Datei – wechsle zum <strong>Vorschau</strong>-Tab.</p>
+        <span class="material-symbols-outlined text-accent text-4xl mb-4">preview</span>
+        <p class="text-on-surface/60 text-sm">HTML-Datei – wechsle zum <strong>Vorschau</strong>-Tab.</p>
       </div>
     `;
     $previewIframe.srcdoc = content;
@@ -675,6 +699,9 @@ function setupEventListeners() {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
 
+  // Theme Toggle
+  document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
+
   // Feedback
   $feedbackBtn.addEventListener("click", () => {
     const feedback = $feedbackInput.value.trim();
@@ -708,4 +735,7 @@ function setupEventListeners() {
 // ---------------------------------------------------------------------------
 // Start
 // ---------------------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", () => {
+  initTheme();
+  init();
+});
