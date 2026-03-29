@@ -18,7 +18,6 @@ const AGENT_DEPS = {
   "social-media": ["marketing"],
   "kalkulation": [],
   "website": ["zielgruppe", "marketing", "kalkulation"],
-  "app-prototyp": ["zielgruppe", "marketing", "kalkulation"],
 };
 
 // ---------------------------------------------------------------------------

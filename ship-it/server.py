@@ -55,18 +55,9 @@ AGENT_PATHS = {
         ],
         "outputs": ["website/website-prompt.md", "website/index.html"],
     },
-    "app-prototyp": {
-        "inputs": [
-            "produkt.md",
-            "zielgruppe/analyse.md",
-            "marketing/konzept.md",
-            "kalkulation/preiskalkulation.md",
-        ],
-        "outputs": ["app-prototyp/spec.md", "app-prototyp/index.html"],
-    },
 }
 
-AGENT_ORDER = ["zielgruppe", "marketing", "social-media", "kalkulation", "website", "app-prototyp"]
+AGENT_ORDER = ["zielgruppe", "marketing", "social-media", "kalkulation", "website"]
 
 AGENT_LABELS = {
     "zielgruppe": "Zielgruppen-Agent",
@@ -74,7 +65,6 @@ AGENT_LABELS = {
     "social-media": "Social-Media-Agent",
     "kalkulation": "Kalkulations-Agent",
     "website": "Website-Agent",
-    "app-prototyp": "App-Prototyp-Agent",
 }
 
 # ---------------------------------------------------------------------------
