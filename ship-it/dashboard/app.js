@@ -120,7 +120,7 @@ marked.use({
 });
 
 // ---------------------------------------------------------------------------
-// Theme
+// Farbthema (Hell/Dunkel)
 // ---------------------------------------------------------------------------
 function initTheme() {
   const saved = localStorage.getItem("ship-it-theme");
@@ -335,7 +335,7 @@ function selectAgent(agentName) {
 }
 
 // ---------------------------------------------------------------------------
-// Terminal (always dark anthracite, regardless of theme)
+// Terminal (immer dunkel/Anthrazit, unabhängig vom Farbthema)
 // ---------------------------------------------------------------------------
 function getOrCreateTerminal(agentName) {
   if (terminals[agentName]) return terminals[agentName];

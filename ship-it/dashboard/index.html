@@ -69,7 +69,7 @@
   <header class="fixed top-0 w-full h-12 z-50 bg-header shadow-sm flex items-center justify-between px-4">
     <div class="flex items-center gap-2">
       <img src="icon2.png" alt="Ship It!" class="h-7 hidden dark:block"/>
-      <img src="icon2.png" alt="Ship It!" class="h-7 block dark:hidden"/>
+      <img src="icon1.png" alt="Ship It!" class="h-7 block dark:hidden"/>
       <span class="text-on-header font-headline font-bold text-lg tracking-tight">Ship It! Dashboard</span>
     </div>
     <div class="flex items-center gap-4">
@@ -90,7 +90,7 @@
           </div>
         </div>
       </div>
-      <!-- Theme Toggle -->
+      <!-- Farbthema-Umschalter -->
       <button id="theme-toggle" class="flex items-center justify-center w-8 h-8 rounded-full bg-on-header/10 hover:bg-on-header/20 transition-colors" title="Theme wechseln">
         <span id="theme-toggle-icon" class="material-symbols-outlined text-on-header text-[18px]">light_mode</span>
       </button>
@@ -218,7 +218,7 @@
     </div>
   </div>
 
-  <!-- Theme: prevent flash of wrong theme -->
+  <!-- Farbthema: Flash des falschen Themes verhindern -->
   <script>if(localStorage.getItem("ship-it-theme")==="light")document.documentElement.classList.remove("dark")</script>
   <script src="app.js"></script>
 </body>
