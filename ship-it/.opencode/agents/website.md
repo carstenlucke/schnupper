@@ -1,6 +1,6 @@
 ---
 description: Landingpage – erstellt eine responsive One-Page-Website für das Produkt
-model: openai/gpt-5.3-codex
+model: github-copilot/claude-sonnet-4.6
 thinking: high
 tools:
   bash: true
