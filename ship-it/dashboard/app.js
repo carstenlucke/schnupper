@@ -590,8 +590,11 @@ async function selectFile(agentName, fileName) {
     $previewOpenBtn.classList.remove("flex");
   }
 
-  // Automatisch zur Ergebnis-Ansicht wechseln
-  showResultView();
+  // Zur Ergebnis-Ansicht wechseln – aber nicht, wenn Terminal gerade aktiv ist
+  // (z.B. weil ein Agent läuft und loadArtifactList auto-selektiert)
+  if (!terminalVisible) {
+    showResultView();
+  }
 }
 
 // ---------------------------------------------------------------------------

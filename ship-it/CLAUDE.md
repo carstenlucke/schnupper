@@ -104,7 +104,9 @@ Systemprompts definieren Rolle und Output-Format, aber **keine konkreten Dateipf
 
 ## Konventionen
 
-- **Sprache**: Alle Agent-Outputs, UI-Texte und Kommentare auf Deutsch
+- **Sprache**: Alle Agent-Outputs, UI-Texte, HTML-Kommentare und JS-Kommentare auf **Deutsch**. Keine englischen Kommentare im Code.
+- **Kein Inline-CSS**: Styling ausschließlich über Tailwind-Klassen oder `style.css` – keine `style="..."`-Attribute im HTML, wenn es per Tailwind (z.B. `bg-[#181f23]`) oder CSS-Klasse lösbar ist.
+- **Accessibility**: Icon-Only-Buttons brauchen immer ein `aria-label` (und/oder `title`).
 - **Slugs**: lowercase + Bindestriche, Umlaute werden ersetzt (ä→ae etc.)
 - **Keine Build-Pipeline**: Kein npm, kein Bundler – CDN + Python stdlib
 - **THM-Farben**: `thm-green: #80ba24`, `thm-blue: #002878`, `thm-gray: #4a5c66`, `thm-yellow: #f4aa00`, `thm-light-blue: #00b8e4`
