@@ -103,7 +103,61 @@ tools:
 ---
 ```
 
-**Pfad-Konvention:** Agenten arbeiten mit einem Projektpfad, der beim Aufruf als Teil des Prompts übergeben wird. In den Systemprompts wird `{projekt}` als Platzhalter verwendet, den das Backend beim `opencode run`-Aufruf durch den tatsächlichen Pfad ersetzt (z.B. `projekte/nachhaltige-sneaker`).
+**Pfad-Konvention – Trennung Systemprompt vs. Run-Prompt:**
+
+Die **Systemprompts** (`.opencode/agents/*.md`) definieren Rolle, Expertise und Output-Format – aber **keine konkreten Dateipfade**. Stattdessen enthalten sie die Anweisung:
+
+> "Du erhältst in deiner Aufgabenstellung einen Projektordner sowie explizite EINGABE- und AUSGABE-Pfade. Verwende ausschließlich diese Pfade."
+
+Die **Run-Prompts** (vom Backend generiert) enthalten die vollständigen, expliziten Pfade:
+
+```
+Projektordner: projekte/nachhaltige-sneaker
+
+EINGABE:
+- Produktbeschreibung: projekte/nachhaltige-sneaker/produkt.md
+
+AUSGABE:
+- Schreibe deine Analyse nach: projekte/nachhaltige-sneaker/zielgruppe/analyse.md
+- Erstelle das Verzeichnis falls nötig.
+
+Führe jetzt deine Aufgabe aus.
+```
+
+Das Backend kennt die Pfad-Templates pro Agent und setzt den Projekt-Slug ein. So gibt es keinen Interpretationsspielraum beim LLM.
+
+**Pfad-Templates im Backend (server.py):**
+
+```python
+AGENT_PATHS = {
+    "zielgruppe": {
+        "inputs":  ["produkt.md"],
+        "outputs": ["zielgruppe/analyse.md"],
+    },
+    "marketing": {
+        "inputs":  ["produkt.md", "zielgruppe/analyse.md"],
+        "outputs": ["marketing/konzept.md"],
+    },
+    "social-media": {
+        "inputs":  ["produkt.md", "zielgruppe/analyse.md", "marketing/konzept.md"],
+        "outputs": ["social-media/instagram.md", "social-media/linkedin.md", "social-media/tiktok.md"],
+    },
+    "kalkulation": {
+        "inputs":  ["produkt.md"],
+        "outputs": ["kalkulation/preiskalkulation.md"],
+    },
+    "website": {
+        "inputs":  ["produkt.md", "zielgruppe/analyse.md", "marketing/konzept.md", "kalkulation/preiskalkulation.md"],
+        "outputs": ["website/index.html"],
+    },
+    "app-prototyp": {
+        "inputs":  ["produkt.md", "zielgruppe/analyse.md", "marketing/konzept.md", "kalkulation/preiskalkulation.md"],
+        "outputs": ["app-prototyp/spec.md", "app-prototyp/index.html"],
+    },
+}
+```
+
+Das Backend baut daraus den Run-Prompt zusammen und kann nach Abschluss **verifizieren**, ob die erwarteten Output-Dateien tatsächlich erstellt wurden – und den Status entsprechend auf `done` oder `error` setzen.
 
 #### Agent 1: Zielgruppen-Agent (`zielgruppe.md`)
 - **Liest:** `{projekt}/produkt.md`
@@ -169,18 +223,43 @@ Kern-Komponenten:
    - Jede Zeile als `data: ...\n\n` an den SSE-Client gesendet
    - Bei Prozessende: `event: done\ndata: {exit_code}\n\n`
 
-**Agent-Aufruf intern:**
+**Agent-Aufruf intern – Prompt-Generierung:**
 ```python
-# Der Projektpfad wird in den Prompt eingebettet
-projekt_pfad = f"projekte/{slug}"
+def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
+    """Baut den vollständigen Run-Prompt mit expliziten Pfaden."""
+    p = f"projekte/{slug}"
+    paths = AGENT_PATHS[agent]
 
-# Initialer Lauf
-opencode run --agent zielgruppe \
-  f"Projektordner: {projekt_pfad}. Analysiere die Zielgruppe für das Produkt."
+    eingaben = "\n".join(f"- {p}/{f}" for f in paths["inputs"])
+    ausgaben = "\n".join(f"- {p}/{f}" for f in paths["outputs"])
 
-# Nacharbeiten
-opencode run --agent zielgruppe \
-  f"Projektordner: {projekt_pfad}. Überarbeite deine Analyse. Feedback: <user input>"
+    if feedback:
+        aufgabe = f"Überarbeite deine bisherige Ausgabe.\nFeedback: {feedback}"
+    else:
+        aufgabe = "Führe deine Aufgabe aus."
+
+    return f"""Projektordner: {p}
+
+EINGABE (lies diese Dateien):
+{eingaben}
+
+AUSGABE (schreibe in diese Dateien, erstelle Verzeichnisse falls nötig):
+{ausgaben}
+
+{aufgabe}"""
+
+# Aufruf:
+# opencode run --agent zielgruppe "<generierter prompt>"
+```
+
+**Nach Abschluss – Output-Verifikation:**
+```python
+def verify_outputs(slug: str, agent: str) -> bool:
+    """Prüft ob die erwarteten Output-Dateien existieren."""
+    for f in AGENT_PATHS[agent]["outputs"]:
+        if not os.path.exists(f"projekte/{slug}/{f}"):
+            return False
+    return True
 ```
 
 ### Schritt 4: Dashboard-Frontend (`dashboard/`)
