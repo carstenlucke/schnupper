@@ -133,26 +133,8 @@ body {
 .status-dot.error { background: rgb(var(--error-color)); }
 
 /* ============================================================
-   Tabs
-   ============================================================ */
-.tab-btn {
-  color: rgb(var(--on-surface) / 0.4);
-  border-bottom: 2px solid transparent;
-}
-.tab-btn:hover {
-  color: rgb(var(--on-surface) / 0.7);
-}
-.tab-btn.active {
-  color: rgb(var(--accent));
-  border-bottom-color: rgb(var(--accent));
-}
-
-/* ============================================================
    Terminal (immer dunkel, unabhängig vom Farbthema)
    ============================================================ */
-#tab-terminal {
-  background: #181f23;
-}
 #terminal-container .xterm {
   padding: 8px;
 }
