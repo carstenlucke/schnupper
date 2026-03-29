@@ -1,6 +1,6 @@
 ---
 description: Zielgruppenanalyse – identifiziert Personas, Marktsegmente und Kaufkraft
-model: claude-sonnet-4-20250514
+model: github-copilot/gpt-4o
 tools:
   bash: true
   read: true

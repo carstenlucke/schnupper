@@ -1,6 +1,6 @@
 ---
 description: App-Prototyp – erstellt eine interaktive Web-App als funktionalen Prototyp
-model: claude-sonnet-4-20250514
+model: github-copilot/gpt-4o
 tools:
   bash: true
   read: true

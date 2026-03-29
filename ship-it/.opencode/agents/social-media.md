@@ -1,6 +1,6 @@
 ---
 description: Social-Media-Posts – erstellt plattformspezifische Inhalte für Instagram, LinkedIn und TikTok
-model: claude-sonnet-4-20250514
+model: github-copilot/gpt-4o
 tools:
   bash: true
   read: true

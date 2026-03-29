@@ -178,17 +178,26 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
     prompt = build_run_prompt(slug, agent, feedback)
     cmd = ["opencode", "run", "--agent", agent, prompt]
 
+    import sys
+    print(f"[agent-start] {slug}/{agent} → {' '.join(cmd[:4])} '...'", file=sys.stderr)
+
     # PTY erstellen für ANSI-Farben
     master_fd, slave_fd = pty.openpty()
 
-    proc = subprocess.Popen(
-        cmd,
-        stdout=slave_fd,
-        stderr=slave_fd,
-        stdin=subprocess.DEVNULL,
-        cwd=BASE_DIR,
-        env={**os.environ, "TERM": "xterm-256color"},
-    )
+    try:
+        proc = subprocess.Popen(
+            cmd,
+            stdout=slave_fd,
+            stderr=slave_fd,
+            stdin=subprocess.DEVNULL,
+            cwd=BASE_DIR,
+            env={**os.environ, "TERM": "xterm-256color"},
+        )
+    except Exception as e:
+        os.close(master_fd)
+        os.close(slave_fd)
+        print(f"[agent-error] {slug}/{agent}: {e}", file=sys.stderr)
+        return {"error": str(e)}
     os.close(slave_fd)
 
     proc_info = {
@@ -249,8 +258,9 @@ class ShipItHandler(SimpleHTTPRequestHandler):
     """Request-Handler für das Ship It! Dashboard."""
 
     def log_message(self, format, *args):
-        """Kompakteres Logging."""
-        pass  # Stille für Demo
+        """Kompaktes Logging auf stderr."""
+        import sys
+        print(f"[{self.log_date_time_string()}] {format % args}", file=sys.stderr)
 
     def do_GET(self):
         parsed = urlparse(self.path)

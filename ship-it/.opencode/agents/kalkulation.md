@@ -1,6 +1,6 @@
 ---
 description: Preiskalkulation – berechnet Kosten, Margen und empfiehlt Preisstrategie
-model: claude-sonnet-4-20250514
+model: github-copilot/gpt-4o
 tools:
   bash: true
   read: true

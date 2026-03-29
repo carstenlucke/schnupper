@@ -1,6 +1,6 @@
 ---
 description: Marketingkonzept – entwickelt Produktname, Slogan, Positionierung und Werbetext
-model: claude-sonnet-4-20250514
+model: github-copilot/gpt-4o
 tools:
   bash: true
   read: true
