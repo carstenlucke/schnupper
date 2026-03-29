@@ -1,6 +1,7 @@
 ---
 description: Preiskalkulation – berechnet Kosten, Margen und empfiehlt Preisstrategie
-model: github-copilot/gpt-4o
+model: openai/codex-5.3
+thinking: xhigh
 tools:
   bash: true
   read: true
