@@ -65,6 +65,14 @@ async function fetchFileContent(slug, agent, datei) {
   return res.text();
 }
 
+async function deleteFile(slug, agent, datei) {
+  return api(`/api/projekte/${slug}/files/${agent}/${datei}`, { method: "DELETE" });
+}
+
+async function deleteAgentFiles(slug, agent) {
+  return api(`/api/projekte/${slug}/files/${agent}`, { method: "DELETE" });
+}
+
 // ---------------------------------------------------------------------------
 // UI-Elemente
 // ---------------------------------------------------------------------------
@@ -429,19 +437,47 @@ async function loadArtifactList(agentName) {
     return;
   }
 
+  // "Alle löschen"-Button
+  const deleteAllDiv = document.createElement("div");
+  deleteAllDiv.className = "px-2 pb-2 border-b border-white/5 mb-1";
+  deleteAllDiv.innerHTML = `
+    <button class="delete-all-btn w-full flex items-center justify-center gap-1 px-2 py-1.5 text-[10px] text-error/70 hover:text-error hover:bg-error/10 rounded transition-colors">
+      <span class="material-symbols-outlined text-[14px]">delete_sweep</span>Alle Artefakte löschen
+    </button>
+  `;
+  deleteAllDiv.querySelector(".delete-all-btn").addEventListener("click", async () => {
+    await deleteAgentFiles(currentSlug, agentName);
+    await refreshAgents();
+    loadArtifactList(agentName);
+  });
+  $artifactList.appendChild(deleteAllDiv);
+
   for (const file of existingFiles) {
     const icon = file.name.endsWith(".html") ? "code" : "description";
     const div = document.createElement("div");
-    div.className = `artifact-item flex items-center gap-3 p-3 rounded-sm cursor-pointer hover:bg-white/5 transition-colors`;
+    div.className = `artifact-item flex items-center gap-3 p-3 rounded-sm cursor-pointer hover:bg-white/5 transition-colors group`;
     div.dataset.file = file.name;
     div.innerHTML = `
       <span class="material-symbols-outlined text-white/60 text-[20px]">${icon}</span>
-      <div class="flex flex-col overflow-hidden">
+      <div class="flex flex-col overflow-hidden flex-1">
         <span class="text-sm text-white font-medium truncate">${file.name}</span>
         <span class="text-[10px] text-white/40">${formatSize(file.size)}</span>
       </div>
+      <button class="delete-btn opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded hover:bg-error/20 text-white/30 hover:text-error transition-all" title="Datei löschen">
+        <span class="material-symbols-outlined text-[14px]">close</span>
+      </button>
     `;
-    div.addEventListener("click", () => selectFile(agentName, file.name));
+    div.addEventListener("click", (e) => {
+      if (e.target.closest(".delete-btn")) return;
+      selectFile(agentName, file.name);
+    });
+    div.querySelector(".delete-btn").addEventListener("click", async (e) => {
+      e.stopPropagation();
+      await deleteFile(currentSlug, agentName, file.name);
+      await refreshAgents();
+      currentFile = null;
+      loadArtifactList(agentName);
+    });
     $artifactList.appendChild(div);
   }
 

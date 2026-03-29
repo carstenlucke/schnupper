@@ -308,6 +308,27 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         else:
             self._send_json({"error": "Not found"}, 404)
 
+    def do_DELETE(self):
+        parsed = urlparse(self.path)
+        path = parsed.path
+
+        if path.startswith("/api/projekte/") and "/files/" in path:
+            parts = path.split("/")
+            slug = parts[3]
+            if len(parts) == 6:
+                # DELETE /api/projekte/<slug>/files/<agent> → alle Dateien eines Agenten
+                agent = parts[5]
+                self._handle_delete_agent_files(slug, agent)
+            elif len(parts) >= 7:
+                # DELETE /api/projekte/<slug>/files/<agent>/<datei> → einzelne Datei
+                agent = parts[5]
+                datei = "/".join(parts[6:])
+                self._handle_delete_file(slug, agent, datei)
+            else:
+                self._send_json({"error": "Not found"}, 404)
+        else:
+            self._send_json({"error": "Not found"}, 404)
+
     # --- API: Projekte ---
 
     def _handle_get_projekte(self):
@@ -498,6 +519,37 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.write(content.encode("utf-8"))
+
+    # --- API: Dateien löschen ---
+
+    def _handle_delete_file(self, slug, agent, datei):
+        expected = f"{agent}/{datei}"
+        if expected not in AGENT_PATHS.get(agent, {}).get("outputs", []):
+            self._send_json({"error": "Nicht erlaubt"}, 403)
+            return
+        full_path = os.path.join(PROJEKTE_DIR, slug, expected)
+        if not os.path.exists(full_path):
+            self._send_json({"error": "Datei nicht gefunden"}, 404)
+            return
+        os.remove(full_path)
+        self._send_json({"deleted": datei})
+
+    def _handle_delete_agent_files(self, slug, agent):
+        if agent not in AGENT_PATHS:
+            self._send_json({"error": "Unbekannter Agent"}, 400)
+            return
+        deleted = []
+        for f in AGENT_PATHS[agent]["outputs"]:
+            full_path = os.path.join(PROJEKTE_DIR, slug, f)
+            if os.path.exists(full_path):
+                os.remove(full_path)
+                deleted.append(f)
+        # In-memory Status zurücksetzen
+        key = (slug, agent)
+        with process_lock:
+            if key in running_processes:
+                del running_processes[key]
+        self._send_json({"deleted": deleted})
 
     # --- Statische Dateien ---
 
