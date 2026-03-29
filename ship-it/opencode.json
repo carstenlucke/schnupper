@@ -1,0 +1,5 @@
+{
+  "$schema": "https://opencode.ai/config.schema.json",
+  "provider": "anthropic",
+  "model": "claude-sonnet-4-20250514"
+}
