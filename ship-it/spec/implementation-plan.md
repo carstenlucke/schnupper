@@ -214,9 +214,14 @@ Kern-Komponenten:
    - `GET  /api/projekte/<slug>/agents/<name>/stream` – SSE-Stream des laufenden Agent-Prozesses
    - `GET  /api/projekte/<slug>/files/<agent>` – Liste der Artefakte eines Agenten
    - `GET  /api/projekte/<slug>/files/<agent>/<datei>` – Dateiinhalt
-3. **Prozess-Management:**
+3. **Prozess-Management & Status:**
    - Pro Projekt+Agent max. 1 laufender Prozess (dict: `(slug, agent_name) → subprocess`)
-   - Status-Tracking: `idle` | `running` | `done` | `error`
+   - **Status wird aus dem Dateisystem abgeleitet** (kein extra State-File):
+     - `done`: alle erwarteten Output-Dateien in `AGENT_PATHS[agent]["outputs"]` existieren
+     - `running`: Subprocess ist aktiv (nur in-memory, geht bei Crash verloren – korrekt, weil Prozess auch weg)
+     - `idle`: weder running noch done
+     - `error`: Subprocess beendet, aber Output-Dateien fehlen (in-memory, fällt nach Crash zurück auf `idle`)
+   - **Crash-sicher:** Nach Server-Neustart erkennt das Backend bereits fertige Agenten anhand der vorhandenen Dateien. Kein State kann veralten oder inkonsistent werden.
    - PTY für Subprocess → ANSI-Codes bleiben erhalten → xterm.js rendert Farben
 4. **SSE-Streaming:**
    - Agent-stdout wird zeilenweise gelesen
