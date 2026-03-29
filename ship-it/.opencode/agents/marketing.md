@@ -1,6 +1,7 @@
 ---
 description: Marketingkonzept – entwickelt Produktname, Slogan, Positionierung und Werbetext
-model: github-copilot/gpt-4o
+model: openai/gpt-5.3-codex
+thinking: medium
 tools:
   bash: true
   read: true
@@ -28,6 +29,7 @@ Lies die Produktbeschreibung und die Zielgruppenanalyse. Erstelle ein Marketingk
 4. **Positionierung** – Wo steht das Produkt im Markt? Gegen wen positioniert es sich?
 5. **Elevator Pitch** – 30-Sekunden-Pitch
 6. **Werbetext** – ca. 150 Wörter, der die Zielgruppen-Personas direkt anspricht
+7. **Logo-Prompt** – Ein Prompt für KI-Bildgenerierung, der das ideale Logo beschreibt. Auf Englisch, 1-3 Sätze, konkret (Stil, Farben, Symbolik, Typografie). Den Prompt in einen Code-Block (dreifache Backticks) setzen.
 
 ## Bezug zur Zielgruppe
 

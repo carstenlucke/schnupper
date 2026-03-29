@@ -77,6 +77,10 @@ async function deleteAgentFiles(slug, agent) {
   return api(`/api/projekte/${slug}/files/${agent}`, { method: "DELETE" });
 }
 
+async function generateImage(slug, agent) {
+  return api(`/api/projekte/${slug}/generate-image/${agent}`, { method: "POST" });
+}
+
 // ---------------------------------------------------------------------------
 // UI-Elemente
 // ---------------------------------------------------------------------------
@@ -508,7 +512,7 @@ async function loadArtifactList(agentName) {
   $artifactList.appendChild(deleteAllDiv);
 
   for (const file of existingFiles) {
-    const icon = file.name.endsWith(".html") ? "code" : "description";
+    const icon = file.name.endsWith(".html") ? "code" : file.name.endsWith(".png") ? "image" : "description";
     const div = document.createElement("div");
     div.className = `artifact-item flex items-center gap-3 p-3 rounded-sm cursor-pointer hover:bg-on-surface/5 transition-colors group`;
     div.dataset.file = file.name;
@@ -524,7 +528,7 @@ async function loadArtifactList(agentName) {
     `;
     div.addEventListener("click", (e) => {
       if (e.target.closest(".delete-btn")) return;
-      selectFile(agentName, file.name);
+      selectFile(agentName, file.name, { switchToResult: true });
     });
     div.querySelector(".delete-btn").addEventListener("click", async (e) => {
       e.stopPropagation();
@@ -536,12 +540,73 @@ async function loadArtifactList(agentName) {
     $artifactList.appendChild(div);
   }
 
+  // Bildgenerierungs-Buttons (pro Agent konfiguriert)
+  const IMAGE_GEN = {
+    "marketing":    { trigger: "konzept.md",   image: "logo.png",           label: "Logo generieren",  labelRegen: "Logo neu generieren" },
+    "social-media": { trigger: "instagram.md", image: "instagram-bild.png", label: "Bild generieren",  labelRegen: "Bild neu generieren" },
+  };
+  const genCfg = IMAGE_GEN[agentName];
+  if (genCfg) {
+    const triggerExists = existingFiles.some(f => f.name === genCfg.trigger);
+    const imageExists = existingFiles.some(f => f.name === genCfg.image);
+
+    if (triggerExists) {
+      const btnLabel = imageExists ? genCfg.labelRegen : genCfg.label;
+      const btnIcon = imageExists ? "refresh" : "auto_awesome";
+      const btnDiv = document.createElement("div");
+      btnDiv.className = "px-2 pt-2 mt-1 border-t border-on-surface/5";
+      btnDiv.innerHTML = `
+        <button id="generate-image-btn"
+                class="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-bold bg-accent/20 text-accent hover:bg-accent/30 rounded transition-colors"
+                aria-label="${btnLabel}"
+                data-agent="${agentName}" data-image="${genCfg.image}">
+          <span class="material-symbols-outlined text-[16px]">${btnIcon}</span>
+          ${btnLabel}
+        </button>
+      `;
+      btnDiv.querySelector("#generate-image-btn").addEventListener("click", () => {
+        handleGenerateImage(agentName, genCfg.image);
+      });
+      $artifactList.appendChild(btnDiv);
+    }
+  }
+
   // Erste Datei automatisch auswählen
   if (!currentFile || !existingFiles.find(f => f.name === currentFile)) {
     selectFile(agentName, existingFiles[0].name);
   } else {
     selectFile(agentName, currentFile);
   }
+}
+
+async function handleGenerateImage(agentName, imageFileName) {
+  const btn = document.getElementById("generate-image-btn");
+  if (!btn || !currentSlug) return;
+
+  const originalHTML = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `
+    <span class="material-symbols-outlined text-[16px] spin-slow">progress_activity</span>
+    Bild wird generiert\u2026
+  `;
+
+  const result = await generateImage(currentSlug, agentName);
+
+  if (result.error) {
+    btn.innerHTML = `
+      <span class="material-symbols-outlined text-[16px] text-red-400">error</span>
+      <span class="text-red-400">${result.error}</span>
+    `;
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = originalHTML;
+    }, 3000);
+    return;
+  }
+
+  btn.disabled = false;
+  await loadArtifactList(agentName);
+  selectFile(agentName, imageFileName, { switchToResult: true });
 }
 
 function formatSize(bytes) {
@@ -553,7 +618,7 @@ function formatSize(bytes) {
 // ---------------------------------------------------------------------------
 // Einzelne Datei anzeigen
 // ---------------------------------------------------------------------------
-async function selectFile(agentName, fileName) {
+async function selectFile(agentName, fileName, { switchToResult = false } = {}) {
   currentFile = fileName;
 
   // Highlight in Artefakt-Liste
@@ -565,6 +630,25 @@ async function selectFile(agentName, fileName) {
   });
 
   if (!currentSlug) return;
+
+  // Bilder direkt als <img> anzeigen
+  if (fileName.endsWith(".png")) {
+    $resultMarkdown.classList.remove("hidden");
+    $resultPreview.classList.add("hidden");
+    const imageUrl = `/api/projekte/${currentSlug}/files/${agentName}/${fileName}`;
+    $resultContent.innerHTML = `
+      <div class="flex flex-col items-center gap-4 py-4">
+        <img src="${imageUrl}" alt="Generiertes Bild"
+             class="max-w-full rounded-lg shadow-lg max-h-[70vh]" />
+        <p class="text-xs text-on-surface/40">KI-generiertes Bild basierend auf der Instagram-Beschreibung</p>
+      </div>
+    `;
+    $previewFilename.textContent = fileName;
+    $previewOpenBtn.classList.add("hidden");
+    $previewOpenBtn.classList.remove("flex");
+    if (switchToResult) showResultView();
+    return;
+  }
 
   const content = await fetchFileContent(currentSlug, agentName, fileName);
 
@@ -590,9 +674,9 @@ async function selectFile(agentName, fileName) {
     $previewOpenBtn.classList.remove("flex");
   }
 
-  // Zur Ergebnis-Ansicht wechseln – aber nicht, wenn Terminal gerade aktiv ist
-  // (z.B. weil ein Agent läuft und loadArtifactList auto-selektiert)
-  if (!terminalVisible) {
+  // Zur Ergebnis-Ansicht wechseln bei explizitem User-Klick,
+  // aber nicht bei Auto-Selektion (z.B. wenn ein Agent läuft)
+  if (switchToResult) {
     showResultView();
   }
 }

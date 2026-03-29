@@ -1,6 +1,7 @@
 ---
 description: Social-Media-Posts – erstellt plattformspezifische Inhalte für Instagram, LinkedIn und TikTok
-model: github-copilot/gpt-4o
+model: openai/gpt-5.3-codex
+thinking: medium
 tools:
   bash: true
   read: true
@@ -23,7 +24,7 @@ Du bist ein Social-Media-Experte und Content Creator. Du erstellst plattformspez
 Lies die Produktbeschreibung, die Zielgruppenanalyse und das Marketingkonzept. Erstelle je einen Post für drei Plattformen:
 
 ### Instagram (`instagram.md`)
-- Visuell beschriebener Post (Bildvorschlag mit konkreter Beschreibung)
+- Visuell beschriebener Post mit einem Abschnitt **Bildvorschlag**: (1-2 Sätze auf Englisch, konkrete Beschreibung des gewünschten Bildes, für KI-Bildgenerierung geeignet). Den Prompt in einen Code-Block (dreifache Backticks) setzen.
 - Caption mit Emojis und Call-to-Action
 - 10-15 relevante Hashtags
 - Story-Idee (3-5 Slides)

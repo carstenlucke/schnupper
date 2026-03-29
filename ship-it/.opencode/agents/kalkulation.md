@@ -1,6 +1,6 @@
 ---
 description: Preiskalkulation – berechnet Kosten, Margen und empfiehlt Preisstrategie
-model: openai/codex-5.3
+model: openai/gpt-5.3-codex
 thinking: xhigh
 tools:
   bash: true

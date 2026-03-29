@@ -96,6 +96,29 @@ ship-it/
 - **Vorschau-Tab** zeigt HTML-Artefakte (Website, App) im iframe
 - **Feedback-Input** zum Überarbeiten von Agent-Outputs
 
+## KI-Bildgenerierung
+
+Marketing- und Social-Media-Agent können auf Knopfdruck Bilder generieren (Logo bzw. Instagram-Post). Die Bildgenerierung nutzt die OpenAI API (`gpt-image-1`).
+
+### Einrichtung
+
+```bash
+cp .env.example .env
+# OPENAI_API_KEY in .env eintragen
+```
+
+### Kosten pro Bild (gpt-image-1, Stand März 2026)
+
+| Bild | Quality | Größe | Kosten (ca.) |
+|------|---------|-------|-------------|
+| Logo (Marketing) | low | 1024x1024 | $0.02–0.04 |
+| Instagram-Bild (Social Media) | low | 1024x1024 | $0.02–0.04 |
+| Instagram mit Logo-Referenz | low | 1024x1024 | $0.03–0.07 |
+
+**Pro Projekt (alle Bilder):** ~$0.04–0.11
+
+Die Kosten sind Token-basiert und variieren je nach Prompt-Länge und Bildkomplexität. Bei `quality: "low"` und 1024x1024 bleibt man im unteren Bereich. Für eine Vorlesung mit ~10 Projekten: **unter $1 Gesamtkosten**.
+
 ## Technical Debt
 
 Bekannte, bewusst nicht behobene Probleme sind in [TECHNICAL_DEBT.md](TECHNICAL_DEBT.md) dokumentiert.
