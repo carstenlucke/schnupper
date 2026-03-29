@@ -13,6 +13,7 @@ import signal
 import subprocess
 import threading
 import re
+import termios
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse
 
@@ -180,6 +181,15 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
 
     # PTY erstellen für ANSI-Farben
     master_fd, slave_fd = pty.openpty()
+
+    # Flusssteuerung deaktivieren – verhindert, dass XON/XOFF-Zeichen
+    # (0x11/0x13) in den Datenstrom gelangen und Dateien kontaminieren
+    try:
+        attrs = termios.tcgetattr(slave_fd)
+        attrs[0] &= ~(termios.IXON | termios.IXOFF | termios.IXANY)
+        termios.tcsetattr(slave_fd, termios.TCSANOW, attrs)
+    except termios.error:
+        pass
 
     try:
         proc = subprocess.Popen(
