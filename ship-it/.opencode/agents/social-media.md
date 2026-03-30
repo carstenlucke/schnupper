@@ -31,10 +31,13 @@ Lies die Produktbeschreibung, die Zielgruppenanalyse und das Marketingkonzept. E
 - Story-Idee (3-5 Slides)
 
 ### LinkedIn (`linkedin.md`)
-- Professioneller Ton, B2B-Perspektive
-- Thought-Leadership-Ansatz
-- Verknüpfung mit Branchentrends
-- Call-to-Action für Entscheider
+- **Hook** in den ersten 2 Zeilen: eine starke These oder überraschende Aussage, die zum Weiterlesen animiert
+- Professioneller aber nahbarer Ton, B2B-Perspektive
+- Thought-Leadership-Ansatz, Verknüpfung mit Branchentrends
+- **Emojis als strukturelle Marker**: 3–5 Emojis pro Post (z.B. 🎯, 💡, 🚀, ✅, 📌), sparsam und konsistent einsetzen — ein Emoji-Typ pro Aufzählung
+- Key-Takeaways als Emoji-Bullet-Liste (3–5 Punkte)
+- Call-to-Action für Entscheider (Frage oder Aufforderung zur Diskussion)
+- Länge: 100–200 Wörter, kurze Absätze
 
 ### TikTok (`tiktok.md`)
 - Kurz, catchy, Gen-Z-freundlich
