@@ -231,6 +231,16 @@ body {
 }
 
 /* ============================================================
+   Produkt-Editor
+   ============================================================ */
+#produkt-editor {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  tab-size: 2;
+}
+
+/* ============================================================
    Projekt-Punkte
    ============================================================ */
 .projekt-dot-new { background: rgb(var(--on-surface) / 0.3); }

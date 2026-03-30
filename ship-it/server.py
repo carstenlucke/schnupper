@@ -455,6 +455,20 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         else:
             self._send_json({"error": "Not found"}, 404)
 
+    def do_PUT(self):
+        parsed = urlparse(self.path)
+        path = parsed.path
+
+        # PUT /api/projekte/<slug>/produkt
+        parts = path.split("/")
+        if len(parts) == 5 and parts[1] == "api" and parts[2] == "projekte" and parts[4] == "produkt":
+            slug = parts[3]
+            if not self._validate_slug(slug):
+                return
+            self._handle_update_produkt(slug)
+        else:
+            self._send_json({"error": "Not found"}, 404)
+
     # --- API: Projekte ---
 
     def _handle_get_projekte(self):
@@ -506,6 +520,32 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             f.write(f"# {name}\n\n{beschreibung}\n")
 
         self._send_json({"slug": slug, "name": name}, 201)
+
+    def _handle_update_produkt(self, slug):
+        projekt_dir = os.path.join(PROJEKTE_DIR, slug)
+        if not os.path.isdir(projekt_dir):
+            self._send_json({"error": "Projekt nicht gefunden"}, 404)
+            return
+        try:
+            body = self._read_body()
+        except json.JSONDecodeError:
+            self._send_json({"error": "Ungültiges JSON"}, 400)
+            return
+        if not body or "content" not in body:
+            self._send_json({"error": "Content erforderlich"}, 400)
+            return
+        if not isinstance(body["content"], str):
+            self._send_json({"error": "Content muss ein String sein"}, 400)
+            return
+        original_content = body["content"]
+        if not original_content.strip():
+            self._send_json({"error": "Content darf nicht leer sein"}, 400)
+            return
+        produkt_file = os.path.join(projekt_dir, "produkt.md")
+        content_to_write = original_content if original_content.endswith("\n") else original_content + "\n"
+        with open(produkt_file, "w", encoding="utf-8") as f:
+            f.write(content_to_write)
+        self._send_json({"status": "ok"})
 
     # --- API: Agents ---
 

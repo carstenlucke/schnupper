@@ -129,6 +129,7 @@
     <!-- Column 1: Agent List -->
     <aside class="w-[220px] bg-sidebar flex flex-col h-full border-r border-on-surface/5 flex-shrink-0">
       <div class="px-4 py-6 flex-1 overflow-y-auto scrollbar-hide">
+        <div id="produkt-entry" class="mb-3 pb-3 border-b border-on-surface/10"></div>
         <h2 class="text-[11px] font-bold text-on-surface/50 uppercase tracking-[0.2em] mb-4">Agents Pool</h2>
         <nav id="agent-list" class="space-y-1"></nav>
       </div>
@@ -153,6 +154,12 @@
           <span id="preview-filename" class="text-xs text-on-surface/40"></span>
           <button id="preview-open-btn" class="hidden items-center gap-1 px-3 py-1 text-xs bg-on-surface/10 rounded hover:bg-on-surface/20 transition-colors">
             <span class="material-symbols-outlined text-[14px]">open_in_new</span>Im Browser öffnen
+          </button>
+          <button id="produkt-edit-btn" class="hidden items-center gap-1 px-3 py-1 text-xs bg-accent/20 text-accent rounded hover:bg-accent/30 transition-colors" aria-label="Produkt bearbeiten">
+            <span class="material-symbols-outlined text-[14px]">edit</span>Bearbeiten
+          </button>
+          <button id="produkt-cancel-btn" class="hidden items-center gap-1 px-3 py-1 text-xs text-on-surface/60 border border-on-surface/10 rounded hover:bg-on-surface/5 transition-colors" aria-label="Bearbeitung abbrechen">
+            Abbrechen
           </button>
           <button id="terminal-toggle" class="flex items-center gap-1 px-3 py-2 text-xs font-medium rounded transition-colors text-on-surface/40 hover:text-on-surface/70 hover:bg-on-surface/5" title="Terminal ein-/ausblenden" aria-label="Terminal ein-/ausblenden">
             <span class="material-symbols-outlined text-[16px]">terminal</span>
