@@ -388,9 +388,13 @@ function loadProduktArtifact() {
   $artifactList.appendChild(div);
 }
 
+function fetchProduktContent(slug) {
+  return fetchFileContent(slug, "zielgruppe", "produkt.md");
+}
+
 async function loadProduktContent() {
   if (!currentSlug) return;
-  const content = await fetchFileContent(currentSlug, "zielgruppe", "produkt.md");
+  const content = await fetchProduktContent(currentSlug);
   produktRawContent = content;
 
   $resultMarkdown.classList.remove("hidden");
@@ -410,11 +414,12 @@ async function loadProduktContent() {
 
 function enterProduktEdit() {
   isProduktEditing = true;
-  $resultContent.innerHTML = `
-    <textarea id="produkt-editor"
-      class="w-full h-full min-h-[300px] px-6 py-6 bg-on-surface/5 border border-on-surface/10 rounded-lg text-on-surface text-sm focus:border-accent focus:ring-1 focus:ring-accent outline-none resize-none"
-    >${produktRawContent.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</textarea>
-  `;
+  $resultContent.textContent = "";
+  const textarea = document.createElement("textarea");
+  textarea.id = "produkt-editor";
+  textarea.className = "w-full h-full min-h-[300px] px-6 py-6 bg-on-surface/5 border border-on-surface/10 rounded-lg text-on-surface text-sm focus:border-accent focus:ring-1 focus:ring-accent outline-none resize-none";
+  textarea.value = produktRawContent;
+  $resultContent.appendChild(textarea);
   // Button auf "Speichern" umschalten
   $produktEditBtn.innerHTML = `<span class="material-symbols-outlined text-[14px]">save</span>Speichern`;
   $produktCancelBtn.classList.remove("hidden");
@@ -427,7 +432,13 @@ async function exitProduktEdit(save) {
     if (!editor) return;
     const content = editor.value.trim();
     if (!content) return;
-    await updateProdukt(currentSlug, content);
+    const result = await updateProdukt(currentSlug, content);
+    if (result.error) {
+      // Fehler anzeigen, im Edit-Modus bleiben
+      const editor = document.getElementById("produkt-editor");
+      if (editor) editor.classList.add("border-error");
+      return;
+    }
     produktRawContent = content;
     // Projektname im Dropdown aktualisieren
     const projekte = await fetchProjekte();

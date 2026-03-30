@@ -460,8 +460,8 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         path = parsed.path
 
         # PUT /api/projekte/<slug>/produkt
-        if path.startswith("/api/projekte/") and path.endswith("/produkt"):
-            parts = path.split("/")
+        parts = path.split("/")
+        if len(parts) == 5 and parts[1] == "api" and parts[2] == "projekte" and parts[4] == "produkt":
             slug = parts[3]
             if not self._validate_slug(slug):
                 return
@@ -533,6 +533,9 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             return
         if not body or "content" not in body:
             self._send_json({"error": "Content erforderlich"}, 400)
+            return
+        if not isinstance(body["content"], str):
+            self._send_json({"error": "Content muss ein String sein"}, 400)
             return
         content = body["content"].strip()
         if not content:
