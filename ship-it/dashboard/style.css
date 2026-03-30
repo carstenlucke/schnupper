@@ -230,6 +230,19 @@ body {
   color: rgb(var(--on-surface-variant));
 }
 
+/* Systemprompt-Quelltext */
+#result-content pre.prompt-source {
+  background: rgb(var(--code-bg));
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: rgb(var(--on-surface-variant));
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* ============================================================
    Produkt-Editor
    ============================================================ */

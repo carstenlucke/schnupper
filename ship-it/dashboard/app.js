@@ -91,6 +91,14 @@ async function generateImage(slug, agent) {
   return api(`/api/projekte/${slug}/generate-image/${agent}`, { method: "POST" });
 }
 
+async function fetchAgentPrompt(agentName) {
+  return api(`/api/agents/${agentName}/prompt`);
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 // ---------------------------------------------------------------------------
 // UI-Elemente
 // ---------------------------------------------------------------------------
@@ -300,13 +308,33 @@ function renderAgentList() {
           </button>
         ` : ""}
       </div>
-      <span class="text-[10px] text-on-surface/40 ml-4 ${agent.status === 'running' ? 'italic' : ''}">${statusText}</span>
+      <div class="flex items-center justify-between ml-4">
+        <span class="text-[10px] text-on-surface/40 ${agent.status === 'running' ? 'italic' : ''}">${statusText}</span>
+        <div class="flex items-center gap-0.5">
+          <button class="prompt-btn prompt-formatted w-5 h-5 flex items-center justify-center rounded hover:bg-on-surface/10 text-on-surface/30 hover:text-accent transition-colors" title="Systemprompt formatiert" aria-label="Systemprompt formatiert anzeigen">
+            <span class="material-symbols-outlined text-[14px]">article</span>
+          </button>
+          <button class="prompt-btn prompt-raw w-5 h-5 flex items-center justify-center rounded hover:bg-on-surface/10 text-on-surface/30 hover:text-accent transition-colors" title="Systemprompt Quelltext" aria-label="Systemprompt als Quelltext anzeigen">
+            <span class="material-symbols-outlined text-[14px]">code</span>
+          </button>
+        </div>
+      </div>
     `;
 
     // Click auf Item → Agent auswählen
     div.addEventListener("click", (e) => {
-      if (e.target.closest(".start-btn")) return;
+      if (e.target.closest(".start-btn") || e.target.closest(".prompt-btn")) return;
       selectAgent(agent.name);
+    });
+
+    // Click auf Prompt-Buttons
+    div.querySelector(".prompt-formatted").addEventListener("click", (e) => {
+      e.stopPropagation();
+      showAgentPrompt(agent.name, false);
+    });
+    div.querySelector(".prompt-raw").addEventListener("click", (e) => {
+      e.stopPropagation();
+      showAgentPrompt(agent.name, true);
     });
 
     // Click auf Start-Button
@@ -466,7 +494,7 @@ async function exitProduktEdit(save) {
 // ---------------------------------------------------------------------------
 // Agent auswählen
 // ---------------------------------------------------------------------------
-function selectAgent(agentName) {
+function selectAgent(agentName, { loadFiles = true } = {}) {
   // Produkt-Modus verlassen
   if (isProduktEditing) exitProduktEdit(false);
   isProduktSelected = false;
@@ -495,7 +523,7 @@ function selectAgent(agentName) {
   showTerminal(agentName);
 
   // Artefakt-Liste + erste Datei laden
-  loadArtifactList(agentName);
+  if (loadFiles) loadArtifactList(agentName);
 }
 
 // ---------------------------------------------------------------------------
@@ -783,6 +811,53 @@ function formatSize(bytes) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+// ---------------------------------------------------------------------------
+// Agenten-Systemprompt anzeigen
+// ---------------------------------------------------------------------------
+async function showAgentPrompt(agentName, raw) {
+  // Agent auswählen, falls noch nicht selektiert
+  if (currentAgent !== agentName) {
+    selectAgent(agentName, { loadFiles: false });
+  }
+
+  const data = await fetchAgentPrompt(agentName);
+  if (data.error) {
+    $resultContent.innerHTML = `<p class="text-error">${escapeHtml(data.error)}</p>`;
+    showResultView();
+    return;
+  }
+
+  // Meta-Badges
+  const metaHtml = `<div class="mb-4 flex flex-wrap gap-2">${
+    data.meta.model
+      ? `<span class="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-medium bg-accent/10 text-accent rounded-full">
+          <span class="material-symbols-outlined text-[12px]">smart_toy</span>${escapeHtml(data.meta.model)}</span>`
+      : ''
+  }${
+    data.meta.description
+      ? `<span class="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-medium bg-on-surface/5 text-on-surface/60 rounded-full">${escapeHtml(data.meta.description)}</span>`
+      : ''
+  }</div>`;
+
+  $resultMarkdown.classList.remove("hidden");
+  $resultPreview.classList.add("hidden");
+
+  if (raw) {
+    $resultContent.innerHTML = metaHtml + `<pre class="prompt-source">${escapeHtml(data.raw)}</pre>`;
+  } else {
+    $resultContent.innerHTML = metaHtml + marked.parse(data.body, { breaks: true, gfm: true });
+  }
+
+  $previewFilename.textContent = "Systemprompt";
+  $previewOpenBtn.classList.add("hidden");
+  $previewOpenBtn.classList.remove("flex");
+  $produktEditBtn.classList.add("hidden");
+  $produktEditBtn.classList.remove("flex");
+  $produktCancelBtn.classList.add("hidden");
+
+  showResultView();
 }
 
 // ---------------------------------------------------------------------------

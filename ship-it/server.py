@@ -402,6 +402,10 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                 self._handle_get_file_content(slug, agent, datei)
             else:
                 self._send_json({"error": "Not found"}, 404)
+        elif path.startswith("/api/agents/") and path.endswith("/prompt"):
+            parts = path.split("/")
+            agent_name = parts[3]
+            self._handle_get_agent_prompt(agent_name)
         else:
             # Statische Dateien aus dashboard/
             self._serve_static(path)
@@ -572,6 +576,41 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                 "total_files": total_files,
             })
         self._send_json(agents)
+
+    def _handle_get_agent_prompt(self, agent_name):
+        """Liefere den Systemprompt eines Agenten (ohne YAML-Frontmatter)."""
+        if agent_name not in AGENT_PATHS:
+            self._send_json({"error": "Unbekannter Agent"}, 400)
+            return
+
+        agent_file = os.path.join(BASE_DIR, ".opencode", "agents", f"{agent_name}.md")
+        if not os.path.exists(agent_file):
+            self._send_json({"error": "Agent-Datei nicht gefunden"}, 404)
+            return
+
+        with open(agent_file, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        # YAML-Frontmatter extrahieren und entfernen
+        body = content
+        meta = {}
+        if content.startswith("---"):
+            end = content.find("---", 3)
+            if end != -1:
+                frontmatter = content[3:end].strip()
+                body = content[end + 3:].strip()
+                for line in frontmatter.split("\n"):
+                    if ":" in line and not line.startswith(" "):
+                        key, _, value = line.partition(":")
+                        meta[key.strip()] = value.strip()
+
+        self._send_json({
+            "body": body,
+            "raw": content,
+            "meta": meta,
+            "agent": agent_name,
+            "label": AGENT_LABELS.get(agent_name, agent_name),
+        })
 
     def _handle_run_agent(self, slug, agent):
         projekt_dir = os.path.join(PROJEKTE_DIR, slug)
