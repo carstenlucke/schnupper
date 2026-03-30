@@ -430,13 +430,20 @@ async function exitProduktEdit(save) {
   if (save) {
     const editor = document.getElementById("produkt-editor");
     if (!editor) return;
-    const content = editor.value.trim();
-    if (!content) return;
+    const content = editor.value;
+    if (!content.trim()) {
+      editor.classList.add("border-error");
+      editor.placeholder = "Produktbeschreibung darf nicht leer sein";
+      return;
+    }
+    // Buttons während Speichern deaktivieren
+    $produktEditBtn.disabled = true;
+    $produktCancelBtn.disabled = true;
     const result = await updateProdukt(currentSlug, content);
+    $produktEditBtn.disabled = false;
+    $produktCancelBtn.disabled = false;
     if (result.error) {
-      // Fehler anzeigen, im Edit-Modus bleiben
-      const editor = document.getElementById("produkt-editor");
-      if (editor) editor.classList.add("border-error");
+      editor.classList.add("border-error");
       return;
     }
     produktRawContent = content;
@@ -984,16 +991,16 @@ function setupEventListeners() {
   });
 
   // Produkt bearbeiten / speichern
-  $produktEditBtn.addEventListener("click", () => {
+  $produktEditBtn.addEventListener("click", async () => {
     if (isProduktEditing) {
-      exitProduktEdit(true);
+      await exitProduktEdit(true);
     } else {
       enterProduktEdit();
     }
   });
 
-  $produktCancelBtn.addEventListener("click", () => {
-    exitProduktEdit(false);
+  $produktCancelBtn.addEventListener("click", async () => {
+    await exitProduktEdit(false);
   });
 
   // Fenster-Resize → Terminal resize

@@ -537,13 +537,14 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         if not isinstance(body["content"], str):
             self._send_json({"error": "Content muss ein String sein"}, 400)
             return
-        content = body["content"].strip()
-        if not content:
+        original_content = body["content"]
+        if not original_content.strip():
             self._send_json({"error": "Content darf nicht leer sein"}, 400)
             return
         produkt_file = os.path.join(projekt_dir, "produkt.md")
+        content_to_write = original_content if original_content.endswith("\n") else original_content + "\n"
         with open(produkt_file, "w", encoding="utf-8") as f:
-            f.write(content + "\n")
+            f.write(content_to_write)
         self._send_json({"status": "ok"})
 
     # --- API: Agents ---
