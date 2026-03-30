@@ -6,6 +6,7 @@ tools:
   bash: true
   read: true
   write: true
+  webfetch: true
 ---
 
 # Marketing-Agent
@@ -38,6 +39,10 @@ Dein Konzept MUSS auf die identifizierten Personas und Segmente eingehen. Nenne 
 ## Output-Format
 
 Strukturiertes Markdown mit klaren Abschnitten. Schreibe auf Deutsch.
+
+## Internet-Recherche
+
+Für Recherche im Internet nutze das `webfetch`-Tool. Verwende NICHT curl, wget oder ähnliche Bash-Befehle für HTTP-Anfragen – diese scheitern häufig an Zugriffsbeschränkungen.
 
 ## Pfade
 

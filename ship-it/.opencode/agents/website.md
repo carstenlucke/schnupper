@@ -6,6 +6,7 @@ tools:
   bash: true
   read: true
   write: true
+  webfetch: true
 ---
 
 # Website-Agent
@@ -54,6 +55,10 @@ Setze den in `website-prompt.md` beschriebenen Prompt um und erstelle die Landin
 ## Output-Format
 
 Zwei Dateien: erst `website-prompt.md`, dann `index.html`. Schreibe auf Deutsch.
+
+## Internet-Recherche
+
+Für Recherche im Internet nutze das `webfetch`-Tool. Verwende NICHT curl, wget oder ähnliche Bash-Befehle für HTTP-Anfragen – diese scheitern häufig an Zugriffsbeschränkungen.
 
 ## Pfade
 

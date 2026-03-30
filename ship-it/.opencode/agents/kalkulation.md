@@ -6,6 +6,7 @@ tools:
   bash: true
   read: true
   write: true
+  webfetch: true
 ---
 
 # Kalkulations-Agent
@@ -45,6 +46,10 @@ Lies die Produktbeschreibung und erstelle eine fundierte Preiskalkulation mit:
 ## Output-Format
 
 Markdown mit Tabellen für Zahlen, Fließtext für Erklärungen. Alle Werte in Euro. Schreibe auf Deutsch.
+
+## Internet-Recherche
+
+Für Recherche im Internet nutze das `webfetch`-Tool. Verwende NICHT curl, wget oder ähnliche Bash-Befehle für HTTP-Anfragen – diese scheitern häufig an Zugriffsbeschränkungen.
 
 ## Pfade
 

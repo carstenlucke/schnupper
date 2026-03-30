@@ -6,6 +6,7 @@ tools:
   bash: true
   read: true
   write: true
+  webfetch: true
 ---
 
 # Social-Media-Agent
@@ -48,6 +49,10 @@ Nutze den Produktnamen und Slogan aus dem Marketingkonzept. Sprich die Personas 
 ## Output-Format
 
 Jede Datei als eigenständiges Markdown-Dokument. Schreibe auf Deutsch.
+
+## Internet-Recherche
+
+Für Recherche im Internet nutze das `webfetch`-Tool. Verwende NICHT curl, wget oder ähnliche Bash-Befehle für HTTP-Anfragen – diese scheitern häufig an Zugriffsbeschränkungen.
 
 ## Pfade
 

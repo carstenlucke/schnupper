@@ -1,10 +1,12 @@
 ---
 description: Zielgruppenanalyse – identifiziert Personas, Marktsegmente und Kaufkraft
-model: github-copilot/gpt-4o
+model: openai/gpt-5.3-codex
+thinking: medium
 tools:
   bash: true
   read: true
   write: true
+  webfetch: true
 ---
 
 # Zielgruppen-Agent
@@ -36,6 +38,10 @@ Lies die Produktbeschreibung und erstelle eine detaillierte Zielgruppenanalyse m
 ## Output-Format
 
 Strukturiertes Markdown mit Überschriften, Listen und ggf. Tabellen. Schreibe auf Deutsch.
+
+## Internet-Recherche
+
+Für Recherche im Internet nutze das `webfetch`-Tool. Verwende NICHT curl, wget oder ähnliche Bash-Befehle für HTTP-Anfragen – diese scheitern häufig an Zugriffsbeschränkungen.
 
 ## Pfade
 
