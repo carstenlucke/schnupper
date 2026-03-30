@@ -494,7 +494,7 @@ async function exitProduktEdit(save) {
 // ---------------------------------------------------------------------------
 // Agent auswählen
 // ---------------------------------------------------------------------------
-function selectAgent(agentName) {
+function selectAgent(agentName, { loadFiles = true } = {}) {
   // Produkt-Modus verlassen
   if (isProduktEditing) exitProduktEdit(false);
   isProduktSelected = false;
@@ -523,7 +523,7 @@ function selectAgent(agentName) {
   showTerminal(agentName);
 
   // Artefakt-Liste + erste Datei laden
-  loadArtifactList(agentName);
+  if (loadFiles) loadArtifactList(agentName);
 }
 
 // ---------------------------------------------------------------------------
@@ -819,7 +819,7 @@ function formatSize(bytes) {
 async function showAgentPrompt(agentName, raw) {
   // Agent auswählen, falls noch nicht selektiert
   if (currentAgent !== agentName) {
-    selectAgent(agentName);
+    selectAgent(agentName, { loadFiles: false });
   }
 
   const data = await fetchAgentPrompt(agentName);
