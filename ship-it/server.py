@@ -417,8 +417,14 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             self._handle_run_agent(slug, agent)
         elif path.startswith("/api/projekte/") and "/generate-image/" in path:
             parts = path.split("/")
+            if len(parts) != 6:
+                self._send_json({"error": "Not found"}, 404)
+                return
             slug = parts[3]
             if not self._validate_slug(slug): return
+            if parts[4] != "generate-image":
+                self._send_json({"error": "Not found"}, 404)
+                return
             agent = parts[5]
             self._handle_generate_image(slug, agent)
         else:
@@ -509,17 +515,18 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         agents = []
         for agent_name in AGENT_ORDER:
             status = get_agent_status(slug, agent_name)
-            # Dateien zählen
+            # Dateien zählen (outputs + optional_outputs)
             file_count = 0
-            for out_path in AGENT_PATHS[agent_name]["outputs"]:
+            for out_path in _get_all_outputs(agent_name):
                 if os.path.exists(os.path.join(projekt_dir, out_path)):
                     file_count += 1
+            total_files = len(_get_all_outputs(agent_name))
             agents.append({
                 "name": agent_name,
                 "label": AGENT_LABELS[agent_name],
                 "status": status,
                 "file_count": file_count,
-                "total_files": len(AGENT_PATHS[agent_name]["outputs"]),
+                "total_files": total_files,
             })
         self._send_json(agents)
 

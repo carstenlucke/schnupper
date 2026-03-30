@@ -590,23 +590,34 @@ async function handleGenerateImage(agentName, imageFileName) {
     Bild wird generiert\u2026
   `;
 
-  const result = await generateImage(currentSlug, agentName);
+  try {
+    const result = await generateImage(currentSlug, agentName);
 
-  if (result.error) {
+    if (result.error) {
+      btn.innerHTML = `
+        <span class="material-symbols-outlined text-[16px] text-red-400">error</span>
+        <span class="text-red-400">${result.error}</span>
+      `;
+      setTimeout(() => {
+        btn.innerHTML = originalHTML;
+      }, 3000);
+      return;
+    }
+
+    await loadArtifactList(agentName);
+    selectFile(agentName, imageFileName, { switchToResult: true });
+  } catch (error) {
+    console.error("Fehler bei der Bildgenerierung:", error);
     btn.innerHTML = `
       <span class="material-symbols-outlined text-[16px] text-red-400">error</span>
-      <span class="text-red-400">${result.error}</span>
+      <span class="text-red-400">Unerwarteter Fehler bei der Bildgenerierung.</span>
     `;
     setTimeout(() => {
-      btn.disabled = false;
       btn.innerHTML = originalHTML;
     }, 3000);
-    return;
+  } finally {
+    btn.disabled = false;
   }
-
-  btn.disabled = false;
-  await loadArtifactList(agentName);
-  selectFile(agentName, imageFileName, { switchToResult: true });
 }
 
 function formatSize(bytes) {
@@ -640,7 +651,7 @@ async function selectFile(agentName, fileName, { switchToResult = false } = {}) 
       <div class="flex flex-col items-center gap-4 py-4">
         <img src="${imageUrl}" alt="Generiertes Bild"
              class="max-w-full rounded-lg shadow-lg max-h-[70vh]" />
-        <p class="text-xs text-on-surface/40">KI-generiertes Bild basierend auf der Instagram-Beschreibung</p>
+        <p class="text-xs text-on-surface/40">KI-generiertes Bild (Vorschau)</p>
       </div>
     `;
     $previewFilename.textContent = fileName;
