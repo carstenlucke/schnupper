@@ -1,6 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
+# Laufenden Server auf Port 8000 beenden (optional)
+if [[ "${1:-}" == "--kill" ]]; then
+    echo "Beende laufenden Server auf Port 8000..."
+    lsof -ti :8000 | xargs kill -9 2>/dev/null || true
+    sleep 1
+fi
+
 # Projekte-Verzeichnis anlegen
 mkdir -p projekte
 
