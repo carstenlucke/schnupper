@@ -14,7 +14,8 @@ Live-Demo für eine Schnuppervorlesung (90 Min, 12. Klasse FOS). Schüler wähle
 
 - Python 3 (keine externen Dependencies)
 - [OpenCode CLI](https://opencode.ai) installiert und konfiguriert
-- GitHub-Copilot-Zugriff (in OpenCode als Provider konfiguriert) oder OpenAI API-Key (für Agenten mit `openai/`-Modellen und Bildgenerierung)
+- OpenAI-Login in OpenCode (via ChatGPT Plus Abo – die Agenten nutzen `openai/`-Modelle)
+- Für die KI-Bildgenerierung zusätzlich ein `OPENAI_API_KEY` in `.env` (siehe [Einrichtung](#ki-bildgenerierung))
 
 ## Ablauf
 

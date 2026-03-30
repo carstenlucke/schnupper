@@ -594,10 +594,11 @@ async function handleGenerateImage(agentName, imageFileName) {
     const result = await generateImage(currentSlug, agentName);
 
     if (result.error) {
-      btn.innerHTML = `
-        <span class="material-symbols-outlined text-[16px] text-red-400">error</span>
-        <span class="text-red-400">${result.error}</span>
-      `;
+      const errorSpan = document.createElement("span");
+      errorSpan.className = "text-red-400";
+      errorSpan.textContent = result.error;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[16px] text-red-400">error</span>`;
+      btn.appendChild(errorSpan);
       setTimeout(() => {
         btn.innerHTML = originalHTML;
       }, 3000);

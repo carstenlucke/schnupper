@@ -323,6 +323,7 @@ def _call_image_api(api_key: str, prompt: str, quality: str = "low",
         "n": 1,
         "size": size,
         "quality": quality,
+        "output_format": "b64_json",
     }).encode("utf-8")
 
     req = urllib.request.Request(url, data=payload, method="POST")
@@ -332,8 +333,10 @@ def _call_image_api(api_key: str, prompt: str, quality: str = "low",
     with urllib.request.urlopen(req, timeout=120) as resp:
         result = json.loads(resp.read().decode("utf-8"))
 
-    b64_data = result["data"][0]["b64_json"]
-    return base64.b64decode(b64_data)
+    data = result.get("data")
+    if not data or not data[0].get("b64_json"):
+        raise RuntimeError("API-Antwort enthält keine Bilddaten")
+    return base64.b64decode(data[0]["b64_json"])
 
 
 
@@ -726,7 +729,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             image_data = _call_image_api(api_key, prompt)
         except Exception as e:
             print(f"[image-gen] Fehler: {e}", file=sys.stderr)
-            self._send_json({"error": f"Bildgenerierung fehlgeschlagen: {e}"}, 500)
+            self._send_json({"error": "Bildgenerierung fehlgeschlagen"}, 500)
             return
 
         image_path = os.path.join(PROJEKTE_DIR, slug, cfg["output"])

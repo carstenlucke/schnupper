@@ -37,7 +37,7 @@ Setze den in `website-prompt.md` beschriebenen Prompt um und erstelle die Landin
 
 ### Pflicht-Sektionen der Website
 
-1. **Hero** – Produktname, Slogan, Kernbotschaft, großer CTA-Button. Falls ein Instagram-Bild (`instagram-bild.png`) als Eingabe vorhanden ist, bette es als Hero-Hintergrundbild per Base64-Data-URI ein (`background-image: url(data:image/png;base64,...)`). Lies die Datei dazu mit dem `bash`-Tool: `base64 -i <pfad>`. Falls ein Logo (`logo.png`) vorhanden ist, bette es ebenfalls als Base64-Data-URI ein und zeige es im Header/der Navigation.
+1. **Hero** – Produktname, Slogan, Kernbotschaft, großer CTA-Button. Falls ein Instagram-Bild (`instagram-bild.png`) als Eingabe vorhanden ist, bette es als Hero-Hintergrundbild per Base64-Data-URI ein (`background-image: url(data:image/png;base64,...)`). Lies die Datei dazu mit dem `bash`-Tool: `base64 <pfad> | tr -d '\n'`. Falls ein Logo (`logo.png`) vorhanden ist, bette es ebenfalls als Base64-Data-URI ein und zeige es im Header/der Navigation.
 2. **Features/Vorteile** – 3-6 Highlights mit Icons (Emoji oder CSS)
 3. **Zielgruppe** – Für wen ist das Produkt? (basierend auf Personas)
 4. **Pricing** – Preis mit Strategie-Begründung (aus Kalkulation)
