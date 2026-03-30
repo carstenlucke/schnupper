@@ -14,7 +14,8 @@ Live-Demo für eine Schnuppervorlesung (90 Min, 12. Klasse FOS). Schüler wähle
 
 - Python 3 (keine externen Dependencies)
 - [OpenCode CLI](https://opencode.ai) installiert und konfiguriert
-- GitHub-Copilot-Zugriff (in OpenCode als Provider konfiguriert)
+- OpenAI-Login in OpenCode (via ChatGPT Plus Abo – die Agenten nutzen `openai/`-Modelle)
+- Für die KI-Bildgenerierung zusätzlich ein `OPENAI_API_KEY` in `.env` (siehe [Einrichtung](#ki-bildgenerierung))
 
 ## Ablauf
 
@@ -95,6 +96,28 @@ ship-it/
 - **Ergebnis-Tab** rendert Markdown-Artefakte
 - **Vorschau-Tab** zeigt HTML-Artefakte (Website, App) im iframe
 - **Feedback-Input** zum Überarbeiten von Agent-Outputs
+
+## KI-Bildgenerierung
+
+Marketing- und Social-Media-Agent können auf Knopfdruck Bilder generieren (Logo bzw. Instagram-Post). Die Bildgenerierung nutzt die OpenAI API (`gpt-image-1.5`).
+
+### Einrichtung
+
+```bash
+cp .env.example .env
+# OPENAI_API_KEY in .env eintragen
+```
+
+### Kosten pro Bild (gpt-image-1.5, Stand März 2026)
+
+| Bild | Quality | Größe | Kosten (ca.) |
+|------|---------|-------|-------------|
+| Logo (Marketing) | low | 1024x1024 | ~$0.01 |
+| Instagram-Bild (Social Media) | low | 1024x1024 | ~$0.01 |
+
+**Pro Projekt (alle Bilder):** ~$0.02
+
+Die Kosten sind Token-basiert und variieren je nach Prompt-Länge und Bildkomplexität. Bei `quality: "low"` und 1024x1024 liegt der Output-Preis bei $0.009/Bild. Für eine Vorlesung mit ~10 Projekten: **unter $0.50 Gesamtkosten**.
 
 ## Technical Debt
 

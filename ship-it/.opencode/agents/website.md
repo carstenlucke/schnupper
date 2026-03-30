@@ -6,6 +6,7 @@ tools:
   bash: true
   read: true
   write: true
+  webfetch: true
 ---
 
 # Website-Agent
@@ -36,7 +37,7 @@ Setze den in `website-prompt.md` beschriebenen Prompt um und erstelle die Landin
 
 ### Pflicht-Sektionen der Website
 
-1. **Hero** – Produktname, Slogan, Kernbotschaft, großer CTA-Button
+1. **Hero** – Produktname, Slogan, Kernbotschaft, großer CTA-Button. Falls ein Instagram-Bild (`instagram-bild.png`) als Eingabe vorhanden ist, bette es als Hero-Hintergrundbild per Base64-Data-URI ein (`background-image: url(data:image/png;base64,...)`). Lies die Datei dazu mit dem `bash`-Tool: `base64 <pfad> | tr -d '\n'`. Falls ein Logo (`logo.png`) vorhanden ist, bette es ebenfalls als Base64-Data-URI ein und zeige es im Header/der Navigation.
 2. **Features/Vorteile** – 3-6 Highlights mit Icons (Emoji oder CSS)
 3. **Zielgruppe** – Für wen ist das Produkt? (basierend auf Personas)
 4. **Pricing** – Preis mit Strategie-Begründung (aus Kalkulation)
@@ -46,7 +47,7 @@ Setze den in `website-prompt.md` beschriebenen Prompt um und erstelle die Landin
 ### Technische Anforderungen
 
 - **Einzelne HTML-Datei** – alles inline (CSS im `<style>`, JS im `<script>`)
-- **Kein CDN, keine externen Abhängigkeiten**
+- **Kein CDN, keine externen Abhängigkeiten** (Bilder als Base64-Data-URI einbetten)
 - **Responsive** – Mobile-first, sieht auf allen Geräten gut aus
 - **Visuell ansprechend** – Moderne Farbpalette passend zum Produkt, CSS-Gradienten statt Bilder, Emoji als Icons
 - **Smooth Scrolling** zwischen Sektionen
@@ -54,6 +55,10 @@ Setze den in `website-prompt.md` beschriebenen Prompt um und erstelle die Landin
 ## Output-Format
 
 Zwei Dateien: erst `website-prompt.md`, dann `index.html`. Schreibe auf Deutsch.
+
+## Internet-Recherche
+
+Für Recherche im Internet nutze das `webfetch`-Tool. Verwende NICHT curl, wget oder ähnliche Bash-Befehle für HTTP-Anfragen – diese scheitern häufig an Zugriffsbeschränkungen.
 
 ## Pfade
 

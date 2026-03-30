@@ -1,5 +1,6 @@
 # Runtime
 projekte/
+.env
 
 # OS
 .DS_Store

@@ -15,12 +15,32 @@ import threading
 import re
 import termios
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
+import base64
+import urllib.request
 from urllib.parse import urlparse
 
 PORT = 8000
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJEKTE_DIR = os.path.join(BASE_DIR, "projekte")
 DASHBOARD_DIR = os.path.join(BASE_DIR, "dashboard")
+
+
+def _load_dotenv():
+    """Lade Variablen aus .env-Datei (falls vorhanden)."""
+    env_path = os.path.join(BASE_DIR, ".env")
+    if not os.path.exists(env_path):
+        return
+    with open(env_path, "r") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" in line:
+                key, _, value = line.partition("=")
+                os.environ.setdefault(key.strip(), value.strip())
+
+
+_load_dotenv()
 
 # ---------------------------------------------------------------------------
 # Agent-Pfad-Templates
@@ -33,6 +53,7 @@ AGENT_PATHS = {
     "marketing": {
         "inputs": ["produkt.md", "zielgruppe/analyse.md"],
         "outputs": ["marketing/konzept.md"],
+        "optional_outputs": ["marketing/logo.png"],
     },
     "social-media": {
         "inputs": ["produkt.md", "zielgruppe/analyse.md", "marketing/konzept.md"],
@@ -40,6 +61,9 @@ AGENT_PATHS = {
             "social-media/instagram.md",
             "social-media/linkedin.md",
             "social-media/tiktok.md",
+        ],
+        "optional_outputs": [
+            "social-media/instagram-bild.png",
         ],
     },
     "kalkulation": {
@@ -52,6 +76,10 @@ AGENT_PATHS = {
             "zielgruppe/analyse.md",
             "marketing/konzept.md",
             "kalkulation/preiskalkulation.md",
+        ],
+        "optional_inputs": [
+            "marketing/logo.png",
+            "social-media/instagram-bild.png",
         ],
         "outputs": ["website/website-prompt.md", "website/index.html"],
     },
@@ -126,6 +154,12 @@ def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
     paths = AGENT_PATHS[agent]
 
     eingaben = [f"{p}/{f}" for f in paths["inputs"]]
+    optional_inputs = set()
+    for f in paths.get("optional_inputs", []):
+        full = f"{p}/{f}"
+        if os.path.exists(os.path.join(BASE_DIR, full)):
+            eingaben.append(full)
+            optional_inputs.add(full)
     feedback_outputs = set()
     if feedback:
         for f in paths["outputs"]:
@@ -138,6 +172,8 @@ def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
     for e in eingaben:
         if e in feedback_outputs:
             eingaben_lines.append(f"- {e}  (deine bisherige Ausgabe)")
+        elif e in optional_inputs:
+            eingaben_lines.append(f"- {e}  (optional, falls vorhanden)")
         else:
             eingaben_lines.append(f"- {e}")
     eingaben_str = "\n".join(eingaben_lines)
@@ -259,6 +295,58 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Bildgenerierung (OpenAI gpt-image-1.5)
+# ---------------------------------------------------------------------------
+
+def _extract_prompt(content: str, keyword: str) -> str | None:
+    """Extrahiere einen Prompt – zuerst aus Code-Block nach Keyword, dann Inline."""
+    idx = content.lower().find(keyword.lower())
+    if idx >= 0:
+        rest = content[idx:]
+        match = re.search(r'```[^\n]*\n(.*?)```', rest, re.DOTALL)
+        if match:
+            return match.group(1).strip()
+    # Fallback: **Keyword**: <text>
+    match = re.search(rf'\*\*{re.escape(keyword)}\*\*\s*:\s*(.+)', content, re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
+    return None
+
+
+def _call_image_api(api_key: str, prompt: str, quality: str = "low",
+                    size: str = "1024x1024") -> bytes:
+    """Text-to-Image mit gpt-image-1.5."""
+    url = "https://api.openai.com/v1/images/generations"
+    payload = json.dumps({
+        "model": "gpt-image-1.5",
+        "prompt": prompt,
+        "n": 1,
+        "size": size,
+        "quality": quality,
+        "output_format": "b64_json",
+    }).encode("utf-8")
+
+    req = urllib.request.Request(url, data=payload, method="POST")
+    req.add_header("Authorization", f"Bearer {api_key}")
+    req.add_header("Content-Type", "application/json")
+
+    with urllib.request.urlopen(req, timeout=120) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    data = result.get("data")
+    if not data or not data[0].get("b64_json"):
+        raise RuntimeError("API-Antwort enthält keine Bilddaten")
+    return base64.b64decode(data[0]["b64_json"])
+
+
+
+def _get_all_outputs(agent: str) -> list[str]:
+    """Gibt outputs + optional_outputs für einen Agenten zurück."""
+    paths = AGENT_PATHS.get(agent, {})
+    return paths.get("outputs", []) + paths.get("optional_outputs", [])
+
+
+# ---------------------------------------------------------------------------
 # HTTP-Handler
 # ---------------------------------------------------------------------------
 SAFE_SEGMENT_RE = re.compile(r'^[a-z0-9][a-z0-9-]*$')
@@ -330,6 +418,18 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             if not self._validate_slug(slug): return
             agent = parts[5]
             self._handle_run_agent(slug, agent)
+        elif path.startswith("/api/projekte/") and "/generate-image/" in path:
+            parts = path.split("/")
+            if len(parts) != 6:
+                self._send_json({"error": "Not found"}, 404)
+                return
+            slug = parts[3]
+            if not self._validate_slug(slug): return
+            if parts[4] != "generate-image":
+                self._send_json({"error": "Not found"}, 404)
+                return
+            agent = parts[5]
+            self._handle_generate_image(slug, agent)
         else:
             self._send_json({"error": "Not found"}, 404)
 
@@ -418,17 +518,18 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         agents = []
         for agent_name in AGENT_ORDER:
             status = get_agent_status(slug, agent_name)
-            # Dateien zählen
+            # Dateien zählen (outputs + optional_outputs)
             file_count = 0
-            for out_path in AGENT_PATHS[agent_name]["outputs"]:
+            for out_path in _get_all_outputs(agent_name):
                 if os.path.exists(os.path.join(projekt_dir, out_path)):
                     file_count += 1
+            total_files = len(_get_all_outputs(agent_name))
             agents.append({
                 "name": agent_name,
                 "label": AGENT_LABELS[agent_name],
                 "status": status,
                 "file_count": file_count,
-                "total_files": len(AGENT_PATHS[agent_name]["outputs"]),
+                "total_files": total_files,
             })
         self._send_json(agents)
 
@@ -516,7 +617,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             return
 
         files = []
-        for out_path in AGENT_PATHS[agent]["outputs"]:
+        for out_path in _get_all_outputs(agent):
             full_path = os.path.join(PROJEKTE_DIR, slug, out_path)
             exists = os.path.exists(full_path)
             files.append({
@@ -530,7 +631,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
     def _handle_get_file_content(self, slug, agent, datei):
         # Sicherheit: Pfad muss in AGENT_PATHS definiert sein
         expected = f"{agent}/{datei}"
-        if expected not in AGENT_PATHS.get(agent, {}).get("outputs", []):
+        if expected not in _get_all_outputs(agent):
             # Auch produkt.md erlauben
             if datei != "produkt.md":
                 self._send_json({"error": "Nicht erlaubt"}, 403)
@@ -543,6 +644,18 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             self._send_json({"error": "Datei nicht gefunden"}, 404)
             return
 
+        # Binärdateien (Bilder)
+        if datei.endswith(".png"):
+            with open(full_path, "rb") as f:
+                data = f.read()
+            self.send_response(200)
+            self.send_header("Content-Type", "image/png")
+            self.send_header("Content-Length", len(data))
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(data)
+            return
+
         with open(full_path, "r", encoding="utf-8") as f:
             content = f.read()
 
@@ -553,11 +666,85 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(content.encode("utf-8"))
 
+    # --- API: Bildgenerierung ---
+
+    def _handle_generate_image(self, slug, agent):
+        """Generiere ein Bild mit OpenAI gpt-image-1.5."""
+        import sys
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            self._send_json({"error": "OPENAI_API_KEY nicht gesetzt"}, 500)
+            return
+
+        # Konfiguration pro Agent
+        config = {
+            "marketing": {
+                "source": "marketing/konzept.md",
+                "keyword": "Logo-Prompt",
+                "output": "marketing/logo.png",
+                "error_no_prompt": "Kein Logo-Prompt in konzept.md gefunden",
+            },
+            "social-media": {
+                "source": "social-media/instagram.md",
+                "keyword": "Bildvorschlag",
+                "output": "social-media/instagram-bild.png",
+                "error_no_prompt": "Keine Bild-Beschreibung in instagram.md gefunden",
+            },
+        }
+
+        if agent not in config:
+            self._send_json({"error": f"Bildgenerierung für '{agent}' nicht verfügbar"}, 400)
+            return
+
+        cfg = config[agent]
+        source_path = os.path.join(PROJEKTE_DIR, slug, cfg["source"])
+        if not os.path.exists(source_path):
+            self._send_json({"error": f"{cfg['source']} nicht gefunden"}, 404)
+            return
+
+        with open(source_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        prompt = _extract_prompt(content, cfg["keyword"])
+        if not prompt:
+            self._send_json({"error": cfg["error_no_prompt"]}, 400)
+            return
+
+        # Produktname aus produkt.md lesen
+        produkt_path = os.path.join(PROJEKTE_DIR, slug, "produkt.md")
+        produktname = slug
+        if os.path.exists(produkt_path):
+            with open(produkt_path, "r", encoding="utf-8") as f:
+                first_line = f.readline().strip()
+                if first_line.startswith("#"):
+                    produktname = first_line.lstrip("#").strip()
+
+        # Produktname immer mitgeben
+        prompt = f'Product: "{produktname}". {prompt}'
+
+
+        print(f"[image-gen] {slug}/{agent}: Prompt = {prompt[:150]}...", file=sys.stderr)
+
+        try:
+            image_data = _call_image_api(api_key, prompt)
+        except Exception as e:
+            print(f"[image-gen] Fehler: {e}", file=sys.stderr)
+            self._send_json({"error": "Bildgenerierung fehlgeschlagen"}, 500)
+            return
+
+        image_path = os.path.join(PROJEKTE_DIR, slug, cfg["output"])
+        os.makedirs(os.path.dirname(image_path), exist_ok=True)
+        with open(image_path, "wb") as f:
+            f.write(image_data)
+
+        print(f"[image-gen] {slug}/{agent}: Bild gespeichert ({len(image_data)} Bytes)", file=sys.stderr)
+        self._send_json({"status": "ok", "path": cfg["output"], "size": len(image_data)})
+
     # --- API: Dateien löschen ---
 
     def _handle_delete_file(self, slug, agent, datei):
         expected = f"{agent}/{datei}"
-        if expected not in AGENT_PATHS.get(agent, {}).get("outputs", []):
+        if expected not in _get_all_outputs(agent):
             self._send_json({"error": "Nicht erlaubt"}, 403)
             return
         full_path = os.path.join(PROJEKTE_DIR, slug, expected)
@@ -572,7 +759,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             self._send_json({"error": "Unbekannter Agent"}, 400)
             return
         deleted = []
-        for f in AGENT_PATHS[agent]["outputs"]:
+        for f in _get_all_outputs(agent):
             full_path = os.path.join(PROJEKTE_DIR, slug, f)
             if os.path.exists(full_path):
                 os.remove(full_path)
