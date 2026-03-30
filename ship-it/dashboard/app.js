@@ -10,6 +10,9 @@ let agents = [];
 let terminals = {};      // agent-name → Terminal instance
 let eventSources = {};   // agent-name → EventSource
 let pollInterval = null;
+let isProduktSelected = false;
+let isProduktEditing = false;
+let produktRawContent = "";  // Zwischenspeicher für Edit-Modus
 
 // Agent-Abhängigkeiten: welche Agenten müssen "done" sein, bevor dieser starten kann
 const AGENT_DEPS = {
@@ -77,6 +80,13 @@ async function deleteAgentFiles(slug, agent) {
   return api(`/api/projekte/${slug}/files/${agent}`, { method: "DELETE" });
 }
 
+async function updateProdukt(slug, content) {
+  return api(`/api/projekte/${slug}/produkt`, {
+    method: "PUT",
+    body: JSON.stringify({ content }),
+  });
+}
+
 async function generateImage(slug, agent) {
   return api(`/api/projekte/${slug}/generate-image/${agent}`, { method: "POST" });
 }
@@ -112,6 +122,9 @@ const $resultPreview = document.getElementById("result-preview");
 const $terminalToggle = document.getElementById("terminal-toggle");
 const $artifactList = document.getElementById("artifact-list");
 const $artifactAgentName = document.getElementById("artifact-agent-name");
+const $produktEntry = document.getElementById("produkt-entry");
+const $produktEditBtn = document.getElementById("produkt-edit-btn");
+const $produktCancelBtn = document.getElementById("produkt-cancel-btn");
 
 // ---------------------------------------------------------------------------
 // Markdown-Konfiguration (HTML in Markdown escapen)
@@ -220,6 +233,7 @@ async function loadProjekt(slug) {
   // Agenten laden
   agents = await fetchAgents(slug);
   renderAgentList();
+  renderProduktEntry();
 
   // Ersten sinnvollen Agenten auswählen
   if (!currentAgent || !agents.find(a => a.name === currentAgent)) {
@@ -317,9 +331,135 @@ function canAgentStart(agentName) {
 }
 
 // ---------------------------------------------------------------------------
+// Produkt-Eintrag (Sidebar)
+// ---------------------------------------------------------------------------
+function renderProduktEntry() {
+  $produktEntry.innerHTML = "";
+  const div = document.createElement("div");
+  div.className = `agent-item flex items-center gap-2 p-3 rounded-sm cursor-pointer ${isProduktSelected ? 'selected' : ''}`;
+  div.innerHTML = `
+    <span class="material-symbols-outlined text-accent text-[18px]">description</span>
+    <span class="text-xs font-medium text-on-surface/80">Produkt</span>
+  `;
+  div.addEventListener("click", () => selectProdukt());
+  $produktEntry.appendChild(div);
+}
+
+function selectProdukt() {
+  // Edit-Modus ggf. verwerfen
+  if (isProduktEditing) exitProduktEdit(false);
+
+  isProduktSelected = true;
+  currentAgent = null;
+  currentFile = "produkt.md";
+
+  // Agent-Highlight entfernen
+  document.querySelectorAll(".agent-item").forEach(el => {
+    el.classList.remove("selected");
+  });
+  renderProduktEntry();
+
+  $activeAgentLabel.textContent = "Produkt";
+  $artifactAgentName.textContent = "Produkt";
+
+  // Artefakt-Liste: nur produkt.md
+  loadProduktArtifact();
+  // Inhalt laden
+  loadProduktContent();
+  // Terminal verstecken, Ergebnis anzeigen
+  showResultView();
+  // Feedback-Bar verstecken
+  $feedbackInput.parentElement.classList.add("hidden");
+  // Terminal-Toggle verstecken
+  $terminalToggle.classList.add("hidden");
+}
+
+function loadProduktArtifact() {
+  $artifactList.innerHTML = "";
+  const div = document.createElement("div");
+  div.className = "artifact-item flex items-center gap-3 p-3 rounded-sm bg-on-surface/10 border-l-2 border-accent";
+  div.innerHTML = `
+    <span class="material-symbols-outlined text-on-surface/60 text-[20px]">description</span>
+    <div class="flex flex-col overflow-hidden flex-1">
+      <span class="text-sm text-on-surface font-medium truncate">produkt.md</span>
+      <span class="text-[10px] text-on-surface/40">Produktbeschreibung</span>
+    </div>
+  `;
+  $artifactList.appendChild(div);
+}
+
+async function loadProduktContent() {
+  if (!currentSlug) return;
+  const content = await fetchFileContent(currentSlug, "zielgruppe", "produkt.md");
+  produktRawContent = content;
+
+  $resultMarkdown.classList.remove("hidden");
+  $resultPreview.classList.add("hidden");
+  $resultContent.innerHTML = marked.parse(content, { breaks: true, gfm: true });
+  $previewFilename.textContent = "produkt.md";
+  $previewOpenBtn.classList.add("hidden");
+  $previewOpenBtn.classList.remove("flex");
+
+  // Bearbeiten-Button anzeigen
+  $produktEditBtn.classList.remove("hidden");
+  $produktEditBtn.classList.add("flex");
+  $produktEditBtn.innerHTML = `<span class="material-symbols-outlined text-[14px]">edit</span>Bearbeiten`;
+  $produktCancelBtn.classList.add("hidden");
+  $produktCancelBtn.classList.remove("flex");
+}
+
+function enterProduktEdit() {
+  isProduktEditing = true;
+  $resultContent.innerHTML = `
+    <textarea id="produkt-editor"
+      class="w-full h-full min-h-[300px] px-6 py-6 bg-on-surface/5 border border-on-surface/10 rounded-lg text-on-surface text-sm focus:border-accent focus:ring-1 focus:ring-accent outline-none resize-none"
+    >${produktRawContent.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</textarea>
+  `;
+  // Button auf "Speichern" umschalten
+  $produktEditBtn.innerHTML = `<span class="material-symbols-outlined text-[14px]">save</span>Speichern`;
+  $produktCancelBtn.classList.remove("hidden");
+  $produktCancelBtn.classList.add("flex");
+}
+
+async function exitProduktEdit(save) {
+  if (save) {
+    const editor = document.getElementById("produkt-editor");
+    if (!editor) return;
+    const content = editor.value.trim();
+    if (!content) return;
+    await updateProdukt(currentSlug, content);
+    produktRawContent = content;
+    // Projektname im Dropdown aktualisieren
+    const projekte = await fetchProjekte();
+    renderProjektDropdown(projekte);
+    const projekt = projekte.find(p => p.slug === currentSlug);
+    if (projekt) {
+      $projektNameDisplay.textContent = projekt.name;
+    }
+  }
+  isProduktEditing = false;
+  // Markdown neu rendern
+  $resultContent.innerHTML = marked.parse(produktRawContent, { breaks: true, gfm: true });
+  $produktEditBtn.innerHTML = `<span class="material-symbols-outlined text-[14px]">edit</span>Bearbeiten`;
+  $produktCancelBtn.classList.add("hidden");
+  $produktCancelBtn.classList.remove("flex");
+}
+
+// ---------------------------------------------------------------------------
 // Agent auswählen
 // ---------------------------------------------------------------------------
 function selectAgent(agentName) {
+  // Produkt-Modus verlassen
+  if (isProduktEditing) exitProduktEdit(false);
+  isProduktSelected = false;
+  renderProduktEntry();
+  $produktEditBtn.classList.add("hidden");
+  $produktEditBtn.classList.remove("flex");
+  $produktCancelBtn.classList.add("hidden");
+  $produktCancelBtn.classList.remove("flex");
+  $feedbackInput.parentElement.classList.remove("hidden");
+  $terminalToggle.classList.remove("hidden");
+
   currentAgent = agentName;
   currentFile = null;
   const agent = agents.find(a => a.name === agentName);
@@ -830,6 +970,19 @@ function setupEventListeners() {
     if (e.key === "Enter") {
       $feedbackBtn.click();
     }
+  });
+
+  // Produkt bearbeiten / speichern
+  $produktEditBtn.addEventListener("click", () => {
+    if (isProduktEditing) {
+      exitProduktEdit(true);
+    } else {
+      enterProduktEdit();
+    }
+  });
+
+  $produktCancelBtn.addEventListener("click", () => {
+    exitProduktEdit(false);
   });
 
   // Fenster-Resize → Terminal resize
