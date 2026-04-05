@@ -2,10 +2,15 @@
 set -euo pipefail
 
 # Laufenden Server auf Port 8000 beenden (optional)
-if [[ "${1:-}" == "--kill" ]]; then
+if [[ "${1:-}" == "--kill" || "${1:-}" == "--force" ]]; then
     echo "Beende laufenden Server auf Port 8000..."
     lsof -ti :8000 | xargs kill -9 2>/dev/null || true
     sleep 1
+elif lsof -ti :8000 >/dev/null 2>&1; then
+    echo "FEHLER: Port 8000 ist bereits belegt."
+    echo "  Erneut starten mit:  ./start.sh --force"
+    echo "  Oder manuell:        lsof -ti :8000 | xargs kill -9"
+    exit 1
 fi
 
 # Projekte-Verzeichnis anlegen
