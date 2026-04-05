@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digitalisierung und KI -- Schnuppervorlesung</title>
+
+  <!-- Reveal.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/theme/white.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ==================== TITELFOLIE ==================== -->
+      <section class="title-slide">
+        <div>
+          <h1>Digitalisierung und KI</h1>
+          <p class="subtitle">Was Maschinen schon können</p>
+        </div>
+        <div class="meta">
+          <p>Schnuppervorlesung -- Technische Hochschule Mittelhessen</p>
+          <p>Prof. Dr. Carsten Lucke</p>
+        </div>
+        <aside class="notes">
+          - Willkommen, kurze Vorstellung
+          - Thema: KI in der Praxis, nicht nur Theorie
+          - Am Ende: Live-Demo, bei der IHR das Produkt bestimmt
+        </aside>
+      </section>
+
+      <!-- ==================== PHASE 1: EINSTIEG ==================== -->
+
+      <!-- Einstiegsfrage -->
+      <section class="interactive-slide">
+        <div class="emoji">&#x1F64B;</div>
+        <h2>Kurze Umfrage</h2>
+        <p style="font-size: 24pt; margin-top: 30px;">Wer von euch hat schon mal<br><strong style="color: var(--thm-gruen);">ChatGPT, Gemini oder Copilot</strong> benutzt?</p>
+        <aside class="notes">
+          - Hande hoch! (Erwartung: fast alle)
+          - Kurze Rufrunde: Wofuer nutzt ihr das?
+          - Typische Antworten: Hausaufgaben, Texte schreiben, Fragen beantworten, Uebersetzen
+          - "Spannend. Und genau da setzen wir heute an."
+        </aside>
+      </section>
+
+      <!-- Ueberleitung -->
+      <section class="statement-slide">
+        <p class="big-text">ChatGPT kann mit euch <em>reden</em>.<br><br>Aber kann es auch <em>handeln</em>?</p>
+        <aside class="notes">
+          - Provokante Frage
+          - ChatGPT schreibt Texte, beantwortet Fragen -- aber TUT es etwas?
+          - Kann es eine Datei anlegen? Eine Website bauen? Einen Plan ausfuehren?
+          - "Genau das schauen wir uns heute an."
+        </aside>
+      </section>
+
+      <!-- ==================== PHASE 2: VOM CHATBOT ZUM AGENTEN ==================== -->
+
+      <section class="section-divider">
+        <h2>Vom Chatbot zum KI-Agenten</h2>
+        <aside class="notes">
+          - Jetzt: Was ist der Unterschied?
+          - Einfach erklaert, ohne Technik-Jargon
+        </aside>
+      </section>
+
+      <!-- Was kann ChatGPT? -->
+      <section>
+        <h2>Was kann ChatGPT?</h2>
+        <div class="card-grid cols-2" style="margin-top: 30px;">
+          <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-pen-fancy"></i></div>
+            <h3>Texte schreiben</h3>
+            <p>Aufsaetze, E-Mails, Zusammenfassungen, Gedichte...</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-comments"></i></div>
+            <h3>Fragen beantworten</h3>
+            <p>Erklaerungen, Definitionen, Tipps und Ratschlaege</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-language"></i></div>
+            <h3>Uebersetzen</h3>
+            <p>Zwischen Sprachen uebersetzen, Texte umformulieren</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><i class="fa-solid fa-lightbulb"></i></div>
+            <h3>Ideen entwickeln</h3>
+            <p>Brainstorming, kreative Vorschlaege, Konzepte</p>
+          </div>
+        </div>
+        <aside class="notes">
+          - Das kennen die Schueler bereits
+          - Kurz abhaken, nicht zu lange drauf verweilen
+          - Ueberleitung: "Super. Aber jetzt kommt das Aber..."
+        </aside>
+      </section>
+
+      <!-- Was kann ChatGPT NICHT? -->
+      <section>
+        <h2>Was kann ChatGPT <span style="color: var(--thm-rot);">nicht</span>?</h2>
+        <div class="card-grid cols-2" style="margin-top: 30px;">
+          <div class="card" style="border-top-color: var(--thm-rot);">
+            <div class="card-icon" style="color: var(--thm-rot);"><i class="fa-solid fa-folder-open"></i></div>
+            <h3 style="color: var(--thm-rot);">Dateien erstellen</h3>
+            <p>Kann keine Dokumente, Tabellen oder Websites auf eurem Rechner anlegen</p>
+          </div>
+          <div class="card" style="border-top-color: var(--thm-rot);">
+            <div class="card-icon" style="color: var(--thm-rot);"><i class="fa-solid fa-gears"></i></div>
+            <h3 style="color: var(--thm-rot);">Aufgaben ausfuehren</h3>
+            <p>Kann nichts eigenstaendig erledigen -- nur antworten, wenn ihr fragt</p>
+          </div>
+          <div class="card" style="border-top-color: var(--thm-rot);">
+            <div class="card-icon" style="color: var(--thm-rot);"><i class="fa-solid fa-plug"></i></div>
+            <h3 style="color: var(--thm-rot);">Mit Systemen arbeiten</h3>
+            <p>Kann nicht auf Datenbanken, APIs oder andere Programme zugreifen</p>
+          </div>
+          <div class="card" style="border-top-color: var(--thm-rot);">
+            <div class="card-icon" style="color: var(--thm-rot);"><i class="fa-solid fa-rotate"></i></div>
+            <h3 style="color: var(--thm-rot);">Sich selbst pruefen</h3>
+            <p>Kann nicht testen ob seine Antwort wirklich stimmt oder funktioniert</p>
+          </div>
+        </div>
+        <aside class="notes">
+          - Kernpunkt: ChatGPT ist "nur" ein Gespraechspartner
+          - Es WEISS viel, aber es KANN nichts tun
+          - "Stellt euch vor, ihr ruft einen Experten an..."
+        </aside>
+      </section>
+
+      <!-- Analogie -->
+      <section>
+        <h2>Der Unterschied</h2>
+        <div class="vs-container" style="margin-top: 40px;">
+          <div class="card" style="border-top-color: var(--thm-mittelgrau); text-align: center;">
+            <div class="card-icon" style="color: var(--thm-mittelgrau); font-size: 48pt;"><i class="fa-solid fa-phone"></i></div>
+            <h3 style="color: var(--thm-mittelgrau);">Chatbot</h3>
+            <p style="font-size: 16pt;">Ein Experte <strong style="color: var(--thm-mittelgrau);">am Telefon</strong></p>
+            <p style="font-size: 14pt; color: var(--thm-mittelgrau);">Weiss alles, kann aber nichts anfassen.<br>Ihr muesst alles selbst umsetzen.</p>
+          </div>
+          <div class="vs-label">vs.</div>
+          <div class="card" style="text-align: center;">
+            <div class="card-icon" style="font-size: 48pt;"><i class="fa-solid fa-user-gear"></i></div>
+            <h3>KI-Agent</h3>
+            <p style="font-size: 16pt;">Ein Experte <strong>bei euch im Buero</strong></p>
+            <p style="font-size: 14pt; color: var(--thm-mittelgrau);">Weiss alles UND legt direkt los.<br>Liest Dateien, schreibt Ergebnisse, nutzt Werkzeuge.</p>
+          </div>
+        </div>
+        <aside class="notes">
+          - Analogie ist der Schluessel zum Verstaendnis
+          - Chatbot = passiver Berater, Agent = aktiver Macher
+          - "Und wie macht der Agent das? Dazu gibt es ein einfaches Prinzip..."
+        </aside>
+      </section>
+
+      <!-- Agent-Kreislauf -->
+      <section>
+        <h2>Wie arbeitet ein KI-Agent?</h2>
+        <p class="text-large" style="margin-top: 10px;">Der Agent-Kreislauf: Denken, Handeln, Pruefen</p>
+
+        <div class="cycle-diagram">
+          <div class="cycle-step">
+            <span class="step-icon"><i class="fa-solid fa-clipboard-question"></i></span>
+            <span class="step-label">Verstehen</span>
+          </div>
+          <span class="cycle-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <div class="cycle-step">
+            <span class="step-icon"><i class="fa-solid fa-list-check"></i></span>
+            <span class="step-label">Planen</span>
+          </div>
+          <span class="cycle-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <div class="cycle-step">
+            <span class="step-icon"><i class="fa-solid fa-hammer"></i></span>
+            <span class="step-label">Handeln</span>
+          </div>
+          <span class="cycle-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <div class="cycle-step">
+            <span class="step-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></span>
+            <span class="step-label">Pruefen</span>
+          </div>
+          <div class="cycle-return">
+            <i class="fa-solid fa-rotate-left" style="color: var(--thm-gruen);"></i>
+            Nicht gut genug? Nochmal von vorne -- bis es passt.
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top: 20px;">
+          <p><i class="fa-solid fa-lightbulb"></i> <strong>Wie ein guter Praktikant:</strong> Aufgabe lesen, Plan machen, umsetzen, pruefen ob alles stimmt -- und nachbessern wenn noetig.</p>
+        </div>
+        <aside class="notes">
+          - DAS ist der zentrale Unterschied: die Feedback-Schleife
+          - Ein Chatbot gibt EINE Antwort. Ein Agent arbeitet ITERATIV.
+          - Analogie Praktikant: Ihr gebt ihm eine Aufgabe, er arbeitet eigenstaendig
+          - "Und jetzt wird's richtig spannend: Was wenn MEHRERE Agenten zusammenarbeiten?"
+        </aside>
+      </section>
+
+      <!-- Teamwork: Multi-Agenten -->
+      <section>
+        <h2>Was wenn mehrere Agenten zusammenarbeiten?</h2>
+
+        <div class="card-grid cols-2" style="margin-top: 25px;">
+          <div class="card" style="border-top-color: var(--thm-mittelgrau); text-align: center;">
+            <div class="card-icon" style="color: var(--thm-mittelgrau);"><i class="fa-solid fa-user"></i></div>
+            <h3 style="color: var(--thm-mittelgrau);">Ein Alleskoenner</h3>
+            <p>Eine KI soll alles allein machen: Marketing, Finanzen, Design, Technik...</p>
+            <p style="font-size: 14pt; color: var(--thm-rot); margin-top: 10px;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--thm-rot);"></i> Ueberfordert, ungenau, langsam</p>
+          </div>
+          <div class="card" style="text-align: center;">
+            <div class="card-icon"><i class="fa-solid fa-users"></i></div>
+            <h3>Ein Team von Spezialisten</h3>
+            <p>Jeder Agent hat <strong>eine Rolle</strong> und ist darin richtig gut.</p>
+            <p style="font-size: 14pt; color: var(--thm-gruen); margin-top: 10px;"><i class="fa-solid fa-check-circle"></i> Wie in einem echten Unternehmen!</p>
+          </div>
+        </div>
+
+        <div class="callout-blue callout" style="margin-top: 25px;">
+          <p><i class="fa-solid fa-building" style="color: var(--thm-hellblau);"></i> <strong style="color: var(--thm-hellblau);">Genau wie in der Wirtschaft:</strong> Marketing-Abteilung, Finanzabteilung, Entwicklung -- jeder macht das, was er am besten kann.</p>
+        </div>
+        <aside class="notes">
+          - Analogie zum Unternehmen -- das kennen die Schueler aus dem Wirtschaftsunterricht
+          - Arbeitsteilung ist ein Grundprinzip der Betriebswirtschaft
+          - "Und genau das machen wir jetzt live: 5 KI-Agenten, ein Produktlaunch!"
+        </aside>
+      </section>
+
+      <!-- ==================== PHASE 3: EUER PRODUKT ==================== -->
+
+      <section class="interactive-slide">
+        <div class="emoji">&#x1F680;</div>
+        <h2>Jetzt seid ihr dran!</h2>
+        <p style="font-size: 22pt; margin-top: 20px;">Welches Produkt sollen unsere<br>KI-Agenten auf den Markt bringen?</p>
+        <p style="font-size: 16pt; color: var(--thm-mittelgrau); margin-top: 30px;">
+          Ruft eure Ideen rein -- wir stimmen ab!
+        </p>
+        <aside class="notes">
+          - Schueler rufen Produktideen rein
+          - 2-3 Minuten Brainstorming
+          - Beispiele nennen falls noetig: "Nachhaltige Sneaker", "Lern-App", "Energy Drink"
+          - Abstimmung per Handzeichen
+          - Gewahltes Produkt in Ship It! eingeben
+        </aside>
+      </section>
+
+      <!-- ==================== PHASE 4: LIVE-DEMO ==================== -->
+
+      <section class="section-divider">
+        <h2>Ship It!</h2>
+        <p style="font-size: 20pt; margin-top: 15px;">Live-Demo: 5 KI-Agenten, 1 Produktlaunch</p>
+        <aside class="notes">
+          - Ueberleitung zur Demo
+          - "Jetzt zeige ich euch, wie 5 KI-Agenten euer Produkt auf den Markt bringen."
+        </aside>
+      </section>
+
+      <!-- Die 5 Agenten -->
+      <section>
+        <h2>Unsere 5 KI-Agenten</h2>
+        <div class="card-grid cols-5" style="margin-top: 25px;">
+          <div class="card" style="padding: 16px; text-align: center;">
+            <div class="card-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
+            <h3 style="font-size: 14pt;">Zielgruppen-Analyst</h3>
+            <p style="font-size: 12pt;">Wer kauft das Produkt? Personas erstellen</p>
+          </div>
+          <div class="card" style="padding: 16px; text-align: center;">
+            <div class="card-icon"><i class="fa-solid fa-bullhorn"></i></div>
+            <h3 style="font-size: 14pt;">Marketing-Experte</h3>
+            <p style="font-size: 12pt;">Name, Slogan, Werbetexte entwickeln</p>
+          </div>
+          <div class="card" style="padding: 16px; text-align: center;">
+            <div class="card-icon"><i class="fa-solid fa-hashtag"></i></div>
+            <h3 style="font-size: 14pt;">Social-Media-Manager</h3>
+            <p style="font-size: 12pt;">Posts fuer Instagram, LinkedIn, TikTok</p>
+          </div>
+          <div class="card" style="padding: 16px; text-align: center;">
+            <div class="card-icon"><i class="fa-solid fa-calculator"></i></div>
+            <h3 style="font-size: 14pt;">Controller</h3>
+            <p style="font-size: 12pt;">Preiskalkulation und Preis&shy;strategie</p>
+          </div>
+          <div class="card card-blue" style="padding: 16px; text-align: center;">
+            <div class="card-icon"><i class="fa-solid fa-code"></i></div>
+            <h3 style="font-size: 14pt;">Web-Entwickler</h3>
+            <p style="font-size: 12pt;">Produkt-Website mit HTML, CSS, JS</p>
+          </div>
+        </div>
+        <aside class="notes">
+          - Jeden Agenten kurz vorstellen, Rolle erklaeren
+          - "Die arbeiten wie Abteilungen in einem Unternehmen"
+          - Website-Agent ist besonders: baut etwas, das man im Browser oeffnen kann
+        </aside>
+      </section>
+
+      <!-- Abhaengigkeiten -->
+      <section>
+        <h2>Wer wartet auf wen?</h2>
+        <p style="margin-bottom: 20px;">Manche Agenten brauchen die Ergebnisse anderer, bevor sie starten koennen.</p>
+
+        <div class="dep-diagram">
+          <div class="dep-row">
+            <div class="dep-box dep-start"><i class="fa-solid fa-users-viewfinder" style="color: var(--thm-hellblau);"></i> Zielgruppe</div>
+            <span class="dep-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+            <div class="dep-box"><i class="fa-solid fa-bullhorn"></i> Marketing</div>
+            <span class="dep-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+            <div class="dep-box"><i class="fa-solid fa-hashtag"></i> Social Media</div>
+          </div>
+          <div style="font-size: 14pt; color: var(--thm-mittelgrau); margin: 5px 0;">+</div>
+          <div class="dep-row">
+            <div class="dep-box dep-start"><i class="fa-solid fa-calculator" style="color: var(--thm-hellblau);"></i> Kalkulation</div>
+            <span class="dep-arrow" style="visibility: hidden;"><i class="fa-solid fa-arrow-right"></i></span>
+            <div style="min-width: 140px; text-align: center;">
+              <span class="dep-arrow"><i class="fa-solid fa-arrow-down" style="font-size: 22pt;"></i></span>
+            </div>
+          </div>
+          <div class="dep-row">
+            <div class="dep-box" style="border-color: var(--thm-hellblau); border-width: 3px;">
+              <i class="fa-solid fa-code" style="color: var(--thm-hellblau);"></i> Website
+              <span style="font-size: 11pt; display: block; color: var(--thm-mittelgrau);">braucht alles</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top: 15px;">
+          <p><i class="fa-solid fa-play-circle"></i> <strong>Zielgruppe</strong> und <strong>Kalkulation</strong> starten sofort -- sie brauchen nur die Produktbeschreibung.</p>
+        </div>
+        <aside class="notes">
+          - Zeigen: Abhaengigkeiten wie in einem echten Projekt
+          - Zielgruppe + Kalkulation starten parallel (sofort)
+          - Marketing wartet auf Zielgruppe
+          - Social Media wartet auf Marketing
+          - Website wartet auf alle
+          - "Jetzt starten wir! Dashboard oeffnen..."
+        </aside>
+      </section>
+
+      <!-- Demo-Start Hinweis -->
+      <section class="interactive-slide">
+        <div class="emoji">&#x1F3AC;</div>
+        <h2>Los geht's!</h2>
+        <p style="font-size: 20pt; margin-top: 20px;">Wechsel zum <strong style="color: var(--thm-gruen);">Ship It! Dashboard</strong></p>
+        <p style="font-size: 15pt; color: var(--thm-mittelgrau); margin-top: 30px;">
+          <i class="fa-solid fa-arrow-right" style="color: var(--thm-mittelgrau);"></i> http://localhost:8000
+        </p>
+        <aside class="notes">
+          - Browser wechseln, Dashboard zeigen
+          - Produkt eingeben
+          - Agenten nacheinander starten
+          - Zwischen den Ergebnissen: Vorhersage-Spiel (naechste Folien)
+        </aside>
+      </section>
+
+      <!-- Vorhersage-Spiel: Zielgruppe -->
+      <section class="interactive-slide">
+        <div class="emoji">&#x1F914;</div>
+        <h2>Vorhersage-Spiel</h2>
+        <div class="question-list">
+          <ul>
+            <li>Welche <strong style="color: var(--thm-gruen);">Zielgruppe</strong> wird die KI identifizieren?</li>
+            <li>Welchen <strong style="color: var(--thm-gruen);">Slogan</strong> wuerdet IHR waehlen?</li>
+            <li>Was schaetzt ihr als <strong style="color: var(--thm-gruen);">fairen Preis</strong>?</li>
+          </ul>
+        </div>
+        <p style="font-size: 16pt; color: var(--thm-mittelgrau); margin-top: 30px;">
+          Mal sehen, ob die KI auf etwas Aehnliches kommt...
+        </p>
+        <aside class="notes">
+          - Vorhersagen einsammeln BEVOR die Ergebnisse angeschaut werden
+          - Ggf. an die Tafel schreiben
+          - Dann: Ergebnisse im Dashboard aufrufen und vergleichen
+          - Erzeugt Spannung und Engagement
+        </aside>
+      </section>
+
+      <!-- ==================== PHASE 5: ERGEBNIS-BEWERTUNG ==================== -->
+
+      <section class="section-divider">
+        <h2>Wie gut war die KI?</h2>
+        <p style="font-size: 20pt; margin-top: 15px;">Zeit fuer eine ehrliche Bewertung</p>
+        <aside class="notes">
+          - Uebergang zur kritischen Bewertung
+          - "Jetzt schauen wir mal genauer hin."
+        </aside>
+      </section>
+
+      <!-- Bewertungsrunde -->
+      <section class="interactive-slide">
+        <h2>Daumen hoch oder runter?</h2>
+        <div class="question-list">
+          <ul>
+            <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Wuerdet ihr diesen <strong style="color: var(--thm-gruen);">Instagram-Post</strong> liken?</li>
+            <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Ist die <strong style="color: var(--thm-gruen);">Preiskalkulation</strong> realistisch?</li>
+            <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Wuerdet ihr auf dieser <strong style="color: var(--thm-gruen);">Website</strong> einkaufen?</li>
+            <li><i class="fa-solid fa-trophy" style="color: var(--thm-gelb);"></i> Welcher Agent hat <strong style="color: var(--thm-gelb);">am besten</strong> gearbeitet?</li>
+          </ul>
+        </div>
+        <aside class="notes">
+          - Jede Frage einzeln durchgehen, Daumen hoch/runter
+          - Nachfragen: WARUM? Was genau stoert euch?
+          - "Was hat ueberrascht?"
+          - "Was fehlt offensichtlich?"
+          - "Wuerde ein echtes Unternehmen das so verwenden?"
+        </aside>
+      </section>
+
+      <!-- ==================== PHASE 6: REFLEXION & AUSBLICK ==================== -->
+
+      <section class="section-divider">
+        <h2>Was nehmen wir mit?</h2>
+        <aside class="notes">
+          - Uebergang zu den Kern-Learnings
+          - Von der Demo zur groesseren Botschaft
+        </aside>
+      </section>
+
+      <!-- 3 Kern-Learnings -->
+      <section>
+        <h2>Drei Dinge, die wir gesehen haben</h2>
+        <div class="card-grid cols-3" style="margin-top: 30px;">
+          <div class="card" style="text-align: center;">
+            <div class="card-icon" style="font-size: 36pt;"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+            <h3>Werkzeug, kein Ersatz</h3>
+            <p>KI liefert Ergebnisse -- aber <strong>jemand muss pruefen</strong>, ob sie gut sind. Der Mensch bleibt verantwortlich.</p>
+          </div>
+          <div class="card card-blue" style="text-align: center;">
+            <div class="card-icon" style="font-size: 36pt;"><i class="fa-solid fa-people-group"></i></div>
+            <h3>Arbeitsteilung</h3>
+            <p>Spezialisierte Agenten statt Alleskoenner -- <strong>wie in echten Unternehmen</strong>. Jeder macht, was er am besten kann.</p>
+          </div>
+          <div class="card card-yellow" style="text-align: center;">
+            <div class="card-icon" style="font-size: 36pt;"><i class="fa-solid fa-gauge-high"></i></div>
+            <h3>Schnell ≠ gut</h3>
+            <p>In Minuten statt Tagen -- aber <strong>Geschwindigkeit allein reicht nicht</strong>. Qualitaet braucht menschliches Urteil.</p>
+          </div>
+        </div>
+        <aside class="notes">
+          - Die drei zentralen Botschaften zusammenfassen
+          - KI ersetzt nicht, sie verstaerkt
+          - Arbeitsteilung ist ein BWL-Prinzip -- gilt auch fuer KI
+          - Schnell heisst nicht automatisch gut -- kritisches Denken bleibt wichtig
+        </aside>
+      </section>
+
+      <!-- Reflexionsfragen -->
+      <section class="interactive-slide">
+        <h2>Was denkt ihr?</h2>
+        <div class="question-list">
+          <ul>
+            <li>Veraendert KI eure <strong style="color: var(--thm-gruen);">zukuenftigen Berufe</strong>? Wie?</li>
+            <li>Was kann KI gut -- und was wird sie <strong style="color: var(--thm-gruen);">nie koennen</strong>?</li>
+            <li>Wem <strong style="color: var(--thm-gruen);">gehoeren</strong> die Ergebnisse, die eine KI erstellt?</li>
+          </ul>
+        </div>
+        <aside class="notes">
+          - Offene Diskussion, 5-8 Minuten
+          - Keine "richtige" Antwort -- es geht ums Nachdenken
+          - Bei Frage 1: Berufe veraendern sich, aber verschwinden selten komplett
+          - Bei Frage 2: Kreativitaet, Empathie, ethische Entscheidungen
+          - Bei Frage 3: Urheberrecht, wer ist verantwortlich?
+          - Schueler zum Sprechen ermutigen
+        </aside>
+      </section>
+
+      <!-- Ausblick / THM -->
+      <section>
+        <h2>Euer naechster Schritt?</h2>
+        <div class="card-grid cols-2" style="margin-top: 30px;">
+          <div class="card" style="text-align: center;">
+            <div class="card-icon" style="font-size: 36pt;"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h3>Wirtschaftsinformatik</h3>
+            <p>Technik + Wirtschaft -- genau die Kombination, die ihr heute gesehen habt.</p>
+            <p style="font-size: 14pt; color: var(--thm-mittelgrau); margin-top: 10px;">B.Sc. und M.Sc. an der THM</p>
+          </div>
+          <div class="card card-blue" style="text-align: center;">
+            <div class="card-icon" style="font-size: 36pt;"><i class="fa-solid fa-laptop-code"></i></div>
+            <h3>Duales Studium</h3>
+            <p>Theorie an der Hochschule, Praxis im Unternehmen -- von Anfang an.</p>
+            <p style="font-size: 14pt; color: var(--thm-mittelgrau); margin-top: 10px;">StudiumPlus an der THM</p>
+          </div>
+        </div>
+        <aside class="notes">
+          - Kurzer Studien-Teaser, nicht zu werblich
+          - Wirtschaftsinformatik verbindet beide Welten
+          - StudiumPlus als Option erwaehnen
+          - "Wenn euch das heute gefallen hat, koennt ihr sowas auch studieren!"
+        </aside>
+      </section>
+
+      <!-- Abschlussfolie -->
+      <section class="end-slide">
+        <h2>Danke!</h2>
+        <p style="margin-top: 20px;">Noch Fragen?</p>
+        <p style="margin-top: 40px; font-size: 15pt; opacity: 0.7;">
+          Prof. Dr. Carsten Lucke<br>
+          Technische Hochschule Mittelhessen
+        </p>
+        <aside class="notes">
+          - Offene Fragerunde
+          - Ggf. nochmal Dashboard zeigen wenn Fragen zur Demo kommen
+          - Visitenkarten / Kontaktdaten bereithalten
+        </aside>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Reveal.js -->
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: true,
+      progress: true,
+      controls: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'default',
+      width: 1280,
+      height: 720,
+      margin: 0,
+    });
+  </script>
+</body>
+</html>
