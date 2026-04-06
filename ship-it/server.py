@@ -83,6 +83,7 @@ AGENT_PATHS = {
             "social-media/instagram-bild.png",
         ],
         "outputs": ["website/website-prompt.md", "website/index.html"],
+        "optional_outputs": ["website/logo.png", "website/instagram-bild.png"],
     },
 }
 

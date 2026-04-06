@@ -37,7 +37,7 @@ Setze den in `website-prompt.md` beschriebenen Prompt um und erstelle die Landin
 
 ### Pflicht-Sektionen der Website
 
-1. **Hero** – Produktname, Slogan, Kernbotschaft, großer CTA-Button. Falls ein Instagram-Bild (`instagram-bild.png`) als Eingabe vorhanden ist, bette es als Hero-Hintergrundbild per Base64-Data-URI ein (`background-image: url(data:image/png;base64,...)`). Lies die Datei dazu mit dem `bash`-Tool: `base64 <pfad> | tr -d '\n'`. Falls ein Logo (`logo.png`) vorhanden ist, bette es ebenfalls als Base64-Data-URI ein und zeige es im Header/der Navigation.
+1. **Hero** – Produktname, Slogan, Kernbotschaft, großer CTA-Button. Falls ein Instagram-Bild (`instagram-bild.png`) als Eingabe vorhanden ist, kopiere es mit `cp` ins Ausgabe-Verzeichnis (z.B. `cp <eingabe>/social-media/instagram-bild.png <ausgabe>/website/instagram-bild.png`) und referenziere es mit relativem Pfad als Hero-Hintergrundbild (`background-image: url(instagram-bild.png)`). Falls ein Logo (`logo.png`) vorhanden ist, kopiere es ebenfalls ins Ausgabe-Verzeichnis (`cp <eingabe>/marketing/logo.png <ausgabe>/website/logo.png`) und zeige es mit `<img src="logo.png">` im Header/der Navigation. **Verwende NICHT** `base64` – die Ausgabe ist zu groß für das Terminal. Kopiere die Dateien einfach und nutze relative Pfade.
 2. **Features/Vorteile** – 3-6 Highlights mit Icons (Emoji oder CSS)
 3. **Zielgruppe** – Für wen ist das Produkt? (basierend auf Personas)
 4. **Pricing** – Preis mit Strategie-Begründung (aus Kalkulation)
@@ -48,7 +48,7 @@ Setze den in `website-prompt.md` beschriebenen Prompt um und erstelle die Landin
 
 - **Einzelne HTML-Datei** – alles inline (JS im `<script>`)
 - **Tailwind CSS via CDN** – Binde das Tailwind Play-CDN ein: `<script src="https://cdn.tailwindcss.com"></script>`. Styling primär über Tailwind-Utility-Klassen, ergänzt durch Custom-CSS im `<style>` wo nötig
-- **Keine weiteren externen Abhängigkeiten** außer Tailwind-CDN (Bilder als Base64-Data-URI einbetten)
+- **Keine weiteren externen Abhängigkeiten** außer Tailwind-CDN (Bilder als lokale Dateien im gleichen Verzeichnis, mit relativen Pfaden referenziert)
 - **Responsive** – Mobile-first, sieht auf allen Geräten gut aus
 - **Visuell ansprechend** – Moderne Farbpalette passend zum Produkt, CSS-Gradienten, Emoji als Icons
 - **Smooth Scrolling** zwischen Sektionen

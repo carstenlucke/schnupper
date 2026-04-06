@@ -1130,16 +1130,17 @@ async function selectFile(agentName, fileName, { switchToResult = false } = {}) 
   const content = await fetchFileContent(currentSlug, agentName, fileName);
 
   if (fileName.endsWith(".html")) {
-    // HTML → iframe-Vorschau
+    // HTML → iframe-Vorschau mit <base>-Tag für relative Bildpfade
+    const baseUrl = `/api/projekte/${currentSlug}/files/${agentName}/`;
+    const htmlWithBase = content.replace(/(<head[^>]*>)/i, `$1<base href="${baseUrl}">`);
     $resultMarkdown.classList.add("hidden");
     $resultPreview.classList.remove("hidden");
-    $previewIframe.srcdoc = content;
+    $previewIframe.srcdoc = htmlWithBase;
     $previewFilename.textContent = fileName;
     $previewOpenBtn.classList.remove("hidden");
     $previewOpenBtn.classList.add("flex");
     $previewOpenBtn.onclick = () => {
-      const blob = new Blob([content], { type: "text/html" });
-      window.open(URL.createObjectURL(blob), "_blank");
+      window.open(`/api/projekte/${currentSlug}/files/${agentName}/${fileName}`, "_blank");
     };
   } else {
     // Markdown → rendern
