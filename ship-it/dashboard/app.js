@@ -303,6 +303,7 @@ function showWelcome() {
   $welcomeScreen.classList.add("block");
   $dashboard.classList.add("hidden");
   $dashboard.classList.remove("flex");
+  $homeBtn.classList.add("invisible");
 }
 
 function showDashboard() {
@@ -311,6 +312,7 @@ function showDashboard() {
   $welcomeScreen.classList.remove("flex");
   $dashboard.classList.remove("hidden");
   $dashboard.classList.add("flex");
+  $homeBtn.classList.remove("invisible");
 }
 
 function resetProjektSession() {
