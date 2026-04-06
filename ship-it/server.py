@@ -335,7 +335,7 @@ def _call_image_api(
             "n": 1,
             "size": size,
             "quality": quality,
-            "output_format": "b64_json",
+            "output_format": "png",
         }
     ).encode("utf-8")
 
@@ -343,8 +343,12 @@ def _call_image_api(
     req.add_header("Authorization", f"Bearer {api_key}")
     req.add_header("Content-Type", "application/json")
 
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        result = json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"HTTP {e.code}: {body}") from e
 
     data = result.get("data")
     if not data or not data[0].get("b64_json"):
