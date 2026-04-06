@@ -51,6 +51,10 @@ async function createProjekt(name, beschreibung) {
   });
 }
 
+async function deleteProjekt(slug) {
+  return api(`/api/projekte/${slug}`, { method: "DELETE" });
+}
+
 async function fetchAgents(slug) {
   return api(`/api/projekte/${slug}/agents`);
 }
@@ -104,6 +108,7 @@ function escapeHtml(str) {
 // ---------------------------------------------------------------------------
 const $welcomeScreen = document.getElementById("welcome-screen");
 const $dashboard = document.getElementById("dashboard");
+const $homeBtn = document.getElementById("home-btn");
 const $agentList = document.getElementById("agent-list");
 const $projektDropdownBtn = document.getElementById("projekt-dropdown-btn");
 const $projektDropdown = document.getElementById("projekt-dropdown");
@@ -114,7 +119,16 @@ const $newProjektBtn = document.getElementById("new-projekt-btn");
 const $newProjektModal = document.getElementById("new-projekt-modal");
 const $newProjektForm = document.getElementById("new-projekt-form");
 const $modalCancel = document.getElementById("modal-cancel");
+const $confirmModal = document.getElementById("confirm-modal");
+const $confirmModalIcon = document.getElementById("confirm-modal-icon");
+const $confirmModalTitle = document.getElementById("confirm-modal-title");
+const $confirmModalMessage = document.getElementById("confirm-modal-message");
+const $confirmModalCancel = document.getElementById("confirm-modal-cancel");
+const $confirmModalConfirm = document.getElementById("confirm-modal-confirm");
 const $welcomeForm = document.getElementById("welcome-form");
+const $overviewProjektCount = document.getElementById("overview-projekt-count");
+const $overviewProjektList = document.getElementById("overview-projekt-list");
+const $overviewProjektEmpty = document.getElementById("overview-projekt-empty");
 const $terminalContainer = document.getElementById("terminal-container");
 const $resultContent = document.getElementById("result-content");
 const $previewIframe = document.getElementById("preview-iframe");
@@ -171,42 +185,174 @@ function updateThemeIcon() {
 }
 
 // ---------------------------------------------------------------------------
+// Bestätigungs-/Hinweisdialog (kein nativer Browser-Dialog)
+// ---------------------------------------------------------------------------
+function showDialog({
+  title,
+  message,
+  confirmLabel,
+  cancelLabel = "Abbrechen",
+  showCancel = true,
+  variant = "danger",
+}) {
+  return new Promise((resolve) => {
+    $confirmModalTitle.textContent = title;
+    $confirmModalMessage.textContent = message;
+    $confirmModalConfirm.textContent = confirmLabel;
+    $confirmModalCancel.textContent = cancelLabel;
+
+    if (variant === "danger") {
+      $confirmModalIcon.textContent = "warning";
+      $confirmModalIcon.className = "material-symbols-outlined text-error text-[22px]";
+      $confirmModalConfirm.className = "px-4 py-2 text-xs font-bold rounded-lg bg-error text-white hover:opacity-90 transition-colors";
+    } else {
+      $confirmModalIcon.textContent = "info";
+      $confirmModalIcon.className = "material-symbols-outlined text-accent text-[22px]";
+      $confirmModalConfirm.className = "px-4 py-2 text-xs font-bold rounded-lg bg-accent text-on-accent hover:brightness-110 transition-all";
+    }
+
+    $confirmModalCancel.classList.toggle("hidden", !showCancel);
+    $confirmModal.classList.remove("hidden");
+
+    const close = (result) => {
+      $confirmModal.classList.add("hidden");
+      $confirmModalConfirm.removeEventListener("click", onConfirm);
+      $confirmModalCancel.removeEventListener("click", onCancel);
+      $confirmModal.removeEventListener("click", onBackdropClick);
+      document.removeEventListener("keydown", onKeyDown);
+      resolve(result);
+    };
+
+    const onConfirm = () => close(true);
+    const onCancel = () => close(false);
+    const onBackdropClick = (e) => {
+      if (e.target === $confirmModal) {
+        close(false);
+      }
+    };
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        close(false);
+      } else if (e.key === "Enter") {
+        const activeTag = document.activeElement?.tagName || "";
+        if (activeTag !== "TEXTAREA") {
+          e.preventDefault();
+          close(true);
+        }
+      }
+    };
+
+    $confirmModalConfirm.addEventListener("click", onConfirm);
+    $confirmModalCancel.addEventListener("click", onCancel);
+    $confirmModal.addEventListener("click", onBackdropClick);
+    document.addEventListener("keydown", onKeyDown);
+
+    requestAnimationFrame(() => {
+      if (showCancel) {
+        $confirmModalCancel.focus();
+      } else {
+        $confirmModalConfirm.focus();
+      }
+    });
+  });
+}
+
+function showDeleteConfirmDialog(projektName) {
+  return showDialog({
+    title: "Produkt löschen",
+    message: `Produkt \"${projektName}\" wirklich löschen?\n\nAlle erzeugten Artefakte dieses Produkts gehen dabei verloren.`,
+    confirmLabel: "Löschen",
+    cancelLabel: "Abbrechen",
+    showCancel: true,
+    variant: "danger",
+  });
+}
+
+async function showErrorDialog(message) {
+  await showDialog({
+    title: "Löschen fehlgeschlagen",
+    message,
+    confirmLabel: "OK",
+    showCancel: false,
+    variant: "info",
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Initialisierung
 // ---------------------------------------------------------------------------
 async function init() {
+  setupEventListeners();
+  startPolling();
+
   const projekte = await fetchProjekte();
 
   // Slug aus URL-Hash lesen
   const hashSlug = location.hash.replace("#", "");
   if (hashSlug && projekte.find(p => p.slug === hashSlug)) {
-    currentSlug = hashSlug;
-  } else if (projekte.length > 0) {
-    currentSlug = projekte[0].slug;
-  }
-
-  if (currentSlug) {
-    showDashboard();
-    await loadProjekt(currentSlug);
+    await openProjekt(hashSlug);
   } else {
-    showWelcome();
+    await openOverview(projekte);
   }
-
-  setupEventListeners();
-  startPolling();
 }
 
 function showWelcome() {
   $welcomeScreen.classList.remove("hidden");
-  $welcomeScreen.classList.add("flex");
+  $welcomeScreen.classList.remove("flex");
+  $welcomeScreen.classList.add("block");
   $dashboard.classList.add("hidden");
   $dashboard.classList.remove("flex");
 }
 
 function showDashboard() {
   $welcomeScreen.classList.add("hidden");
+  $welcomeScreen.classList.remove("block");
   $welcomeScreen.classList.remove("flex");
   $dashboard.classList.remove("hidden");
   $dashboard.classList.add("flex");
+}
+
+function resetProjektSession() {
+  for (const es of Object.values(eventSources)) {
+    es.close();
+  }
+  eventSources = {};
+
+  for (const entry of Object.values(terminals)) {
+    entry.term.dispose();
+    entry.div.remove();
+  }
+  terminals = {};
+
+  currentAgent = null;
+  currentFile = null;
+  isProduktSelected = false;
+  isProduktEditing = false;
+}
+
+function clearHashFromUrl() {
+  const cleanUrl = `${location.pathname}${location.search}`;
+  history.replaceState(null, "", cleanUrl);
+}
+
+async function openOverview(projekte = null) {
+  resetProjektSession();
+  currentSlug = null;
+  agents = [];
+  $projektDropdown.classList.add("hidden");
+  clearHashFromUrl();
+
+  const projektListe = projekte || await fetchProjekte();
+  renderProjektDropdown(projektListe);
+  renderOverviewProjekte(projektListe);
+  updateProjektHeader(projektListe);
+  showWelcome();
+}
+
+async function openProjekt(slug) {
+  showDashboard();
+  await loadProjekt(slug);
 }
 
 // ---------------------------------------------------------------------------
@@ -214,16 +360,7 @@ function showDashboard() {
 // ---------------------------------------------------------------------------
 async function loadProjekt(slug) {
   // Alte Terminals + Streams aufräumen bei Projektwechsel
-  for (const [name, es] of Object.entries(eventSources)) {
-    es.close();
-  }
-  eventSources = {};
-  for (const entry of Object.values(terminals)) {
-    entry.term.dispose();
-    entry.div.remove();
-  }
-  terminals = {};
-  currentAgent = null;
+  resetProjektSession();
 
   currentSlug = slug;
   location.hash = slug;
@@ -231,12 +368,8 @@ async function loadProjekt(slug) {
   // Dropdown aktualisieren
   const projekte = await fetchProjekte();
   renderProjektDropdown(projekte);
-
-  const projekt = projekte.find(p => p.slug === slug);
-  if (projekt) {
-    $projektNameDisplay.textContent = projekt.name;
-    $projektStatusDot.className = `w-2 h-2 rounded-full projekt-dot-${projekt.status}`;
-  }
+  renderOverviewProjekte(projekte);
+  updateProjektHeader(projekte);
 
   // Agenten laden
   agents = await fetchAgents(slug);
@@ -254,8 +387,35 @@ async function loadProjekt(slug) {
 // ---------------------------------------------------------------------------
 // Projekt-Dropdown
 // ---------------------------------------------------------------------------
+function getProjektStatusLabel(status) {
+  if (status === "done") return "fertig";
+  if (status === "in_progress") return "in Arbeit";
+  return "neu";
+}
+
+function updateProjektHeader(projekte) {
+  const projekt = currentSlug ? projekte.find(p => p.slug === currentSlug) : null;
+  if (!projekt) {
+    $projektNameDisplay.textContent = projekte.length > 0 ? "Projekt wählen" : "Kein Projekt";
+    $projektStatusDot.className = "w-2 h-2 rounded-full bg-on-header/30";
+    return;
+  }
+
+  $projektNameDisplay.textContent = projekt.name;
+  $projektStatusDot.className = `w-2 h-2 rounded-full projekt-dot-${projekt.status}`;
+}
+
 function renderProjektDropdown(projekte) {
   $projektList.innerHTML = "";
+
+  if (projekte.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "px-4 py-3 text-xs text-on-surface/40";
+    empty.textContent = "Noch keine Projekte vorhanden.";
+    $projektList.appendChild(empty);
+    return;
+  }
+
   for (const p of projekte) {
     const div = document.createElement("div");
     div.className = `flex items-center gap-2 px-4 py-2.5 cursor-pointer hover:bg-on-surface/5 transition-colors ${p.slug === currentSlug ? 'bg-on-surface/10' : ''}`;
@@ -268,10 +428,80 @@ function renderProjektDropdown(projekte) {
     div.appendChild(nameSpan);
     div.addEventListener("click", () => {
       $projektDropdown.classList.add("hidden");
-      loadProjekt(p.slug);
+      openProjekt(p.slug);
     });
     $projektList.appendChild(div);
   }
+}
+
+function renderOverviewProjekte(projekte) {
+  if (!$overviewProjektList || !$overviewProjektEmpty || !$overviewProjektCount) return;
+
+  $overviewProjektCount.textContent = `${projekte.length} ${projekte.length === 1 ? "Produkt" : "Produkte"}`;
+  $overviewProjektList.innerHTML = "";
+
+  if (projekte.length === 0) {
+    $overviewProjektEmpty.classList.remove("hidden");
+    return;
+  }
+
+  $overviewProjektEmpty.classList.add("hidden");
+
+  for (const projekt of projekte) {
+    const row = document.createElement("div");
+    row.className = "flex items-stretch gap-2";
+
+    const openBtn = document.createElement("button");
+    openBtn.type = "button";
+    openBtn.className = "flex-1 text-left px-4 py-3 rounded-lg border border-on-surface/10 bg-on-surface/5 hover:bg-on-surface/10 hover:border-accent/40 transition-all";
+    openBtn.innerHTML = `
+      <div class="flex items-start gap-3">
+        <div class="w-2 h-2 rounded-full mt-1.5 projekt-dot-${projekt.status}"></div>
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-sm font-semibold text-on-surface truncate">${escapeHtml(projekt.name)}</span>
+            <span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-on-surface/10 text-on-surface/60 whitespace-nowrap">${getProjektStatusLabel(projekt.status)}</span>
+          </div>
+          <span class="text-[11px] text-on-surface/40 mt-1 block truncate">${escapeHtml(projekt.slug)}</span>
+        </div>
+        <span class="material-symbols-outlined text-on-surface/30 text-[16px] mt-0.5">arrow_forward</span>
+      </div>
+    `;
+    openBtn.addEventListener("click", () => openProjekt(projekt.slug));
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "w-10 rounded-lg border border-on-surface/10 bg-on-surface/5 text-on-surface/40 hover:text-error hover:bg-error/10 hover:border-error/40 transition-colors flex items-center justify-center";
+    deleteBtn.title = "Produkt löschen";
+    deleteBtn.setAttribute("aria-label", `Produkt ${projekt.name} löschen`);
+    deleteBtn.innerHTML = `<span class="material-symbols-outlined text-[18px]">delete</span>`;
+    deleteBtn.addEventListener("click", () => handleDeleteProjekt(projekt));
+
+    row.appendChild(openBtn);
+    row.appendChild(deleteBtn);
+    $overviewProjektList.appendChild(row);
+  }
+}
+
+async function handleDeleteProjekt(projekt) {
+  const confirmed = await showDeleteConfirmDialog(projekt.name);
+  if (!confirmed) return;
+
+  const result = await deleteProjekt(projekt.slug);
+  if (result.error) {
+    await showErrorDialog(result.error);
+    return;
+  }
+
+  const projekte = await fetchProjekte();
+  if (currentSlug === projekt.slug) {
+    await openOverview(projekte);
+    return;
+  }
+
+  renderProjektDropdown(projekte);
+  renderOverviewProjekte(projekte);
+  updateProjektHeader(projekte);
 }
 
 // ---------------------------------------------------------------------------
@@ -959,7 +1189,13 @@ function toggleTerminalView() {
 // ---------------------------------------------------------------------------
 function startPolling() {
   pollInterval = setInterval(async () => {
-    if (!currentSlug) return;
+    if (!currentSlug) {
+      const projekte = await fetchProjekte();
+      renderProjektDropdown(projekte);
+      renderOverviewProjekte(projekte);
+      updateProjektHeader(projekte);
+      return;
+    }
     await refreshAgents();
   }, 3000);
 }
@@ -986,6 +1222,11 @@ async function refreshAgents() {
     if (current && (current.status === "done" || current.status === "error")) {
       loadArtifactList(currentAgent);
     }
+
+    const projekte = await fetchProjekte();
+    renderProjektDropdown(projekte);
+    renderOverviewProjekte(projekte);
+    updateProjektHeader(projekte);
   }
 }
 
@@ -993,6 +1234,12 @@ async function refreshAgents() {
 // Event-Listeners
 // ---------------------------------------------------------------------------
 function setupEventListeners() {
+  // Header-Home-Button
+  $homeBtn.addEventListener("click", async () => {
+    $projektDropdown.classList.add("hidden");
+    await openOverview();
+  });
+
   // Projekt-Dropdown
   $projektDropdownBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -1086,10 +1333,20 @@ function setupEventListeners() {
   });
 
   // Hash-Change
-  window.addEventListener("hashchange", () => {
+  window.addEventListener("hashchange", async () => {
     const slug = location.hash.replace("#", "");
-    if (slug && slug !== currentSlug) {
-      loadProjekt(slug);
+    if (!slug) {
+      await openOverview();
+      return;
+    }
+
+    if (slug === currentSlug && !$dashboard.classList.contains("hidden")) {
+      return;
+    }
+
+    const projekte = await fetchProjekte();
+    if (projekte.find(p => p.slug === slug)) {
+      await openProjekt(slug);
     }
   });
 }

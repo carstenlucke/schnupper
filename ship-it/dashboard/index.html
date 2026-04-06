@@ -67,11 +67,11 @@
 
   <!-- ===================== HEADER ===================== -->
   <header class="fixed top-0 w-full h-12 z-50 bg-header shadow-sm flex items-center justify-between px-4">
-    <div class="flex items-center gap-2">
+    <button id="home-btn" type="button" class="flex items-center gap-2 rounded px-1 py-0.5 hover:bg-on-header/10 transition-colors" aria-label="Zur Startseite" title="Zur Startseite">
       <img src="icon2.png" alt="Ship It!" class="h-7 hidden dark:block"/>
       <img src="icon1.png" alt="Ship It!" class="h-7 block dark:hidden"/>
       <span class="text-on-header font-headline font-bold text-lg tracking-tight">Ship It! Dashboard</span>
-    </div>
+    </button>
     <div class="flex items-center gap-4">
       <!-- Projekt-Selector -->
       <div class="relative" id="projekt-selector">
@@ -98,23 +98,44 @@
   </header>
 
   <!-- ===================== WELCOME SCREEN ===================== -->
-  <div id="welcome-screen" class="hidden flex-1 pt-12 flex items-center justify-center">
-    <div class="max-w-lg w-full mx-auto px-6 text-center">
-      <div class="mb-8">
+  <div id="welcome-screen" class="hidden flex-1 pt-12 overflow-y-auto">
+    <div class="max-w-5xl w-full mx-auto px-6 py-8">
+      <div class="mb-8 text-center">
         <span class="material-symbols-outlined text-accent text-6xl mb-4 block">rocket_launch</span>
-        <h1 class="font-headline text-3xl font-bold text-on-surface mb-2">Ship It!</h1>
-        <p class="text-on-surface/60 text-sm">Starte dein erstes Produkt – 5 KI-Agenten erledigen den Launch.</p>
+        <h1 class="font-headline text-3xl font-bold text-on-surface mb-2">Ship It! Übersicht</h1>
+        <p class="text-on-surface/60 text-sm">Wähle ein bestehendes Produkt oder starte die Artefakte für ein neues Produkt.</p>
       </div>
-      <form id="welcome-form" class="space-y-4">
-        <input type="text" id="welcome-name" placeholder="Produktname (z.B. Nachhaltige Sneaker)" required
-          class="w-full px-4 py-3 bg-on-surface/5 border border-on-surface/10 rounded-lg text-on-surface placeholder-on-surface/30 focus:border-accent focus:ring-1 focus:ring-accent outline-none text-sm"/>
-        <textarea id="welcome-desc" placeholder="Kurzbeschreibung – Was ist das Produkt? Was macht es besonders?" rows="3" required
-          class="w-full px-4 py-3 bg-on-surface/5 border border-on-surface/10 rounded-lg text-on-surface placeholder-on-surface/30 focus:border-accent focus:ring-1 focus:ring-accent outline-none text-sm resize-none"></textarea>
-        <button type="submit" class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-accent text-on-accent font-bold rounded-lg hover:brightness-110 transition-all">
-          <span class="material-symbols-outlined text-[20px]">rocket_launch</span>
-          Projekt starten
-        </button>
-      </form>
+
+      <div class="grid gap-6 lg:grid-cols-5">
+        <section class="lg:col-span-3 bg-surface border border-on-surface/10 rounded-xl p-5">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="font-headline text-lg font-bold text-on-surface">Bisher erstellte Produkte</h2>
+            <span id="overview-projekt-count" class="text-[11px] px-2 py-1 rounded-full bg-on-surface/10 text-on-surface/60">0 Produkte</span>
+          </div>
+          <p class="text-xs text-on-surface/50 mb-4">Klicke auf ein Produkt zum Öffnen oder auf das Papierkorb-Symbol zum Löschen.</p>
+
+          <div id="overview-projekt-empty" class="rounded-lg border border-dashed border-on-surface/15 bg-on-surface/5 px-4 py-6 text-center text-xs text-on-surface/50">
+            Es wurden noch keine Produkte erstellt.
+          </div>
+          <div id="overview-projekt-list" class="space-y-2"></div>
+        </section>
+
+        <section class="lg:col-span-2 bg-surface border border-on-surface/10 rounded-xl p-5">
+          <h2 class="font-headline text-lg font-bold text-on-surface mb-2">Neues Produkt</h2>
+          <p class="text-xs text-on-surface/50 mb-4">Lege eine neue Idee an und starte danach direkt die Artefakterstellung.</p>
+
+          <form id="welcome-form" class="space-y-3">
+            <input type="text" id="welcome-name" placeholder="Produktname (z.B. Nachhaltige Sneaker)" required
+              class="w-full px-4 py-3 bg-on-surface/5 border border-on-surface/10 rounded-lg text-on-surface placeholder-on-surface/30 focus:border-accent focus:ring-1 focus:ring-accent outline-none text-sm"/>
+            <textarea id="welcome-desc" placeholder="Kurzbeschreibung – Was ist das Produkt? Was macht es besonders?" rows="3" required
+              class="w-full px-4 py-3 bg-on-surface/5 border border-on-surface/10 rounded-lg text-on-surface placeholder-on-surface/30 focus:border-accent focus:ring-1 focus:ring-accent outline-none text-sm resize-none"></textarea>
+            <button type="submit" class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-accent text-on-accent font-bold rounded-lg hover:brightness-110 transition-all">
+              <span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+              Neues Produkt starten
+            </button>
+          </form>
+        </section>
+      </div>
     </div>
   </div>
 
@@ -206,6 +227,27 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ===================== CONFIRM MODAL ===================== -->
+  <div id="confirm-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black/60">
+    <div class="bg-surface-high border border-on-surface/10 rounded-xl shadow-2xl w-full max-w-md mx-4 p-6">
+      <div class="flex items-start gap-3 mb-4">
+        <span id="confirm-modal-icon" class="material-symbols-outlined text-error text-[22px]">warning</span>
+        <div class="min-w-0">
+          <h2 id="confirm-modal-title" class="font-headline text-lg font-bold text-on-surface">Bitte bestätigen</h2>
+          <p id="confirm-modal-message" class="text-sm text-on-surface/70 mt-1 whitespace-pre-line"></p>
+        </div>
+      </div>
+      <div class="flex gap-2 justify-end">
+        <button type="button" id="confirm-modal-cancel" class="px-4 py-2 text-xs text-on-surface/60 border border-on-surface/10 rounded-lg hover:bg-on-surface/5 transition-colors">
+          Abbrechen
+        </button>
+        <button type="button" id="confirm-modal-confirm" class="px-4 py-2 text-xs font-bold rounded-lg bg-error text-white hover:opacity-90 transition-colors">
+          Bestätigen
+        </button>
+      </div>
     </div>
   </div>
 

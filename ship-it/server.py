@@ -14,6 +14,7 @@ import subprocess
 import threading
 import re
 import termios
+import shutil
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 import base64
 import urllib.request
@@ -181,8 +182,7 @@ def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
 
     if feedback:
         aufgabe = (
-            "Überarbeite deine bisherige Ausgabe.\n"
-            f'Feedback vom Nutzer: "{feedback}"'
+            f'Überarbeite deine bisherige Ausgabe.\nFeedback vom Nutzer: "{feedback}"'
         )
     else:
         aufgabe = "Führe deine Aufgabe aus."
@@ -213,6 +213,7 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
     cmd = ["opencode", "run", "--agent", agent, prompt]
 
     import sys
+
     print(f"[agent-start] {slug}/{agent} → {' '.join(cmd[:4])} '...'", file=sys.stderr)
 
     # PTY erstellen für ANSI-Farben
@@ -263,7 +264,9 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
                         data = os.read(master_fd, 4096)
                         if not data:
                             break
-                        proc_info["output"].append(data.decode("utf-8", errors="replace"))
+                        proc_info["output"].append(
+                            data.decode("utf-8", errors="replace")
+                        )
                     except OSError:
                         break
                 if proc.poll() is not None:
@@ -275,7 +278,9 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
                                 data = os.read(master_fd, 4096)
                                 if not data:
                                     break
-                                proc_info["output"].append(data.decode("utf-8", errors="replace"))
+                                proc_info["output"].append(
+                                    data.decode("utf-8", errors="replace")
+                                )
                             else:
                                 break
                     except OSError:
@@ -286,7 +291,9 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
                 os.close(master_fd)
             except OSError:
                 pass
-            proc_info["exit_code"] = proc.returncode if proc.returncode is not None else proc.wait()
+            proc_info["exit_code"] = (
+                proc.returncode if proc.returncode is not None else proc.wait()
+            )
 
     t = threading.Thread(target=reader, daemon=True)
     t.start()
@@ -298,33 +305,39 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
 # Bildgenerierung (OpenAI gpt-image-1.5)
 # ---------------------------------------------------------------------------
 
+
 def _extract_prompt(content: str, keyword: str) -> str | None:
     """Extrahiere einen Prompt – zuerst aus Code-Block nach Keyword, dann Inline."""
     idx = content.lower().find(keyword.lower())
     if idx >= 0:
         rest = content[idx:]
-        match = re.search(r'```[^\n]*\n(.*?)```', rest, re.DOTALL)
+        match = re.search(r"```[^\n]*\n(.*?)```", rest, re.DOTALL)
         if match:
             return match.group(1).strip()
     # Fallback: **Keyword**: <text>
-    match = re.search(rf'\*\*{re.escape(keyword)}\*\*\s*:\s*(.+)', content, re.IGNORECASE)
+    match = re.search(
+        rf"\*\*{re.escape(keyword)}\*\*\s*:\s*(.+)", content, re.IGNORECASE
+    )
     if match:
         return match.group(1).strip()
     return None
 
 
-def _call_image_api(api_key: str, prompt: str, quality: str = "low",
-                    size: str = "1024x1024") -> bytes:
+def _call_image_api(
+    api_key: str, prompt: str, quality: str = "low", size: str = "1024x1024"
+) -> bytes:
     """Text-to-Image mit gpt-image-1.5."""
     url = "https://api.openai.com/v1/images/generations"
-    payload = json.dumps({
-        "model": "gpt-image-1.5",
-        "prompt": prompt,
-        "n": 1,
-        "size": size,
-        "quality": quality,
-        "output_format": "b64_json",
-    }).encode("utf-8")
+    payload = json.dumps(
+        {
+            "model": "gpt-image-1.5",
+            "prompt": prompt,
+            "n": 1,
+            "size": size,
+            "quality": quality,
+            "output_format": "b64_json",
+        }
+    ).encode("utf-8")
 
     req = urllib.request.Request(url, data=payload, method="POST")
     req.add_header("Authorization", f"Bearer {api_key}")
@@ -339,7 +352,6 @@ def _call_image_api(api_key: str, prompt: str, quality: str = "low",
     return base64.b64decode(data[0]["b64_json"])
 
 
-
 def _get_all_outputs(agent: str) -> list[str]:
     """Gibt outputs + optional_outputs für einen Agenten zurück."""
     paths = AGENT_PATHS.get(agent, {})
@@ -349,7 +361,7 @@ def _get_all_outputs(agent: str) -> list[str]:
 # ---------------------------------------------------------------------------
 # HTTP-Handler
 # ---------------------------------------------------------------------------
-SAFE_SEGMENT_RE = re.compile(r'^[a-z0-9][a-z0-9-]*$')
+SAFE_SEGMENT_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 
 class ShipItHandler(SimpleHTTPRequestHandler):
@@ -369,6 +381,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
         """Kompaktes Logging auf stderr."""
         import sys
+
         print(f"[{self.log_date_time_string()}] {format % args}", file=sys.stderr)
 
     def do_GET(self):
@@ -380,18 +393,25 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             self._handle_get_projekte()
         elif path.startswith("/api/projekte/") and path.endswith("/agents"):
             slug = path.split("/")[3]
-            if not self._validate_slug(slug): return
+            if not self._validate_slug(slug):
+                return
             self._handle_get_agents(slug)
-        elif path.startswith("/api/projekte/") and "/agents/" in path and path.endswith("/stream"):
+        elif (
+            path.startswith("/api/projekte/")
+            and "/agents/" in path
+            and path.endswith("/stream")
+        ):
             parts = path.split("/")
             slug = parts[3]
-            if not self._validate_slug(slug): return
+            if not self._validate_slug(slug):
+                return
             agent = parts[5]
             self._handle_stream(slug, agent)
         elif path.startswith("/api/projekte/") and "/files/" in path:
             parts = path.split("/")
             slug = parts[3]
-            if not self._validate_slug(slug): return
+            if not self._validate_slug(slug):
+                return
             # /api/projekte/<slug>/files/<agent> oder /api/projekte/<slug>/files/<agent>/<datei>
             if len(parts) == 6:
                 agent = parts[5]
@@ -416,10 +436,15 @@ class ShipItHandler(SimpleHTTPRequestHandler):
 
         if path == "/api/projekte":
             self._handle_create_projekt()
-        elif path.startswith("/api/projekte/") and "/agents/" in path and path.endswith("/run"):
+        elif (
+            path.startswith("/api/projekte/")
+            and "/agents/" in path
+            and path.endswith("/run")
+        ):
             parts = path.split("/")
             slug = parts[3]
-            if not self._validate_slug(slug): return
+            if not self._validate_slug(slug):
+                return
             agent = parts[5]
             self._handle_run_agent(slug, agent)
         elif path.startswith("/api/projekte/") and "/generate-image/" in path:
@@ -428,7 +453,8 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                 self._send_json({"error": "Not found"}, 404)
                 return
             slug = parts[3]
-            if not self._validate_slug(slug): return
+            if not self._validate_slug(slug):
+                return
             if parts[4] != "generate-image":
                 self._send_json({"error": "Not found"}, 404)
                 return
@@ -444,7 +470,8 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         if path.startswith("/api/projekte/") and "/files/" in path:
             parts = path.split("/")
             slug = parts[3]
-            if not self._validate_slug(slug): return
+            if not self._validate_slug(slug):
+                return
             if len(parts) == 6:
                 # DELETE /api/projekte/<slug>/files/<agent> → alle Dateien eines Agenten
                 agent = parts[5]
@@ -456,6 +483,15 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                 self._handle_delete_file(slug, agent, datei)
             else:
                 self._send_json({"error": "Not found"}, 404)
+        elif path.startswith("/api/projekte/"):
+            parts = path.split("/")
+            if len(parts) == 4 and parts[1] == "api" and parts[2] == "projekte":
+                slug = parts[3]
+                if not self._validate_slug(slug):
+                    return
+                self._handle_delete_projekt(slug)
+            else:
+                self._send_json({"error": "Not found"}, 404)
         else:
             self._send_json({"error": "Not found"}, 404)
 
@@ -465,7 +501,12 @@ class ShipItHandler(SimpleHTTPRequestHandler):
 
         # PUT /api/projekte/<slug>/produkt
         parts = path.split("/")
-        if len(parts) == 5 and parts[1] == "api" and parts[2] == "projekte" and parts[4] == "produkt":
+        if (
+            len(parts) == 5
+            and parts[1] == "api"
+            and parts[2] == "projekte"
+            and parts[4] == "produkt"
+        ):
             slug = parts[3]
             if not self._validate_slug(slug):
                 return
@@ -525,6 +566,54 @@ class ShipItHandler(SimpleHTTPRequestHandler):
 
         self._send_json({"slug": slug, "name": name}, 201)
 
+    def _stop_projekt_prozesse(self, slug):
+        keys = []
+        with process_lock:
+            for key, info in list(running_processes.items()):
+                if key[0] != slug:
+                    continue
+                keys.append(key)
+                proc = info.get("process")
+                if proc and proc.poll() is None:
+                    proc.terminate()
+
+        for key in keys:
+            proc = None
+            with process_lock:
+                info = running_processes.get(key)
+                if info:
+                    proc = info.get("process")
+            if not proc or proc.poll() is not None:
+                continue
+            try:
+                proc.wait(timeout=3)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                try:
+                    proc.wait(timeout=1)
+                except subprocess.TimeoutExpired:
+                    pass
+
+        with process_lock:
+            for key in keys:
+                running_processes.pop(key, None)
+
+    def _handle_delete_projekt(self, slug):
+        projekt_dir = os.path.join(PROJEKTE_DIR, slug)
+        if not os.path.isdir(projekt_dir):
+            self._send_json({"error": "Projekt nicht gefunden"}, 404)
+            return
+
+        self._stop_projekt_prozesse(slug)
+
+        try:
+            shutil.rmtree(projekt_dir)
+        except OSError:
+            self._send_json({"error": "Projekt konnte nicht gelöscht werden"}, 500)
+            return
+
+        self._send_json({"deleted": slug})
+
     def _handle_update_produkt(self, slug):
         projekt_dir = os.path.join(PROJEKTE_DIR, slug)
         if not os.path.isdir(projekt_dir):
@@ -546,7 +635,11 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             self._send_json({"error": "Content darf nicht leer sein"}, 400)
             return
         produkt_file = os.path.join(projekt_dir, "produkt.md")
-        content_to_write = original_content if original_content.endswith("\n") else original_content + "\n"
+        content_to_write = (
+            original_content
+            if original_content.endswith("\n")
+            else original_content + "\n"
+        )
         with open(produkt_file, "w", encoding="utf-8") as f:
             f.write(content_to_write)
         self._send_json({"status": "ok"})
@@ -568,13 +661,15 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                 if os.path.exists(os.path.join(projekt_dir, out_path)):
                     file_count += 1
             total_files = len(_get_all_outputs(agent_name))
-            agents.append({
-                "name": agent_name,
-                "label": AGENT_LABELS[agent_name],
-                "status": status,
-                "file_count": file_count,
-                "total_files": total_files,
-            })
+            agents.append(
+                {
+                    "name": agent_name,
+                    "label": AGENT_LABELS[agent_name],
+                    "status": status,
+                    "file_count": file_count,
+                    "total_files": total_files,
+                }
+            )
         self._send_json(agents)
 
     def _handle_get_agent_prompt(self, agent_name):
@@ -598,19 +693,21 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             end = content.find("---", 3)
             if end != -1:
                 frontmatter = content[3:end].strip()
-                body = content[end + 3:].strip()
+                body = content[end + 3 :].strip()
                 for line in frontmatter.split("\n"):
                     if ":" in line and not line.startswith(" "):
                         key, _, value = line.partition(":")
                         meta[key.strip()] = value.strip()
 
-        self._send_json({
-            "body": body,
-            "raw": content,
-            "meta": meta,
-            "agent": agent_name,
-            "label": AGENT_LABELS.get(agent_name, agent_name),
-        })
+        self._send_json(
+            {
+                "body": body,
+                "raw": content,
+                "meta": meta,
+                "agent": agent_name,
+                "label": AGENT_LABELS.get(agent_name, agent_name),
+            }
+        )
 
     def _handle_run_agent(self, slug, agent):
         projekt_dir = os.path.join(PROJEKTE_DIR, slug)
@@ -652,7 +749,9 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                     proc_info = running_processes.get(key)
 
                 if not proc_info:
-                    self.wfile.write(b"event: not_started\ndata: Agent nicht gestartet\n\n")
+                    self.wfile.write(
+                        b"event: not_started\ndata: Agent nicht gestartet\n\n"
+                    )
                     self.wfile.flush()
                     break
 
@@ -683,6 +782,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                     break
 
                 import time
+
                 time.sleep(0.2)
 
         except (BrokenPipeError, ConnectionResetError):
@@ -699,12 +799,14 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         for out_path in _get_all_outputs(agent):
             full_path = os.path.join(PROJEKTE_DIR, slug, out_path)
             exists = os.path.exists(full_path)
-            files.append({
-                "path": out_path,
-                "name": os.path.basename(out_path),
-                "exists": exists,
-                "size": os.path.getsize(full_path) if exists else 0,
-            })
+            files.append(
+                {
+                    "path": out_path,
+                    "name": os.path.basename(out_path),
+                    "exists": exists,
+                    "size": os.path.getsize(full_path) if exists else 0,
+                }
+            )
         self._send_json(files)
 
     def _handle_get_file_content(self, slug, agent, datei):
@@ -750,6 +852,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
     def _handle_generate_image(self, slug, agent):
         """Generiere ein Bild mit OpenAI gpt-image-1.5."""
         import sys
+
         api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
             self._send_json({"error": "OPENAI_API_KEY nicht gesetzt"}, 500)
@@ -772,7 +875,9 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         }
 
         if agent not in config:
-            self._send_json({"error": f"Bildgenerierung für '{agent}' nicht verfügbar"}, 400)
+            self._send_json(
+                {"error": f"Bildgenerierung für '{agent}' nicht verfügbar"}, 400
+            )
             return
 
         cfg = config[agent]
@@ -801,8 +906,9 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         # Produktname immer mitgeben
         prompt = f'Product: "{produktname}". {prompt}'
 
-
-        print(f"[image-gen] {slug}/{agent}: Prompt = {prompt[:150]}...", file=sys.stderr)
+        print(
+            f"[image-gen] {slug}/{agent}: Prompt = {prompt[:150]}...", file=sys.stderr
+        )
 
         try:
             image_data = _call_image_api(api_key, prompt)
@@ -816,8 +922,13 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         with open(image_path, "wb") as f:
             f.write(image_data)
 
-        print(f"[image-gen] {slug}/{agent}: Bild gespeichert ({len(image_data)} Bytes)", file=sys.stderr)
-        self._send_json({"status": "ok", "path": cfg["output"], "size": len(image_data)})
+        print(
+            f"[image-gen] {slug}/{agent}: Bild gespeichert ({len(image_data)} Bytes)",
+            file=sys.stderr,
+        )
+        self._send_json(
+            {"status": "ok", "path": cfg["output"], "size": len(image_data)}
+        )
 
     # --- API: Dateien löschen ---
 
