@@ -124,7 +124,7 @@ hideInToc: true
 
 ---
 
-## Die grosse Veränderung: Vom Code zur Sprache
+## Die große Veränderung: Vom Code zur Sprache
 
 <div class="vs-container" style="margin-top: 30px;">
   <div class="card card-grau" style="text-align: center;">
@@ -155,16 +155,16 @@ hideInToc: true
 
 ---
 layout: center
-class: statement-slide
+class: interactive-slide
 hideInToc: true
 title: Reden vs. Handeln
 ---
 
-<div class="big-text">
-ChatGPT kann mit euch <em>reden</em>.
-<br><br>
-Aber kann es auch <em>handeln</em>?
-</div>
+<div class="emoji">🙋</div>
+
+## Reden vs. Handeln
+
+<p style="font-size: 1.3em; margin-top: 30px;">ChatGPT kann mit euch <strong style="color: var(--thm-gruen);">reden</strong>.<br><br>Aber kann es auch <strong style="color: var(--thm-gruen);">handeln</strong>?</p>
 
 <!--
 - Provokante Frage
@@ -283,38 +283,7 @@ class: section-divider
 
 <p class="text-large" style="margin-top: 10px;">Der Agent-Kreislauf: Denken, Handeln, Prüfen</p>
 
-<div class="cycle-diagram">
-  <div class="cycle-step">
-    <span class="step-icon"><i class="fa-solid fa-clipboard-question"></i></span>
-    <span class="step-label">Verstehen</span>
-  </div>
-  <span class="cycle-arrow"><i class="fa-solid fa-arrow-right"></i></span>
-  <div class="cycle-step">
-    <span class="step-icon"><i class="fa-solid fa-list-check"></i></span>
-    <span class="step-label">Planen</span>
-  </div>
-  <span class="cycle-arrow"><i class="fa-solid fa-arrow-right"></i></span>
-  <div class="cycle-step">
-    <span class="step-icon"><i class="fa-solid fa-hammer"></i></span>
-    <span class="step-label">Handeln</span>
-  </div>
-  <span class="cycle-arrow"><i class="fa-solid fa-arrow-right"></i></span>
-  <div class="cycle-step">
-    <span class="step-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></span>
-    <span class="step-label">Prüfen</span>
-  </div>
-</div>
-
-<svg viewBox="0 0 800 50" style="width: 690px; height: 50px; display: block; margin: -5px auto 0;">
-  <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#80BA24"/>
-    </marker>
-  </defs>
-  <path d="M 680 5 C 700 40, 700 45, 400 45 C 100 45, 100 40, 120 5"
-        stroke="#80BA24" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="8 4"/>
-  <text x="400" y="38" text-anchor="middle" fill="#8FA0AA" font-size="13" font-family="Arial, sans-serif">Nicht gut genug? Nochmal von vorne</text>
-</svg>
+<img src="/agent-kreislauf.svg" style="width: 100%; max-width: 850px; margin: 10px auto; display: block;">
 
 <div class="callout" style="margin-top: 20px;">
   <p><i class="fa-solid fa-lightbulb"></i> <strong>Wie ein guter Praktikant:</strong> Aufgabe lesen, Plan machen, umsetzen, prüfen ob alles stimmt — und nachbessern wenn nötig.</p>
