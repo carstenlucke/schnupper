@@ -391,6 +391,28 @@ class: section-divider
 
 
 ---
+
+## Wer wartet auf wen?
+
+<p style="margin-bottom: 20px;">Manche Agenten brauchen die Ergebnisse anderer, bevor sie starten können.</p>
+
+<img src="/agent-abhaengigkeiten.svg" style="width: 100%; max-width: 850px; margin: 15px auto; display: block; border-radius: 8px;">
+
+<div class="callout" style="margin-top: 15px;">
+  <p><i class="fa-solid fa-play-circle"></i> <strong>Zielgruppe</strong> und <strong>Kalkulation</strong> starten sofort — sie brauchen nur die Produktbeschreibung.</p>
+</div>
+
+<!--
+- Zeigen: Abhängigkeiten wie in einem echten Projekt
+- Zielgruppe + Kalkulation starten parallel (sofort)
+- Marketing wartet auf Zielgruppe
+- Social Media wartet auf Marketing
+- Website wartet auf alle
+- "Jetzt starten wir! Dashboard öffnen..."
+-->
+
+
+---
 class: interactive-slide
 hideInToc: true
 ---
@@ -434,28 +456,6 @@ hideInToc: true
 - Gewähltes Produkt in Ship It! eingeben (kurze Beschreibung tippen)
 -->
 
-
-
----
-
-## Wer wartet auf wen?
-
-<p style="margin-bottom: 20px;">Manche Agenten brauchen die Ergebnisse anderer, bevor sie starten können.</p>
-
-<img src="/agent-abhaengigkeiten.svg" style="width: 100%; max-width: 850px; margin: 15px auto; display: block; border-radius: 8px;">
-
-<div class="callout" style="margin-top: 15px;">
-  <p><i class="fa-solid fa-play-circle"></i> <strong>Zielgruppe</strong> und <strong>Kalkulation</strong> starten sofort — sie brauchen nur die Produktbeschreibung.</p>
-</div>
-
-<!--
-- Zeigen: Abhängigkeiten wie in einem echten Projekt
-- Zielgruppe + Kalkulation starten parallel (sofort)
-- Marketing wartet auf Zielgruppe
-- Social Media wartet auf Marketing
-- Website wartet auf alle
-- "Jetzt starten wir! Dashboard öffnen..."
--->
 
 ---
 class: interactive-slide
