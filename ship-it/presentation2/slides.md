@@ -527,26 +527,22 @@ h2::after {
 
 ## Reality Check: Worauf muss man achten?
 
-<div class="card-grid cols-2" style="margin-top: 25px;">
-  <div class="card card-yellow">
-    <div class="card-icon"><i class="fa-solid fa-coins" style="color: var(--thm-gelb);"></i></div>
-    <h3>Kosten</h3>
-    <p>KI arbeitet mit <strong style="color: var(--thm-gelb);">Tokens</strong> — das ist ihre Währung. Je nach Modell kostet das wenig oder richtig viel. Wer Agenten einsetzt, muss die Kosten im Blick behalten.</p>
+<div class="card-grid cols-2" style="margin-top: 50px;">
+  <div class="card card-yellow" style="padding: 16px 18px;">
+    <h3><i class="fa-solid fa-coins" style="color: var(--thm-gelb); margin-right: 8px;"></i> Kosten</h3>
+    <p>KI arbeitet mit <strong style="color: var(--thm-gelb);">Tokens</strong> — das ist ihre Währung. Wer Agenten einsetzt, muss die Kosten im Blick behalten.</p>
   </div>
-  <div class="card" style="border-top-color: var(--thm-hellblau);">
-    <div class="card-icon" style="color: var(--thm-hellblau);"><i class="fa-solid fa-clipboard-check"></i></div>
-    <h3 style="color: var(--thm-hellblau);">Qualitätskontrolle</h3>
-    <p>Wie stellt man sicher, dass die Ergebnisse <strong style="color: var(--thm-hellblau);">korrekt</strong> sind? Wenn alles manuell geprüft werden muss, wird <strong style="color: var(--thm-hellblau);">der Mensch zum Engpass</strong> — man braucht automatische Prüfmechanismen.</p>
+  <div class="card" style="border-top-color: var(--thm-hellblau); padding: 16px 18px;">
+    <h3><i class="fa-solid fa-clipboard-check" style="color: var(--thm-hellblau); margin-right: 8px;"></i> <span style="color: var(--thm-hellblau);">Qualitätskontrolle</span></h3>
+    <p>Wenn alles manuell geprüft werden muss, wird <strong style="color: var(--thm-hellblau);">der Mensch zum Engpass</strong> — man braucht automatische Prüfmechanismen.</p>
   </div>
-  <div class="card card-rot">
-    <div class="card-icon"><i class="fa-solid fa-ghost"></i></div>
-    <h3>Halluzinationen</h3>
-    <p>KI kann <strong style="color: var(--thm-rot);">überzeugend falsche Dinge</strong> behaupten — erfundene Fakten, falsche Zahlen, nicht existierende Quellen. Das klingt plausibel, ist aber frei erfunden.</p>
+  <div class="card card-rot" style="padding: 16px 18px;">
+    <h3><i class="fa-solid fa-ghost" style="margin-right: 8px;"></i> Halluzinationen</h3>
+    <p>KI (LLM) kann <strong style="color: var(--thm-rot);">überzeugend falsche Dinge</strong> behaupten — erfundene Fakten, falsche Zahlen, nicht existierende Quellen.</p>
   </div>
-  <div class="card" style="border-top-color: var(--thm-grau);">
-    <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
-    <h3>Datenschutz</h3>
-    <p>Daten, die an KI-Dienste gesendet werden, <strong>verlassen das Unternehmen</strong>. Vertrauliche Informationen gehören nicht in einen externen KI-Chat.</p>
+  <div class="card" style="border-top-color: var(--thm-grau); padding: 16px 18px;">
+    <h3><i class="fa-solid fa-shield-halved" style="margin-right: 8px;"></i> Datenschutz</h3>
+    <p>Daten, die an KI-Dienste gesendet werden, <strong>verlassen das Unternehmen</strong>. Man muss prüfen, ob eine Verarbeitung in externen KI-Diensten zulässig ist.</p>
   </div>
 </div>
 
