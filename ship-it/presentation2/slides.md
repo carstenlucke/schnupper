@@ -470,7 +470,7 @@ hideInToc: true
 <p style="font-size: 1.1em; margin-top: 20px;">Wechsel zum <strong style="color: var(--thm-gruen);">Ship It! Dashboard</strong></p>
 
 <p style="font-size: 0.8em; color: var(--thm-mittelgrau); margin-top: 30px;">
-  <i class="fa-solid fa-arrow-right" style="color: var(--thm-mittelgrau);"></i> http://localhost:8000
+  <i class="fa-solid fa-arrow-right" style="color: var(--thm-mittelgrau);"></i> <a href="http://localhost:8000" target="_blank">http://localhost:8000</a>
 </p>
 
 <!--
