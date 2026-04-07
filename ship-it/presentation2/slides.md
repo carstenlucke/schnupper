@@ -486,41 +486,42 @@ hideInToc: true
 
 ---
 layout: center
-class: section-divider
+class: interactive-slide
+hideInToc: true
 ---
+
+<div style="text-align: center;">
 
 ## Wie gut war die KI?
 
 <p style="font-size: 1.1em; margin-top: 15px;">Zeit für eine ehrliche Bewertung</p>
 
-<!--
-- Übergang zur kritischen Bewertung
-- "Jetzt schauen wir mal genauer hin."
--->
-
----
-class: interactive-slide
-hideInToc: true
----
-
-## Daumen hoch oder runter?
-
 <div class="question-list">
-  <ul>
-    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Würdet ihr diesen <strong style="color: var(--thm-gruen);">Instagram-Post</strong> liken?</li>
-    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Ist die <strong style="color: var(--thm-gruen);">Preiskalkulation</strong> realistisch?</li>
-    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Würdet ihr auf dieser <strong style="color: var(--thm-gruen);">Website</strong> einkaufen?</li>
+  <ul style="list-style: none; padding-left: 0;">
+    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> | <i class="fa-solid fa-thumbs-down" style="color: var(--thm-rot);"></i> Würdet ihr diesen <strong style="color: var(--thm-gruen);">Instagram-Post</strong> liken?</li>
+    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> | <i class="fa-solid fa-thumbs-down" style="color: var(--thm-rot);"></i> Ist die <strong style="color: var(--thm-gruen);">Preiskalkulation</strong> realistisch?</li>
+    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Spricht euch die <strong style="color: var(--thm-gruen);">Website</strong> an?</li>
     <li><i class="fa-solid fa-trophy" style="color: var(--thm-gelb);"></i> Welcher Agent hat <strong style="color: var(--thm-gelb);">am besten</strong> gearbeitet?</li>
   </ul>
 </div>
 
+</div>
+
 <!--
+- Übergang zur kritischen Bewertung
 - Jede Frage einzeln durchgehen, Daumen hoch/runter
 - Nachfragen: WARUM? Was genau stört euch?
 - "Was hat überrascht?"
 - "Was fehlt offensichtlich?"
 - "Würde ein echtes Unternehmen das so verwenden?"
 -->
+
+<style scoped>
+h2::after {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+</style>
 
 ---
 

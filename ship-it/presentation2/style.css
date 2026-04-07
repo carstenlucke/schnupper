@@ -271,7 +271,7 @@ h2.accent-rot::after {
 }
 
 .interactive-slide .question-list li::before {
-  background: var(--thm-gruen);
+  display: none;
 }
 
 /* ===========================================
