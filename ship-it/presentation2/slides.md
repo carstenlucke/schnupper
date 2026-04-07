@@ -391,48 +391,23 @@ class: section-divider
 
 
 ---
-
-## Das Experiment: Ship It!
-
-<p class="text-large" style="margin-top: 10px;">Wir testen das jetzt live — mit einer App, die ich mitgebracht habe.</p>
-
-<div class="callout" style="margin-top: 25px;">
-  <p><i class="fa-solid fa-rocket"></i> <strong>Ship It!</strong> ist ein Dashboard, in dem <strong>5 KI-Agenten</strong> zusammenarbeiten, um ein Produkt auf den Markt zu bringen — Zielgruppenanalyse, Marketing, Social Media, Preiskalkulation und sogar eine fertige Website.</p>
-</div>
-
-<div style="margin-top: 25px;">
-  <p style="font-size: 0.85em; margin-bottom: 12px;">So funktioniert es:</p>
-  <ol>
-    <li><strong>Ihr</strong> wählt ein Produkt</li>
-    <li>Die <strong>KI-Agenten</strong> übernehmen den kompletten Produktlaunch</li>
-    <li><strong>Wir</strong> schauen live zu und bewerten die Ergebnisse</li>
-  </ol>
-</div>
-
-<p style="font-size: 0.8em; color: var(--thm-mittelgrau); margin-top: 25px;"><i class="fa-solid fa-comment-dots" style="color: var(--thm-mittelgrau);"></i> Das Einzige was die Agenten von euch brauchen: eine Produktidee in ganz normalem Deutsch.</p>
-
-<!--
-- Ship It! kurz erklären: Was ist das? Was passiert gleich?
-- Keine Programmierung nötig — alles in natürlicher Sprache (Bezug zur vorherigen Folie!)
-- Die Agenten arbeiten eigenständig, wir schauen ihnen dabei zu
-- "Also: Welches Produkt soll es sein?"
--->
-
----
 class: interactive-slide
 hideInToc: true
 ---
 
-<div class="emoji">🚀</div>
-
 ## Jetzt seid ihr dran!
 
-<p style="font-size: 1.1em; margin-top: 20px;">Welches Produkt sollen unsere<br>KI-Agenten auf den Markt bringen?</p>
+<div style="display: flex; align-items: center; gap: 20px; margin-top: 20px;">
+  <span style="font-size: 2.5em;">🙋</span>
+  <p style="font-size: 1.1em;">Welches Produkt sollen unsere<br>KI-Agenten auf den Markt bringen?</p>
+</div>
+
+<p style="font-size: 0.85em; color: var(--thm-mittelgrau); margin-top: 15px;">Das Einzige, was die Agenten von euch brauchen: <strong style="color: var(--thm-gruen);">eine Produktidee in ganz normalem Deutsch.</strong></p>
 
 <div class="product-grid">
   <div class="product-item">
-    <div class="product-emoji">👟</div>
-    <p>Nachhaltige Sneaker aus Apfelleder</p>
+    <div class="product-emoji">🧋</div>
+    <p>Bubble-Tea-Automat für Schulen</p>
   </div>
   <div class="product-item">
     <div class="product-emoji">⚡</div>
