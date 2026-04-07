@@ -571,60 +571,44 @@ class: section-divider
 
 ## Der rote Faden
 
-<div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 35px;">
-  <div class="card card-grau" style="text-align: center; flex: 1;">
-    <div class="card-icon" style="font-size: 1.5em; color: var(--thm-mittelgrau);"><i class="fa-solid fa-database"></i></div>
-    <h3 style="font-size: 0.85em;">Digitalisierung</h3>
-    <p style="font-size: 0.7em;">...hat die Welt in Daten übersetzt</p>
+<div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 25px;">
+  <div class="card card-grau" style="text-align: center; flex: 1; padding: 12px;">
+    <h3 style="font-size: 0.85em;"><i class="fa-solid fa-database" style="color: var(--thm-mittelgrau); margin-right: 6px;"></i> Digitalisierung</h3>
   </div>
   <span style="font-size: 1.3em; color: var(--thm-gruen);"><i class="fa-solid fa-arrow-right"></i></span>
-  <div class="card card-blue" style="text-align: center; flex: 1;">
-    <div class="card-icon" style="font-size: 1.5em;"><i class="fa-solid fa-comment-dots"></i></div>
-    <h3 style="font-size: 0.85em;">LLMs</h3>
-    <p style="font-size: 0.7em;">...haben gelernt, diese Daten zu verstehen</p>
+  <div class="card card-blue" style="text-align: center; flex: 1; padding: 12px;">
+    <h3 style="font-size: 0.85em;"><i class="fa-solid fa-comment-dots" style="margin-right: 6px;"></i> LLMs</h3>
   </div>
   <span style="font-size: 1.3em; color: var(--thm-gruen);"><i class="fa-solid fa-arrow-right"></i></span>
-  <div class="card" style="text-align: center; flex: 1;">
-    <div class="card-icon" style="font-size: 1.5em;"><i class="fa-solid fa-robot"></i></div>
-    <h3 style="font-size: 0.85em;">KI-Agenten</h3>
-    <p style="font-size: 0.7em;">...handeln jetzt selbstständig in dieser Welt</p>
+  <div class="card" style="text-align: center; flex: 1; padding: 12px;">
+    <h3 style="font-size: 0.85em;"><i class="fa-solid fa-robot" style="margin-right: 6px;"></i> KI-Agenten</h3>
   </div>
 </div>
 
-<div class="card-grid cols-3" style="margin-top: 25px;">
-  <div class="card" style="text-align: center; padding: 16px;">
-    <h3 style="font-size: 0.8em;"><i class="fa-solid fa-screwdriver-wrench"></i> Werkzeug, kein Ersatz</h3>
-    <p style="font-size: 0.7em;">Der Mensch bleibt verantwortlich — <strong>jemand muss prüfen</strong>.</p>
+<div class="card-grid cols-2" style="margin-top: 25px;">
+  <div class="card" style="padding: 16px;">
+    <h3 style="font-size: 0.8em;"><i class="fa-solid fa-bullseye"></i> Intent spezifizieren</h3>
+    <p style="font-size: 0.7em;">Nach Prompting kommt der nächste Schritt: <strong>präzise spezifizieren, was man will</strong> — Rolle, Ziel, Qualität, Prüfkriterien. Nicht nur fragen, sondern <strong>beauftragen</strong>.</p>
   </div>
-  <div class="card" style="text-align: center; padding: 16px;">
-    <h3 style="font-size: 0.8em;"><i class="fa-solid fa-people-group"></i> Arbeitsteilung</h3>
-    <p style="font-size: 0.7em;">Spezialisierte Agenten — <strong>wie in echten Unternehmen</strong>.</p>
+  <div class="card" style="padding: 16px;">
+    <h3 style="font-size: 0.8em;"><i class="fa-solid fa-magnifying-glass-chart"></i> Kritisch prüfen</h3>
+    <p style="font-size: 0.7em;">Der Mensch prüft die Ergebnisse — oder <strong>spezifiziert, wie die KI sich selbst prüfen soll</strong>. Wer das beherrscht, kann massiv skalieren.</p>
   </div>
-  <div class="card" style="text-align: center; padding: 16px;">
-    <h3 style="font-size: 0.8em;"><i class="fa-solid fa-gauge-high"></i> Schnell ≠ gut</h3>
-    <p style="font-size: 0.7em;">Qualität braucht <strong>menschliches Urteil</strong>.</p>
-  </div>
+</div>
+
+<div class="callout" style="margin-top: 25px;">
+  <p style="font-size: 0.85em;">Ihr werdet in einer Welt arbeiten, in der ihr nicht mehr nur lernt, wie man Aufgaben <em>selbst ausführt</em> — sondern wie man <strong>präzise spezifiziert</strong>, was Agenten <em>für euch lösen</em> sollen.</p>
 </div>
 
 <!--
 - Den roten Faden der Vorlesung zusammenfassen
 - Digitalisierung -> LLMs -> Agenten: drei aufeinander aufbauende Schritte
-- Die drei Learnings aus der Demo nochmal kurz
-- Überleitung: "Und was bedeutet das für EUCH?"
--->
-
----
-class: statement-slide
-hideInToc: true
-title: Zentrale Botschaft
----
-
-<div class="big-text" style="font-size: 1.4em;">Ihr werdet in einer Welt arbeiten, in der ihr nicht mehr nur lernt, wie man Aufgaben <em>selbst ausführt</em> —<br><br>sondern wie man Agenten steuert, die diese Aufgaben <em>für euch lösen</em>.</div>
-
-<!--
-- Die zentrale Botschaft der Vorlesung
-- Kurz wirken lassen, nicht sofort weiterreden
-- Dann: "Was denkt ihr darüber?"
+- Intent spezifizieren: Das ist der nächste Schritt nach Prompt Engineering
+  - Nicht nur "Schreib mir einen Text" sondern "Du bist Marketing-Experte, erstelle ein Konzept mit Slogan, Zielgruppe, Tonalität..."
+  - Genau das haben wir in der Demo gesehen: Die Agent-Definitionen sind präzise Spezifikationen
+- Kritisch prüfen: Entweder Mensch prüft, oder man definiert Prüfkriterien für die KI
+  - Skalierungseffekt: Wenn KI sich selbst prüfen kann, braucht man keinen Menschen pro Ergebnis
+- Die zentrale Botschaft kurz wirken lassen
 -->
 
 
