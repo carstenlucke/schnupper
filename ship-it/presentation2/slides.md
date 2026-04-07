@@ -32,6 +32,7 @@ drawings:
 
 ---
 class: interactive-slide
+hideInToc: true
 ---
 
 <div class="emoji">🙋</div>
@@ -147,6 +148,8 @@ class: interactive-slide
 
 ---
 class: statement-slide
+hideInToc: true
+title: Reden vs. Handeln
 ---
 
 <div class="big-text">ChatGPT kann mit euch <em>reden</em>.<br><br>Aber kann es auch <em>handeln</em>?</div>
@@ -403,6 +406,7 @@ class: section-divider
 
 ---
 class: interactive-slide
+hideInToc: true
 ---
 
 <div class="emoji">🚀</div>
@@ -541,6 +545,7 @@ class: section-divider
 
 ---
 class: interactive-slide
+hideInToc: true
 ---
 
 <div class="emoji">🎬</div>
@@ -562,6 +567,7 @@ class: interactive-slide
 
 ---
 class: interactive-slide
+hideInToc: true
 ---
 
 <div class="emoji">🤔</div>
@@ -602,6 +608,7 @@ class: section-divider
 
 ---
 class: interactive-slide
+hideInToc: true
 ---
 
 ## Daumen hoch oder runter?
@@ -718,6 +725,8 @@ class: section-divider
 
 ---
 class: statement-slide
+hideInToc: true
+title: Zentrale Botschaft
 ---
 
 <div class="big-text" style="font-size: 1.4em;">Ihr werdet in einer Welt arbeiten, in der ihr nicht mehr nur lernt, wie man Aufgaben <em>selbst ausfuehrt</em> —<br><br>sondern wie man Agenten steuert, die diese Aufgaben <em>fuer euch loesen</em>.</div>
@@ -730,6 +739,7 @@ class: statement-slide
 
 ---
 class: interactive-slide
+hideInToc: true
 ---
 
 ## Was denkt ihr?
