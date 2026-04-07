@@ -360,6 +360,11 @@ h2.accent-rot::after {
 .card.card-grau h3 { color: var(--thm-mittelgrau); }
 .card.card-grau .card-icon { color: var(--thm-mittelgrau); }
 
+.card.card-plain { border-top: none; }
+.card.card-plain h3 { color: var(--text-primary); }
+.card.card-plain .card-icon,
+.card.card-plain .card-icon .fa-solid { color: var(--text-secondary) !important; }
+
 /* ===========================================
    VERGLEICHS-LAYOUT (vs.)
    =========================================== */

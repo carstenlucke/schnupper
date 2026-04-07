@@ -298,35 +298,6 @@ class: section-divider
 
 ---
 
-## Was wenn mehrere Agenten zusammenarbeiten?
-
-<div class="card-grid cols-2" style="margin-top: 25px;">
-  <div class="card card-grau" style="text-align: center;">
-    <div class="card-icon" style="color: var(--thm-mittelgrau);"><i class="fa-solid fa-user"></i></div>
-    <h3>Ein Alleskönner</h3>
-    <p>Eine KI soll alles allein machen: Marketing, Finanzen, Design, Technik...</p>
-    <p style="font-size: 0.7em; color: var(--thm-rot); margin-top: 10px;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--thm-rot);"></i> Überfordert, ungenau, langsam</p>
-  </div>
-  <div class="card" style="text-align: center;">
-    <div class="card-icon"><i class="fa-solid fa-users"></i></div>
-    <h3>Ein Team von Spezialisten</h3>
-    <p>Jeder Agent hat <strong>eine Rolle</strong> und ist darin richtig gut.</p>
-    <p style="font-size: 0.7em; color: var(--thm-gruen); margin-top: 10px;"><i class="fa-solid fa-check-circle"></i> Wie in einem echten Unternehmen!</p>
-  </div>
-</div>
-
-<div class="callout callout-blue" style="margin-top: 25px;">
-  <p><i class="fa-solid fa-building" style="color: var(--thm-hellblau);"></i> <strong style="color: var(--thm-hellblau);">Genau wie in der Wirtschaft:</strong> Marketing-Abteilung, Finanzabteilung, Entwicklung — jeder macht das, was er am besten kann.</p>
-</div>
-
-<!--
-- Analogie zum Unternehmen — das kennen die Schüler aus dem Wirtschaftsunterricht
-- Arbeitsteilung ist ein Grundprinzip der Betriebswirtschaft
-- "Und genau das machen wir jetzt live: 5 KI-Agenten, ein Produktlaunch!"
--->
-
----
-
 ## Warum Agenten gerade so gefragt sind
 
 <div class="card-grid cols-3" style="margin-top: 25px;">
@@ -427,46 +398,40 @@ hideInToc: true
 - Gewähltes Produkt in Ship It! eingeben (kurze Beschreibung tippen)
 -->
 
----
-layout: center
-class: section-divider
----
-
-## Ship It!
-
-<p style="font-size: 1.1em; margin-top: 15px;">Live-Demo: 5 KI-Agenten, 1 Produktlaunch</p>
-
-<!--
-- Überleitung zur Demo
-- "Jetzt zeige ich euch, wie 5 KI-Agenten euer Produkt auf den Markt bringen."
--->
 
 ---
 
-## Unsere 5 KI-Agenten
+<div style="display: flex; align-items: center; gap: 16px;">
+  <img src="/ship-it-logo.png" style="height: 70px;">
+  <h2>Ship It!</h2>
+</div>
 
-<div class="card-grid cols-5" style="margin-top: 25px;">
-  <div class="card" style="padding: 16px; text-align: center;">
+<div class="callout" style="margin-top: 30px;">
+  <p><i class="fa-solid fa-rocket"></i> <strong>Ship It!</strong> ist ein Dashboard, in dem <strong>5 KI-Agenten</strong> zusammenarbeiten, um ein Produkt auf den Markt zu bringen — Zielgruppenanalyse, Marketing, Social Media, Preiskalkulation und sogar eine fertige Website.</p>
+</div>
+
+<div class="card-grid cols-5" style="margin-top: 30px;">
+  <div class="card card-plain" style="padding: 16px; text-align: center;">
     <div class="card-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
     <h3 style="font-size: 0.75em;">Zielgruppen-Analyst</h3>
     <p style="font-size: 0.65em;">Wer kauft das Produkt? Personas erstellen</p>
   </div>
-  <div class="card" style="padding: 16px; text-align: center;">
+  <div class="card card-plain" style="padding: 16px; text-align: center;">
     <div class="card-icon"><i class="fa-solid fa-bullhorn"></i></div>
     <h3 style="font-size: 0.75em;">Marketing-Experte</h3>
     <p style="font-size: 0.65em;">Name, Slogan, Werbetexte entwickeln</p>
   </div>
-  <div class="card" style="padding: 16px; text-align: center;">
+  <div class="card card-plain" style="padding: 16px; text-align: center;">
     <div class="card-icon"><i class="fa-solid fa-hashtag"></i></div>
     <h3 style="font-size: 0.75em;">Social-Media-Manager</h3>
     <p style="font-size: 0.65em;">Posts für Instagram, LinkedIn, TikTok</p>
   </div>
-  <div class="card" style="padding: 16px; text-align: center;">
+  <div class="card card-plain" style="padding: 16px; text-align: center;">
     <div class="card-icon"><i class="fa-solid fa-calculator"></i></div>
     <h3 style="font-size: 0.75em;">Controller</h3>
     <p style="font-size: 0.65em;">Preiskalkulation und Preisstrategie</p>
   </div>
-  <div class="card" style="padding: 16px; text-align: center;">
+  <div class="card card-plain" style="padding: 16px; text-align: center;">
     <div class="card-icon"><i class="fa-solid fa-code"></i></div>
     <h3 style="font-size: 0.75em;">Web-Entwickler</h3>
     <p style="font-size: 0.65em;">Produkt-Website mit HTML, CSS, JS</p>
