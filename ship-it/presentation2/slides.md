@@ -478,35 +478,11 @@ hideInToc: true
 - Produkt eingeben
 - Agenten nacheinander starten
 - Zwischen den Ergebnissen: Vorhersage-Spiel (nächste Folien)
+- Markdown-Files von 1-2 Agenten zeigen (z.B. Zielgruppe, Marketing)
+- Hinweis: Die Agenten sind nicht programmiert, sondern in natürlicher Sprache definiert
+- "Schaut mal: Das ist kein Code — das ist einfach Deutsch. So sagt man der KI, was sie tun soll."
 -->
 
----
-class: interactive-slide
-hideInToc: true
----
-
-<div class="emoji">🤔</div>
-
-## Vorhersage-Spiel
-
-<div class="question-list">
-  <ul>
-    <li>Welche <strong style="color: var(--thm-gruen);">Zielgruppe</strong> wird die KI identifizieren?</li>
-    <li>Welchen <strong style="color: var(--thm-gruen);">Slogan</strong> würdet IHR waehlen?</li>
-    <li>Was schätzt ihr als <strong style="color: var(--thm-gruen);">fairen Preis</strong>?</li>
-  </ul>
-</div>
-
-<p style="font-size: 0.8em; color: var(--thm-mittelgrau); margin-top: 30px;">
-  Mal sehen, ob die KI auf etwas Ähnliches kommt...
-</p>
-
-<!--
-- Vorhersagen einsammeln BEVOR die Ergebnisse angeschaut werden
-- Ggf. an die Tafel schreiben
-- Dann: Ergebnisse im Dashboard aufrufen und vergleichen
-- Erzeugt Spannung und Engagement
--->
 
 ---
 layout: center
