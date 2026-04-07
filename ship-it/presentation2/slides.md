@@ -458,6 +458,7 @@ hideInToc: true
 
 
 ---
+layout: center
 class: interactive-slide
 hideInToc: true
 ---
