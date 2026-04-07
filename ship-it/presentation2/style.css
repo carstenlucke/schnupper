@@ -119,6 +119,29 @@
 }
 
 /* ===========================================
+   LOGO-LEISTE (Titelfolie)
+   =========================================== */
+.logo-bar {
+  position: absolute;
+  top: 30px;
+  left: 60px;
+  right: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-bar .logo-studplus {
+  height: 52px;
+  width: auto;
+}
+
+.logo-bar .logo-thm {
+  height: 44px;
+  width: auto;
+}
+
+/* ===========================================
    TITELFOLIE
    =========================================== */
 .title-slide .slidev-layout {
@@ -128,6 +151,7 @@
   flex-direction: column;
   justify-content: center;
   padding: 50px 60px !important;
+  position: relative;
 }
 
 .title-slide .slidev-layout h1 {

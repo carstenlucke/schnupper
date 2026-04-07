@@ -16,7 +16,12 @@ drawings:
 
 <!-- ==================== TITELFOLIE ==================== -->
 
-<div class="subtitle">Was Maschinen schon koennen</div>
+<div class="logo-bar">
+  <img src="/Logo-StudiumPlus_4c.png" alt="StudiumPlus" class="logo-studplus">
+  <img src="/THM_Logo_4c.png" alt="THM" class="logo-thm">
+</div>
+
+<div class="subtitle">Was Maschinen schon können</div>
 
 # Digitalisierung und KI
 
@@ -32,6 +37,7 @@ drawings:
 -->
 
 ---
+layout: center
 class: interactive-slide
 hideInToc: true
 ---
@@ -43,15 +49,15 @@ hideInToc: true
 <p style="font-size: 1.3em; margin-top: 30px;">Wer von euch hat schon mal<br><strong style="color: var(--thm-gruen);">ChatGPT, Gemini oder Copilot</strong> benutzt?</p>
 
 <!--
-- Haende hoch! (Erwartung: fast alle)
-- Kurze Rufrunde: Wofuer nutzt ihr das?
-- Typische Antworten: Hausaufgaben, Texte schreiben, Fragen beantworten, Uebersetzen
+- Hände hoch! (Erwartung: fast alle)
+- Kurze Rufrunde: Wofür nutzt ihr das?
+- Typische Antworten: Hausaufgaben, Texte schreiben, Fragen beantworten, Übersetzen
 - "Spannend. Und genau da setzen wir heute an."
 -->
 
 ---
 
-## Digitalisierung und KI — wie haengt das zusammen?
+## Digitalisierung und KI — wie hängt das zusammen?
 
 <div class="vs-container" style="margin-top: 30px;">
   <div class="card card-grau" style="text-align: center;">
@@ -63,28 +69,28 @@ hideInToc: true
   <div class="vs-label"><i class="fa-solid fa-arrow-right" style="color: var(--thm-gruen);"></i></div>
   <div class="card" style="text-align: center;">
     <div class="card-icon" style="font-size: 1.8em;"><i class="fa-solid fa-brain"></i></div>
-    <h3>Kuenstliche Intelligenz</h3>
+    <h3>Künstliche Intelligenz</h3>
     <p><strong>Verstehen und Nutzen</strong></p>
-    <p style="font-size: 0.7em; color: var(--thm-mittelgrau);">KI zieht Schluesse aus den digitalisierten Daten — und handelt eigenstaendig.</p>
+    <p style="font-size: 0.7em; color: var(--thm-mittelgrau);">KI zieht Schlüsse aus den digitalisierten Daten — und handelt eigenständig.</p>
   </div>
 </div>
 <div class="callout" style="margin-top: 25px;">
-  <p><i class="fa-solid fa-lightbulb"></i> <strong>Ohne Digitalisierung haette KI kein Futter.</strong> Die Digitalisierung hat die Welt fuer Maschinen lesbar gemacht — KI ist die Intelligenzschicht, die jetzt darauf aufsetzt.</p>
+  <p><i class="fa-solid fa-lightbulb"></i> <strong>Ohne Digitalisierung hätte KI kein Futter.</strong> Die Digitalisierung hat die Welt für Maschinen lesbar gemacht — KI ist die Intelligenzschicht, die jetzt darauf aufsetzt.</p>
 </div>
 
 <!--
 - Digitalisierung ist die Infrastruktur, KI die Intelligenz
 - Passive Digitalisierung: Daten liegen nur herum (Excel, PDFs)
-- Aktive Digitalisierung: Daten ARBEITEN fuer uns
-- "KI ohne Digitalisierung waere ein Gehirn ohne Augen und Ohren"
-- "Und ihr nutzt das laengst, ohne darueber nachzudenken..."
+- Aktive Digitalisierung: Daten ARBEITEN für uns
+- "KI ohne Digitalisierung wäre ein Gehirn ohne Augen und Ohren"
+- "Und ihr nutzt das längst, ohne darüber nachzudenken..."
 -->
 
 ---
 
-## KI ist schon ueberall
+## KI ist schon überall
 
-<p style="margin-bottom: 15px;">Ihr nutzt taeglich KI — oft ohne es zu merken:</p>
+<p style="margin-bottom: 15px;">Ihr nutzt täglich KI — oft ohne es zu merken:</p>
 
 <div class="card-grid cols-2" style="margin-top: 10px;">
   <div class="card">
@@ -100,7 +106,7 @@ hideInToc: true
   <div class="card card-yellow">
     <div class="card-icon"><i class="fa-solid fa-language" style="color: var(--thm-gelb);"></i></div>
     <h3>DeepL & Google Translate</h3>
-    <p>Uebersetzungen in Echtzeit — das ist KI</p>
+    <p>Übersetzungen in Echtzeit — das ist KI</p>
   </div>
   <div class="card">
     <div class="card-icon"><i class="fa-solid fa-comment-dots"></i></div>
@@ -110,20 +116,20 @@ hideInToc: true
 </div>
 
 <!--
-- Bezug zur Lebenswelt der Schueler
+- Bezug zur Lebenswelt der Schüler
 - KI ist kein Zukunftsthema — es ist Gegenwart
 - Die Frage ist nicht OB KI kommt, sondern wie wir damit umgehen
-- Ueberleitung: "Und genau beim letzten Punkt wird es jetzt spannend..."
+- Überleitung: "Und genau beim letzten Punkt wird es jetzt spannend..."
 -->
 
 ---
 
-## Die grosse Veraenderung: Vom Code zur Sprache
+## Die grosse Veränderung: Vom Code zur Sprache
 
 <div class="vs-container" style="margin-top: 30px;">
   <div class="card card-grau" style="text-align: center;">
     <div class="card-icon" style="font-size: 1.8em; color: var(--thm-mittelgrau);"><i class="fa-solid fa-code"></i></div>
-    <h3>Frueher</h3>
+    <h3>Früher</h3>
     <p style="font-size: 0.7em;">Um mit digitalen Daten zu arbeiten, brauchte man <strong style="color: var(--thm-mittelgrau);">Programmiersprachen</strong>.</p>
     <p style="font-size: 0.65em; font-family: 'Courier New', monospace; color: var(--thm-mittelgrau); margin-top: 8px; background: rgba(255,255,255,0.06); padding: 6px; border-radius: 4px;">SELECT * FROM kunden<br>WHERE alter &gt; 18</p>
   </div>
@@ -131,19 +137,19 @@ hideInToc: true
   <div class="card" style="text-align: center;">
     <div class="card-icon" style="font-size: 1.8em;"><i class="fa-solid fa-comment-dots"></i></div>
     <h3>Heute</h3>
-    <p style="font-size: 0.7em;">LLMs erlauben es, mit Daten und Systemen in <strong>natuerlicher Sprache</strong> zu arbeiten.</p>
-    <p style="font-size: 0.65em; margin-top: 8px; background: rgba(128,186,36,0.1); padding: 6px; border-radius: 4px; color: var(--text-primary);">"Zeig mir alle Kunden<br>ueber 18 Jahre"</p>
+    <p style="font-size: 0.7em;">LLMs erlauben es, mit Daten und Systemen in <strong>natürlicher Sprache</strong> zu arbeiten.</p>
+    <p style="font-size: 0.65em; margin-top: 8px; background: rgba(128,186,36,0.1); padding: 6px; border-radius: 4px; color: var(--text-primary);">"Zeig mir alle Kunden<br>über 18 Jahre"</p>
   </div>
 </div>
 <div class="callout" style="margin-top: 20px;">
-  <p><i class="fa-solid fa-rocket"></i> <strong>Genau das werden wir gleich sehen:</strong> Unsere KI-Agenten bekommen ihre Auftraege in ganz normalem Deutsch — kein Code, keine Programmierung.</p>
+  <p><i class="fa-solid fa-rocket"></i> <strong>Genau das werden wir gleich sehen:</strong> Unsere KI-Agenten bekommen ihre Aufträge in ganz normalem Deutsch — kein Code, keine Programmierung.</p>
 </div>
 
 <!--
 - DAS ist der Paradigmenwechsel den LLMs gebracht haben
-- Frueher: Nur wer programmieren konnte, konnte digitale Systeme steuern
-- Heute: Natuerliche Sprache reicht — LLMs sind der "Dolmetscher"
-- Bezug zu Ship It!: Die Agenten verstehen deutsche Auftraege
+- Früher: Nur wer programmieren konnte, konnte digitale Systeme steuern
+- Heute: Natürliche Sprache reicht — LLMs sind der "Dolmetscher"
+- Bezug zu Ship It!: Die Agenten verstehen deutsche Aufträge
 - "Aber es gibt noch ein Problem..."
 -->
 
@@ -158,7 +164,7 @@ title: Reden vs. Handeln
 <!--
 - Provokante Frage
 - ChatGPT schreibt Texte, beantwortet Fragen — aber TUT es etwas?
-- Es ist wie ein Gehirn im Glas: Es kann denken und reden, aber es hat keine Haende
+- Es ist wie ein Gehirn im Glas: Es kann denken und reden, aber es hat keine Hände
 - "Genau das schauen wir uns heute an."
 -->
 
@@ -170,7 +176,7 @@ class: section-divider
 
 <!--
 - Jetzt: Was ist der Unterschied?
-- Einfach erklaert, ohne Technik-Jargon
+- Einfach erklärt, ohne Technik-Jargon
 -->
 
 ---
@@ -181,29 +187,29 @@ class: section-divider
   <div class="card">
     <div class="card-icon"><i class="fa-solid fa-pen-fancy"></i></div>
     <h3>Texte schreiben</h3>
-    <p>Aufsaetze, E-Mails, Zusammenfassungen, Gedichte...</p>
+    <p>Aufsätze, E-Mails, Zusammenfassungen, Gedichte...</p>
   </div>
   <div class="card">
     <div class="card-icon"><i class="fa-solid fa-comments"></i></div>
     <h3>Fragen beantworten</h3>
-    <p>Erklaerungen, Definitionen, Tipps und Ratschlaege</p>
+    <p>Erklärungen, Definitionen, Tipps und Ratschläge</p>
   </div>
   <div class="card">
     <div class="card-icon"><i class="fa-solid fa-language"></i></div>
-    <h3>Uebersetzen</h3>
-    <p>Zwischen Sprachen uebersetzen, Texte umformulieren</p>
+    <h3>Übersetzen</h3>
+    <p>Zwischen Sprachen übersetzen, Texte umformulieren</p>
   </div>
   <div class="card">
     <div class="card-icon"><i class="fa-solid fa-lightbulb"></i></div>
     <h3>Ideen entwickeln</h3>
-    <p>Brainstorming, kreative Vorschlaege, Konzepte</p>
+    <p>Brainstorming, kreative Vorschläge, Konzepte</p>
   </div>
 </div>
 
 <!--
-- Das kennen die Schueler bereits
+- Das kennen die Schüler bereits
 - Kurz abhaken, nicht zu lange drauf verweilen
-- Ueberleitung: "Super. Aber jetzt kommt das Aber..."
+- Überleitung: "Super. Aber jetzt kommt das Aber..."
 -->
 
 ---
@@ -218,8 +224,8 @@ class: section-divider
   </div>
   <div class="card card-rot">
     <div class="card-icon"><i class="fa-solid fa-gears"></i></div>
-    <h3>Aufgaben ausfuehren</h3>
-    <p>Kann nichts eigenstaendig erledigen — nur antworten, wenn ihr fragt</p>
+    <h3>Aufgaben ausführen</h3>
+    <p>Kann nichts eigenständig erledigen — nur antworten, wenn ihr fragt</p>
   </div>
   <div class="card card-rot">
     <div class="card-icon"><i class="fa-solid fa-plug"></i></div>
@@ -228,13 +234,13 @@ class: section-divider
   </div>
   <div class="card card-rot">
     <div class="card-icon"><i class="fa-solid fa-rotate"></i></div>
-    <h3>Sich selbst pruefen</h3>
+    <h3>Sich selbst prüfen</h3>
     <p>Kann nicht testen ob seine Antwort wirklich stimmt oder funktioniert</p>
   </div>
 </div>
 
 <!--
-- Kernpunkt: ChatGPT ist "nur" ein Gespraechspartner
+- Kernpunkt: ChatGPT ist "nur" ein Gesprächspartner
 - Es WEISS viel, aber es KANN nichts tun
 - "Stellt euch vor, ihr ruft einen Experten an..."
 -->
@@ -248,19 +254,19 @@ class: section-divider
     <div class="card-icon" style="color: var(--thm-mittelgrau); font-size: 2.5em;"><i class="fa-solid fa-phone"></i></div>
     <h3>Chatbot</h3>
     <p style="font-size: 0.85em;">Ein Experte <strong style="color: var(--thm-mittelgrau);">am Telefon</strong></p>
-    <p style="font-size: 0.7em; color: var(--thm-mittelgrau);">Weiss alles, kann aber nichts anfassen.<br>Ihr muesst alles selbst umsetzen.</p>
+    <p style="font-size: 0.7em; color: var(--thm-mittelgrau);">Weiss alles, kann aber nichts anfassen.<br>Ihr müsst alles selbst umsetzen.</p>
   </div>
   <div class="vs-label">vs.</div>
   <div class="card" style="text-align: center;">
     <div class="card-icon" style="font-size: 2.5em;"><i class="fa-solid fa-user-gear"></i></div>
     <h3>KI-Agent</h3>
-    <p style="font-size: 0.85em;">Ein Experte <strong>bei euch im Buero</strong></p>
+    <p style="font-size: 0.85em;">Ein Experte <strong>bei euch im Büro</strong></p>
     <p style="font-size: 0.7em; color: var(--thm-mittelgrau);">Weiss alles UND legt direkt los.<br>Liest Dateien, schreibt Ergebnisse, nutzt Werkzeuge.</p>
   </div>
 </div>
 
 <!--
-- Analogie ist der Schluessel zum Verstaendnis
+- Analogie ist der Schlüssel zum Verständnis
 - Chatbot = passiver Berater, Agent = aktiver Macher
 - "Und wie macht der Agent das? Dazu gibt es ein einfaches Prinzip..."
 -->
@@ -269,7 +275,7 @@ class: section-divider
 
 ## Wie arbeitet ein KI-Agent?
 
-<p class="text-large" style="margin-top: 10px;">Der Agent-Kreislauf: Denken, Handeln, Pruefen</p>
+<p class="text-large" style="margin-top: 10px;">Der Agent-Kreislauf: Denken, Handeln, Prüfen</p>
 
 <div class="cycle-diagram">
   <div class="cycle-step">
@@ -289,7 +295,7 @@ class: section-divider
   <span class="cycle-arrow"><i class="fa-solid fa-arrow-right"></i></span>
   <div class="cycle-step">
     <span class="step-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></span>
-    <span class="step-label">Pruefen</span>
+    <span class="step-label">Prüfen</span>
   </div>
 </div>
 
@@ -305,13 +311,13 @@ class: section-divider
 </svg>
 
 <div class="callout" style="margin-top: 20px;">
-  <p><i class="fa-solid fa-lightbulb"></i> <strong>Wie ein guter Praktikant:</strong> Aufgabe lesen, Plan machen, umsetzen, pruefen ob alles stimmt — und nachbessern wenn noetig.</p>
+  <p><i class="fa-solid fa-lightbulb"></i> <strong>Wie ein guter Praktikant:</strong> Aufgabe lesen, Plan machen, umsetzen, prüfen ob alles stimmt — und nachbessern wenn nötig.</p>
 </div>
 
 <!--
 - DAS ist der zentrale Unterschied: die Feedback-Schleife
 - Ein Chatbot gibt EINE Antwort. Ein Agent arbeitet ITERATIV.
-- Analogie Praktikant: Ihr gebt ihm eine Aufgabe, er arbeitet eigenstaendig
+- Analogie Praktikant: Ihr gebt ihm eine Aufgabe, er arbeitet eigenständig
 - "Und jetzt wird's richtig spannend: Was wenn MEHRERE Agenten zusammenarbeiten?"
 -->
 
@@ -322,9 +328,9 @@ class: section-divider
 <div class="card-grid cols-2" style="margin-top: 25px;">
   <div class="card card-grau" style="text-align: center;">
     <div class="card-icon" style="color: var(--thm-mittelgrau);"><i class="fa-solid fa-user"></i></div>
-    <h3>Ein Alleskoenner</h3>
+    <h3>Ein Alleskönner</h3>
     <p>Eine KI soll alles allein machen: Marketing, Finanzen, Design, Technik...</p>
-    <p style="font-size: 0.7em; color: var(--thm-rot); margin-top: 10px;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--thm-rot);"></i> Ueberfordert, ungenau, langsam</p>
+    <p style="font-size: 0.7em; color: var(--thm-rot); margin-top: 10px;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--thm-rot);"></i> Überfordert, ungenau, langsam</p>
   </div>
   <div class="card" style="text-align: center;">
     <div class="card-icon"><i class="fa-solid fa-users"></i></div>
@@ -339,7 +345,7 @@ class: section-divider
 </div>
 
 <!--
-- Analogie zum Unternehmen — das kennen die Schueler aus dem Wirtschaftsunterricht
+- Analogie zum Unternehmen — das kennen die Schüler aus dem Wirtschaftsunterricht
 - Arbeitsteilung ist ein Grundprinzip der Betriebswirtschaft
 - "Und genau das machen wir jetzt live: 5 KI-Agenten, ein Produktlaunch!"
 -->
@@ -362,7 +368,7 @@ class: section-divider
   <div class="card card-yellow" style="text-align: center;">
     <div class="card-icon" style="font-size: 1.7em;"><i class="fa-solid fa-rotate"></i></div>
     <h3>Selbstkorrektur</h3>
-    <p>Agenten <strong>pruefen ihre Ergebnisse</strong> und verbessern sich selbst — ohne dass jemand eingreifen muss.</p>
+    <p>Agenten <strong>prüfen ihre Ergebnisse</strong> und verbessern sich selbst — ohne dass jemand eingreifen muss.</p>
   </div>
 </div>
 <div class="callout" style="margin-top: 20px;">
@@ -370,9 +376,9 @@ class: section-divider
 </div>
 
 <!--
-- Ausblick in die Arbeitswelt der Schueler
+- Ausblick in die Arbeitswelt der Schüler
 - Assistenz -> Autonomie: Der Shift der gerade passiert
-- Skalierbarkeit: 100 Agenten fuer Marktforschung, Kundenservice, Buchhaltung
+- Skalierbarkeit: 100 Agenten für Marktforschung, Kundenservice, Buchhaltung
 - Selbstkorrektur: Fehlertoleranz durch Iteration (wie beim Agent-Kreislauf)
 - "Und jetzt schauen wir uns das in der Praxis an!"
 -->
@@ -390,8 +396,8 @@ class: section-divider
 <div style="margin-top: 25px;">
   <p style="font-size: 0.85em; margin-bottom: 12px;">So funktioniert es:</p>
   <ol>
-    <li><strong>Ihr</strong> waehlt ein Produkt</li>
-    <li>Die <strong>KI-Agenten</strong> uebernehmen den kompletten Produktlaunch</li>
+    <li><strong>Ihr</strong> wählt ein Produkt</li>
+    <li>Die <strong>KI-Agenten</strong> übernehmen den kompletten Produktlaunch</li>
     <li><strong>Wir</strong> schauen live zu und bewerten die Ergebnisse</li>
   </ol>
 </div>
@@ -399,9 +405,9 @@ class: section-divider
 <p style="font-size: 0.8em; color: var(--thm-mittelgrau); margin-top: 25px;"><i class="fa-solid fa-comment-dots" style="color: var(--thm-mittelgrau);"></i> Das Einzige was die Agenten von euch brauchen: eine Produktidee in ganz normalem Deutsch.</p>
 
 <!--
-- Ship It! kurz erklaeren: Was ist das? Was passiert gleich?
-- Keine Programmierung noetig — alles in natuerlicher Sprache (Bezug zur vorherigen Folie!)
-- Die Agenten arbeiten eigenstaendig, wir schauen ihnen dabei zu
+- Ship It! kurz erklären: Was ist das? Was passiert gleich?
+- Keine Programmierung nötig — alles in natürlicher Sprache (Bezug zur vorherigen Folie!)
+- Die Agenten arbeiten eigenständig, wir schauen ihnen dabei zu
 - "Also: Welches Produkt soll es sein?"
 -->
 
@@ -423,15 +429,15 @@ hideInToc: true
   </div>
   <div class="product-item">
     <div class="product-emoji">⚡</div>
-    <p>Energy Drink fuer Klausurphasen</p>
+    <p>Energy Drink für Klausurphasen</p>
   </div>
   <div class="product-item">
     <div class="product-emoji">📱</div>
-    <p>App zum Tauschen von Schulbuechern</p>
+    <p>App zum Tauschen von Schulbüchern</p>
   </div>
   <div class="product-item">
     <div class="product-emoji">🎧</div>
-    <p>KI-Kopfhoerer, der Stimmung erkennt</p>
+    <p>KI-Kopfhörer, der Stimmung erkennt</p>
   </div>
 </div>
 
@@ -441,9 +447,9 @@ hideInToc: true
 
 <!--
 - Die 4 Starter-Ideen als Inspiration zeigen
-- Schueler koennen eigene Ideen einbringen
+- Schüler können eigene Ideen einbringen
 - 2-3 Minuten Brainstorming, dann Abstimmung per Handzeichen
-- Gewahltes Produkt in Ship It! eingeben (kurze Beschreibung tippen)
+- Gewähltes Produkt in Ship It! eingeben (kurze Beschreibung tippen)
 -->
 
 ---
@@ -455,7 +461,7 @@ class: section-divider
 <p style="font-size: 1.1em; margin-top: 15px;">Live-Demo: 5 KI-Agenten, 1 Produktlaunch</p>
 
 <!--
-- Ueberleitung zur Demo
+- Überleitung zur Demo
 - "Jetzt zeige ich euch, wie 5 KI-Agenten euer Produkt auf den Markt bringen."
 -->
 
@@ -477,7 +483,7 @@ class: section-divider
   <div class="card" style="padding: 16px; text-align: center;">
     <div class="card-icon"><i class="fa-solid fa-hashtag"></i></div>
     <h3 style="font-size: 0.75em;">Social-Media-Manager</h3>
-    <p style="font-size: 0.65em;">Posts fuer Instagram, LinkedIn, TikTok</p>
+    <p style="font-size: 0.65em;">Posts für Instagram, LinkedIn, TikTok</p>
   </div>
   <div class="card" style="padding: 16px; text-align: center;">
     <div class="card-icon"><i class="fa-solid fa-calculator"></i></div>
@@ -492,16 +498,16 @@ class: section-divider
 </div>
 
 <!--
-- Jeden Agenten kurz vorstellen, Rolle erklaeren
+- Jeden Agenten kurz vorstellen, Rolle erklären
 - "Die arbeiten wie Abteilungen in einem Unternehmen"
-- Website-Agent ist besonders: baut etwas, das man im Browser oeffnen kann
+- Website-Agent ist besonders: baut etwas, das man im Browser öffnen kann
 -->
 
 ---
 
 ## Wer wartet auf wen?
 
-<p style="margin-bottom: 20px;">Manche Agenten brauchen die Ergebnisse anderer, bevor sie starten koennen.</p>
+<p style="margin-bottom: 20px;">Manche Agenten brauchen die Ergebnisse anderer, bevor sie starten können.</p>
 
 <svg viewBox="0 0 900 310" style="width: 100%; max-width: 850px; height: auto; margin: 15px auto; display: block;">
   <defs>
@@ -536,12 +542,12 @@ class: section-divider
 </div>
 
 <!--
-- Zeigen: Abhaengigkeiten wie in einem echten Projekt
+- Zeigen: Abhängigkeiten wie in einem echten Projekt
 - Zielgruppe + Kalkulation starten parallel (sofort)
 - Marketing wartet auf Zielgruppe
 - Social Media wartet auf Marketing
 - Website wartet auf alle
-- "Jetzt starten wir! Dashboard oeffnen..."
+- "Jetzt starten wir! Dashboard öffnen..."
 -->
 
 ---
@@ -563,7 +569,7 @@ hideInToc: true
 - Browser wechseln, Dashboard zeigen
 - Produkt eingeben
 - Agenten nacheinander starten
-- Zwischen den Ergebnissen: Vorhersage-Spiel (naechste Folien)
+- Zwischen den Ergebnissen: Vorhersage-Spiel (nächste Folien)
 -->
 
 ---
@@ -578,13 +584,13 @@ hideInToc: true
 <div class="question-list">
   <ul>
     <li>Welche <strong style="color: var(--thm-gruen);">Zielgruppe</strong> wird die KI identifizieren?</li>
-    <li>Welchen <strong style="color: var(--thm-gruen);">Slogan</strong> wuerdet IHR waehlen?</li>
-    <li>Was schaetzt ihr als <strong style="color: var(--thm-gruen);">fairen Preis</strong>?</li>
+    <li>Welchen <strong style="color: var(--thm-gruen);">Slogan</strong> würdet IHR waehlen?</li>
+    <li>Was schätzt ihr als <strong style="color: var(--thm-gruen);">fairen Preis</strong>?</li>
   </ul>
 </div>
 
 <p style="font-size: 0.8em; color: var(--thm-mittelgrau); margin-top: 30px;">
-  Mal sehen, ob die KI auf etwas Aehnliches kommt...
+  Mal sehen, ob die KI auf etwas Ähnliches kommt...
 </p>
 
 <!--
@@ -600,10 +606,10 @@ class: section-divider
 
 ## Wie gut war die KI?
 
-<p style="font-size: 1.1em; margin-top: 15px;">Zeit fuer eine ehrliche Bewertung</p>
+<p style="font-size: 1.1em; margin-top: 15px;">Zeit für eine ehrliche Bewertung</p>
 
 <!--
-- Uebergang zur kritischen Bewertung
+- Übergang zur kritischen Bewertung
 - "Jetzt schauen wir mal genauer hin."
 -->
 
@@ -616,19 +622,19 @@ hideInToc: true
 
 <div class="question-list">
   <ul>
-    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Wuerdet ihr diesen <strong style="color: var(--thm-gruen);">Instagram-Post</strong> liken?</li>
+    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Würdet ihr diesen <strong style="color: var(--thm-gruen);">Instagram-Post</strong> liken?</li>
     <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Ist die <strong style="color: var(--thm-gruen);">Preiskalkulation</strong> realistisch?</li>
-    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Wuerdet ihr auf dieser <strong style="color: var(--thm-gruen);">Website</strong> einkaufen?</li>
+    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Würdet ihr auf dieser <strong style="color: var(--thm-gruen);">Website</strong> einkaufen?</li>
     <li><i class="fa-solid fa-trophy" style="color: var(--thm-gelb);"></i> Welcher Agent hat <strong style="color: var(--thm-gelb);">am besten</strong> gearbeitet?</li>
   </ul>
 </div>
 
 <!--
 - Jede Frage einzeln durchgehen, Daumen hoch/runter
-- Nachfragen: WARUM? Was genau stoert euch?
-- "Was hat ueberrascht?"
+- Nachfragen: WARUM? Was genau stört euch?
+- "Was hat überrascht?"
 - "Was fehlt offensichtlich?"
-- "Wuerde ein echtes Unternehmen das so verwenden?"
+- "Würde ein echtes Unternehmen das so verwenden?"
 -->
 
 ---
@@ -639,32 +645,32 @@ hideInToc: true
   <div class="card card-yellow">
     <div class="card-icon"><i class="fa-solid fa-coins" style="color: var(--thm-gelb);"></i></div>
     <h3>Kosten</h3>
-    <p>KI arbeitet mit <strong style="color: var(--thm-gelb);">Tokens</strong> — das ist ihre Waehrung. Je nach Modell kostet das wenig oder richtig viel. Wer Agenten einsetzt, muss die Kosten im Blick behalten.</p>
+    <p>KI arbeitet mit <strong style="color: var(--thm-gelb);">Tokens</strong> — das ist ihre Währung. Je nach Modell kostet das wenig oder richtig viel. Wer Agenten einsetzt, muss die Kosten im Blick behalten.</p>
   </div>
   <div class="card" style="border-top-color: var(--thm-hellblau);">
     <div class="card-icon" style="color: var(--thm-hellblau);"><i class="fa-solid fa-clipboard-check"></i></div>
-    <h3 style="color: var(--thm-hellblau);">Qualitaetskontrolle</h3>
-    <p>Wie stellt man sicher, dass die Ergebnisse <strong style="color: var(--thm-hellblau);">korrekt</strong> sind? Wenn alles manuell geprueft werden muss, wird <strong style="color: var(--thm-hellblau);">der Mensch zum Engpass</strong> — man braucht automatische Pruefmechanismen.</p>
+    <h3 style="color: var(--thm-hellblau);">Qualitätskontrolle</h3>
+    <p>Wie stellt man sicher, dass die Ergebnisse <strong style="color: var(--thm-hellblau);">korrekt</strong> sind? Wenn alles manuell geprüft werden muss, wird <strong style="color: var(--thm-hellblau);">der Mensch zum Engpass</strong> — man braucht automatische Prüfmechanismen.</p>
   </div>
   <div class="card card-rot">
     <div class="card-icon"><i class="fa-solid fa-ghost"></i></div>
     <h3>Halluzinationen</h3>
-    <p>KI kann <strong style="color: var(--thm-rot);">ueberzeugend falsche Dinge</strong> behaupten — erfundene Fakten, falsche Zahlen, nicht existierende Quellen. Das klingt plausibel, ist aber frei erfunden.</p>
+    <p>KI kann <strong style="color: var(--thm-rot);">überzeugend falsche Dinge</strong> behaupten — erfundene Fakten, falsche Zahlen, nicht existierende Quellen. Das klingt plausibel, ist aber frei erfunden.</p>
   </div>
   <div class="card" style="border-top-color: var(--thm-grau);">
     <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
     <h3>Datenschutz</h3>
-    <p>Daten, die an KI-Dienste gesendet werden, <strong>verlassen das Unternehmen</strong>. Vertrauliche Informationen gehoeren nicht in einen externen KI-Chat.</p>
+    <p>Daten, die an KI-Dienste gesendet werden, <strong>verlassen das Unternehmen</strong>. Vertrauliche Informationen gehören nicht in einen externen KI-Chat.</p>
   </div>
 </div>
 
 <!--
 - Kein Hype ohne Reality Check
 - Kosten: GPT-4 ca. 100x teurer als kleine Modelle. Agenten verbrauchen VIELE Tokens
-- Qualitaet: Der Pruefschritt im Agent-Kreislauf ist entscheidend. Automatische Tests, Validierung
+- Qualität: Der Prüfschritt im Agent-Kreislauf ist entscheidend. Automatische Tests, Validierung
 - Halluzinationen: Gerade bei Fakten, Zahlen, Quellen kritisch. Immer gegenchecken!
 - Datenschutz: DSGVO, Betriebsgeheimnisse, personenbezogene Daten
-- "Diese Herausforderungen muss man kennen — aber sie sind loesbar."
+- "Diese Herausforderungen muss man kennen — aber sie sind lösbar."
 -->
 
 ---
@@ -674,8 +680,8 @@ class: section-divider
 ## Was nehmen wir mit?
 
 <!--
-- Uebergang zu den Kern-Learnings
-- Von der Demo zur groesseren Botschaft
+- Übergang zu den Kern-Learnings
+- Von der Demo zur größeren Botschaft
 -->
 
 ---
@@ -686,7 +692,7 @@ class: section-divider
   <div class="card card-grau" style="text-align: center; flex: 1;">
     <div class="card-icon" style="font-size: 1.5em; color: var(--thm-mittelgrau);"><i class="fa-solid fa-database"></i></div>
     <h3 style="font-size: 0.85em;">Digitalisierung</h3>
-    <p style="font-size: 0.7em;">...hat die Welt in Daten uebersetzt</p>
+    <p style="font-size: 0.7em;">...hat die Welt in Daten übersetzt</p>
   </div>
   <span style="font-size: 1.3em; color: var(--thm-gruen);"><i class="fa-solid fa-arrow-right"></i></span>
   <div class="card card-blue" style="text-align: center; flex: 1;">
@@ -698,14 +704,14 @@ class: section-divider
   <div class="card" style="text-align: center; flex: 1;">
     <div class="card-icon" style="font-size: 1.5em;"><i class="fa-solid fa-robot"></i></div>
     <h3 style="font-size: 0.85em;">KI-Agenten</h3>
-    <p style="font-size: 0.7em;">...handeln jetzt selbststaendig in dieser Welt</p>
+    <p style="font-size: 0.7em;">...handeln jetzt selbstständig in dieser Welt</p>
   </div>
 </div>
 
 <div class="card-grid cols-3" style="margin-top: 25px;">
   <div class="card" style="text-align: center; padding: 16px;">
     <h3 style="font-size: 0.8em;"><i class="fa-solid fa-screwdriver-wrench"></i> Werkzeug, kein Ersatz</h3>
-    <p style="font-size: 0.7em;">Der Mensch bleibt verantwortlich — <strong>jemand muss pruefen</strong>.</p>
+    <p style="font-size: 0.7em;">Der Mensch bleibt verantwortlich — <strong>jemand muss prüfen</strong>.</p>
   </div>
   <div class="card" style="text-align: center; padding: 16px;">
     <h3 style="font-size: 0.8em;"><i class="fa-solid fa-people-group"></i> Arbeitsteilung</h3>
@@ -713,7 +719,7 @@ class: section-divider
   </div>
   <div class="card" style="text-align: center; padding: 16px;">
     <h3 style="font-size: 0.8em;"><i class="fa-solid fa-gauge-high"></i> Schnell ≠ gut</h3>
-    <p style="font-size: 0.7em;">Qualitaet braucht <strong>menschliches Urteil</strong>.</p>
+    <p style="font-size: 0.7em;">Qualität braucht <strong>menschliches Urteil</strong>.</p>
   </div>
 </div>
 
@@ -721,7 +727,7 @@ class: section-divider
 - Den roten Faden der Vorlesung zusammenfassen
 - Digitalisierung -> LLMs -> Agenten: drei aufeinander aufbauende Schritte
 - Die drei Learnings aus der Demo nochmal kurz
-- Ueberleitung: "Und was bedeutet das fuer EUCH?"
+- Überleitung: "Und was bedeutet das für EUCH?"
 -->
 
 ---
@@ -730,12 +736,12 @@ hideInToc: true
 title: Zentrale Botschaft
 ---
 
-<div class="big-text" style="font-size: 1.4em;">Ihr werdet in einer Welt arbeiten, in der ihr nicht mehr nur lernt, wie man Aufgaben <em>selbst ausfuehrt</em> —<br><br>sondern wie man Agenten steuert, die diese Aufgaben <em>fuer euch loesen</em>.</div>
+<div class="big-text" style="font-size: 1.4em;">Ihr werdet in einer Welt arbeiten, in der ihr nicht mehr nur lernt, wie man Aufgaben <em>selbst ausführt</em> —<br><br>sondern wie man Agenten steuert, die diese Aufgaben <em>für euch lösen</em>.</div>
 
 <!--
 - Die zentrale Botschaft der Vorlesung
 - Kurz wirken lassen, nicht sofort weiterreden
-- Dann: "Was denkt ihr darueber?"
+- Dann: "Was denkt ihr darüber?"
 -->
 
 ---
@@ -747,24 +753,24 @@ hideInToc: true
 
 <div class="question-list">
   <ul>
-    <li>Veraendert KI eure <strong style="color: var(--thm-gruen);">zukuenftigen Berufe</strong>? Wie?</li>
-    <li>Was kann KI gut — und was wird sie <strong style="color: var(--thm-gruen);">nie koennen</strong>?</li>
-    <li>Wem <strong style="color: var(--thm-gruen);">gehoeren</strong> die Ergebnisse, die eine KI erstellt?</li>
+    <li>Verändert KI eure <strong style="color: var(--thm-gruen);">zukünftigen Berufe</strong>? Wie?</li>
+    <li>Was kann KI gut — und was wird sie <strong style="color: var(--thm-gruen);">nie können</strong>?</li>
+    <li>Wem <strong style="color: var(--thm-gruen);">gehören</strong> die Ergebnisse, die eine KI erstellt?</li>
   </ul>
 </div>
 
 <!--
 - Offene Diskussion, 5-8 Minuten
 - Keine "richtige" Antwort — es geht ums Nachdenken
-- Bei Frage 1: Berufe veraendern sich, aber verschwinden selten komplett
-- Bei Frage 2: Kreativitaet, Empathie, ethische Entscheidungen
+- Bei Frage 1: Berufe verändern sich, aber verschwinden selten komplett
+- Bei Frage 2: Kreativität, Empathie, ethische Entscheidungen
 - Bei Frage 3: Urheberrecht, wer ist verantwortlich?
-- Schueler zum Sprechen ermutigen
+- Schüler zum Sprechen ermutigen
 -->
 
 ---
 
-## Euer naechster Schritt?
+## Euer nächster Schritt?
 
 <div class="card-grid cols-2" style="margin-top: 30px;">
   <div class="card" style="text-align: center;">
@@ -784,8 +790,8 @@ hideInToc: true
 <!--
 - Kurzer Studien-Teaser, nicht zu werblich
 - Wirtschaftsinformatik verbindet beide Welten
-- StudiumPlus als Option erwaehnen
-- "Wenn euch das heute gefallen hat, koennt ihr sowas auch studieren!"
+- StudiumPlus als Option erwähnen
+- "Wenn euch das heute gefallen hat, könnt ihr sowas auch studieren!"
 -->
 
 ---
