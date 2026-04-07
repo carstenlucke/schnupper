@@ -329,6 +329,67 @@ class: section-divider
 - "Und jetzt schauen wir uns das in der Praxis an!"
 -->
 
+
+---
+layout: center
+class: section-divider
+---
+
+<img src="/ship-it-logo.png" style="height: 120px; margin-bottom: 20px;">
+
+## Ship It!
+
+<!--
+- Jetzt: Was ist der Unterschied?
+- Einfach erklärt, ohne Technik-Jargon
+-->
+
+---
+
+<div style="display: flex; align-items: center; gap: 16px;">
+  <img src="/ship-it-logo.png" style="height: 70px;">
+  <h2>Ship It!</h2>
+</div>
+
+<div class="callout" style="margin-top: 30px;">
+  <p><i class="fa-solid fa-rocket"></i> <strong>Ship It!</strong> ist ein Dashboard, in dem <strong>5 KI-Agenten</strong> zusammenarbeiten, um ein Produkt auf den Markt zu bringen — Zielgruppenanalyse, Marketing, Social Media, Preiskalkulation und sogar eine fertige Website.</p>
+</div>
+
+<div class="card-grid cols-5" style="margin-top: 30px;">
+  <div class="card card-plain" style="padding: 16px; text-align: center;">
+    <div class="card-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
+    <h3 style="font-size: 0.75em;">Zielgruppen-Analyst</h3>
+    <p style="font-size: 0.65em;">Wer kauft das Produkt? Personas erstellen</p>
+  </div>
+  <div class="card card-plain" style="padding: 16px; text-align: center;">
+    <div class="card-icon"><i class="fa-solid fa-bullhorn"></i></div>
+    <h3 style="font-size: 0.75em;">Marketing-Experte</h3>
+    <p style="font-size: 0.65em;">Name, Slogan, Werbetexte entwickeln</p>
+  </div>
+  <div class="card card-plain" style="padding: 16px; text-align: center;">
+    <div class="card-icon"><i class="fa-solid fa-hashtag"></i></div>
+    <h3 style="font-size: 0.75em;">Social-Media-Manager</h3>
+    <p style="font-size: 0.65em;">Posts für Instagram, LinkedIn, TikTok</p>
+  </div>
+  <div class="card card-plain" style="padding: 16px; text-align: center;">
+    <div class="card-icon"><i class="fa-solid fa-calculator"></i></div>
+    <h3 style="font-size: 0.75em;">Controller</h3>
+    <p style="font-size: 0.65em;">Preiskalkulation und Preisstrategie</p>
+  </div>
+  <div class="card card-plain" style="padding: 16px; text-align: center;">
+    <div class="card-icon"><i class="fa-solid fa-code"></i></div>
+    <h3 style="font-size: 0.75em;">Web-Entwickler</h3>
+    <p style="font-size: 0.65em;">Produkt-Website mit HTML, CSS, JS</p>
+  </div>
+</div>
+
+<!--
+- Jeden Agenten kurz vorstellen, Rolle erklären
+- "Die arbeiten wie Abteilungen in einem Unternehmen"
+- Website-Agent ist besonders: baut etwas, das man im Browser öffnen kann
+-->
+
+
 ---
 
 ## Das Experiment: Ship It!
@@ -399,50 +460,6 @@ hideInToc: true
 -->
 
 
----
-
-<div style="display: flex; align-items: center; gap: 16px;">
-  <img src="/ship-it-logo.png" style="height: 70px;">
-  <h2>Ship It!</h2>
-</div>
-
-<div class="callout" style="margin-top: 30px;">
-  <p><i class="fa-solid fa-rocket"></i> <strong>Ship It!</strong> ist ein Dashboard, in dem <strong>5 KI-Agenten</strong> zusammenarbeiten, um ein Produkt auf den Markt zu bringen — Zielgruppenanalyse, Marketing, Social Media, Preiskalkulation und sogar eine fertige Website.</p>
-</div>
-
-<div class="card-grid cols-5" style="margin-top: 30px;">
-  <div class="card card-plain" style="padding: 16px; text-align: center;">
-    <div class="card-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
-    <h3 style="font-size: 0.75em;">Zielgruppen-Analyst</h3>
-    <p style="font-size: 0.65em;">Wer kauft das Produkt? Personas erstellen</p>
-  </div>
-  <div class="card card-plain" style="padding: 16px; text-align: center;">
-    <div class="card-icon"><i class="fa-solid fa-bullhorn"></i></div>
-    <h3 style="font-size: 0.75em;">Marketing-Experte</h3>
-    <p style="font-size: 0.65em;">Name, Slogan, Werbetexte entwickeln</p>
-  </div>
-  <div class="card card-plain" style="padding: 16px; text-align: center;">
-    <div class="card-icon"><i class="fa-solid fa-hashtag"></i></div>
-    <h3 style="font-size: 0.75em;">Social-Media-Manager</h3>
-    <p style="font-size: 0.65em;">Posts für Instagram, LinkedIn, TikTok</p>
-  </div>
-  <div class="card card-plain" style="padding: 16px; text-align: center;">
-    <div class="card-icon"><i class="fa-solid fa-calculator"></i></div>
-    <h3 style="font-size: 0.75em;">Controller</h3>
-    <p style="font-size: 0.65em;">Preiskalkulation und Preisstrategie</p>
-  </div>
-  <div class="card card-plain" style="padding: 16px; text-align: center;">
-    <div class="card-icon"><i class="fa-solid fa-code"></i></div>
-    <h3 style="font-size: 0.75em;">Web-Entwickler</h3>
-    <p style="font-size: 0.65em;">Produkt-Website mit HTML, CSS, JS</p>
-  </div>
-</div>
-
-<!--
-- Jeden Agenten kurz vorstellen, Rolle erklären
-- "Die arbeiten wie Abteilungen in einem Unternehmen"
-- Website-Agent ist besonders: baut etwas, das man im Browser öffnen kann
--->
 
 ---
 
