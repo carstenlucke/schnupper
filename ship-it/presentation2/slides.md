@@ -327,7 +327,7 @@ class: section-divider
 
 ---
 
-## Warum ist das die Zukunft?
+## Warum Agenten gerade so gefragt sind
 
 <div class="card-grid cols-3" style="margin-top: 25px;">
   <div class="card" style="text-align: center;">
