@@ -346,9 +346,9 @@ class: section-divider
 
 ---
 
-<div style="display: flex; align-items: center; gap: 16px;">
-  <img src="/ship-it-logo.png" style="height: 70px;">
+<div style="display: flex; align-items: center; justify-content: space-between;">
   <h2>Ship It!</h2>
+  <img src="/ship-it-logo.png" style="height: 70px;">
 </div>
 
 <div class="callout" style="margin-top: 30px;">
