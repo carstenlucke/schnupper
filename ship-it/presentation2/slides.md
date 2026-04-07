@@ -616,19 +616,22 @@ class: section-divider
 
 ## Euer nächster Schritt?
 
-<div class="card-grid cols-2" style="margin-top: 30px;">
-  <div class="card" style="text-align: center;">
-    <div class="card-icon" style="font-size: 1.8em;"><i class="fa-solid fa-graduation-cap"></i></div>
-    <h3>Wirtschaftsinformatik</h3>
-    <p>Technik + Wirtschaft — genau die Kombination, die ihr heute gesehen habt.</p>
-    <p style="font-size: 0.7em; color: var(--thm-mittelgrau); margin-top: 10px;">B.Sc. und M.Sc. an der THM</p>
-  </div>
-  <div class="card card-blue" style="text-align: center;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto; gap: 20px; margin-top: 30px; align-items: stretch;">
+  <div class="card" style="text-align: center; display: flex; flex-direction: column; justify-content: center; margin: 0; width: auto;">
     <div class="card-icon" style="font-size: 1.8em;"><i class="fa-solid fa-laptop-code"></i></div>
-    <h3>Duales Studium</h3>
+    <h3>Duales Studium | StudiumPlus</h3>
     <p>Theorie an der Hochschule, Praxis im Unternehmen — von Anfang an.</p>
-    <p style="font-size: 0.7em; color: var(--thm-mittelgrau); margin-top: 10px;">StudiumPlus an der THM</p>
+    <p style="font-size: 0.7em; margin-top: 10px;"><a href="https://studiumplus.de/studiengaenge/betriebswirtschaft/betriebswirtschaft-wirtschaftsinformatik/" target="_blank">BWL — Wirtschaftsinformatik (B.A.)</a></p>
+    <p style="font-size: 0.7em;"><a href="https://studiumplus.de/studiengaenge/softwaretechnologie/" target="_blank">Softwaretechnologie (B.Sc.)</a></p>
   </div>
+  <div class="card card-grau" style="text-align: center; display: flex; flex-direction: column; justify-content: center; margin: 0; width: auto;">
+    <div class="card-icon" style="font-size: 1.8em;"><i class="fa-solid fa-graduation-cap"></i></div>
+    <h3>Klassisches HAW-Studium</h3>
+    <p>Technik + Wirtschaft — genau die Kombination, die ihr heute gesehen habt.</p>
+    <p style="font-size: 0.7em; margin-top: 10px;"><a href="https://www.thm.de/site/studium/unsere-studienangebote/wirtschaftsinformatik-bachelor-bsc-mnd-friedberg.html" target="_blank">B.Sc.</a> und <a href="https://www.thm.de/site/studium/unsere-studienangebote/wirtschaftsinformatik-master-msc-mnd-friedberg.html" target="_blank">M.Sc.</a> Wirtschaftsinformatik an der THM</p>
+  </div>
+  <div style="display: flex; justify-content: center; align-items: center; padding-top: 5px;"><img src="/Logo-StudiumPlus_4c.png" alt="StudiumPlus" style="height: 78px;"></div>
+  <div style="display: flex; justify-content: center; align-items: center; padding-top: 5px;"><img src="/THM_Logo_4c.png" alt="THM" style="height: 52px;"></div>
 </div>
 
 <!--
