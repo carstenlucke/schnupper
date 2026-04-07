@@ -112,6 +112,10 @@ h2.accent-rot::after {
   border-radius: 50%;
 }
 
+.no-bullets li::before {
+  display: none !important;
+}
+
 .slidev-layout ol {
   padding-left: 1.5em;
   margin: 0.5em 0;
