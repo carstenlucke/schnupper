@@ -627,29 +627,6 @@ title: Zentrale Botschaft
 - Dann: "Was denkt ihr darüber?"
 -->
 
----
-class: interactive-slide
-hideInToc: true
----
-
-## Was denkt ihr?
-
-<div class="question-list">
-  <ul>
-    <li>Verändert KI eure <strong style="color: var(--thm-gruen);">zukünftigen Berufe</strong>? Wie?</li>
-    <li>Was kann KI gut — und was wird sie <strong style="color: var(--thm-gruen);">nie können</strong>?</li>
-    <li>Wem <strong style="color: var(--thm-gruen);">gehören</strong> die Ergebnisse, die eine KI erstellt?</li>
-  </ul>
-</div>
-
-<!--
-- Offene Diskussion, 5-8 Minuten
-- Keine "richtige" Antwort — es geht ums Nachdenken
-- Bei Frage 1: Berufe verändern sich, aber verschwinden selten komplett
-- Bei Frage 2: Kreativität, Empathie, ethische Entscheidungen
-- Bei Frage 3: Urheberrecht, wer ist verantwortlich?
-- Schüler zum Sprechen ermutigen
--->
 
 ---
 
