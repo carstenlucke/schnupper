@@ -671,4 +671,14 @@ class: end-slide
 - Offene Fragerunde
 - Ggf. nochmal Dashboard zeigen wenn Fragen zur Demo kommen
 - Visitenkarten / Kontaktdaten bereithalten
+- Diskussionsfragen (falls Zeit):
+  - "Verändert KI eure zukünftigen Berufe? Wie?"
+  - "Was kann KI gut — und was wird sie nie können?"
+  - "Wem gehören die Ergebnisse, die eine KI erstellt?"
+- Offene Diskussion, 5-8 Minuten
+- Keine "richtige" Antwort — es geht ums Nachdenken
+- Bei Frage 1: Berufe verändern sich, aber verschwinden selten komplett
+- Bei Frage 2: Kreativität, Empathie, ethische Entscheidungen
+- Bei Frage 3: Urheberrecht, wer ist verantwortlich?
+- Schüler zum Sprechen ermutigen
 -->
