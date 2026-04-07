@@ -442,33 +442,7 @@ hideInToc: true
 
 <p style="margin-bottom: 20px;">Manche Agenten brauchen die Ergebnisse anderer, bevor sie starten können.</p>
 
-<svg viewBox="0 0 900 310" style="width: 100%; max-width: 850px; height: auto; margin: 15px auto; display: block;">
-  <defs>
-    <marker id="dep-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#80BA24"/>
-    </marker>
-  </defs>
-  <rect x="40" y="30" width="190" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="2"/>
-  <text x="135" y="63" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#E8ECF0">🎯 Zielgruppe</text>
-  <line x1="230" y1="57" x2="295" y2="57" stroke="#80BA24" stroke-width="2.5" marker-end="url(#dep-arrow)"/>
-  <rect x="300" y="30" width="190" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="2"/>
-  <text x="395" y="63" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#E8ECF0">📢 Marketing</text>
-  <line x1="490" y1="57" x2="555" y2="57" stroke="#80BA24" stroke-width="2.5" marker-end="url(#dep-arrow)"/>
-  <rect x="560" y="30" width="190" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="2"/>
-  <text x="655" y="63" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#E8ECF0"># Social Media</text>
-  <rect x="40" y="150" width="190" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="2"/>
-  <text x="135" y="183" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#E8ECF0">🧮 Kalkulation</text>
-  <text x="25" y="128" font-family="Arial" font-size="12" fill="#8FA0AA">starten sofort</text>
-  <line x1="25" y1="132" x2="230" y2="132" stroke="#8FA0AA" stroke-width="1" stroke-dasharray="4 3"/>
-  <rect x="340" y="230" width="210" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="3"/>
-  <text x="445" y="263" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#E8ECF0">💻 Website</text>
-  <path d="M 35 57 L 18 57 Q 8 57 8 67 L 8 250 Q 8 260 18 260 L 340 260"
-        stroke="#80BA24" stroke-width="2" fill="none" marker-end="url(#dep-arrow)"/>
-  <line x1="395" y1="85" x2="430" y2="230" stroke="#80BA24" stroke-width="2" marker-end="url(#dep-arrow)"/>
-  <path d="M 230 190 Q 300 225 340 252"
-        stroke="#80BA24" stroke-width="2" fill="none" marker-end="url(#dep-arrow)"/>
-  <text x="570" y="263" font-family="Arial" font-size="12" fill="#8FA0AA">braucht alle Ergebnisse</text>
-</svg>
+<img src="/agent-abhaengigkeiten.svg" style="width: 100%; max-width: 850px; margin: 15px auto; display: block; border-radius: 8px;">
 
 <div class="callout" style="margin-top: 15px;">
   <p><i class="fa-solid fa-play-circle"></i> <strong>Zielgruppe</strong> und <strong>Kalkulation</strong> starten sofort — sie brauchen nur die Produktbeschreibung.</p>
