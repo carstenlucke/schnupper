@@ -154,12 +154,17 @@ hideInToc: true
 -->
 
 ---
+layout: center
 class: statement-slide
 hideInToc: true
 title: Reden vs. Handeln
 ---
 
-<div class="big-text">ChatGPT kann mit euch <em>reden</em>.<br><br>Aber kann es auch <em>handeln</em>?</div>
+<div class="big-text">
+ChatGPT kann mit euch <em>reden</em>.
+<br><br>
+Aber kann es auch <em>handeln</em>?
+</div>
 
 <!--
 - Provokante Frage
@@ -169,6 +174,7 @@ title: Reden vs. Handeln
 -->
 
 ---
+layout: center
 class: section-divider
 ---
 
@@ -214,7 +220,7 @@ class: section-divider
 
 ---
 
-## Was kann ChatGPT <span class="text-rot">nicht</span>?
+<h2 class="accent-rot">Was kann ChatGPT <span style="color: var(--thm-rot);">nicht</span>?</h2>
 
 <div class="card-grid cols-2" style="margin-top: 30px;">
   <div class="card card-rot">
@@ -453,6 +459,7 @@ hideInToc: true
 -->
 
 ---
+layout: center
 class: section-divider
 ---
 
@@ -601,6 +608,7 @@ hideInToc: true
 -->
 
 ---
+layout: center
 class: section-divider
 ---
 
@@ -674,6 +682,7 @@ hideInToc: true
 -->
 
 ---
+layout: center
 class: section-divider
 ---
 
