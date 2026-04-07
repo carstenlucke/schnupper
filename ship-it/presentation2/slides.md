@@ -7,6 +7,7 @@ info: |
   Schnuppervorlesung — Technische Hochschule Mittelhessen
   Prof. Dr. Carsten Lucke
 transition: fade
+colorSchema: dark
 class: text-left
 canvasWidth: 980
 drawings:
@@ -124,14 +125,14 @@ hideInToc: true
     <div class="card-icon" style="font-size: 1.8em; color: var(--thm-mittelgrau);"><i class="fa-solid fa-code"></i></div>
     <h3>Frueher</h3>
     <p style="font-size: 0.7em;">Um mit digitalen Daten zu arbeiten, brauchte man <strong style="color: var(--thm-mittelgrau);">Programmiersprachen</strong>.</p>
-    <p style="font-size: 0.65em; font-family: 'Courier New', monospace; color: var(--thm-mittelgrau); margin-top: 8px; background: #eee; padding: 6px; border-radius: 4px;">SELECT * FROM kunden<br>WHERE alter &gt; 18</p>
+    <p style="font-size: 0.65em; font-family: 'Courier New', monospace; color: var(--thm-mittelgrau); margin-top: 8px; background: rgba(255,255,255,0.06); padding: 6px; border-radius: 4px;">SELECT * FROM kunden<br>WHERE alter &gt; 18</p>
   </div>
   <div class="vs-label"><i class="fa-solid fa-arrow-right" style="color: var(--thm-gruen);"></i></div>
   <div class="card" style="text-align: center;">
     <div class="card-icon" style="font-size: 1.8em;"><i class="fa-solid fa-comment-dots"></i></div>
     <h3>Heute</h3>
     <p style="font-size: 0.7em;">LLMs erlauben es, mit Daten und Systemen in <strong>natuerlicher Sprache</strong> zu arbeiten.</p>
-    <p style="font-size: 0.65em; margin-top: 8px; background: #edf7e0; padding: 6px; border-radius: 4px; color: var(--thm-grau);">"Zeig mir alle Kunden<br>ueber 18 Jahre"</p>
+    <p style="font-size: 0.65em; margin-top: 8px; background: rgba(128,186,36,0.1); padding: 6px; border-radius: 4px; color: var(--text-primary);">"Zeig mir alle Kunden<br>ueber 18 Jahre"</p>
   </div>
 </div>
 <div class="callout" style="margin-top: 20px;">
@@ -508,20 +509,20 @@ class: section-divider
       <polygon points="0 0, 10 3.5, 0 7" fill="#80BA24"/>
     </marker>
   </defs>
-  <rect x="40" y="30" width="190" height="55" rx="10" fill="white" stroke="#80BA24" stroke-width="2"/>
-  <text x="135" y="63" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#4A5C66">🎯 Zielgruppe</text>
+  <rect x="40" y="30" width="190" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="2"/>
+  <text x="135" y="63" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#E8ECF0">🎯 Zielgruppe</text>
   <line x1="230" y1="57" x2="295" y2="57" stroke="#80BA24" stroke-width="2.5" marker-end="url(#dep-arrow)"/>
-  <rect x="300" y="30" width="190" height="55" rx="10" fill="white" stroke="#80BA24" stroke-width="2"/>
-  <text x="395" y="63" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#4A5C66">📢 Marketing</text>
+  <rect x="300" y="30" width="190" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="2"/>
+  <text x="395" y="63" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#E8ECF0">📢 Marketing</text>
   <line x1="490" y1="57" x2="555" y2="57" stroke="#80BA24" stroke-width="2.5" marker-end="url(#dep-arrow)"/>
-  <rect x="560" y="30" width="190" height="55" rx="10" fill="white" stroke="#80BA24" stroke-width="2"/>
-  <text x="655" y="63" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#4A5C66"># Social Media</text>
-  <rect x="40" y="150" width="190" height="55" rx="10" fill="white" stroke="#80BA24" stroke-width="2"/>
-  <text x="135" y="183" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#4A5C66">🧮 Kalkulation</text>
+  <rect x="560" y="30" width="190" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="2"/>
+  <text x="655" y="63" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#E8ECF0"># Social Media</text>
+  <rect x="40" y="150" width="190" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="2"/>
+  <text x="135" y="183" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#E8ECF0">🧮 Kalkulation</text>
   <text x="25" y="128" font-family="Arial" font-size="12" fill="#8FA0AA">starten sofort</text>
   <line x1="25" y1="132" x2="230" y2="132" stroke="#8FA0AA" stroke-width="1" stroke-dasharray="4 3"/>
-  <rect x="340" y="230" width="210" height="55" rx="10" fill="white" stroke="#80BA24" stroke-width="3"/>
-  <text x="445" y="263" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#4A5C66">💻 Website</text>
+  <rect x="340" y="230" width="210" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="3"/>
+  <text x="445" y="263" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#E8ECF0">💻 Website</text>
   <path d="M 35 57 L 18 57 Q 8 57 8 67 L 8 250 Q 8 260 18 260 L 340 260"
         stroke="#80BA24" stroke-width="2" fill="none" marker-end="url(#dep-arrow)"/>
   <line x1="395" y1="85" x2="430" y2="230" stroke="#80BA24" stroke-width="2" marker-end="url(#dep-arrow)"/>

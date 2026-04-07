@@ -1,32 +1,38 @@
 /* ============================================
    Ship It! Schnuppervorlesung — Slidev
-   Farbschema: Studium Plus / THM
+   THM Corporate Design — Dark Mode
    ============================================ */
 
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
 :root {
-  /* Hintergrundfarben */
-  --bg-dark: #4A5C66;
-  --bg-light: #F5F6F7;
-  --bg-white: #FFFFFF;
-
-  /* THM Corporate Design */
+  /* THM Corporate Design — Hauptfarben */
   --thm-gruen: #80BA24;
   --thm-grau: #4A5C66;
   --thm-mittelgrau: #8FA0AA;
-  --thm-hellblau: #00B8E4;
-  --thm-gelb: #F4AA00;
-  --thm-rot: #9C132E;
 
-  /* Typografie */
+  /* THM Corporate Design — Zusatzfarben (Dark-Mode-optimiert, WCAG) */
+  --thm-rot: #B8243F;
+  --thm-gelb: #F4AA00;
+  --thm-hellblau: #00B8E4;
+  --thm-blau: #1A4FD0;
+
+  /* Dark-Mode Hintergruende (THM CD: Grau-Toene abgeleitet) */
+  --bg-base: #1A252B;
+  --bg-elevated: #2A3840;
+  --bg-surface: #344750;
+  --bg-accent: #131A22;
+  --bg-code: #0f181f;
+  --bg-green-subtle: rgba(128, 186, 36, 0.1);
+
+  /* Typografie (THM CD: Arial fuer digitale Medien) */
   --heading-font: Arial, Helvetica, sans-serif;
   --body-font: Arial, Helvetica, sans-serif;
 
-  /* Farb-Mapping */
-  --text-dark: #4A5C66;
-  --text-light: #FFFFFF;
-  --text-muted: #8FA0AA;
+  /* Text */
+  --text-primary: #E8ECF0;
+  --text-secondary: #8FA0AA;
+  --text-muted: #6a7d88;
 }
 
 /* ===========================================
@@ -34,8 +40,8 @@
    =========================================== */
 .slidev-layout {
   font-family: var(--body-font);
-  color: var(--text-dark);
-  background: var(--bg-light);
+  color: var(--text-primary);
+  background: var(--bg-base) !important;
   padding: 40px 50px;
 }
 
@@ -46,7 +52,7 @@
   font-family: var(--heading-font);
   font-weight: bold;
   text-transform: none;
-  color: var(--text-dark);
+  color: var(--text-primary);
   line-height: 1.3;
 }
 
@@ -54,7 +60,7 @@
 .slidev-layout h2 { font-size: 1.6em; margin-bottom: 0.4em; }
 .slidev-layout h3 { font-size: 1.1em; }
 
-/* Gruene Akzentlinie unter h2 */
+/* Gruene Akzentlinie unter h2 (THM Gruen) */
 .slidev-layout h2::after {
   content: "";
   display: block;
@@ -68,7 +74,7 @@
 .slidev-layout li {
   font-size: 0.95em;
   line-height: 1.6;
-  color: var(--text-dark);
+  color: var(--text-primary);
 }
 
 .slidev-layout strong {
@@ -112,17 +118,12 @@
   margin-bottom: 0.5em;
 }
 
-/* Verschachtelte Listen ohne Bullet */
-.question-list ul li::before {
-  background: var(--thm-gruen);
-}
-
 /* ===========================================
    TITELFOLIE
    =========================================== */
 .title-slide .slidev-layout {
-  background: var(--bg-dark) !important;
-  color: var(--text-light);
+  background: var(--bg-accent) !important;
+  color: var(--text-primary);
   display: flex !important;
   flex-direction: column;
   justify-content: center;
@@ -130,7 +131,7 @@
 }
 
 .title-slide .slidev-layout h1 {
-  color: var(--text-light);
+  color: var(--text-primary);
   font-size: 2.6em;
   font-weight: bold;
   margin-bottom: 0.2em;
@@ -151,13 +152,13 @@
 
 .title-slide .meta {
   font-size: 0.85em;
-  color: var(--text-light);
-  opacity: 0.85;
+  color: var(--text-primary);
+  opacity: 0.75;
   margin-top: 3em;
 }
 
 .title-slide .meta p {
-  color: var(--text-light);
+  color: var(--text-primary);
   font-size: 0.85em;
   margin: 0.2em 0;
 }
@@ -171,12 +172,12 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: var(--bg-dark) !important;
+  background: var(--bg-accent) !important;
 }
 
 .section-divider .slidev-layout h1,
 .section-divider .slidev-layout h2 {
-  color: var(--text-light);
+  color: var(--text-primary);
   font-size: 2.4em;
 }
 
@@ -187,8 +188,8 @@
 }
 
 .section-divider .slidev-layout p {
-  color: var(--text-light);
-  opacity: 0.85;
+  color: var(--text-primary);
+  opacity: 0.75;
   text-align: center;
   margin-top: 10px;
 }
@@ -197,7 +198,7 @@
    INTERAKTIVE FOLIEN
    =========================================== */
 .interactive-slide .slidev-layout {
-  background: var(--bg-dark) !important;
+  background: var(--bg-accent) !important;
   display: flex !important;
   flex-direction: column;
   align-items: center;
@@ -206,7 +207,7 @@
 }
 
 .interactive-slide .slidev-layout h2 {
-  color: var(--text-light);
+  color: var(--text-primary);
   font-size: 2em;
 }
 
@@ -217,7 +218,7 @@
 }
 
 .interactive-slide .slidev-layout p {
-  color: var(--text-light);
+  color: var(--text-primary);
   text-align: center;
   font-size: 1em;
 }
@@ -234,7 +235,7 @@
 }
 
 .interactive-slide .question-list li {
-  color: var(--text-light);
+  color: var(--text-primary);
   font-size: 1em;
   margin-bottom: 0.8em;
 }
@@ -252,12 +253,13 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  background: var(--bg-accent) !important;
 }
 
 .statement-slide .big-text {
   font-size: 1.8em;
   font-weight: bold;
-  color: var(--text-dark);
+  color: var(--text-primary);
   line-height: 1.4;
   max-width: 800px;
 }
@@ -281,11 +283,11 @@
 .card-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
 
 .card {
-  background: var(--bg-white);
+  background: var(--bg-elevated);
   border-radius: 8px;
   padding: 24px;
   border-top: 4px solid var(--thm-gruen);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 .card h3 {
@@ -297,6 +299,7 @@
 .card p,
 .card li {
   font-size: 0.78em;
+  color: var(--text-primary);
 }
 
 .card .card-icon {
@@ -335,7 +338,7 @@
 .vs-container .vs-label {
   font-size: 1.6em;
   font-weight: bold;
-  color: var(--thm-mittelgrau);
+  color: var(--text-secondary);
   text-align: center;
 }
 
@@ -352,7 +355,7 @@
 }
 
 .cycle-step {
-  background: var(--bg-white);
+  background: var(--bg-elevated);
   border: 2px solid var(--thm-gruen);
   border-radius: 12px;
   padding: 14px 16px;
@@ -371,7 +374,7 @@
 .cycle-step .step-label {
   font-size: 0.8em;
   font-weight: bold;
-  color: var(--text-dark);
+  color: var(--text-primary);
 }
 
 .cycle-arrow {
@@ -387,11 +390,15 @@
   border-left: 5px solid var(--thm-gruen);
   padding: 18px 24px;
   margin: 20px 0;
-  background: var(--bg-white);
+  background: var(--bg-elevated);
   border-radius: 4px;
 }
 
-.callout p { margin: 0; font-size: 0.85em; }
+.callout p {
+  margin: 0;
+  font-size: 0.85em;
+  color: var(--text-primary);
+}
 
 .callout-blue { border-left-color: var(--thm-hellblau); }
 .callout-yellow { border-left-color: var(--thm-gelb); }
@@ -418,7 +425,7 @@
 .text-large { font-size: 1.1em; }
 
 /* ===========================================
-   PROGRESS BAR & CONTROLS
+   PROGRESS BAR
    =========================================== */
 .slidev-progress {
   background: var(--thm-gruen) !important;
@@ -428,7 +435,7 @@
    ABSCHLUSSFOLIE
    =========================================== */
 .end-slide .slidev-layout {
-  background: var(--bg-dark) !important;
+  background: var(--bg-accent) !important;
   display: flex !important;
   flex-direction: column;
   align-items: center;
@@ -438,7 +445,7 @@
 
 .end-slide .slidev-layout h1,
 .end-slide .slidev-layout h2 {
-  color: var(--text-light);
+  color: var(--text-primary);
   font-size: 2.4em;
 }
 
@@ -449,8 +456,8 @@
 }
 
 .end-slide .slidev-layout p {
-  color: var(--text-light);
-  opacity: 0.85;
+  color: var(--text-primary);
+  opacity: 0.75;
   font-size: 0.95em;
 }
 
@@ -466,9 +473,10 @@
 }
 
 .product-grid .product-item {
-  background: rgba(255,255,255,0.1);
+  background: var(--bg-elevated);
   border-radius: 10px;
   padding: 16px;
+  border: 1px solid rgba(128, 186, 36, 0.15);
 }
 
 .product-grid .product-item .product-emoji {
@@ -478,7 +486,7 @@
 
 .product-grid .product-item p {
   font-size: 0.75em;
-  color: var(--text-light);
+  color: var(--text-primary);
 }
 
 /* ===========================================
