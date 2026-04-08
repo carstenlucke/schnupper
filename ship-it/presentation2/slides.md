@@ -131,7 +131,7 @@ hideInToc: true
     <div class="card-icon" style="font-size: 1.8em; color: var(--thm-mittelgrau);"><i class="fa-solid fa-code"></i></div>
     <h3>Früher</h3>
     <p style="font-size: 0.7em;">Um mit digitalen Daten zu arbeiten, brauchte man <strong style="color: var(--thm-mittelgrau);">Programmiersprachen</strong>.</p>
-    <p style="font-size: 0.65em; font-family: 'Courier New', monospace; color: var(--thm-mittelgrau); margin-top: 8px; background: rgba(255,255,255,0.06); padding: 6px; border-radius: 4px;">SELECT * FROM kunden<br>WHERE alter &gt; 18</p>
+    <p style="font-size: 0.65em; font-family: 'Courier New', monospace; color: var(--text-primary); margin-top: 8px; background: rgba(255,255,255,0.06); padding: 6px; border-radius: 4px;">SELECT * FROM kunden<br>WHERE alter &gt; 18</p>
   </div>
   <div class="vs-label"><i class="fa-solid fa-arrow-right" style="color: var(--thm-gruen);"></i></div>
   <div class="card" style="text-align: center;">
@@ -616,24 +616,22 @@ class: section-divider
 
 ## Euer nächster Schritt?
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto; gap: 20px; margin-top: 40px; align-items: stretch;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; align-items: stretch;">
   <div class="card" style="text-align: center; margin: 0; width: auto; padding: 24px;">
-    <h3><i class="fa-solid fa-laptop-code" style="margin-right: 6px;"></i> Duales Studium | StudiumPlus</h3>
-    <p style="font-size: 0.75em;">Theorie an der Hochschule, Praxis im Unternehmen — von Anfang an.</p>
-    <ul class="no-bullets" style="list-style: disc; text-align: left; display: inline-block; font-size: 0.7em; margin-top: 10px;">
-      <li><a href="https://studiumplus.de/studiengaenge/betriebswirtschaft/betriebswirtschaft-wirtschaftsinformatik/" target="_blank">BWL — Wirtschaftsinformatik (B.A.)</a></li>
-      <li><a href="https://studiumplus.de/studiengaenge/softwaretechnologie/" target="_blank">Softwaretechnologie (B.Sc.)</a></li>
-    </ul>
+    <h3><i class="fa-solid fa-chart-line" style="margin-right: 6px;"></i> BWL — Wirtschaftsinformatik</h3>
+    <p style="font-size: 0.75em;">Betriebswirtschaft trifft IT — duales Studium mit Praxis von Anfang an.</p>
+    <p style="font-size: 0.7em; margin-top: 10px;"><a href="https://studiumplus.de/studiengaenge/betriebswirtschaft/betriebswirtschaft-wirtschaftsinformatik/" target="_blank">Bachelor of Arts (B.A.)</a></p>
   </div>
-  <div class="card card-grau" style="text-align: center; margin: 0; width: auto; padding: 24px;">
-    <h3><i class="fa-solid fa-graduation-cap" style="margin-right: 6px;"></i> Klassisches HAW-Studium</h3>
-    <p style="font-size: 0.75em;">Technik + Wirtschaft — genau die Kombination, die ihr heute gesehen habt.</p>
-    <ul class="no-bullets" style="list-style: disc; text-align: left; display: inline-block; font-size: 0.7em; margin-top: 10px;">
-      <li><a href="https://www.thm.de/site/studium/unsere-studienangebote/wirtschaftsinformatik-bachelor-bsc-mnd-friedberg.html" target="_blank">B.Sc.</a> und <a href="https://www.thm.de/site/studium/unsere-studienangebote/wirtschaftsinformatik-master-msc-mnd-friedberg.html" target="_blank">M.Sc.</a> Wirtschaftsinformatik</li>
-    </ul>
+  <div class="card" style="text-align: center; margin: 0; width: auto; padding: 24px;">
+    <h3><i class="fa-solid fa-laptop-code" style="margin-right: 6px;"></i> Softwaretechnologie</h3>
+    <p style="font-size: 0.75em;">Softwareentwicklung, Data Science oder IT-Security — dual studieren.</p>
+    <p style="font-size: 0.7em; margin-top: 10px;"><a href="https://studiumplus.de/studiengaenge/softwaretechnologie/" target="_blank">Bachelor of Science (B.Sc.)</a></p>
   </div>
-  <div style="display: flex; justify-content: center; align-items: center; padding-top: 5px;"><img src="/Logo-StudiumPlus_4c.png" alt="StudiumPlus" style="height: 78px;"></div>
-  <div style="display: flex; justify-content: center; align-items: center; padding-top: 5px;"><img src="/THM_Logo_4c.png" alt="THM" style="height: 52px;"></div>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; margin-top: 25px;">
+  <img src="/Logo-StudiumPlus_4c.png" alt="StudiumPlus" style="height: 78px;">
+  <p style="font-size: 0.8em; color: var(--thm-mittelgrau); margin-top: 10px;">Wenn euch das heute gefallen hat — studiert doch bei uns dual. :)</p>
 </div>
 
 <!--
