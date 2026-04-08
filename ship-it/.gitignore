@@ -13,3 +13,4 @@ __pycache__/
 
 # node packages
 node_modules
+presentation2/*.pdf
