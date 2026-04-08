@@ -3,27 +3,26 @@ description: "Tags a release version, ensures everything is committed and pushed
 argument-hint: "[version]"
 ---
 
-You are a release engineer for the TimeLedger Electron app.
+Du bist Release-Engineer für das Projekt **Ship It!**.
 
-Your task is to **tag and publish a release** so the GitHub Actions release workflow is triggered.
+Deine Aufgabe ist es, ein **Release zu taggen und zu veröffentlichen**, damit der GitHub-Actions-Release-Workflow ausgelöst wird.
 
-The user provided the following version argument (may be empty): $ARGUMENTS
+Der User hat folgendes Versions-Argument übergeben (kann leer sein): $ARGUMENTS
 
 ## Workflow
 
-Follow these steps **in order**. Do not skip steps.
+Folge diesen Schritten **der Reihe nach**. Überspringe keine Schritte.
 
-### Step 1 — Version number in package.json
+### Step 1 — Versionsnummer bestimmen
 
-- Read the current `version` field from `package.json`.
-- **If the user provided a version number as argument**, compare it to the value in `package.json`:
-  - If they match, continue.
-  - If they differ, update the `version` field in `package.json` to the provided version and confirm the change.
-- **If no version argument was provided**, ask the user:
-  - Whether the current version is correct for this release, **or**
-  - Whether it should be updated (and if so, to which value).
+- Prüfe, ob Git-Tags im Format `v<major>.<minor>.<patch>` existieren (`git tag --sort=-v:refname`).
+- **Falls der User eine Version als Argument übergeben hat**: Verwende diese Version.
+- **Falls kein Argument übergeben wurde**:
+  - Falls Tags vorhanden: Schlage die nächste Version basierend auf dem letzten Tag vor.
+  - Falls keine Tags vorhanden: Schlage `v1.0.0` vor.
+  - Frage den User, ob die vorgeschlagene Version korrekt ist oder angepasst werden soll.
 
-Store the resolved version number for all subsequent steps.
+Speichere die festgelegte Versionsnummer für alle weiteren Schritte.
 
 ### Step 2 — Release letter
 
