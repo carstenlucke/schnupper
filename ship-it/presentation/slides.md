@@ -500,7 +500,7 @@ hideInToc: true
   <ul style="list-style: none; padding-left: 0;">
     <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> | <i class="fa-solid fa-thumbs-down" style="color: var(--thm-rot);"></i> Würdet ihr diesen <strong style="color: var(--thm-gruen);">Instagram-Post</strong> liken?</li>
     <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> | <i class="fa-solid fa-thumbs-down" style="color: var(--thm-rot);"></i> Ist die <strong style="color: var(--thm-gruen);">Preiskalkulation</strong> realistisch?</li>
-    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> Spricht euch die <strong style="color: var(--thm-gruen);">Website</strong> an?</li>
+    <li><i class="fa-solid fa-thumbs-up" style="color: var(--thm-gruen);"></i> | <i class="fa-solid fa-thumbs-down" style="color: var(--thm-rot);"></i> Spricht euch die <strong style="color: var(--thm-gruen);">Website</strong> an?</li>
     <li><i class="fa-solid fa-trophy" style="color: var(--thm-gelb);"></i> Welcher Agent hat <strong style="color: var(--thm-gelb);">am besten</strong> gearbeitet?</li>
   </ul>
 </div>

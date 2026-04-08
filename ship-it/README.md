@@ -1,6 +1,6 @@
 # Ship It!
 
-Live-Demo für eine Schnuppervorlesung (90 Min, 12. Klasse FOS). Schüler wählen ein Produkt, 5 KI-Agenten erledigen den kompletten Produktlaunch – von der Zielgruppenanalyse bis zur fertigen Landingpage.
+Live-Demo für eine Schnuppervorlesung bei StudiumPlus (90 Min, 12. Klasse FOS). Schüler wählen ein Produkt, 5 KI-Agenten erledigen den kompletten Produktlaunch – von der Zielgruppenanalyse bis zur fertigen Landingpage. Das Projekt umfasst die App sowie eine begleitende Slidev-Präsentation.
 
 ## Quickstart
 
@@ -14,7 +14,8 @@ Live-Demo für eine Schnuppervorlesung (90 Min, 12. Klasse FOS). Schüler wähle
 
 - Python 3 (keine externen Dependencies)
 - [OpenCode CLI](https://opencode.ai) installiert und konfiguriert
-- OpenAI-Login in OpenCode (via ChatGPT Plus Abo – die Agenten nutzen `openai/`-Modelle)
+- ChatGPT Plus Abo – die meisten Agenten nutzen `openai/gpt-5.3-codex` über diesen Zugang
+- GitHub Copilot – der Website-Agent nutzt `github-copilot/claude-sonnet-4.6`
 - Für die KI-Bildgenerierung zusätzlich ein `OPENAI_API_KEY` in `.env` (siehe [Einrichtung](#ki-bildgenerierung))
 
 ## Ablauf
@@ -47,9 +48,9 @@ Mehrere Produkte können parallel existieren – im Header zwischen Projekten um
 
 ```
 Zielgruppe ──→ Marketing ──→ Social Media
-                  │
+                 │
 Kalkulation ─────┤
-                  ↓
+                 ↓
                Website
 ```
 
@@ -83,8 +84,13 @@ ship-it/
 │   ├── index.html             # Dashboard SPA
 │   ├── style.css              # THM-Corporate-Design
 │   └── app.js                 # Frontend-Logik
+├── presentation/
+│   ├── slides.md              # Slidev-Folien (Markdown)
+│   ├── style.css              # Präsentations-Styling (THM-CD)
+│   └── public/                # Logos, SVG-Diagramme
 ├── projekte/                  # Runtime: ein Ordner pro Produktidee
 ├── start.sh                   # Ein-Klick-Start
+├── .github/workflows/         # Release-Workflow (PDF-Export + GitHub Release)
 └── spec/                      # Spezifikation + UI-Mockup
 ```
 
@@ -118,6 +124,26 @@ cp .env.example .env
 **Pro Projekt (alle Bilder):** ~$0.02
 
 Die Kosten sind Token-basiert und variieren je nach Prompt-Länge und Bildkomplexität. Bei `quality: "low"` und 1024x1024 liegt der Output-Preis bei $0.009/Bild. Für eine Vorlesung mit ~10 Projekten: **unter $0.50 Gesamtkosten**.
+
+## Präsentation
+
+Die begleitende Slidev-Präsentation behandelt „Digitalisierung und KI: Was Maschinen schon können" — von Alltags-KI über LLMs bis hin zu KI-Agenten, mit Live-Demo im Ship It! Dashboard.
+
+```bash
+cd presentation
+npm install        # einmalig
+npm run dev        # Entwicklungsserver mit Hot-Reload
+npm run export     # PDF-Export (schnuppervorlesung-ki.pdf)
+```
+
+## Release-Workflow
+
+Bei einem Git-Tag-Push (`v*.*.*`) wird automatisch ein GitHub-Actions-Workflow ausgelöst, der die Präsentation als PDF exportiert und ein GitHub Release mit dem PDF erstellt.
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
 
 ## Technical Debt
 

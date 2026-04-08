@@ -1,17 +1,12 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## Projekt
-
-**Ship It!** – Live-Demo-App für eine Schnuppervorlesung (90 Min, 12. Klasse FOS/THM). Schüler wählen ein Produkt, 5 KI-Agenten erledigen den Produktlaunch über ein Web-Dashboard.
+**Ship It!** – Live-Demo-App für eine Schnuppervorlesung bei StudiumPlus (90 Min, 12. Klasse FOS). Schüler wählen ein Produkt, 5 KI-Agenten erledigen den Produktlaunch über ein Web-Dashboard.
 
 ## Starten & Stoppen
 
 ```bash
 ./start.sh              # Server + Browser auf http://localhost:8000
-# Ctrl+C zum Stoppen, bei Port-Konflikt:
-lsof -ti :8000 | xargs kill -9
+./start.sh --force      # Port 8000 vorher freigeben, dann starten
 ```
 
 ## Architektur
@@ -57,14 +52,14 @@ projekte/<slug>/
 
 ## Frontend: dashboard/
 
-3-Spalten-Layout: Agent-Liste (220px) | Artefakt-Liste (250px) | Content-Area (flex).
+3-Spalten-Layout: Agent-Liste | Artefakt-Liste | Content-Area.
 
 - **app.js**: State-Management, API-Calls, xterm.js-Terminals, SSE-Streaming, Polling (3s)
-- **style.css**: THM-Corporate-Design (grün #80ba24, blau #002878), Markdown-Rendering, Animationen
+- **style.css**: THM-Corporate-Design, Markdown-Rendering, Animationen
 - **Tabs**: Terminal (xterm.js), Ergebnis (marked.js Markdown), Vorschau (iframe für HTML)
 - **Terminals**: Pro Agent ein persistentes xterm.js-Div (show/hide, nicht destroy/recreate – xterm.js unterstützt `open()` nur einmal)
 
-### Abhängigkeiten (Frontend-enforced)
+### Agent-Abhängigkeiten (Frontend-enforced)
 
 ```
 Zielgruppe (sofort) ──→ Marketing ──→ Social Media
@@ -77,13 +72,13 @@ Kalkulation (sofort) ─────┤
 
 5 Agent-Definitionen mit YAML-Frontmatter (`description`, `model`, `thinking`, `tools`).
 
-| Agent | Liest | Schreibt | Model |
-|-------|-------|----------|-------|
-| zielgruppe | produkt.md | zielgruppe/analyse.md | github-copilot/gpt-4o |
-| marketing | produkt.md, analyse.md | marketing/konzept.md | github-copilot/gpt-4o |
-| social-media | produkt.md, analyse.md, konzept.md | social-media/{instagram,linkedin,tiktok}.md | github-copilot/gpt-4o |
-| kalkulation | produkt.md | kalkulation/preiskalkulation.md | github-copilot/gpt-4o |
-| website | produkt.md, analyse.md, konzept.md, preiskalkulation.md | website/{website-prompt.md,index.html} | github-copilot/claude-sonnet-4.6 |
+| Agent | Liest | Schreibt |
+|-------|-------|----------|
+| zielgruppe | produkt.md | zielgruppe/analyse.md |
+| marketing | produkt.md, analyse.md | marketing/konzept.md |
+| social-media | produkt.md, analyse.md, konzept.md | social-media/{instagram,linkedin,tiktok}.md |
+| kalkulation | produkt.md | kalkulation/preiskalkulation.md |
+| website | produkt.md, analyse.md, konzept.md, preiskalkulation.md | website/{website-prompt.md,index.html} |
 
 Der Website-Agent erstellt zuerst `website-prompt.md` (alle Infos inline zusammengefasst), dann `index.html`.
 
@@ -94,14 +89,6 @@ Systemprompts definieren Rolle und Output-Format, aber **keine konkreten Dateipf
 - `opencode.json`: Provider (`github-copilot`, `openai`) + Default-Model
 - Agenten können das Model per Frontmatter überschreiben
 - Projekte unter `projekte/<slug>/` (gitignored, runtime-only)
-
-## Veraltete Dateien
-
-- `spec/intent-and-1stidea.md` – Frühes Konzeptdokument, veraltet.
-- `spec/implementation-plan.md` – Ursprünglicher Implementierungsplan, veraltet (beschreibt z.B. noch 6 Agenten).
-
-**Beide nicht als Kontext verwenden.** Die aktuelle Architektur ist in dieser CLAUDE.md beschrieben.
-
 ## Konventionen
 
 - **Sprache**: Alle Agent-Outputs, UI-Texte, HTML-Kommentare und JS-Kommentare auf **Deutsch**. Keine englischen Kommentare im Code.
