@@ -318,10 +318,20 @@ h2.accent-rot::after {
 
 .card {
   background: var(--bg-elevated);
-  border-radius: 8px;
-  padding: 24px;
-  border-top: 4px solid var(--thm-gruen);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  border: none;
+  border-radius: 4px;
+  padding: 28px 24px 24px 24px;
+  position: relative;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--thm-gruen);
 }
 
 .card h3 {
@@ -342,29 +352,30 @@ h2.accent-rot::after {
   margin-bottom: 10px;
 }
 
-.card.card-blue { border-top-color: var(--thm-hellblau); }
+.card.card-blue::before { background: var(--thm-hellblau); }
 .card.card-blue h3 { color: var(--thm-hellblau); }
 .card.card-blue .card-icon,
 .card.card-blue .card-icon .fa-solid,
 .card.card-blue .card-icon .fa-brands { color: var(--thm-hellblau) !important; }
 
-.card.card-yellow { border-top-color: var(--thm-gelb); }
+.card.card-yellow::before { background: var(--thm-gelb); }
 .card.card-yellow h3 { color: var(--thm-gelb); }
 .card.card-yellow .card-icon,
 .card.card-yellow .card-icon .fa-solid,
 .card.card-yellow .card-icon .fa-brands { color: var(--thm-gelb) !important; }
 
-.card.card-rot { border-top-color: var(--thm-rot); }
+.card.card-rot::before { background: var(--thm-rot); }
 .card.card-rot h3 { color: var(--thm-rot); }
 .card.card-rot .card-icon,
 .card.card-rot .card-icon .fa-solid,
 .card.card-rot .card-icon .fa-brands { color: var(--thm-rot) !important; }
 
-.card.card-grau { border-top-color: var(--thm-mittelgrau); background: var(--bg-surface); }
+.card.card-grau::before { background: var(--thm-mittelgrau); }
+.card.card-grau { background: var(--bg-surface); }
 .card.card-grau h3 { color: var(--thm-mittelgrau); }
 .card.card-grau .card-icon { color: var(--thm-mittelgrau); }
 
-.card.card-plain { border-top: none; }
+.card.card-plain::before { display: none; }
 .card.card-plain h3 { color: var(--text-primary); }
 .card.card-plain .card-icon,
 .card.card-plain .card-icon .fa-solid { color: var(--text-secondary) !important; }
@@ -537,7 +548,7 @@ h2.accent-rot::after {
 /* ===========================================
    RESPONSIVE ANPASSUNGEN
    =========================================== */
-@media (max-width: 1024px) {
+@media (max-width: 600px) {
   .card-grid.cols-5 {
     grid-template-columns: repeat(3, 1fr);
   }
