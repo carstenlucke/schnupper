@@ -644,17 +644,20 @@ class: section-divider
 -->
 
 ---
+layout: center
 class: end-slide
 ---
 
-## Danke!
+## Danke für Eure Aufmerksamkeit!
 
-<p style="margin-top: 20px;">Noch Fragen?</p>
+<p style="font-size: 1.2em; margin-top: 15px; color: var(--thm-gruen);">Noch Fragen?</p>
 
-<p style="margin-top: 40px; font-size: 0.8em; opacity: 0.7;">
-  Prof. Dr. Carsten Lucke<br>
-  Technische Hochschule Mittelhessen
-</p>
+<div class="card" style="display: inline-block; margin-top: 30px; padding: 24px 40px; text-align: center; border-top-color: var(--thm-gruen);">
+  <p style="font-size: 1em; font-weight: bold; margin-bottom: 4px;">Prof. Dr. Carsten Lucke</p>
+  <p style="font-size: 0.75em; color: var(--thm-mittelgrau);">Studiengangsleiter BWL-Wirtschaftsinformatik & Softwaretechnologie</p>
+  <p style="font-size: 0.75em; color: var(--thm-mittelgrau);">StudiumPlus · Technische Hochschule Mittelhessen</p>
+  <p style="margin-top: 12px;"><i class="fa-solid fa-envelope" style="color: var(--thm-gruen); margin-right: 6px;"></i> <a href="mailto:carsten.lucke@studiumplus.de">carsten.lucke@studiumplus.de</a></p>
+</div>
 
 <!--
 - Offene Fragerunde
