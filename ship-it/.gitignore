@@ -6,9 +6,11 @@ projekte/
 .DS_Store
 thumbs.db
 
-# OpenCode
-.opencode/node_modules/
-
 # Python
 __pycache__/
 *.pyc
+
+
+# node packages
+node_modules
+presentation/*.pdf
