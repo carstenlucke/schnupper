@@ -30,8 +30,22 @@ jobs:
         working-directory: presentation
         run: npm run export
 
+      - name: Release Letter einlesen
+        id: release_letter
+        run: |
+          FILE="RELEASE-${{ github.ref_name }}.md"
+          if [ ! -f "$FILE" ]; then
+            echo "::error::Release Letter nicht gefunden: $FILE"
+            exit 1
+          fi
+          {
+            echo 'body<<RELEASE_EOF'
+            cat "$FILE"
+            echo 'RELEASE_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - name: Release erstellen und PDF hochladen
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true
+          body: ${{ steps.release_letter.outputs.body }}
           files: presentation/schnuppervorlesung-ki.pdf
