@@ -92,23 +92,23 @@ hideInToc: true
 
 <p style="margin-bottom: 15px;">Ihr nutzt täglich KI — oft ohne es zu merken:</p>
 
-<div class="card-grid cols-2" style="margin-top: 10px;">
-  <div class="card">
+<div class="card-grid cols-2" style="margin-top: 10px; gap: 14px;">
+  <div class="card" style="padding: 18px 20px 14px 20px;">
     <div class="card-icon"><i class="fa-solid fa-music"></i></div>
     <h3>Spotify & YouTube</h3>
     <p>Empfehlungen basierend auf eurem Verhalten — das ist KI</p>
   </div>
-  <div class="card card-blue">
+  <div class="card card-blue" style="padding: 18px 20px 14px 20px;">
     <div class="card-icon"><i class="fa-brands fa-tiktok" style="color: var(--thm-hellblau);"></i></div>
     <h3>TikTok & Instagram</h3>
     <p>Der Algorithmus entscheidet, was ihr seht — das ist KI</p>
   </div>
-  <div class="card card-yellow">
+  <div class="card card-yellow" style="padding: 18px 20px 14px 20px;">
     <div class="card-icon"><i class="fa-solid fa-language" style="color: var(--thm-gelb);"></i></div>
     <h3>DeepL & Google Translate</h3>
     <p>Übersetzungen in Echtzeit — das ist KI</p>
   </div>
-  <div class="card">
+  <div class="card" style="padding: 18px 20px 14px 20px;">
     <div class="card-icon"><i class="fa-solid fa-comment-dots"></i></div>
     <h3>ChatGPT & Co.</h3>
     <p>Texte schreiben, Fragen beantworten — und jetzt: auch <strong>handeln</strong></p>
@@ -532,7 +532,7 @@ h2::after {
     <h3><i class="fa-solid fa-coins" style="color: var(--thm-gelb); margin-right: 8px;"></i> Kosten</h3>
     <p>KI arbeitet mit <strong style="color: var(--thm-gelb);">Tokens</strong> — das ist ihre Währung. Wer Agenten einsetzt, muss die Kosten im Blick behalten.</p>
   </div>
-  <div class="card" style="border-top-color: var(--thm-hellblau); padding: 16px 18px;">
+  <div class="card card-blue" style="padding: 16px 18px;">
     <h3><i class="fa-solid fa-clipboard-check" style="color: var(--thm-hellblau); margin-right: 8px;"></i> <span style="color: var(--thm-hellblau);">Qualitätskontrolle</span></h3>
     <p>Wenn alles manuell geprüft werden muss, wird <strong style="color: var(--thm-hellblau);">der Mensch zum Engpass</strong> — man braucht automatische Prüfmechanismen.</p>
   </div>
@@ -540,7 +540,7 @@ h2::after {
     <h3><i class="fa-solid fa-ghost" style="margin-right: 8px;"></i> Halluzinationen</h3>
     <p>KI (LLM) kann <strong style="color: var(--thm-rot);">überzeugend falsche Dinge</strong> behaupten — erfundene Fakten, falsche Zahlen, nicht existierende Quellen.</p>
   </div>
-  <div class="card" style="border-top-color: var(--thm-grau); padding: 16px 18px;">
+  <div class="card card-grau" style="padding: 16px 18px;">
     <h3><i class="fa-solid fa-shield-halved" style="margin-right: 8px;"></i> Datenschutz</h3>
     <p>Daten, die an KI-Dienste gesendet werden, <strong>verlassen das Unternehmen</strong>. Man muss prüfen, ob eine Verarbeitung in externen KI-Diensten zulässig ist.</p>
   </div>
@@ -650,7 +650,7 @@ class: end-slide
 
 <p style="font-size: 1.2em; margin-top: 15px; color: var(--thm-gruen);">Noch Fragen?</p>
 
-<div class="card" style="display: inline-block; margin-top: 30px; padding: 24px 40px; text-align: center; border-top-color: var(--thm-gruen);">
+<div class="card" style="display: inline-block; margin-top: 30px; padding: 24px 40px; text-align: center;">
   <p style="font-size: 1em; font-weight: bold; margin-bottom: 4px;">Prof. Dr. Carsten Lucke</p>
   <p style="font-size: 0.75em; color: var(--thm-mittelgrau);">Studiengangsleiter BWL-Wirtschaftsinformatik & Softwaretechnologie</p>
   <p style="font-size: 0.75em; color: var(--thm-mittelgrau);">StudiumPlus · Technische Hochschule Mittelhessen</p>
