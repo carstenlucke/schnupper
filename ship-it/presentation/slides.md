@@ -155,9 +155,20 @@ hideInToc: true
 
 ---
 layout: center
+class: section-divider
+---
+
+## Vom Chatbot zum KI-Agenten
+
+<!--
+- Jetzt: Was ist der Unterschied?
+- Einfach erklärt, ohne Technik-Jargon
+-->
+
+---
+layout: center
 class: interactive-slide
 hideInToc: true
-title: Reden vs. Handeln
 ---
 
 <div class="emoji">🙋</div>
@@ -171,18 +182,6 @@ title: Reden vs. Handeln
 - ChatGPT schreibt Texte, beantwortet Fragen — aber TUT es etwas?
 - Es ist wie ein Gehirn im Glas: Es kann denken und reden, aber es hat keine Hände
 - "Genau das schauen wir uns heute an."
--->
-
----
-layout: center
-class: section-divider
----
-
-## Vom Chatbot zum KI-Agenten
-
-<!--
-- Jetzt: Was ist der Unterschied?
-- Einfach erklärt, ohne Technik-Jargon
 -->
 
 ---
