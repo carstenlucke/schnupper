@@ -369,6 +369,25 @@ def _get_all_outputs(agent: str) -> list[str]:
 SAFE_SEGMENT_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 
+class QuietThreadingHTTPServer(ThreadingHTTPServer):
+    """ThreadingHTTPServer, der harmlose Client-Disconnects stillschweigend verwirft.
+
+    Browser schließen Keep-Alive-Verbindungen beim Projektwechsel, wodurch der
+    blockierende readline() im Worker-Thread ConnectionResetError wirft. Diese
+    Exceptions sind erwartet und sollen das Log nicht verrauschen.
+    """
+
+    def handle_error(self, request, client_address):
+        import sys
+
+        exc = sys.exc_info()[1]
+        if isinstance(
+            exc, (ConnectionResetError, BrokenPipeError, ConnectionAbortedError)
+        ):
+            return
+        super().handle_error(request, client_address)
+
+
 class ShipItHandler(SimpleHTTPRequestHandler):
     """Request-Handler für das Ship It! Dashboard."""
 
@@ -1023,7 +1042,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
 def main():
     os.makedirs(PROJEKTE_DIR, exist_ok=True)
 
-    server = ThreadingHTTPServer(("", PORT), ShipItHandler)
+    server = QuietThreadingHTTPServer(("", PORT), ShipItHandler)
     print(f"Ship It! Dashboard → http://localhost:{PORT}")
 
     def shutdown(sig, frame):
