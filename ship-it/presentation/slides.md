@@ -427,8 +427,8 @@ hideInToc: true
 
 <div class="product-grid">
   <div class="product-item">
-    <div class="product-emoji">🧋</div>
-    <p>Bubble-Tea-Automat für Schulen</p>
+    <div class="product-emoji">🚁</div>
+    <p>Drohnen-Foto-Service für Events</p>
   </div>
   <div class="product-item">
     <div class="product-emoji">⚡</div>
