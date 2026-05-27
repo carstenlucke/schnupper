@@ -12,7 +12,8 @@
   --thm-mittelgrau: #8FA0AA;
 
   /* THM Corporate Design — Zusatzfarben (Dark-Mode-optimiert, WCAG) */
-  --thm-rot: #D43B56;
+  /* Helleres Rot fuer besseren Kontrast am Beamer bei hellem Umgebungslicht (5.2:1 statt 3.4:1) */
+  --thm-rot: #FF5A6E;
   --thm-gelb: #F4AA00;
   --thm-hellblau: #00B8E4;
   --thm-blau: #1A4FD0;
