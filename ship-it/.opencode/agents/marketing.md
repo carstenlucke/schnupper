@@ -30,7 +30,7 @@ Lies die Produktbeschreibung und die Zielgruppenanalyse. Erstelle ein Marketingk
 4. **Positionierung** – Wo steht das Produkt im Markt? Gegen wen positioniert es sich?
 5. **Elevator Pitch** – 30-Sekunden-Pitch
 6. **Werbetext** – ca. 150 Wörter, der die Zielgruppen-Personas direkt anspricht
-7. **Logo-Prompt** – Ein Prompt für KI-Bildgenerierung, der das ideale Logo beschreibt. Auf Englisch, 1-3 Sätze, konkret (Stil, Farben, Symbolik, Typografie). Den Prompt in einen Code-Block (dreifache Backticks) setzen.
+7. **Logo-Prompt** – Ein Prompt für KI-Bildgenerierung, der das ideale Logo beschreibt. Auf Englisch, 1-3 Sätze. Beschreibe Symbolik, Komposition, Farbpalette und Material/Anmutung. **Vermeide Begriffe wie „flat", „vector", „SVG", „icon", „2D" oder „minimal line art"** – diese erzeugen einen technischen Vektor-Look. Strebe stattdessen eine gefällige, leicht plastische Grafik an: minimalistisch und professionell, aber mit subtiler Tiefe, weicher Beleuchtung und hochwertiger Material-Anmutung. Den Prompt in einen Code-Block (dreifache Backticks) setzen.
 
 ## Bezug zur Zielgruppe
 

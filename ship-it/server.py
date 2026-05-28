@@ -889,6 +889,14 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                 "keyword": "Logo-Prompt",
                 "output": "marketing/logo.png",
                 "error_no_prompt": "Kein Logo-Prompt in konzept.md gefunden",
+                "style_suffix": (
+                    "Render as a polished, professional brand logo with a "
+                    "minimalist composition, soft directional lighting, subtle "
+                    "depth and refined material finish (matte or satin). "
+                    "Centered on a clean neutral background. Do NOT render as "
+                    "flat vector art, SVG-style geometry, line icon or 2D clip "
+                    "art."
+                ),
             },
             "social-media": {
                 "source": "social-media/instagram.md",
@@ -929,6 +937,8 @@ class ShipItHandler(SimpleHTTPRequestHandler):
 
         # Produktname immer mitgeben
         prompt = f'Product: "{produktname}". {prompt}'
+        if cfg.get("style_suffix"):
+            prompt = f'{prompt} {cfg["style_suffix"]}'
 
         print(
             f"[image-gen] {slug}/{agent}: Prompt = {prompt[:150]}...", file=sys.stderr
