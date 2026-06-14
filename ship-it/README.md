@@ -14,8 +14,7 @@ Live-Demo für eine Schnuppervorlesung bei StudiumPlus (90 Min, 12. Klasse FOS).
 
 - Python 3 (keine externen Dependencies)
 - [OpenCode CLI](https://opencode.ai) installiert und konfiguriert
-- ChatGPT Plus Abo – die meisten Agenten nutzen `openai/gpt-5.5` über diesen Zugang
-- GitHub Copilot – der Website-Agent nutzt `github-copilot/claude-sonnet-4.6`
+- ChatGPT Plus Abo – alle Agenten nutzen `openai/gpt-5.5` über diesen Zugang
 - Für die KI-Bildgenerierung zusätzlich ein `OPENAI_API_KEY` in `.env` (siehe [Einrichtung](#ki-bildgenerierung))
 
 ## Ablauf

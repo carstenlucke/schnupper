@@ -86,7 +86,7 @@ Systemprompts definieren Rolle und Output-Format, aber **keine konkreten Dateipf
 
 ## Konfiguration
 
-- `opencode.json`: Provider (`github-copilot`, `openai`) + Default-Model
+- `opencode.json`: Provider (`openai`) + Default-Model
 - Agenten können das Model per Frontmatter überschreiben
 - Projekte unter `projekte/<slug>/` (gitignored, runtime-only)
 ## Konventionen
