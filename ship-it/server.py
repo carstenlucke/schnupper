@@ -303,7 +303,7 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Bildgenerierung (OpenAI gpt-image-1.5)
+# Bildgenerierung (OpenAI gpt-image-2)
 # ---------------------------------------------------------------------------
 
 
@@ -327,11 +327,11 @@ def _extract_prompt(content: str, keyword: str) -> str | None:
 def _call_image_api(
     api_key: str, prompt: str, quality: str = "low", size: str = "1024x1024"
 ) -> bytes:
-    """Text-to-Image mit gpt-image-1.5."""
+    """Text-to-Image mit gpt-image-2."""
     url = "https://api.openai.com/v1/images/generations"
     payload = json.dumps(
         {
-            "model": "gpt-image-1.5",
+            "model": "gpt-image-2",
             "prompt": prompt,
             "n": 1,
             "size": size,
@@ -874,7 +874,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
     # --- API: Bildgenerierung ---
 
     def _handle_generate_image(self, slug, agent):
-        """Generiere ein Bild mit OpenAI gpt-image-1.5."""
+        """Generiere ein Bild mit OpenAI gpt-image-2."""
         import sys
 
         api_key = os.environ.get("OPENAI_API_KEY")
