@@ -1,7 +1,7 @@
 ---
 description: Zielgruppenanalyse – identifiziert Personas, Marktsegmente und Kaufkraft
-model: openai/gpt-5.3-codex
-thinking: medium
+model: openai/gpt-5.5
+reasoningEffort: medium
 tools:
   bash: true
   read: true

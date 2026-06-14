@@ -70,7 +70,7 @@ Kalkulation (sofort) ─────┤
 
 ## Agenten: .opencode/agents/
 
-5 Agent-Definitionen mit YAML-Frontmatter (`description`, `model`, `thinking`, `tools`).
+5 Agent-Definitionen mit YAML-Frontmatter (`description`, `model`, `reasoningEffort`, `tools`).
 
 | Agent | Liest | Schreibt |
 |-------|-------|----------|

@@ -1,7 +1,7 @@
 ---
 description: Preiskalkulation – berechnet Kosten, Margen und empfiehlt Preisstrategie
-model: openai/gpt-5.3-codex
-thinking: xhigh
+model: openai/gpt-5.5
+reasoningEffort: medium
 tools:
   bash: true
   read: true

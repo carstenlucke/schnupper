@@ -1,7 +1,7 @@
 ---
 description: Social-Media-Posts – erstellt plattformspezifische Inhalte für Instagram, LinkedIn und TikTok
-model: openai/gpt-5.3-codex
-thinking: medium
+model: openai/gpt-5.5
+reasoningEffort: medium
 tools:
   bash: true
   read: true

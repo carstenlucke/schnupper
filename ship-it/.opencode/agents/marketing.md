@@ -1,7 +1,7 @@
 ---
 description: Marketingkonzept – entwickelt Produktname, Slogan, Positionierung und Werbetext
-model: openai/gpt-5.3-codex
-thinking: medium
+model: openai/gpt-5.5
+reasoningEffort: medium
 tools:
   bash: true
   read: true
