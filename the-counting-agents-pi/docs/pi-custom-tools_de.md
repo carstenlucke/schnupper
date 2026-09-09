@@ -165,6 +165,9 @@ wieder auf, liegt es fast immer an der `description` — und fast nie am Prompt.
 
 ## Weiterlesen
 
+[`Trajectory_de.md`](Trajectory_de.md) zeigt, wie diese Werkzeuge im Durchlauf
+tatsächlich aufgerufen werden — mit einer aufgezeichneten Trajektorie.
+
 Die pi-Dokumentation liegt beim installierten Paket und ist ausführlich:
 
 ```bash

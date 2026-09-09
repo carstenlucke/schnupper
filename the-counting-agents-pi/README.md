@@ -200,6 +200,8 @@ through a primality test while the others simply run.
 
 ## Further reading
 
+- [`docs/Trajectory.md`](docs/Trajectory.md) — what actually happens during a
+  run: requests, tool calls, growing context
 - [`docs/pi-custom-tools.md`](docs/pi-custom-tools.md) — how the tools are built
   and how to add your own
 - [`docs/experiment.md`](docs/experiment.md) — why the architecture looks the

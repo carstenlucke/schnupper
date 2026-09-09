@@ -161,6 +161,9 @@ always the `description` — and almost never the prompt.
 
 ## Further reading
 
+[`Trajectory.md`](Trajectory.md) shows how these tools actually get called
+during a run, with a recorded trajectory.
+
 pi's documentation ships with the installed package and is thorough:
 
 ```bash

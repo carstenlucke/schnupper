@@ -207,6 +207,8 @@ bei der Primzahlprüfung überlegt, während die anderen einfach durchlaufen.
 
 ## Weiterlesen
 
+- [`docs/Trajectory_de.md`](docs/Trajectory_de.md) — was bei einem Durchlauf
+  wirklich passiert: Anfragen, Werkzeugaufrufe, wachsender Kontext
 - [`docs/pi-custom-tools_de.md`](docs/pi-custom-tools_de.md) — wie die
   Werkzeuge gebaut sind und wie man eigene ergänzt
 - [`docs/experiment_de.md`](docs/experiment_de.md) — warum die Architektur so
