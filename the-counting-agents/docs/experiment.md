@@ -8,7 +8,7 @@ This project is an **experiment**, not a production system. The central question
 
 The entire project consists of Markdown definitions for the agents, a handful of shell scripts, and JSON files. No framework, no library, no custom code implementing business logic — the LLM agents **are** the logic. The setup demonstrates that coordinated autonomous agents can be realized today with minimal effort.
 
-At the same time, this is a **hands-on evaluation of specific tools**: [opencode](https://github.com/opencode-ai/opencode) as the CLI for agent execution and [tmux](https://github.com/tmux/tmux) as a runtime environment that makes multiple agents visible in parallel. Both tools are deliberately tested here for their suitability in multi-agent scenarios.
+At the same time, this is a **hands-on evaluation of specific tools**: [opencode](https://github.com/opencode-ai/opencode) as the CLI for agent execution and [Herdr](https://herdr.dev) as a runtime environment that makes multiple agents visible in parallel — one named pane per agent. Both tools are deliberately tested here for their suitability in multi-agent scenarios.
 
 This leads to a second question:
 

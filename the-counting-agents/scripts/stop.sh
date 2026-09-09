@@ -1,19 +1,31 @@
 #!/usr/bin/env bash
-# stop.sh — Stop the multi-agent tmux session
+# stop.sh — Beendet die Multi-Agenten-Demo und schließt den Herdr-Tab
 
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-SESSION="agents"
+source "$PROJECT_DIR/scripts/herdr-lib.sh"
 
-# Write stop event to control.log
+# Stop-Event in control.log schreiben
 TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
 echo "{\"type\":\"control\",\"target\":\"all\",\"command\":\"stop\",\"timestamp\":\"$TIMESTAMP\"}" >> "$PROJECT_DIR/bus/control.log"
 
 echo "Stop-Event geschrieben."
 
-# Wait briefly for agents to notice
+# Kurz warten, damit die Agenten den Stop bemerken
 sleep 2
 
-# Kill tmux session
-tmux kill-session -t "$SESSION" 2>/dev/null && echo "tmux-Session '$SESSION' beendet." || echo "Keine tmux-Session '$SESSION' gefunden."
+# Demo-Tab schließen
+if ! herdr_require; then
+    echo "Ohne Herdr-Session: Der Demo-Tab muss von Hand geschlossen werden."
+    exit 0
+fi
+
+TAB_ID="$(herdr_demo_tab_id)"
+if [[ -n "$TAB_ID" ]]; then
+    herdr tab close "$TAB_ID" >/dev/null 2>&1 \
+        && echo "Herdr-Tab '$HERDR_DEMO_TAB_LABEL' ($TAB_ID) geschlossen." \
+        || echo "Herdr-Tab '$TAB_ID' konnte nicht geschlossen werden."
+else
+    echo "Kein Herdr-Tab '$HERDR_DEMO_TAB_LABEL' gefunden."
+fi
