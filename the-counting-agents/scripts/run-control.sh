@@ -10,6 +10,11 @@ set -euo pipefail
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$PROJECT_DIR"
 
+# Eigenes opencode-Datenverzeichnis, damit das Steuerungs-Pane nicht mit den
+# Agenten um dieselbe SQLite-Datei streitet (siehe run-agent.sh).
+export XDG_DATA_HOME="$PROJECT_DIR/.opencode-data/control"
+mkdir -p "$XDG_DATA_HOME"
+
 # --- Menu items ---
 MENU_ITEMS=(
     "Status Dashboard anzeigen"
@@ -229,9 +234,9 @@ while true; do
                     ;;
             esac
             ;;
-        'q') # Quit — stop all agents and kill tmux session
+        'q') # Quit — stop all agents and close the Herdr tab
             clear
-            echo "Beende alle Agents und tmux-Session..."
+            echo "Beende alle Agents und schließe den Herdr-Tab..."
             "$PROJECT_DIR/scripts/stop.sh"
             exit 0
             ;;

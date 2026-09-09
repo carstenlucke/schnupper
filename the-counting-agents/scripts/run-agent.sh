@@ -8,12 +8,24 @@ set -euo pipefail
 
 AGENT_NAME="${1:?Usage: run-agent.sh <agent-name> [interval]}"
 INTERVAL="${2:-3}"
+# Obergrenze für einen einzelnen Durchlauf in Sekunden.
+# Gemessen braucht ein Durchlauf gegen das lokale 35B-Modell 85-115s, wenn
+# alle fünf Agenten gleichzeitig anfragen. 90s hätten also regelmäßig den
+# normalen Betrieb abgeschnitten; 240s greifen nur bei einem echten Hänger.
+TIMEOUT="${COUNTING_AGENTS_TIMEOUT:-240}"
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 cd "$PROJECT_DIR"
 
+# Jeder Agent bekommt sein eigenes opencode-Datenverzeichnis. Ohne das greifen
+# alle fünf Prozesse gleichzeitig auf dieselbe SQLite-Datei in
+# ~/.local/share/opencode zu — vier von ihnen brechen dann sofort mit
+# "database is locked" ab.
+export XDG_DATA_HOME="$PROJECT_DIR/.opencode-data/$AGENT_NAME"
+mkdir -p "$XDG_DATA_HOME"
+
 echo "=== Agent '$AGENT_NAME' gestartet ==="
-echo "Interval: ${INTERVAL}s"
+echo "Interval: ${INTERVAL}s, Timeout: ${TIMEOUT}s"
 echo ""
 
 while true; do
@@ -44,7 +56,21 @@ while true; do
     fi
 
     echo "--- Durchlauf $(date '+%H:%M:%S') ---"
-    opencode run --agent "$AGENT_NAME" "Führe deinen nächsten Schritt aus." 2>&1 || true
+    # Wachhund: Gegen ein lokales Modell bleibt opencode gelegentlich hängen —
+    # ohne Abbruch stünde das Pane für den Rest der Vorführung still.
+    # macOS bringt kein `timeout` mit, daher von Hand.
+    opencode run --agent "$AGENT_NAME" "Führe deinen nächsten Schritt aus." 2>&1 &
+    RUN_PID=$!
+    WAITED=0
+    while kill -0 "$RUN_PID" 2>/dev/null && [[ $WAITED -lt $TIMEOUT ]]; do
+        sleep 1
+        WAITED=$((WAITED + 1))
+    done
+    if kill -0 "$RUN_PID" 2>/dev/null; then
+        kill -9 "$RUN_PID" 2>/dev/null || true
+        echo "=== Durchlauf nach ${TIMEOUT}s abgebrochen (Modell antwortet nicht). ==="
+    fi
+    wait "$RUN_PID" 2>/dev/null || true
     echo ""
 
     sleep "$INTERVAL"
