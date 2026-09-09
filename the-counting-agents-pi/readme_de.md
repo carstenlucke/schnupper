@@ -138,6 +138,43 @@ einen Agenten. Der Fokus landet auf der Steuerung.
 Im Steuerungs-Pane: Pfeiltasten zur Auswahl, Enter zum Ausführen, `q` beendet
 die Demo.
 
+## Anfragen zählen: warum Rate-Limits so schnell greifen
+
+Ein Agentendurchlauf ist **nicht eine Anfrage an das Modell**, sondern eine pro
+Werkzeugaufruf plus eine für die Abschlussantwort. Der Counter ruft
+`control_read`, `state_read`, `bus_publish` und `state_write` auf — gemessen
+sind das fünf Modellanfragen für die eine Zeile `→ 42`, die im Pane erscheint.
+
+Hochgerechnet auf die laufende Demo: vier Agenten im Dauerlauf, ein Durchlauf
+dauert rund zehn Sekunden, dazu drei Sekunden Takt — das sind etwa **90
+Anfragen pro Minute**.
+
+Bei [TensorX](https://docs.tensorx.ai/api-reference/rate-limits) erlaubt das
+Standard-Kontingent 60 Anfragen pro Minute je Schlüssel. Die Demo läuft also
+prompt in ein Limit, erkennbar an HTTP 429 mit `"reason": "rate_limit_requests"`.
+
+Dazu kommt eine Falle, die man leicht übersieht: TensorX reserviert für jede
+Anfrage so viele Token, wie in `max_tokens` angemeldet sind — unabhängig davon,
+wie kurz die Antwort ausfällt. Mit dem Katalogwert 32768 wäre das Minutenbudget
+von zwei Millionen Token nach 61 Anfragen erschöpft. Deshalb meldet
+[`tensorx-schnupper.ts`](.pi/extensions/tensorx-schnupper.ts) bewusst nur 4096
+Token an; für eine Zeile Ausgabe ist das reichlich.
+
+Was hilft, wenn ein Limit zuschlägt:
+
+- **Anbieter wechseln** — eine Zeile `COUNTING_AGENTS_MODEL` in der `.env`. Die
+  Voreinstellung läuft deshalb über ein Abo-Modell und nicht über TensorX.
+- **Takt strecken** — `interval` im Frontmatter der Agenten hochsetzen. Bei 20
+  Sekunden bleibt die Demo unter 60 Anfragen pro Minute, wirkt im Vortrag aber
+  merklich zäher.
+- **Weniger Agenten laufen lassen** — für manche Abschnitte reichen Counter und
+  Prime.
+
+Für die Vorlesung ist die Rechnerei selbst ein guter Moment: Fünf Agenten, die
+jeweils nur eine Zeile ausgeben, erzeugen in einer Minute rund hundert
+Anfragen. Man sieht im Pane eine Zahl — dahinter stecken fünf Gespräche mit
+einem Modell.
+
 ## Was ein Agent ist
 
 Eine Textdatei. Mehr nicht.

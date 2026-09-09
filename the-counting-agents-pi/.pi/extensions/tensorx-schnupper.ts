@@ -41,7 +41,13 @@ export default function (pi: ExtensionAPI) {
         reasoning: true,
         input: ["text"],
         contextWindow: 262144,
-        maxTokens: 32768,
+        // Absichtlich klein: TensorX reserviert die hier angemeldete Menge für
+        // jede Anfrage aus dem Minutenbudget, auch wenn die Antwort nur eine
+        // Zeile lang wird. Mit dem Katalogwert 32768 wären bei 2 Mio. Token
+        // pro Minute nach 61 Anfragen Schluss — das reißt diese Demo in unter
+        // einer Minute. 4096 reicht für eine Zeile Ausgabe samt Denkschritten
+        // und macht das Tokenbudget zum Nicht-Problem.
+        maxTokens: 4096,
         // Preise pro Million Token — pi rechnet damit die Kosten je Durchlauf
         // aus und zeigt sie im Pane an. Für die Vorlesung ein netter
         // Nebeneffekt: man sieht, was ein Agentenschritt tatsächlich kostet.

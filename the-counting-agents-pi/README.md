@@ -136,6 +136,39 @@ in each. Focus lands on the steering pane.
 
 In the steering pane: arrow keys to select, Enter to run, `q` ends the demo.
 
+## Counting requests: why rate limits bite so quickly
+
+An agent run is **not one request to the model** but one per tool call plus one
+for the closing answer. The counter calls `control_read`, `state_read`,
+`bus_publish` and `state_write` — measured, that is five model requests for the
+single line `→ 42` that shows up in the pane.
+
+Extrapolated to the running demo: four agents in a loop, a run takes about ten
+seconds, plus three seconds of interval — roughly **90 requests per minute**.
+
+At [TensorX](https://docs.tensorx.ai/api-reference/rate-limits) the standard
+allowance is 60 requests per minute per key. So the demo runs straight into a
+limit, visible as HTTP 429 with `"reason": "rate_limit_requests"`.
+
+There is a second trap that is easy to miss: TensorX reserves as many tokens per
+request as `max_tokens` announces, no matter how short the answer turns out. At
+the catalog value of 32768, the two-million-token minute budget would be spent
+after 61 requests. That is why
+[`tensorx-schnupper.ts`](.pi/extensions/tensorx-schnupper.ts) deliberately
+announces only 4096 — plenty for one line of output.
+
+What helps when a limit hits:
+
+- **Switch providers** — one `COUNTING_AGENTS_MODEL` line in the `.env`. That is
+  why the default runs on a subscription model rather than TensorX.
+- **Stretch the interval** — raise `interval` in the agents' frontmatter. At 20
+  seconds the demo stays under 60 requests per minute, but it visibly drags.
+- **Run fewer agents** — for some parts of the talk, counter and prime suffice.
+
+For the lecture the arithmetic itself is a good moment: five agents, each
+printing a single line, produce around a hundred requests per minute. You see
+one number in the pane — behind it are five conversations with a model.
+
 ## What an agent is
 
 A text file. That's all.
