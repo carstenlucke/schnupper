@@ -90,6 +90,36 @@ function appendLog(file: string, event: unknown): void {
   fs.appendFileSync(file, `${JSON.stringify(event)}\n`, "utf8");
 }
 
+/** Der letzte Reset, der für den Counter gilt — oder null, wenn es keinen gab.
+ *  Nach einem Reset beginnt die Zählung von vorn; ältere Zahlen im Bus zählen
+ *  dann nicht mehr mit. */
+function lastResetAt(): string | null {
+  let last: string | null = null;
+  for (const event of readLog<ControlEvent>(CONTROL_LOG)) {
+    if (event.command === "reset" && (event.target === "counter" || event.target === "all")) {
+      last = event.timestamp ?? null;
+    }
+  }
+  return last;
+}
+
+/** Der Zählerstand: die zuletzt veröffentlichte Zahl seit dem letzten Reset,
+ *  0 wenn noch keine da ist.
+ *
+ *  Er wird aus dem Bus gelesen, nicht aus _state/counter.json. Zwei getrennt
+ *  geführte Stände laufen irgendwann auseinander — ein abgebrochener
+ *  Durchlauf, ein vergessenes state_write, und der nächste Durchlauf zählt von
+ *  einem veralteten Stand weiter. Genau so entstanden doppelte Zahlen, die die
+ *  Sammler anschließend brav mitgeschrieben haben. Der Bus ist die einzige
+ *  Wahrheit; die Zustandsdatei zeigt sie nur an. */
+function counterValue(): number {
+  const reset = lastResetAt();
+  const events = readLog<NumberEvent>(NUMBERS_LOG).filter(
+    (e) => reset === null || (e.timestamp ?? "") > reset,
+  );
+  return events.length === 0 ? 0 : (events[events.length - 1].value ?? 0);
+}
+
 function defaultState(agent: AgentName): AgentState {
   return agent === "counter"
     ? { agent, last_value: 0, status: "running", updated_at: null }
@@ -97,6 +127,13 @@ function defaultState(agent: AgentName): AgentState {
 }
 
 function readState(agent: AgentName): AgentState {
+  const state = readStoredState(agent);
+  // Der Counter merkt sich nichts, was der Bus nicht schon weiß.
+  if (agent === "counter") state.last_value = counterValue();
+  return state;
+}
+
+function readStoredState(agent: AgentName): AgentState {
   const file = stateFile(agent);
   if (!fs.existsSync(file)) return defaultState(agent);
   const raw = fs.readFileSync(file, "utf8").trim();
@@ -130,13 +167,24 @@ export default function (pi: ExtensionAPI) {
     description:
       "Stellt eine Zahl als Ereignis in den Event-Bus (_bus/numbers.log). " +
       "Die fortlaufende Sequenznummer und der Zeitstempel werden automatisch vergeben. " +
-      "Gibt das geschriebene Ereignis zurück.",
+      "Zahlen, die schon veröffentlicht wurden, werden abgelehnt; die Fehlermeldung " +
+      "nennt die nächste freie Zahl. Gibt das geschriebene Ereignis zurück.",
     parameters: Type.Object({
       value: Type.Number({ description: "Die zu veröffentlichende Zahl" }),
     }),
     async execute(_toolCallId, params) {
       if (!Number.isInteger(params.value)) {
         return fail(`Nur ganze Zahlen können veröffentlicht werden, nicht ${params.value}.`);
+      }
+      // Der Bus nimmt keine Zahl an, die schon dasteht. Damit kann kein
+      // Durchlauf eine Zahl doppelt veröffentlichen — und die Fehlermeldung
+      // nennt gleich die richtige, sodass der Agent sich selbst korrigiert.
+      const current = counterValue();
+      if (params.value <= current) {
+        return fail(
+          `${params.value} steht schon im Bus — zuletzt veröffentlicht wurde ${current}. ` +
+            `Die nächste Zahl ist ${current + 1}.`,
+        );
       }
       const events = readLog<NumberEvent>(NUMBERS_LOG);
       const lastSeq = events.reduce((max, e) => Math.max(max, e.seq ?? 0), 0);
@@ -304,7 +352,9 @@ export default function (pi: ExtensionAPI) {
         Type.Number({ description: "Zuletzt verarbeitete Sequenznummer aus dem Bus" }),
       ),
       last_value: Type.Optional(
-        Type.Number({ description: "Zuletzt erzeugter Wert (nur Counter)" }),
+        Type.Number({
+          description: "Zuletzt erzeugter Wert (nur Counter; wird gegen den Bus abgeglichen)",
+        }),
       ),
       numbers: Type.Optional(
         Type.Array(Type.Number(), {
@@ -326,6 +376,9 @@ export default function (pi: ExtensionAPI) {
       if (changes.status !== undefined) state.status = changes.status;
       if (changes.numbers !== undefined) state.numbers = changes.numbers;
       if (state.numbers !== undefined) state.count = state.numbers.length;
+      // Was der Counter erzeugt hat, steht im Bus — nicht in dem, was er
+      // hier behauptet.
+      if (agent === "counter") state.last_value = counterValue();
       state.updated_at = now();
 
       const file = stateFile(agent);

@@ -66,6 +66,10 @@ while true; do
         WAITED=$((WAITED + 1))
     done
     if kill -0 "$RUN_PID" 2>/dev/null; then
+        # Erst das pi-Kind, dann die Subshell. Andernfalls läuft pi weiter,
+        # meldet sich Minuten später zurück und schreibt einen längst
+        # überholten Stand in den Bus.
+        pkill -9 -P "$RUN_PID" 2>/dev/null || true
         kill -9 "$RUN_PID" 2>/dev/null || true
         echo "=== Durchlauf nach ${TIMEOUT}s abgebrochen (keine Antwort). ==="
     fi

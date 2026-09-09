@@ -105,14 +105,14 @@ reads in this demo is German, including the prompts.
 
 | Tool | What it does |
 |---|---|
-| `bus_publish` | Appends a number to `_bus/numbers.log`; assigns sequence number and timestamp |
+| `bus_publish` | Appends a number to `_bus/numbers.log`; assigns sequence number and timestamp, refuses numbers already published |
 | `bus_read` | Returns events with `seq > since`, plus `latest_seq` and how many remain |
 | `control_read` | Tells an agent what currently applies: `status`, `verbose`, `reset_requested` |
 | `control_send` | Writes a control command to `_bus/control.log` |
 | `state_read` | Reads `_state/<agent>.json`; `all` returns all four at once |
 | `state_write` | Advances the state; sets `count` and `updated_at` itself |
 
-Three design decisions are worth a look:
+Four design decisions are worth a look:
 
 **The tools do no arithmetic.** Whether a number is even or prime is the
 model's call. An `is_prime` tool would be more reliable — and would remove
@@ -129,6 +129,14 @@ to me?" and gets `{"status":"running",...}`.
 collected numbers while writing does not lose them. That is deliberately
 forgiving: a model that drops a field on the third run should not topple the
 demo.
+
+**The bus is the truth, not the state file.** Which number comes next is
+written in `_bus/numbers.log` — `state_read` takes the counter's value from
+there, and `bus_publish` refuses a number that is already in the log. Before,
+both files kept their own count: when a run was cut short before it could call
+`state_write`, the next one continued from a stale value — and the collectors
+dutifully recorded the duplicate. Two records of the same fact drift apart
+eventually; one of them has to be the truth.
 
 ## Who gets which tool
 

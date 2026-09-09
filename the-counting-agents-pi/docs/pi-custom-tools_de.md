@@ -106,14 +106,14 @@ Vier Dinge sind wichtig:
 
 | Werkzeug | Was es tut |
 |---|---|
-| `bus_publish` | Hängt eine Zahl an `_bus/numbers.log` an; vergibt Sequenznummer und Zeitstempel |
+| `bus_publish` | Hängt eine Zahl an `_bus/numbers.log` an; vergibt Sequenznummer und Zeitstempel, lehnt bereits veröffentlichte Zahlen ab |
 | `bus_read` | Liefert die Ereignisse mit `seq > since`, dazu `latest_seq` und wie viele noch ausstehen |
 | `control_read` | Sagt einem Agenten, was für ihn gilt: `status`, `verbose`, `reset_requested` |
 | `control_send` | Schreibt einen Steuerbefehl nach `_bus/control.log` |
 | `state_read` | Liest `_state/<agent>.json`, mit `all` alle vier auf einmal |
 | `state_write` | Schreibt den Zustand fort; setzt `count` und `updated_at` selbst |
 
-Drei Entwurfsentscheidungen lohnen einen Blick:
+Vier Entwurfsentscheidungen lohnen einen Blick:
 
 **Die Werkzeuge rechnen nicht.** Ob eine Zahl gerade oder prim ist, entscheidet
 das Modell. Ein `is_prime`-Werkzeug wäre zuverlässiger — und würde genau das
@@ -130,6 +130,15 @@ Der Agent fragt „was gilt für mich?" und bekommt `{"status":"running",...}`.
 seine gesammelten Zahlen vergisst, verliert sie nicht. Das ist bewusst
 nachsichtig: Ein Modell, das im dritten Durchlauf ein Feld weglässt, soll die
 Demo nicht kippen.
+
+**Der Bus ist die Wahrheit, nicht die Zustandsdatei.** Welche Zahl als nächste
+dran ist, steht in `_bus/numbers.log` — `state_read` liest den Zählerstand von
+dort, und `bus_publish` lehnt eine Zahl ab, die schon dasteht. Vorher führten
+beide Dateien ihren eigenen Stand: Wurde ein Durchlauf abgebrochen, bevor er
+`state_write` aufrufen konnte, zählte der nächste von einem veralteten Stand
+weiter — und die Sammler schrieben die doppelte Zahl brav mit. Zwei Stände
+desselben Sachverhalts laufen irgendwann auseinander; einer davon muss die
+Wahrheit sein.
 
 ## Wer welches Werkzeug bekommt
 

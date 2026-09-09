@@ -85,6 +85,15 @@ check("limit begrenzt und meldet den Rest", JSON.parse(r.text).remaining === 1);
 r = await call("bus_publish", { value: 1.5 });
 check("Kommazahl wird abgelehnt", r.isError);
 
+// Der Zählerstand steht im Bus. Alles andere ließe zu, dass ein Durchlauf von
+// einem veralteten Stand weiterzählt und eine Zahl doppelt veröffentlicht.
+r = await call("bus_publish", { value: 3 });
+check("bereits veröffentlichte Zahl wird abgelehnt", r.isError && r.text.includes("4"));
+r = await call("state_read", { agent: "counter" });
+check("Zählerstand kommt aus dem Bus", JSON.parse(r.text).last_value === 3);
+r = await call("state_write", { agent: "counter", last_value: 99, status: "running" });
+check("state_write kann den Zählerstand nicht verfälschen", JSON.parse(r.text).last_value === 3);
+
 await call("state_write", { agent: "odd", last_seq: 3, numbers: [1, 3] });
 r = await call("state_write", { agent: "odd", last_seq: 4 });
 const odd = JSON.parse(r.text);
@@ -103,6 +112,7 @@ check("Befehl an odd lässt even unberührt", JSON.parse((await call("control_re
 await pause();
 await call("control_send", { target: "all", command: "reset" });
 check("Reset wird angefordert", JSON.parse((await call("control_read", { agent: "odd" })).text).reset_requested === true);
+check("nach einem Reset zählt der Counter von vorn", JSON.parse((await call("state_read", { agent: "counter" })).text).last_value === 0);
 await pause();
 await call("state_write", { agent: "odd", last_seq: 0, numbers: [] });
 check("nach state_write ist der Reset erledigt", JSON.parse((await call("control_read", { agent: "odd" })).text).reset_requested === false);
@@ -115,8 +125,9 @@ check("state_read 'all' liefert alle vier", Object.keys(JSON.parse(r.text)).join
 fs.appendFileSync(path.join(PROJECT, "_bus/numbers.log"), '{"type":"number","seq":4,"val\n');
 r = await call("bus_read", { since: 0 });
 check("halb geschriebene Zeile wird übersprungen", JSON.parse(r.text).latest_seq === 3);
-r = await call("bus_publish", { value: 4 });
+r = await call("bus_publish", { value: 1 });
 check("Veröffentlichen läuft danach weiter", JSON.parse(r.text).published.seq === 4);
+check("nach dem Reset ist die 1 wieder frei", !r.isError);
 
 clean();
 
