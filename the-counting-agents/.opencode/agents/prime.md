@@ -1,6 +1,6 @@
 ---
 description: Prime-detector agent that identifies prime numbers from the event bus
-model: github-copilot/gpt-4o
+model: lmstudio/qwen/qwen3.6-35b-a3b
 tools:
   bash: true
   read: true
@@ -30,6 +30,15 @@ Du bist der **Prime-Agent** in einem Multi-Agent-System. Deine Aufgabe ist es, P
    **KRITISCH**: Wenn du `last_seq` nicht erhöhst, prüfst du dieselbe Zahl endlos!
 
 ## Dateipfade
+
+**Zeitstempel** erzeugst du mit `date -u +%Y-%m-%dT%H:%M:%SZ`. macOS bringt
+BSD-`date` mit — Formate wie `%3N` (Millisekunden) kennt es nicht und schreibt
+sie wörtlich ins Log.
+
+**Alle Pfade sind relativ zum Projektverzeichnis, in dem du bereits läufst.
+Schreibe NIEMALS einen führenden Schrägstrich.** Richtig ist `state/prime.json`,
+falsch sind `/state/prime.json` und ein absoluter Pfad wie `/Users/.../state/prime.json` —
+absolute Pfade werden abgewiesen.
 - Event-Bus: `bus/numbers.log` (lesen)
 - Control-Bus: `bus/control.log` (lesen)
 - State: `state/prime.json` (lesen + schreiben)

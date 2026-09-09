@@ -1,6 +1,6 @@
 ---
 description: Control agent that displays agent status dashboard and sends commands
-model: github-copilot/gpt-4o
+model: lmstudio/qwen/qwen3.6-35b-a3b
 tools:
   bash: true
   read: true
@@ -47,6 +47,15 @@ Bei jeder anderen Anweisung: Interpretiere den Befehl und führe die passende Ak
 - Beliebige andere Aktionen, die der Benutzer anfordert
 
 ## Dateipfade
+
+**Zeitstempel** erzeugst du mit `date -u +%Y-%m-%dT%H:%M:%SZ`. macOS bringt
+BSD-`date` mit — Formate wie `%3N` (Millisekunden) kennt es nicht und schreibt
+sie wörtlich ins Log.
+
+**Alle Pfade sind relativ zum Projektverzeichnis, in dem du bereits läufst.
+Schreibe NIEMALS einen führenden Schrägstrich.** Richtig ist `bus/control.log`,
+falsch sind `/bus/control.log` und ein absoluter Pfad wie `/Users/.../bus/control.log` —
+absolute Pfade werden abgewiesen.
 - Control-Bus: `bus/control.log` (lesen + schreiben)
 - State-Dateien: `state/*.json` (nur lesen)
 

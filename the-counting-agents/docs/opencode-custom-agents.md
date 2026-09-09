@@ -16,7 +16,7 @@ The key advantage: you don't need to write **any application code**. Agents are 
 
 ### Built-in LLM integration
 
-Opencode supports various LLM providers (Anthropic, OpenAI, GitHub Copilot, and others) and fully abstracts the integration. Switching models is a single line in the configuration.
+Opencode supports various LLM providers (Anthropic, OpenAI, GitHub Copilot, and others) as well as local servers such as LM Studio or Ollama, and fully abstracts the integration. Switching models is a single line in the configuration — this project runs on a local model served by LM Studio.
 
 ### Built-in tool access
 
@@ -49,7 +49,7 @@ Here is how the Counter agent is defined in `.opencode/agents/counter.md`:
 ```markdown
 ---
 description: Counter agent that generates sequential numbers into the event bus
-model: github-copilot/gpt-4o
+model: lmstudio/qwen/qwen3.6-35b-a3b
 tools:
   bash: true
   read: true
@@ -80,7 +80,7 @@ Alternatively, agents can be defined directly in `opencode.json`:
   "agent": {
     "counter": {
       "description": "Counter agent that generates sequential numbers",
-      "model": "github-copilot/gpt-4o",
+      "model": "lmstudio/qwen/qwen3.6-35b-a3b",
       "prompt": "You are the Counter agent ...",
       "tools": {
         "bash": true,
