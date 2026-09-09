@@ -1,0 +1,16 @@
+# Runtime
+projekte/
+.env
+
+# OS
+.DS_Store
+thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+
+
+# node packages
+node_modules
+presentation/*.pdf

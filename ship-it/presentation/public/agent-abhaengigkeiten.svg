@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" width="100%" height="100%">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#80BA24" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" fill="transparent" />
+
+  <line x1="240" y1="67.5" x2="288" y2="67.5" stroke="#80BA24" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <line x1="480" y1="67.5" x2="538" y2="67.5" stroke="#80BA24" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <line x1="240" y1="207.5" x2="350" y2="275" stroke="#80BA24" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <line x1="420" y1="95" x2="455" y2="258" stroke="#80BA24" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <path d="M 60 67.5 L 30 67.5 Q 20 67.5 20 77.5 L 20 305 Q 20 315 30 315 L 348 315" fill="none" stroke="#80BA24" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+
+
+  <!-- Zielgruppe (fa-users-viewfinder, viewBox 0 0 640 512) — Startpunkt -->
+  <rect x="60" y="40" width="180" height="55" rx="10" fill="#2E4235" stroke="#80BA24" stroke-width="2.5"/>
+  <g transform="translate(80, 55.5) scale(0.047)" fill="#80BA24">
+    <path d="M48 48l88 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L32 0C14.3 0 0 14.3 0 32L0 136c0 13.3 10.7 24 24 24s24-10.7 24-24l0-88zM175.8 224a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm-26.5 32C119.9 256 96 279.9 96 309.3c0 14.7 11.9 26.7 26.7 26.7l56.1 0c8-34.1 32.8-61.7 65.2-73.6c-7.5-4.1-16.2-6.4-25.3-6.4l-69.3 0zm368 80c14.7 0 26.7-11.9 26.7-26.7c0-29.5-23.9-53.3-53.3-53.3l-69.3 0c-9.2 0-17.8 2.3-25.3 6.4c32.4 11.9 57.2 39.5 65.2 73.6l56.1 0zm-89.4 0c-8.6-24.3-29.9-42.6-55.9-47c-3.9-.7-7.9-1-12-1l-80 0c-4.1 0-8.1 .3-12 1c-26 4.4-47.3 22.7-55.9 47c-2.7 7.5-4.1 15.6-4.1 24c0 13.3 10.7 24 24 24l176 0c13.3 0 24-10.7 24-24c0-8.4-1.4-16.5-4.1-24zM464 224a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm-80-32a64 64 0 1 0 -128 0 64 64 0 1 0 128 0zM504 48l88 0 0 88c0 13.3 10.7 24 24 24s24-10.7 24-24l0-104c0-17.7-14.3-32-32-32L504 0c-13.3 0-24 10.7-24 24s10.7 24 24 24zM48 464l0-88c0-13.3-10.7-24-24-24s-24 10.7-24 24L0 480c0 17.7 14.3 32 32 32l104 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-88 0zm456 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l104 0c17.7 0 32-14.3 32-32l0-104c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 88-88 0z"/>
+  </g>
+  <text x="135" y="73" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#E8ECF0">Zielgruppe</text>
+
+  <!-- Marketing (fa-bullhorn, viewBox 0 0 512 512) -->
+  <rect x="300" y="40" width="180" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="2.5"/>
+  <g transform="translate(328, 55.5) scale(0.047)" fill="#80BA24">
+    <path d="M480 32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9L381.7 53c-48 48-113.1 75-181 75l-8.7 0-32 0-96 0c-35.3 0-64 28.7-64 64l0 96c0 35.3 28.7 64 64 64l0 128c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-128 8.7 0c67.9 0 133 27 181 75l43.6 43.6c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6l0-147.6c18.6-8.8 32-32.5 32-60.4s-13.4-51.6-32-60.4L480 32zm-64 76.7L416 240l0 131.3C357.2 317.8 280.5 288 200.7 288l-8.7 0 0-96 8.7 0c79.8 0 156.5-29.8 215.3-83.3z"/>
+  </g>
+  <text x="375" y="73" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#E8ECF0">Marketing</text>
+
+  <!-- Social Media (fa-hashtag, viewBox 0 0 448 512) -->
+  <rect x="550" y="40" width="180" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="2.5"/>
+  <g transform="translate(575, 55.5) scale(0.047)" fill="#80BA24">
+    <path d="M181.3 32.4c17.4 2.9 29.2 19.4 26.3 36.8L197.8 128l95.1 0 11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3s29.2 19.4 26.3 36.8L357.8 128l58.2 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-68.9 0L325.8 320l58.2 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-68.9 0-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8l9.8-58.7-95.1 0-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8L90.2 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l68.9 0 21.3-128L64 192c-17.7 0-32-14.3-32-32s14.3-32 32-32l68.9 0 11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3zM187.1 192L165.8 320l95.1 0 21.3-128-95.1 0z"/>
+  </g>
+  <text x="613" y="73" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#E8ECF0">Social Media</text>
+
+  <!-- Kalkulation (fa-calculator, viewBox 0 0 384 512) — Startpunkt -->
+  <rect x="60" y="180" width="180" height="55" rx="10" fill="#2E4235" stroke="#80BA24" stroke-width="2.5"/>
+  <g transform="translate(91, 195.5) scale(0.047)" fill="#80BA24">
+    <path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-384c0-35.3-28.7-64-64-64L64 0zM96 64l192 0c17.7 0 32 14.3 32 32l0 32c0 17.7-14.3 32-32 32L96 160c-17.7 0-32-14.3-32-32l0-32c0-17.7 14.3-32 32-32zm32 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM96 352a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM64 416c0-17.7 14.3-32 32-32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-96 0c-17.7 0-32-14.3-32-32zM192 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm64-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM288 448a32 32 0 1 1 0-64 32 32 0 1 1 0 64z"/>
+  </g>
+  <text x="135" y="213" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#E8ECF0">Kalkulation</text>
+
+  <!-- Website (fa-code, viewBox 0 0 640 512) -->
+  <rect x="360" y="270" width="180" height="55" rx="10" fill="#2A3840" stroke="#80BA24" stroke-width="3.5"/>
+  <g transform="translate(395, 285.5) scale(0.047)" fill="#80BA24">
+    <path d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z"/>
+  </g>
+  <text x="450" y="303" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#E8ECF0">Website</text>
+
+
+  <text x="150" y="140" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#80BA24">↑  starten sofort  ↓</text>
+  <text x="560" y="302" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#80BA24">braucht alle Ergebnisse</text>
+
+</svg>
