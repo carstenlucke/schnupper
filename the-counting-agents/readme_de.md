@@ -1,6 +1,6 @@
 # The Counting Agents
 
-Eine terminalbasierte Demo eines Multi-Agenten-Systems. Autonome LLM-Agenten kommunizieren über dateibasierte Event-Logs und laufen in einer tmux-Session.
+Eine terminalbasierte Demo eines Multi-Agenten-Systems. Autonome LLM-Agenten kommunizieren über dateibasierte Event-Logs und laufen nebeneinander in einem [Herdr](https://herdr.dev)-Tab — jeder Agent in einem eigenen, benannten Pane.
 
 ## Konzept
 
@@ -17,22 +17,24 @@ Die Agenten kommunizieren ausschließlich über Append-only-JSONL-Dateien im Ver
 ## Architektur
 
 ```
-+--------------------+----------+
-|     counter        | control  |
-|      (2/3)         |  (1/3)   |
-+----------+---------+----------+
-|   odd    |  even   |  prime   |
-|  (1/3)   |  (1/3)  |  (1/3)  |
-+----------+---------+----------+
++-------------------------------------------+---------------------+
+|             counter · Zähler              | control · Steuerung |
+|                   (2/3)                   |        (1/3)        |
++---------------------+---------------------+---------------------+
+|   odd · Ungerade    |    even · Gerade    | prime · Primzahlen  |
+|        (1/3)        |        (1/3)        |        (1/3)        |
++---------------------+---------------------+---------------------+
 ```
 
 Jeder Agent läuft über `opencode run --agent <name>` in einer Shell-Schleife. Die Agentenrollen sind als Custom Agents in `.opencode/agents/` definiert.
 
+`start.sh` baut dieses Layout im aktuellen Herdr-Workspace als Tab **Counting Agents** auf und benennt jedes Pane nach dem Agenten, der darin läuft.
+
 ## Voraussetzungen
 
-- [tmux](https://github.com/tmux/tmux)
+- [Herdr](https://herdr.dev) — die Demo wird aus einem Herdr-Pane heraus gestartet
 - [opencode](https://github.com/opencode-ai/opencode) CLI
-- GitHub-Copilot-Zugang (authentifiziert über `gh auth login`)
+- [LM Studio](https://lmstudio.ai) mit der CLI `lms` im `PATH` — die Agenten laufen gegen ein lokales Modell, ein Cloud-Zugang ist nicht nötig
 
 ## Schnellstart
 
@@ -40,19 +42,24 @@ Jeder Agent läuft über `opencode run --agent <name>` in einer Shell-Schleife. 
 # 1. Repository klonen
 git clone <repo-url> && cd the-counting-agents
 
-# 2. Starten
-./scripts/start.sh
+# 2. Herdr starten und ein Pane in diesem Verzeichnis öffnen
+herdr
 
-# 3. An die tmux-Session anhängen
-tmux attach -t agents
+# 3. Demo starten — öffnet den Tab "Counting Agents" und holt ihn nach vorn
+./scripts/start.sh
 ```
+
+`start.sh` ruft zuerst `scripts/start-lmstudio.sh` auf: Das Skript startet den
+LM-Studio-Server, lädt das Modell beim ersten Mal herunter und hält es im
+Speicher. Vor einer Vorlesung einmal separat aufrufen — dann wartet der erste
+Agentendurchlauf nicht auf ein kaltes Modell.
 
 ## Steuerung
 
 Das Control-Pane (oben rechts) zeigt ein interaktives Menü, das mit den Pfeiltasten navigiert wird. Von dort aus kann man auf das Status-Dashboard zugreifen, pausieren/fortsetzen, stoppen/zurücksetzen und eigene Anweisungen senden.
 
 ```bash
-# Session von außen stoppen
+# Aus einem anderen Pane stoppen (schließt auch den Demo-Tab)
 ./scripts/stop.sh
 
 # Zustand und Logs löschen
@@ -84,11 +91,13 @@ the-counting-agents/
 │   └── control.log     # Steuer-Events
 ├── state/              # Agentenzustand (JSON)
 ├── scripts/            # Shell-Skripte (Details: docs/scripts_de.md)
-│   ├── start.sh        # tmux-Session starten
-│   ├── stop.sh         # Session stoppen
-│   ├── reset.sh        # Zustand zurücksetzen
-│   ├── run-agent.sh    # Agenten-Schleifenwrapper
-│   └── run-control.sh  # Interaktives Steuermenü
+│   ├── start.sh          # Herdr-Tab öffnen und alle Agenten starten
+│   ├── start-lmstudio.sh # LM-Studio-Server starten und Modell laden
+│   ├── stop.sh           # Agenten stoppen und Tab schließen
+│   ├── herdr-lib.sh      # Gemeinsame Helfer für die Herdr-CLI
+│   ├── reset.sh          # Zustand zurücksetzen
+│   ├── run-agent.sh      # Agenten-Schleifenwrapper
+│   └── run-control.sh    # Interaktives Steuermenü
 └── spec/               # Spezifikationen
 ```
 
@@ -106,13 +115,47 @@ the-counting-agents/
 
 ## Konfiguration
 
-Das Modell kann in `opencode.json` geändert werden:
+Die Agenten laufen gegen [Qwen3.6 35B-A3B](https://lmstudio.ai/models/qwen/qwen3.6-35b-a3b),
+das LM Studio lokal über seine OpenAI-kompatible API bereitstellt. Es ist ein
+Mixture-of-Experts-Modell: 35 Mrd. Parameter insgesamt, davon nur 3 Mrd. je Token
+aktiv — schnell genug und zugleich stark genug für die mehrstufigen Werkzeugketten,
+die diese Agenten brauchen. Provider und
+Modell stehen in `opencode.json`:
 
 ```json
 {
-  "model": "github-copilot/gpt-4o"
+  "model": "lmstudio/qwen/qwen3.6-35b-a3b",
+  "provider": {
+    "lmstudio": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": { "baseURL": "http://127.0.0.1:1234/v1" },
+      "models": { "qwen/qwen3.6-35b-a3b": { "name": "Qwen3.6 35B-A3B (lokal)" } }
+    }
+  }
 }
 ```
+
+Jeder Agent wiederholt dasselbe Modell in seinem Frontmatter
+(`.opencode/agents/*.md`) und lässt sich damit einzeln umstellen.
+
+`scripts/start-lmstudio.sh` liest vier Umgebungsvariablen — der schnellste Weg,
+ein anderes lokales Modell auszuprobieren:
+
+| Variable | Standard | Bedeutung |
+|---|---|---|
+| `COUNTING_AGENTS_MODEL` | `qwen/qwen3.6-35b-a3b` | Modellschlüssel in LM Studio |
+| `COUNTING_AGENTS_PARALLEL` | `5` | Gleichzeitige Vorhersagen — eine je Agent |
+| `COUNTING_AGENTS_CONTEXT_PER_AGENT` | `16384` | Kontext, den ein Durchlauf nutzen darf |
+| `COUNTING_AGENTS_CONTEXT` | *pro Agent × parallel* (`81920`) | Gesamtkontext des Modells |
+
+`--context-length` bemisst das **gesamte** Modell; LM Studio teilt diesen
+Kontext auf die parallelen Slots auf. Ein Durchlauf braucht gemessen gut 10.000
+Tokens — bei 16k und fünf Agenten blieben je rund 3k, und jeder Durchlauf
+bräche mit „Context size has been exceeded“ ab. Deshalb wird der Gesamtwert
+hochgerechnet statt fest gesetzt.
+
+Wer das Modell hier wechselt, ändert es auch in `opencode.json` und im
+Frontmatter der Agenten.
 
 ## Varianten
 
