@@ -47,7 +47,7 @@ This demo uses the project-local one:
 ```
 .pi/extensions/
 ├── counting-tools.ts       the six tools
-└── tensorx-schnupper.ts    the model access for the lecture
+└── tensorx-schnupper.ts    a model access of its own (optional)
 ```
 
 TypeScript is loaded directly — no build step, no `node_modules` in the

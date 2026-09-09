@@ -1,5 +1,9 @@
 // tensorx-schnupper.ts — Eigener Modell-Zugang für die Schnuppervorlesung
 //
+// Nicht der Standardweg: Die Agenten laufen voreingestellt über ein Abo-Modell
+// (siehe COUNTING_AGENTS_MODEL in der .env). Dieser Provider ist die
+// Ausweichmöglichkeit, wenn dort ein Rate-Limit zuschlägt — und umgekehrt.
+//
 // pi kennt TensorX bereits global (~/.pi/agent/models.json). Diese Demo meldet
 // denselben Endpunkt noch einmal unter eigenem Namen an — mit einem eigenen
 // API-Schlüssel aus der projektlokalen `.env`. Zwei Gründe:

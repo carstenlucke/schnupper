@@ -1,6 +1,6 @@
 ---
 description: Prüft Zahlen aus dem Event-Bus auf Primzahl-Eigenschaft
-model: tensorx-schnupper/qwen/qwen3.8-flash-next
+model: openai-codex/gpt-5.6-luna
 tools: bus_read,control_read,state_read,state_write
 thinking: low
 interval: 5

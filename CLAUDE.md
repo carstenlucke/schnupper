@@ -74,8 +74,11 @@ Modell). Eigene Werkzeuge liegen dort als TypeScript unter `.pi/extensions/`.
   zusammen ändern.
 - **Secrets** liegen in projektlokalen `.env`-Dateien, nie im Repo.
   `ship-it/.env.example` und `the-counting-agents-pi/.env.example` sind die
-  Vorlagen. Der TensorX-Schlüssel in `the-counting-agents-pi` ist bewusst ein
-  eigener, vom global in pi hinterlegten Zugang getrennter Schlüssel.
+  Vorlagen. In `the-counting-agents-pi` steht dort auch
+  `COUNTING_AGENTS_MODEL` — es übersteuert das Modell aller Agenten auf einmal
+  und ist der Weg, im Hörsaal den Anbieter zu wechseln. Der optionale
+  TensorX-Schlüssel ist bewusst ein eigener, vom global in pi hinterlegten
+  Zugang getrennter Schlüssel.
 - **Runtime-Artefakte** sind gitignored und werden nicht versioniert:
   `ship-it/projekte/`, die Logs und Zustandsdateien in
   `the-counting-agents/bus/` und `state/` sowie in

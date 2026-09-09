@@ -50,7 +50,7 @@ Diese Demo nutzt den projektlokalen Ort:
 ```
 .pi/extensions/
 ├── counting-tools.ts       die sechs Werkzeuge
-└── tensorx-schnupper.ts    der Modell-Zugang für die Vorlesung
+└── tensorx-schnupper.ts    ein eigener Modell-Zugang (optional)
 ```
 
 TypeScript wird direkt geladen, ohne Übersetzungsschritt und ohne

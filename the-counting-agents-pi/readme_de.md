@@ -78,21 +78,37 @@ die Verzeichnisse, die man tatsächlich bearbeitet.
 
 - [Herdr](https://herdr.dev) — die Demo läuft in einem Herdr-Tab
 - [pi](https://pi.dev) — die Agenten-Laufzeit (`pi --version`)
-- Ein TensorX-Schlüssel für das Modell `qwen/qwen3.8-flash-next`
+- Ein Modell, das pi erreichen kann. Voreingestellt ist
+  `openai-codex/gpt-5.6-luna` (ChatGPT-Abo, in pi einmalig per `/login`
+  eingerichtet). Was sonst zur Verfügung steht, zeigt `pi --list-models`.
 
 ## Einrichten
 
 ```bash
 cp .env.example .env
-# SCHNUPPER_TENSORX_API_KEY eintragen
 ```
 
-Der Schlüssel gilt nur für dieses Projekt. Ein global in pi hinterlegter
-TensorX-Zugang bleibt unberührt: Die Demo meldet denselben Endpunkt unter
-eigenem Namen an (`tensorx-schnupper`, siehe
+In der `.env` steht eine Zeile, auf die es ankommt:
+
+```
+COUNTING_AGENTS_MODEL=openai-codex/gpt-5.6-luna
+```
+
+Sie schlägt den `model:`-Eintrag in den Agentendateien und gilt für alle fünf
+zugleich. Bremst ein Anbieter mitten in der Vorlesung oder schlägt ein
+Rate-Limit zu, ändert man diese eine Zeile und startet die Demo neu.
+
+Nicht jedes Modell aus `pi --list-models` ist auch freigegeben — `gpt-5.4-mini`
+etwa weist Codex mit einem ChatGPT-Konto ab. Vor der Vorlesung also einmal
+starten und zusehen, ob Zahlen erscheinen.
+
+**Alternative TensorX:** Steht in `COUNTING_AGENTS_MODEL` ein
+`tensorx-schnupper/...`-Modell, braucht es zusätzlich
+`SCHNUPPER_TENSORX_API_KEY` in der `.env`. Dieser Schlüssel gilt nur für dieses
+Projekt; ein global in pi hinterlegter TensorX-Zugang bleibt unberührt, denn
+die Demo meldet denselben Endpunkt unter eigenem Namen an (siehe
 [`.pi/extensions/tensorx-schnupper.ts`](.pi/extensions/tensorx-schnupper.ts)).
-So sind Vorlesungs- und Alltagskosten getrennt, und der Schlüssel lässt sich
-nach dem Semester einzeln zurückziehen.
+So bleiben Vorlesungs- und Alltagskosten getrennt.
 
 Vor der Vorlesung einmal prüfen, ob die Werkzeuge tun, was sie sollen — ohne
 Modell, ohne Netz, ohne Kosten:
@@ -129,7 +145,7 @@ Eine Textdatei. Mehr nicht.
 ```markdown
 ---
 description: Erzeugt fortlaufende Zahlen und stellt sie in den Event-Bus
-model: tensorx-schnupper/qwen/qwen3.8-flash-next
+model: openai-codex/gpt-5.6-luna
 tools: bus_publish,control_read,state_read,state_write
 thinking: off
 interval: 3
@@ -142,9 +158,12 @@ Du bist der **Counter**. Du erzeugst fortlaufende Zahlen — sonst nichts.
 ```
 
 Der Kopf sagt, welches Modell rechnet, welche Werkzeuge erlaubt sind, wie oft
-der Agent aufgerufen wird und ob er nachdenken darf. Darunter steht in
-normalem Deutsch, was er tun soll. `scripts/run-agent.sh` liest die Datei und
-baut daraus den pi-Aufruf.
+der Agent aufgerufen wird und ob er nachdenken darf. Darunter steht in normalem
+Deutsch, was er tun soll. `scripts/run-agent.sh` liest die Datei und baut
+daraus den pi-Aufruf.
+
+Steht in der `.env` ein `COUNTING_AGENTS_MODEL`, gilt es für alle fünf Agenten
+und schlägt ihren Frontmatter-Eintrag.
 
 Der `prime`-Agent ist der einzige mit `thinking: low` — man soll sehen, wie er
 bei der Primzahlprüfung überlegt, während die anderen einfach durchlaufen.

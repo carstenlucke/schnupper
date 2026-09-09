@@ -1,6 +1,6 @@
 ---
 description: Zeigt den Zustand aller Agenten und schickt Steuerbefehle
-model: tensorx-schnupper/qwen/qwen3.8-flash-next
+model: openai-codex/gpt-5.6-luna
 tools: state_read,bus_read,control_send
 thinking: off
 ---

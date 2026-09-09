@@ -1,6 +1,6 @@
 ---
 description: Sammelt die ungeraden Zahlen aus dem Event-Bus
-model: tensorx-schnupper/qwen/qwen3.8-flash-next
+model: openai-codex/gpt-5.6-luna
 tools: bus_read,control_read,state_read,state_write
 thinking: off
 interval: 3

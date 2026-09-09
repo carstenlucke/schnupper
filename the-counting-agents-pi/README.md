@@ -77,21 +77,37 @@ directories you actually edit.
 
 - [Herdr](https://herdr.dev) — the demo runs in a Herdr tab
 - [pi](https://pi.dev) — the agent runtime (`pi --version`)
-- A TensorX key for the model `qwen/qwen3.8-flash-next`
+- A model pi can reach. The default is `openai-codex/gpt-5.6-luna` (ChatGPT
+  subscription, set up once in pi via `/login`). `pi --list-models` shows what
+  else is available.
 
 ## Setup
 
 ```bash
 cp .env.example .env
-# fill in SCHNUPPER_TENSORX_API_KEY
 ```
 
-The key belongs to this project alone. A TensorX account configured globally in
-pi stays untouched: the demo registers the same endpoint under its own name
-(`tensorx-schnupper`, see
+One line in the `.env` matters:
+
+```
+COUNTING_AGENTS_MODEL=openai-codex/gpt-5.6-luna
+```
+
+It overrides the `model:` entry in the agent files and applies to all five at
+once. When a provider slows down mid-lecture or a rate limit hits, change this
+one line and restart the demo.
+
+Not every model in `pi --list-models` is actually cleared for use —
+`gpt-5.4-mini`, for one, is refused by Codex on a ChatGPT account. So start the
+demo once before the lecture and watch for numbers appearing.
+
+**TensorX as an alternative:** if `COUNTING_AGENTS_MODEL` names a
+`tensorx-schnupper/...` model, the `.env` also needs
+`SCHNUPPER_TENSORX_API_KEY`. That key belongs to this project alone; a TensorX
+account configured globally in pi stays untouched, because the demo registers
+the same endpoint under its own name (see
 [`.pi/extensions/tensorx-schnupper.ts`](.pi/extensions/tensorx-schnupper.ts)).
-Lecture spending stays separate from everyday work, and the key can be revoked
-on its own after the term.
+Lecture spending stays separate from everyday work.
 
 Before the lecture, check that the tools do what they should — no model, no
 network, no cost:
@@ -127,7 +143,7 @@ A text file. That's all.
 ```markdown
 ---
 description: Erzeugt fortlaufende Zahlen und stellt sie in den Event-Bus
-model: tensorx-schnupper/qwen/qwen3.8-flash-next
+model: openai-codex/gpt-5.6-luna
 tools: bus_publish,control_read,state_read,state_write
 thinking: off
 interval: 3
@@ -142,6 +158,9 @@ Du bist der **Counter**. Du erzeugst fortlaufende Zahlen — sonst nichts.
 The header says which model does the thinking, which tools are allowed, how
 often the agent runs and whether it may reason. Below it, in plain German, what
 it should do. `scripts/run-agent.sh` reads the file and assembles the pi call.
+
+When the `.env` sets `COUNTING_AGENTS_MODEL`, it applies to all five agents and
+overrides their frontmatter entry.
 
 The `prime` agent is the only one with `thinking: low` — you should see it work
 through a primality test while the others simply run.

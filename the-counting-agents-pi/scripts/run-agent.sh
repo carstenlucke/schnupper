@@ -37,7 +37,7 @@ current_command() {
 }
 
 echo "=== Agent '$AGENT_NAME' gestartet ==="
-echo "Modell:   $(agent_meta "$AGENT_FILE" model)"
+echo "Modell:   $(agent_model "$AGENT_FILE")"
 echo "Werkzeug: $(agent_meta "$AGENT_FILE" tools)"
 echo "Takt:     ${INTERVAL}s (Abbruch nach ${TIMEOUT}s)"
 echo ""
