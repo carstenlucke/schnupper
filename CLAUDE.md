@@ -9,7 +9,7 @@ Thema KI und KI-Agenten.
 | Verzeichnis | Was es ist | Start |
 |---|---|---|
 | `ship-it/` | Web-Dashboard, 5 KI-Agenten führen einen Produktlaunch durch. Python-stdlib-Server + SPA. | `./start.sh` |
-| `the-counting-agents/` | Terminal-Demo, 5 Agenten kommunizieren über dateibasierte Event-Logs in einer tmux-Session. | `./scripts/start.sh` |
+| `the-counting-agents/` | Terminal-Demo, 5 Agenten kommunizieren über dateibasierte Event-Logs, je ein benanntes Pane in einem Herdr-Tab. | `./scripts/start.sh` (aus einem Herdr-Pane heraus) |
 
 **`ship-it/` hat eine eigene, ausführliche `CLAUDE.md`** — sie ist für alles
 maßgeblich, was dieses Projekt betrifft. Diese Datei hier regelt nur, was
@@ -35,7 +35,8 @@ Zielgruppe ist ein Publikum ohne Programmiererfahrung. Das prägt den Code:
   ausgaben, Zwischenschritte, Wartezeiten), bleibt sichtbar. Nichts wegkapseln,
   was gerade die Demo ausmacht.
 - **Minimale Abhängigkeiten.** `ship-it` läuft ohne externe Python-Pakete und
-  ohne Build-Pipeline, `the-counting-agents` mit tmux und Shell. Neue
+  ohne Build-Pipeline, `the-counting-agents` mit Herdr, Shell und einem lokal
+  über LM Studio bereitgestellten Modell. Neue
   Dependencies brauchen einen guten Grund — sie sind Setup-Aufwand im Hörsaal.
 - **Absichtliche Einfachheit ist kein Defekt.** Vor dem „Aufräumen“ prüfen, ob
   eine Entscheidung didaktisch gemeint ist; `the-counting-agents/docs/experiment_de.md`

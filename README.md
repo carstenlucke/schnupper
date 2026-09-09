@@ -21,8 +21,9 @@ cd ship-it && ./start.sh
 
 Terminalbasierte Demo eines Multi-Agenten-Systems. Fünf autonome Agenten
 (Counter, Odd, Even, Prime, Control) kommunizieren ausschließlich über
-dateibasierte Append-only-Event-Logs und laufen nebeneinander in einer
-tmux-Session — das Zusammenspiel wird dadurch direkt sichtbar.
+dateibasierte Append-only-Event-Logs und laufen nebeneinander in einem
+Herdr-Tab, jeder in einem eigenen benannten Pane — das Zusammenspiel wird
+dadurch direkt sichtbar.
 
 ```bash
 cd the-counting-agents && ./scripts/start.sh
