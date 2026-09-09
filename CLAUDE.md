@@ -77,8 +77,10 @@ Modell). Eigene Werkzeuge liegen dort als TypeScript unter `.pi/extensions/`.
   Vorlagen. Der TensorX-Schlüssel in `the-counting-agents-pi` ist bewusst ein
   eigener, vom global in pi hinterlegten Zugang getrennter Schlüssel.
 - **Runtime-Artefakte** sind gitignored und werden nicht versioniert:
-  `ship-it/projekte/` sowie die Logs und Zustandsdateien in `bus/` und
-  `state/` beider Counting-Agents-Projekte.
+  `ship-it/projekte/`, die Logs und Zustandsdateien in
+  `the-counting-agents/bus/` und `state/` sowie in
+  `the-counting-agents-pi/_bus/` und `_state/` — dort mit Unterstrich, damit
+  sie sich von den bearbeiteten Verzeichnissen abheben.
 
 ## Git
 

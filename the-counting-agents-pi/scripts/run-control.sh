@@ -2,7 +2,7 @@
 # run-control.sh — Steuerungsmenü für die Multi-Agenten-Demo
 #
 # Die einfachen Befehle (pause, resume, stop, reset, verbose, quiet) schreibt
-# dieses Menü direkt in bus/control.log — dafür braucht es kein Modell. Für
+# dieses Menü direkt in _bus/control.log — dafür braucht es kein Modell. Für
 # die Zustandsübersicht und für freie Anweisungen wird der Control-Agent
 # gerufen (agents/control.md).
 
@@ -21,7 +21,7 @@ write_control_event() {
     local target="$1" command="$2" ts
     ts="$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")"
     echo "{\"type\":\"control\",\"target\":\"$target\",\"command\":\"$command\",\"timestamp\":\"$ts\"}" \
-        >> "$PROJECT_DIR/bus/control.log"
+        >> "$PROJECT_DIR/_bus/control.log"
 }
 
 # --- Ein Auswahlmenü zeichnen ---

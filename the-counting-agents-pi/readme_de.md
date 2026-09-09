@@ -30,7 +30,7 @@ bus_publish {"value": 42}
 Statt:
 
 ```
-bash echo '{"type":"number","seq":42,"value":42,"timestamp":"..."}' >> bus/numbers.log
+bash echo '{"type":"number","seq":42,"value":42,"timestamp":"..."}' >> _bus/numbers.log
 ```
 
 Für ein Publikum ohne Programmiererfahrung ist das der ganze Unterschied. Und
@@ -65,10 +65,14 @@ zusehen, was passiert.
 
 Kommuniziert wird über zwei Dateien, an die nur angehängt wird:
 
-- `bus/numbers.log` — die Zahlen, die der Counter veröffentlicht
-- `bus/control.log` — Steuerbefehle (pause, resume, stop, reset, verbose, quiet)
+- `_bus/numbers.log` — die Zahlen, die der Counter veröffentlicht
+- `_bus/control.log` — Steuerbefehle (pause, resume, stop, reset, verbose, quiet)
 
-Was jeder Agent sich gemerkt hat, steht in `state/<agent>.json`.
+Was jeder Agent sich gemerkt hat, steht in `_state/<agent>.json`.
+
+Beide Verzeichnisse beginnen mit einem Unterstrich: Sie entstehen erst zur
+Laufzeit, gehören nicht ins Repository und sortieren sich so von selbst über
+die Verzeichnisse, die man tatsächlich bearbeitet.
 
 ## Voraussetzungen
 

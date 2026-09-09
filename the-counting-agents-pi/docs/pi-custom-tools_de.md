@@ -16,7 +16,7 @@ pi bringt allgemeine Werkzeuge mit: `bash`, `read`, `write`, `edit`, `grep`,
 Counter-Agent eine Zahl veröffentlicht, sieht das Publikum:
 
 ```
-bash echo '{"type":"number","seq":42,"value":42,"timestamp":"2026-09-09T21:15:03.412Z"}' >> bus/numbers.log
+bash echo '{"type":"number","seq":42,"value":42,"timestamp":"2026-09-09T21:15:03.412Z"}' >> _bus/numbers.log
 ```
 
 Mit einem eigenen Werkzeug sieht es so aus:
@@ -76,7 +76,7 @@ export default function (pi: ExtensionAPI) {
     name: "bus_publish",
     label: "Bus · veröffentlichen",
     description:
-      "Stellt eine Zahl als Ereignis in den Event-Bus (bus/numbers.log). " +
+      "Stellt eine Zahl als Ereignis in den Event-Bus (_bus/numbers.log). " +
       "Die fortlaufende Sequenznummer und der Zeitstempel werden automatisch vergeben.",
     parameters: Type.Object({
       value: Type.Number({ description: "Die zu veröffentlichende Zahl" }),
@@ -106,11 +106,11 @@ Vier Dinge sind wichtig:
 
 | Werkzeug | Was es tut |
 |---|---|
-| `bus_publish` | Hängt eine Zahl an `bus/numbers.log` an; vergibt Sequenznummer und Zeitstempel |
+| `bus_publish` | Hängt eine Zahl an `_bus/numbers.log` an; vergibt Sequenznummer und Zeitstempel |
 | `bus_read` | Liefert die Ereignisse mit `seq > since`, dazu `latest_seq` und wie viele noch ausstehen |
 | `control_read` | Sagt einem Agenten, was für ihn gilt: `status`, `verbose`, `reset_requested` |
-| `control_send` | Schreibt einen Steuerbefehl nach `bus/control.log` |
-| `state_read` | Liest `state/<agent>.json`, mit `all` alle vier auf einmal |
+| `control_send` | Schreibt einen Steuerbefehl nach `_bus/control.log` |
+| `state_read` | Liest `_state/<agent>.json`, mit `all` alle vier auf einmal |
 | `state_write` | Schreibt den Zustand fort; setzt `count` und `updated_at` selbst |
 
 Drei Entwurfsentscheidungen lohnen einen Blick:

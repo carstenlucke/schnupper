@@ -15,7 +15,7 @@ They can do everything and demonstrate nothing. When the counter agent
 publishes a number, the audience sees:
 
 ```
-bash echo '{"type":"number","seq":42,"value":42,"timestamp":"2026-09-09T21:15:03.412Z"}' >> bus/numbers.log
+bash echo '{"type":"number","seq":42,"value":42,"timestamp":"2026-09-09T21:15:03.412Z"}' >> _bus/numbers.log
 ```
 
 With a custom tool it looks like this:
@@ -73,7 +73,7 @@ export default function (pi: ExtensionAPI) {
     name: "bus_publish",
     label: "Bus · veröffentlichen",
     description:
-      "Stellt eine Zahl als Ereignis in den Event-Bus (bus/numbers.log). " +
+      "Stellt eine Zahl als Ereignis in den Event-Bus (_bus/numbers.log). " +
       "Die fortlaufende Sequenznummer und der Zeitstempel werden automatisch vergeben.",
     parameters: Type.Object({
       value: Type.Number({ description: "Die zu veröffentlichende Zahl" }),
@@ -105,11 +105,11 @@ reads in this demo is German, including the prompts.
 
 | Tool | What it does |
 |---|---|
-| `bus_publish` | Appends a number to `bus/numbers.log`; assigns sequence number and timestamp |
+| `bus_publish` | Appends a number to `_bus/numbers.log`; assigns sequence number and timestamp |
 | `bus_read` | Returns events with `seq > since`, plus `latest_seq` and how many remain |
 | `control_read` | Tells an agent what currently applies: `status`, `verbose`, `reset_requested` |
-| `control_send` | Writes a control command to `bus/control.log` |
-| `state_read` | Reads `state/<agent>.json`; `all` returns all four at once |
+| `control_send` | Writes a control command to `_bus/control.log` |
+| `state_read` | Reads `_state/<agent>.json`; `all` returns all four at once |
 | `state_write` | Advances the state; sets `count` and `updated_at` itself |
 
 Three design decisions are worth a look:

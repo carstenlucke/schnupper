@@ -38,10 +38,10 @@ fi
 # --- Bus und Zustand leeren ---
 # Die Werkzeuge legen fehlende Dateien selbst an und kommen mit leeren
 # Dateien zurecht — vorbelegen muss hier niemand mehr etwas.
-mkdir -p "$PROJECT_DIR/bus" "$PROJECT_DIR/state"
-: > "$PROJECT_DIR/bus/numbers.log"
-: > "$PROJECT_DIR/bus/control.log"
-rm -f "$PROJECT_DIR"/state/{counter,odd,even,prime}.json
+mkdir -p "$PROJECT_DIR/_bus" "$PROJECT_DIR/_state"
+: > "$PROJECT_DIR/_bus/numbers.log"
+: > "$PROJECT_DIR/_bus/control.log"
+rm -f "$PROJECT_DIR"/_state/{counter,odd,even,prime}.json
 
 # --- Tab und Panes aufbauen ---
 cd "$PROJECT_DIR"

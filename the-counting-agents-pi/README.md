@@ -30,7 +30,7 @@ bus_publish {"value": 42}
 Instead of:
 
 ```
-bash echo '{"type":"number","seq":42,"value":42,"timestamp":"..."}' >> bus/numbers.log
+bash echo '{"type":"number","seq":42,"value":42,"timestamp":"..."}' >> _bus/numbers.log
 ```
 
 For an audience with no programming background, that is the whole difference.
@@ -64,10 +64,14 @@ tool away from an agent and watch what happens.
 
 Communication happens through two append-only files:
 
-- `bus/numbers.log` — the numbers the counter publishes
-- `bus/control.log` — control commands (pause, resume, stop, reset, verbose, quiet)
+- `_bus/numbers.log` — the numbers the counter publishes
+- `_bus/control.log` — control commands (pause, resume, stop, reset, verbose, quiet)
 
-What each agent remembers lives in `state/<agent>.json`.
+What each agent remembers lives in `_state/<agent>.json`.
+
+Both directories start with an underscore: they only come into existence at
+runtime, do not belong in the repository, and sort themselves above the
+directories you actually edit.
 
 ## Requirements
 

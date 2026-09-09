@@ -26,8 +26,8 @@ import { Type } from "typebox";
 // Arbeitsverzeichnis. So schreibt ein aus einem Unterordner gestarteter Agent
 // nicht versehentlich einen zweiten Event-Bus.
 const PROJECT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const NUMBERS_LOG = path.join(PROJECT_DIR, "bus", "numbers.log");
-const CONTROL_LOG = path.join(PROJECT_DIR, "bus", "control.log");
+const NUMBERS_LOG = path.join(PROJECT_DIR, "_bus", "numbers.log");
+const CONTROL_LOG = path.join(PROJECT_DIR, "_bus", "control.log");
 
 const AGENTS = ["counter", "odd", "even", "prime"] as const;
 const COMMANDS = ["pause", "resume", "stop", "reset", "verbose", "quiet"] as const;
@@ -60,7 +60,7 @@ interface AgentState {
 
 // --- Dateizugriff ---------------------------------------------------------
 
-const stateFile = (agent: AgentName) => path.join(PROJECT_DIR, "state", `${agent}.json`);
+const stateFile = (agent: AgentName) => path.join(PROJECT_DIR, "_state", `${agent}.json`);
 
 // Zeitstempel mit Millisekunden. Die Reihenfolge zweier Ereignisse innerhalb
 // derselben Sekunde muss erkennbar bleiben — control_read vergleicht sie.
@@ -128,7 +128,7 @@ export default function (pi: ExtensionAPI) {
     name: "bus_publish",
     label: "Bus · veröffentlichen",
     description:
-      "Stellt eine Zahl als Ereignis in den Event-Bus (bus/numbers.log). " +
+      "Stellt eine Zahl als Ereignis in den Event-Bus (_bus/numbers.log). " +
       "Die fortlaufende Sequenznummer und der Zeitstempel werden automatisch vergeben. " +
       "Gibt das geschriebene Ereignis zurück.",
     parameters: Type.Object({
@@ -157,7 +157,7 @@ export default function (pi: ExtensionAPI) {
     name: "bus_read",
     label: "Bus · lesen",
     description:
-      "Liest neue Ereignisse aus dem Event-Bus (bus/numbers.log): alle mit einer " +
+      "Liest neue Ereignisse aus dem Event-Bus (_bus/numbers.log): alle mit einer " +
       "Sequenznummer größer als `since`. Gibt die Ereignisse, die höchste " +
       "Sequenznummer im Bus und die Zahl der noch nicht gelieferten Ereignisse zurück.",
     parameters: Type.Object({
@@ -190,7 +190,7 @@ export default function (pi: ExtensionAPI) {
     name: "control_read",
     label: "Steuerung · lesen",
     description:
-      "Fragt ab, was für einen Agenten gerade gilt. Wertet bus/control.log aus: " +
+      "Fragt ab, was für einen Agenten gerade gilt. Wertet _bus/control.log aus: " +
       "Befehle an den Agenten selbst und an 'all', spätere überschreiben frühere. " +
       "Gibt status (running/paused/stopped), verbose (an/aus) und reset_requested zurück. " +
       "reset_requested ist true, wenn seit dem letzten state_write ein Reset angefordert wurde.",
@@ -246,7 +246,7 @@ export default function (pi: ExtensionAPI) {
     name: "control_send",
     label: "Steuerung · senden",
     description:
-      "Schickt einen Steuerbefehl an einen Agenten oder an alle (bus/control.log). " +
+      "Schickt einen Steuerbefehl an einen Agenten oder an alle (_bus/control.log). " +
       "Erlaubte Befehle: pause, resume, stop, reset, verbose, quiet.",
     parameters: Type.Object({
       target: StringEnum([...AGENTS, "all"] as const, {
@@ -271,7 +271,7 @@ export default function (pi: ExtensionAPI) {
     name: "state_read",
     label: "Zustand · lesen",
     description:
-      "Liest den gespeicherten Zustand eines Agenten aus state/<agent>.json. " +
+      "Liest den gespeicherten Zustand eines Agenten aus _state/<agent>.json. " +
       "Mit 'all' kommen alle vier Zustände auf einmal. Fehlt eine Datei, kommen " +
       "die Startwerte zurück — ein Fehler ist das nie.",
     parameters: Type.Object({
@@ -295,7 +295,7 @@ export default function (pi: ExtensionAPI) {
     name: "state_write",
     label: "Zustand · schreiben",
     description:
-      "Schreibt den Zustand eines Agenten nach state/<agent>.json. Nur die " +
+      "Schreibt den Zustand eines Agenten nach _state/<agent>.json. Nur die " +
       "angegebenen Felder werden geändert, alles andere bleibt stehen. " +
       "Anzahl (count) und Zeitstempel werden automatisch gesetzt.",
     parameters: Type.Object({

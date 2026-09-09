@@ -7,9 +7,9 @@ PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 echo "Setze Bus und Zustand zurück..."
 
-: > "$PROJECT_DIR/bus/numbers.log"
-: > "$PROJECT_DIR/bus/control.log"
-rm -f "$PROJECT_DIR"/state/{counter,odd,even,prime}.json
+: > "$PROJECT_DIR/_bus/numbers.log"
+: > "$PROJECT_DIR/_bus/control.log"
+rm -f "$PROJECT_DIR"/_state/{counter,odd,even,prime}.json
 
 echo "Reset abgeschlossen."
 echo ""

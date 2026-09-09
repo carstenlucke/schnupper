@@ -29,8 +29,8 @@ TIMEOUT="${COUNTING_AGENTS_TIMEOUT:-60}"
 # ihn selbst aus, statt dafür jedes Mal das Modell zu fragen: ein pausierter
 # Agent soll ja gerade nichts kosten.
 current_command() {
-    [[ -f bus/control.log ]] || return 0
-    grep -E "\"target\":\"(all|$AGENT_NAME)\"" bus/control.log 2>/dev/null \
+    [[ -f _bus/control.log ]] || return 0
+    grep -E "\"target\":\"(all|$AGENT_NAME)\"" _bus/control.log 2>/dev/null \
         | grep -oE '"command":"(pause|resume|stop)"' \
         | tail -1 \
         | sed 's/.*:"//; s/"//' || true

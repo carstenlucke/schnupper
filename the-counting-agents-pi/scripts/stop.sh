@@ -9,7 +9,7 @@ source "$PROJECT_DIR/scripts/herdr-lib.sh"
 # Stop-Ereignis in den Steuerungs-Bus schreiben
 TIMESTAMP="$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")"
 echo "{\"type\":\"control\",\"target\":\"all\",\"command\":\"stop\",\"timestamp\":\"$TIMESTAMP\"}" \
-    >> "$PROJECT_DIR/bus/control.log"
+    >> "$PROJECT_DIR/_bus/control.log"
 
 echo "Stop-Ereignis geschrieben."
 

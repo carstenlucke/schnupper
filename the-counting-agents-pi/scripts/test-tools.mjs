@@ -53,9 +53,9 @@ const call = async (name, params) => {
 
 const AGENTS = ["counter", "odd", "even", "prime"];
 const clean = () => {
-  fs.rmSync(path.join(PROJECT, "bus/numbers.log"), { force: true });
-  fs.rmSync(path.join(PROJECT, "bus/control.log"), { force: true });
-  for (const a of AGENTS) fs.rmSync(path.join(PROJECT, `state/${a}.json`), { force: true });
+  fs.rmSync(path.join(PROJECT, "_bus/numbers.log"), { force: true });
+  fs.rmSync(path.join(PROJECT, "_bus/control.log"), { force: true });
+  for (const a of AGENTS) fs.rmSync(path.join(PROJECT, `_state/${a}.json`), { force: true });
 };
 
 let failed = 0;
@@ -112,7 +112,7 @@ check("state_read 'all' liefert alle vier", Object.keys(JSON.parse(r.text)).join
 
 // Eine halb geschriebene Zeile entsteht, wenn zwei Agenten gleichzeitig lesen
 // und schreiben. Sie darf den Bus nicht umwerfen.
-fs.appendFileSync(path.join(PROJECT, "bus/numbers.log"), '{"type":"number","seq":4,"val\n');
+fs.appendFileSync(path.join(PROJECT, "_bus/numbers.log"), '{"type":"number","seq":4,"val\n');
 r = await call("bus_read", { since: 0 });
 check("halb geschriebene Zeile wird übersprungen", JSON.parse(r.text).latest_seq === 3);
 r = await call("bus_publish", { value: 4 });
