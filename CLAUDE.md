@@ -10,10 +10,17 @@ Thema KI und KI-Agenten.
 |---|---|---|
 | `ship-it/` | Web-Dashboard, 5 KI-Agenten führen einen Produktlaunch durch. Python-stdlib-Server + SPA. | `./start.sh` |
 | `the-counting-agents/` | Terminal-Demo, 5 Agenten kommunizieren über dateibasierte Event-Logs, je ein benanntes Pane in einem Herdr-Tab. | `./scripts/start.sh` (aus einem Herdr-Pane heraus) |
+| `the-counting-agents-pi/` | Dieselbe Demo mit der **pi CLI**, eigenen Werkzeugen (Custom Tools) und einem Modell in der Cloud. | `./scripts/start.sh` (aus einem Herdr-Pane heraus) |
 
 **`ship-it/` hat eine eigene, ausführliche `CLAUDE.md`** — sie ist für alles
 maßgeblich, was dieses Projekt betrifft. Diese Datei hier regelt nur, was
 projektübergreifend gilt.
+
+`the-counting-agents/` und `the-counting-agents-pi/` zeigen dieselbe Demo mit
+zwei verschiedenen Agenten-Laufzeiten. Sie sind **absichtlich getrennte
+Projekte** und werden nicht zusammengeführt: Der Vergleich der beiden Fassungen
+ist der didaktische Gegenstand. Eine Änderung am einen ist keine Anweisung, das
+andere nachzuziehen.
 
 ## Struktur
 
@@ -44,22 +51,34 @@ Zielgruppe ist ein Publikum ohne Programmiererfahrung. Das prägt den Code:
 
 ## Gemeinsame Muster
 
-Beide Projekte nutzen die **OpenCode CLI** als Agenten-Runtime. Agenten sind
-Markdown-Dateien mit YAML-Frontmatter unter `.opencode/agents/`, gestartet per
-`opencode run --agent <name>`. Wer einen Agenten anlegt oder ändert, folgt dem
-Muster des jeweiligen Projekts — die Modellwahl steht in `opencode.json` und
-kann pro Agent im Frontmatter überschrieben werden.
+In allen drei Projekten ist ein Agent eine **Markdown-Datei mit
+YAML-Frontmatter**: oben Modell und Werkzeuge, darunter die Aufgabe in
+normalem Deutsch. Wer einen Agenten anlegt oder ändert, folgt dem Muster des
+jeweiligen Projekts. Die Laufzeit unterscheidet sich:
+
+| Projekt | Laufzeit | Agenten liegen in | Modellwahl |
+|---|---|---|---|
+| `ship-it/` | OpenCode CLI | `.opencode/agents/` | `opencode.json`, je Agent überschreibbar |
+| `the-counting-agents/` | OpenCode CLI | `.opencode/agents/` | `opencode.json`, je Agent überschreibbar |
+| `the-counting-agents-pi/` | pi CLI | `agents/` | im Frontmatter jedes Agenten |
+
+Bei pi gibt es kein eingebautes Agenten-Konzept: `scripts/run-agent.sh` liest
+das Frontmatter und baut daraus den Aufruf (Systemprompt, Werkzeug-Allowlist,
+Modell). Eigene Werkzeuge liegen dort als TypeScript unter `.pi/extensions/`.
 
 ## Konventionen
 
 - **Sprache: Deutsch.** Code-Kommentare, UI-Texte, Agent-Outputs, Commit-
-  Messages und Dokumentation. Ausnahme: `the-counting-agents` pflegt englische
-  Doku mit deutscher Fassung als `*_de.md` — beide Fassungen zusammen ändern.
+  Messages und Dokumentation. Ausnahme: die beiden Counting-Agents-Projekte
+  pflegen englische Doku mit deutscher Fassung als `*_de.md` — beide Fassungen
+  zusammen ändern.
 - **Secrets** liegen in projektlokalen `.env`-Dateien, nie im Repo.
-  `ship-it/.env.example` ist die Vorlage.
+  `ship-it/.env.example` und `the-counting-agents-pi/.env.example` sind die
+  Vorlagen. Der TensorX-Schlüssel in `the-counting-agents-pi` ist bewusst ein
+  eigener, vom global in pi hinterlegten Zugang getrennter Schlüssel.
 - **Runtime-Artefakte** sind gitignored und werden nicht versioniert:
-  `ship-it/projekte/` sowie die Logs und Zustandsdateien in
-  `the-counting-agents/bus/` und `state/`.
+  `ship-it/projekte/` sowie die Logs und Zustandsdateien in `bus/` und
+  `state/` beider Counting-Agents-Projekte.
 
 ## Git
 

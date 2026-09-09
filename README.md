@@ -29,6 +29,20 @@ dadurch direkt sichtbar.
 cd the-counting-agents && ./scripts/start.sh
 ```
 
+### [`the-counting-agents-pi/`](the-counting-agents-pi/)
+
+Dieselbe Demo wie oben, aber mit der [pi CLI](https://pi.dev) statt OpenCode,
+einem Modell in der Cloud und **eigenen Werkzeugen**: Die Agenten haben keine
+eingebauten Werkzeuge wie `bash` oder `write`, sondern nur `bus_publish`,
+`bus_read`, `control_read`, `control_send`, `state_read` und `state_write`. Im
+Pane steht dadurch `bus_publish {"value": 42}` statt einer Shell-Zeile, und
+jeder Agent kann genau das, was seine Rolle verlangt. Der Vergleich beider
+Fassungen ist der didaktische Gegenstand.
+
+```bash
+cd the-counting-agents-pi && ./scripts/start.sh
+```
+
 ## Aufbau
 
 Jedes Projekt ist eigenständig: eigenes README, eigene Konfiguration, eigene
@@ -37,8 +51,8 @@ ein Projekt lässt sich unabhängig von den anderen starten.
 
 ## Historie
 
-Beide Projekte wurden aus eigenständigen Repositories übernommen; ihre
-vollständige Git-Historie ist erhalten und auf die neuen Pfade umgeschrieben:
+`ship-it/` und `the-counting-agents/` wurden aus eigenständigen Repositories
+übernommen; ihre vollständige Git-Historie ist erhalten und auf die neuen Pfade umgeschrieben:
 
 ```bash
 git log -- ship-it/
