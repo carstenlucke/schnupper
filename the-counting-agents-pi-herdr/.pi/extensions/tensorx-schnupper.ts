@@ -26,14 +26,6 @@ export default function (pi: ExtensionAPI) {
     apiKey: "$SCHNUPPER_TENSORX_API_KEY",
     api: "openai-completions",
     authHeader: true,
-    compat: {
-      supportsStore: false,
-      supportsDeveloperRole: false,
-      supportsUsageInStreaming: true,
-      maxTokensField: "max_tokens",
-      supportsStrictMode: false,
-      supportsLongCacheRetention: false,
-    },
     models: [
       {
         id: "qwen/qwen3.8-flash-next",
@@ -60,7 +52,23 @@ export default function (pi: ExtensionAPI) {
           xhigh: "xhigh",
           max: "xhigh",
         },
+        // Abweichungen vom OpenAI-Standard. Sie gehören an das Modell, nicht
+        // an den Provider: pi übernimmt aus einer Extension nur das compat des
+        // Modelleintrags — eine Angabe eine Ebene höher bliebe wirkungslos.
         compat: {
+          // TensorX kennt weder `store` noch die Rolle `developer`, erwartet
+          // `max_tokens` statt `max_completion_tokens` und lehnt `strict` in
+          // Werkzeugdefinitionen ab.
+          supportsStore: false,
+          supportsDeveloperRole: false,
+          maxTokensField: "max_tokens",
+          supportsStrictMode: false,
+          // Tokenverbrauch kommt im Stream mit, ein langlebiger Prompt-Cache
+          // wird nicht angeboten.
+          supportsUsageInStreaming: true,
+          supportsLongCacheRetention: false,
+          // Das Denken wird über die Chat-Vorlage ein- und ausgeschaltet;
+          // `thinking.enabled` füllt pi bei jeder Anfrage selbst.
           supportsReasoningEffort: true,
           thinkingFormat: "chat-template",
           chatTemplateKwargs: { enable_thinking: { $var: "thinking.enabled" } },
