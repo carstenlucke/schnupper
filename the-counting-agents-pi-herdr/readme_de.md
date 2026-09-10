@@ -123,6 +123,17 @@ Modell, ohne Netz, ohne Kosten:
 node scripts/test-tools.mjs
 ```
 
+Wer die Extensions in einem Editor bearbeitet, sieht dort rote Fehler: Das
+Projekt bringt absichtlich kein `node_modules` mit, also findet der Editor die
+importierten Pakete nicht. pi selbst stört das nicht — es löst die Importe mit
+seinem eigenen TypeScript-Lader auf. Ein Aufruf legt Verweise auf die Pakete
+an, die in der installierten pi-CLI ohnehin liegen; nichts wird
+heruntergeladen, nichts landet im Repo:
+
+```bash
+./scripts/dev-typen.sh
+```
+
 ## Starten
 
 Aus einem Herdr-Pane heraus, im Projektverzeichnis:

@@ -1,0 +1,17 @@
+{
+  // Nur für den Editor. pi lädt die Extensions mit seinem eigenen
+  // TypeScript-Lader und braucht diese Datei nicht — ohne sie zeigt ein
+  // Editor aber rote Fehler an, weil das Projekt absichtlich kein
+  // node_modules mitbringt. `scripts/dev-typen.sh` legt die passenden
+  // Verweise auf die global installierte pi-CLI an.
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": [".pi/extensions/**/*.ts"]
+}

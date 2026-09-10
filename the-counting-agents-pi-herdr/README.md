@@ -122,6 +122,16 @@ network, no cost:
 node scripts/test-tools.mjs
 ```
 
+Editing the extensions in an editor shows red errors there: the project
+deliberately ships no `node_modules`, so the editor cannot find the imported
+packages. This does not bother pi — it resolves the imports with its own
+TypeScript loader. One call links the packages the installed pi CLI already
+carries; nothing is downloaded, nothing enters the repository:
+
+```bash
+./scripts/dev-typen.sh
+```
+
 ## Running
 
 From a Herdr pane, inside the project directory:

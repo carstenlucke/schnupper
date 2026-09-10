@@ -9,3 +9,6 @@ _state/prime.json
 
 # Python-Bytecode der Dashboard-Skripte
 __pycache__/
+
+# Verweise auf die pi-Pakete für den Editor (scripts/dev-typen.sh)
+node_modules/
