@@ -24,7 +24,7 @@ Folge dieser Reihenfolge:
    - Falls kein Tag existiert (Erstrelease): Verwende `git log --oneline` für die gesamte Historie und betrachte den aktuellen Stand als Gesamtrelease.
 
 3. **Änderungen analysieren:**
-   - **App-Änderungen:** Analysiere Diffs/Zustand in `server.py`, `dashboard/`, `.opencode/agents/`, `start.sh`, `opencode.json`.
+   - **App-Änderungen:** Analysiere Diffs/Zustand in `server.py`, `dashboard/`, `agents/`, `.pi/`, `start.sh`.
    - **Präsentations-Änderungen:** Lies `presentation/slides.md` vollständig (nicht nur Diffs), um die Inhalte und Struktur der Folien zu verstehen. Analysiere auch `presentation/style.css` und `presentation/public/` für Design-Aspekte.
    - **Infrastruktur:** Prüfe `.github/workflows/` auf CI/CD-Änderungen.
 
@@ -71,7 +71,7 @@ Kurze Einleitung (1–2 Sätze): Was ist Ship It!, wofür ist dieses Release.
 |---------|------------------------|
 | Dashboard | `dashboard/index.html`, `dashboard/app.js`, `dashboard/style.css` |
 | Backend | `server.py`, `start.sh` |
-| KI-Agenten | `.opencode/agents/`, `opencode.json` |
+| KI-Agenten | `agents/`, `.pi/extensions/`, `.pi/skills/` |
 | Präsentation | `presentation/slides.md`, `presentation/style.css`, `presentation/public/` |
 | Infrastruktur | `.github/workflows/` |
 

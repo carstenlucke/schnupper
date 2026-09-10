@@ -13,8 +13,8 @@ Live-Demo für eine Schnuppervorlesung bei StudiumPlus (90 Min, 12. Klasse FOS).
 ### Voraussetzungen
 
 - Python 3 (keine externen Dependencies)
-- [OpenCode CLI](https://opencode.ai) installiert und konfiguriert
-- ChatGPT Plus Abo – alle Agenten nutzen `openai/gpt-5.5` über diesen Zugang
+- [pi CLI](https://pi.dev) installiert (`npm install -g @earendil-works/pi-coding-agent`) und einmal per `/login` angemeldet
+- ChatGPT Plus Abo – alle Agenten nutzen `openai-codex/gpt-5.6-luna` über diesen Zugang (für alle zugleich änderbar über `SHIP_IT_MODEL` in `.env`)
 - Für die KI-Bildgenerierung zusätzlich ein `OPENAI_API_KEY` in `.env` (siehe [Einrichtung](#ki-bildgenerierung))
 
 ## Ablauf
@@ -61,24 +61,27 @@ Zielgruppe und Kalkulation sind sofort startbar, alle anderen warten auf ihre Vo
 Browser (Dashboard)
     ↕ HTTP + SSE
 Python-Server (server.py, nur stdlib)
-    ↕ subprocess + pty
-OpenCode CLI (opencode run --agent <name> <prompt>)
+    ↕ subprocess, JSON-Ereignisse
+pi CLI (pi --mode json --model … --tools … --system-prompt …)
     ↕ Datei-I/O
 projekte/<slug>/
 ```
 
-- **Null externe Python-Dependencies** – `http.server` + `subprocess` + `pty`
+- **Null externe Python-Dependencies** – `http.server` + `subprocess`
 - **Agent-Status aus dem Dateisystem abgeleitet** – kein State-File, crash-sicher
-- **PTY-Subprozesse** – ANSI-Farben bleiben erhalten, xterm.js rendert sie im Browser
+- **Agenten sind Markdown-Dateien** – `agents/<name>.md`: oben Modell, Denktiefe und Werkzeuge, darunter die Aufgabe. Der Server baut daraus den pi-Aufruf
+- **Live-Terminal** – der Server übersetzt die Ereignisse von pi (Denken, Werkzeugaufrufe, Text) in farbigen Terminal-Text, xterm.js rendert ihn im Browser
 - **Projekt-Isolation** – jedes Produkt unter `projekte/<slug>/` mit eigenen Agent-Outputs
 
 ## Projektstruktur
 
 ```
 ship-it/
-├── opencode.json              # OpenCode-Konfiguration
-├── .opencode/agents/          # 5 Agent-Systemprompts
-├── server.py                  # Python-Backend (stdlib only)
+├── agents/                    # 5 Agenten: Frontmatter (Modell, Werkzeuge) + Systemprompt
+├── .pi/
+│   ├── extensions/webfetch.ts # Werkzeug für die Webrecherche
+│   └── skills/                # Design-Vorlagen für den Website-Agenten
+├── server.py                  # Python-Backend (stdlib only), baut die pi-Aufrufe
 ├── dashboard/
 │   ├── index.html             # Dashboard SPA
 │   ├── style.css              # THM-Corporate-Design
