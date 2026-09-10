@@ -6,3 +6,6 @@ _state/counter.json
 _state/odd.json
 _state/even.json
 _state/prime.json
+
+# Python-Bytecode der Dashboard-Skripte
+__pycache__/

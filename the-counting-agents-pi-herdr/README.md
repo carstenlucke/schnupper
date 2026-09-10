@@ -52,7 +52,13 @@ tool away from an agent and watch what happens.
 |   odd ·  | even ·  | prime ·  |
 |   odds   |  evens  |  primes  |
 +----------+---------+----------+
+|      dashboard · overview     |
++-------------------------------+
 ```
+
+The five upper panes are the agents. The strip at the bottom starts the
+dashboard for the projector and prints nothing but its address — see
+[The dashboard](#the-dashboard).
 
 | Agent | Job | Tools |
 |---|---|---|
@@ -124,17 +130,74 @@ From a Herdr pane, inside the project directory:
 ./scripts/start.sh
 ```
 
-This creates the tab "Counting Agents (pi)" with five panes and starts an agent
-in each. Focus lands on the steering pane.
+This creates the tab "Counting Agents (pi)", starts an agent in each of the five
+upper panes and, in the strip below them, the dashboard, which opens in the
+browser by itself. Focus lands on the steering pane.
 
 | Command | Effect |
 |---|---|
-| `./scripts/start.sh` | Create tab, start agents |
+| `./scripts/start.sh` | Create tab, start agents and dashboard |
+| `./scripts/start.sh --ohne-dashboard` | The five agent panes only |
 | `./scripts/stop.sh` | Stop everything, close tab |
 | `./scripts/reset.sh` | Clear bus and state |
 | `./scripts/reset.sh --restart` | Clear and restart |
 
 In the steering pane: arrow keys to select, Enter to run, `q` ends the demo.
+
+## The dashboard
+
+The agent panes show every single step — that is the point, but from the back
+row it is a lot of text. The dashboard shows the overview alongside:
+
+```bash
+./scripts/dashboard.py            port 8777, opens the browser
+./scripts/dashboard.py 9000       different port
+./scripts/dashboard.py --kein-browser
+```
+
+It reads the bus and the state files and never writes, so it cannot disturb the
+demo. The server pushes changes over Server-Sent Events; the browser never polls
+on its own. Standard library only, no build.
+
+**The number band.** Each tile is one number from the bus. Its colour says who
+has already collected it:
+
+| Colour | Meaning |
+|---|---|
+| grey | nobody yet |
+| light blue | `odd` has it |
+| green | `even` has it |
+| gold ring | is a prime |
+| gold dot, filled | `prime` has it |
+| red | sorted wrongly |
+
+Red is the interesting case: the dashboard recomputes which numbers are prime.
+If the prime agent collects one that isn't, it shows. That does not happen on
+every run, but when it does it is the best moment of the lecture — the model got
+it wrong, and you can see it.
+
+**Click an agent.** Clicking an agent row dims every tile that isn't its own;
+only that agent's numbers stay. It lets you explain one collector at a time
+without the others competing for attention. Click again to release.
+
+**Lag.** Each agent row shows how far its collector trails the counter. The
+panes don't show that, and it is the actual punchline: the agents do not run in
+lockstep, each moves at its own pace — `prime` slowest, because it thinks.
+
+Colours follow the [THM corporate design](https://go.thm.de/cd).
+
+**Dress rehearsal without a model.** Before the lecture you can check the
+dashboard without running agents and spending tokens:
+
+```bash
+./scripts/dashboard-probelauf.py     in one pane
+./scripts/dashboard.py               in another
+```
+
+The simulator counts up, lets the collectors trail by different amounts, pauses
+`prime` in between and occasionally picks up the wrong number. It writes to the
+same files as the real agents, so it must not run alongside
+`./scripts/start.sh`.
 
 ## Counting requests: why rate limits bite so quickly
 

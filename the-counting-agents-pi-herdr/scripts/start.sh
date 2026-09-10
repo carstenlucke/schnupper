@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # start.sh — Startet die Multi-Agenten-Demo in einem Herdr-Tab
 #
-# Legt im aktuellen Herdr-Workspace einen Tab mit 5 Panes an:
+# Legt im aktuellen Herdr-Workspace einen Tab mit 6 Panes an:
 # +--------------------+----------+
 # |  counter · Zähler  | control ·|
 # |       (2/3)        | Steuerung|
@@ -9,6 +9,11 @@
 # |   odd ·  | even ·  | prime ·  |
 # | Ungerade | Gerade  |Primzahlen|
 # +----------+---------+----------+
+# |     dashboard · Übersicht     |
+# +-------------------------------+
+#
+# Der Streifen unten startet das Web-Dashboard für den Beamer und gibt nur
+# seine Adresse aus. Mit --ohne-dashboard bleibt es bei den fünf Agenten-Panes.
 
 set -euo pipefail
 
@@ -16,10 +21,21 @@ PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 source "$PROJECT_DIR/scripts/herdr-lib.sh"
 source "$PROJECT_DIR/scripts/agents-lib.sh"
 
+# --- Aufrufoptionen ---
+DASHBOARD_PORT="${DASHBOARD_PORT:-8777}"
+MIT_DASHBOARD=1
+[[ "${1:-}" == "--ohne-dashboard" ]] && MIT_DASHBOARD=0
+
 # --- Voraussetzungen prüfen ---
 herdr_require || exit 1
 command -v pi >/dev/null 2>&1 || { echo "Fehler: pi ist nicht installiert."; exit 1; }
 load_env "$PROJECT_DIR" || exit 1
+
+# Ohne python3 läuft die Demo trotzdem — nur eben ohne Dashboard.
+if [[ $MIT_DASHBOARD -eq 1 ]] && ! command -v python3 >/dev/null 2>&1; then
+    echo "Hinweis: python3 fehlt — die Demo startet ohne Dashboard."
+    MIT_DASHBOARD=0
+fi
 
 # --- Vorhandenen Demo-Tab schließen ---
 EXISTING_TAB="$(herdr_demo_tab_id)"
@@ -56,6 +72,12 @@ PANE_COUNTER=$(printf '%s' "$TAB_JSON" | herdr_field pane_id)
 
 [[ -n "$TAB_ID" && -n "$PANE_COUNTER" ]] || { echo "Fehler: Herdr-Tab konnte nicht angelegt werden."; exit 1; }
 
+# Schmalen Streifen für das Dashboard ganz unten abtrennen — zuerst, damit er
+# über die volle Breite läuft und die Agenten-Panes sich den Rest teilen.
+PANE_DASHBOARD=""
+if [[ $MIT_DASHBOARD -eq 1 ]]; then
+    PANE_DASHBOARD=$(herdr_split "$PANE_COUNTER" down 0.88 "$PROJECT_DIR")
+fi
 # Untere Reihe abtrennen (obere und untere Hälfte je 50 %)
 PANE_ODD=$(herdr_split "$PANE_COUNTER" down 0.5 "$PROJECT_DIR")
 # Untere Reihe dritteln: odd | even | prime
@@ -71,6 +93,9 @@ herdr pane rename "$PANE_CONTROL" "control · Steuerung" >/dev/null
 herdr pane rename "$PANE_ODD"     "odd · Ungerade"      >/dev/null
 herdr pane rename "$PANE_EVEN"    "even · Gerade"       >/dev/null
 herdr pane rename "$PANE_PRIME"   "prime · Primzahlen"  >/dev/null
+if [[ -n "$PANE_DASHBOARD" ]]; then
+    herdr pane rename "$PANE_DASHBOARD" "dashboard · Übersicht" >/dev/null
+fi
 
 # --- Agenten in den Panes starten ---
 # Kurze Pause, damit alle Shells ihren Prompt gezeichnet haben
@@ -82,6 +107,13 @@ herdr pane run "$PANE_ODD"     "$PROJECT_DIR/scripts/run-agent.sh odd"     >/dev
 herdr pane run "$PANE_EVEN"    "$PROJECT_DIR/scripts/run-agent.sh even"    >/dev/null
 herdr pane run "$PANE_PRIME"   "$PROJECT_DIR/scripts/run-agent.sh prime"   >/dev/null
 
+# Das Dashboard liest nur mit; es darf ruhig vor den ersten Zahlen laufen und
+# öffnet den Browser selbst.
+if [[ -n "$PANE_DASHBOARD" ]]; then
+    herdr pane run "$PANE_DASHBOARD" \
+        "$PROJECT_DIR/scripts/dashboard.py $DASHBOARD_PORT" >/dev/null
+fi
+
 # --- Demo-Tab in den Vordergrund holen ---
 herdr tab focus "$TAB_ID" >/dev/null
 
@@ -89,5 +121,8 @@ echo "Herdr-Tab '$HERDR_DEMO_TAB_LABEL' ($TAB_ID) gestartet."
 echo ""
 echo "Panes:       counter · Zähler | control · Steuerung"
 echo "             odd · Ungerade | even · Gerade | prime · Primzahlen"
+if [[ -n "$PANE_DASHBOARD" ]]; then
+    echo "Dashboard:   http://127.0.0.1:$DASHBOARD_PORT/  (öffnet sich von selbst)"
+fi
 echo "Beenden mit: ./scripts/stop.sh   (oder 'q' im Steuerungs-Pane)"
 echo "Reset mit:   ./scripts/reset.sh"

@@ -16,6 +16,20 @@ echo "Stop-Ereignis geschrieben."
 # Kurz warten, damit die Agenten den Stop bemerken
 sleep 2
 
+# Dashboard beenden. Beim Schließen des Tabs geht es ohnehin mit; wurde die
+# Demo aber außerhalb von Herdr gestartet, bliebe der Port sonst belegt.
+# Beendet wird nur, was tatsächlich das Dashboard ist — ein fremder Dienst auf
+# demselben Port bleibt unangetastet.
+DASHBOARD_PORT="${DASHBOARD_PORT:-8777}"
+if command -v lsof >/dev/null 2>&1; then
+    for PID in $(lsof -ti "tcp:$DASHBOARD_PORT" 2>/dev/null || true); do
+        if ps -o command= -p "$PID" 2>/dev/null | grep -q "dashboard\.py"; then
+            kill "$PID" 2>/dev/null || true
+            echo "Dashboard auf Port $DASHBOARD_PORT beendet."
+        fi
+    done
+fi
+
 # Demo-Tab schließen
 if ! herdr_require; then
     echo "Ohne Herdr-Session: Der Demo-Tab muss von Hand geschlossen werden."

@@ -53,7 +53,13 @@ zusehen, was passiert.
 |   odd ·  | even ·  | prime ·  |
 | Ungerade | Gerade  |Primzahlen|
 +----------+---------+----------+
+|     dashboard · Übersicht     |
++-------------------------------+
 ```
+
+Die fünf oberen Panes sind die Agenten. Der Streifen unten startet das
+Dashboard für den Beamer und gibt nur seine Adresse aus — siehe
+[Das Dashboard](#das-dashboard).
 
 | Agent | Aufgabe | Werkzeuge |
 |---|---|---|
@@ -125,18 +131,76 @@ Aus einem Herdr-Pane heraus, im Projektverzeichnis:
 ./scripts/start.sh
 ```
 
-Das legt den Tab „Counting Agents (pi)" mit fünf Panes an und startet in jedem
-einen Agenten. Der Fokus landet auf der Steuerung.
+Das legt den Tab „Counting Agents (pi)" an, startet in den fünf oberen Panes je
+einen Agenten und im Streifen darunter das Dashboard, das sich von selbst im
+Browser öffnet. Der Fokus landet auf der Steuerung.
 
 | Befehl | Wirkung |
 |---|---|
-| `./scripts/start.sh` | Tab anlegen, Agenten starten |
+| `./scripts/start.sh` | Tab anlegen, Agenten und Dashboard starten |
+| `./scripts/start.sh --ohne-dashboard` | Nur die fünf Agenten-Panes |
 | `./scripts/stop.sh` | Alle stoppen, Tab schließen |
 | `./scripts/reset.sh` | Bus und Zustand leeren |
 | `./scripts/reset.sh --restart` | Leeren und neu starten |
 
 Im Steuerungs-Pane: Pfeiltasten zur Auswahl, Enter zum Ausführen, `q` beendet
 die Demo.
+
+## Das Dashboard
+
+Die Agenten-Panes zeigen jeden Handgriff — das ist der Punkt, aber aus der
+letzten Reihe ist es viel Text. Das Dashboard zeigt daneben den Überblick:
+
+```bash
+./scripts/dashboard.py            Port 8777, öffnet den Browser
+./scripts/dashboard.py 9000       anderer Port
+./scripts/dashboard.py --kein-browser
+```
+
+Es liest Bus und Zustandsdateien und schreibt nie — es kann die Demo also
+nicht stören. Der Server schiebt Änderungen über Server-Sent Events nach, der
+Browser fragt nichts von sich aus ab. Nur Standardbibliothek, kein Build.
+
+**Das Zahlenband.** Jede Kachel ist eine Zahl aus dem Bus. Ihre Farbe sagt, wer
+sie schon eingesammelt hat:
+
+| Farbe | Bedeutung |
+|---|---|
+| grau | noch niemand |
+| hellblau | `odd` hat sie |
+| grün | `even` hat sie |
+| goldener Ring | ist eine Primzahl |
+| goldener Punkt, gefüllt | `prime` hat sie |
+| rot | falsch einsortiert |
+
+Rot ist der interessanteste Fall: Das Dashboard rechnet selbst nach, welche
+Zahlen prim sind. Sammelt der Prim-Agent eine Zahl ein, die keine ist, wird das
+sichtbar. Das passiert nicht bei jedem Durchlauf, aber wenn es passiert, ist es
+der beste Moment der Vorlesung — das Modell hat sich vertan, und man sieht es.
+
+**Agent anklicken.** Ein Klick auf eine Agentenzeile blendet alle fremden
+Zahlen aus; nur die des Agenten bleiben stehen. Damit lässt sich einer nach dem
+anderen erklären, ohne dass die anderen ablenken. Nochmal klicken hebt es auf.
+
+**Rückstand.** Jede Agentenzeile zeigt, wie weit ihr Sammler dem Zähler
+hinterherhinkt. In den Panes ist das nicht zu sehen, und es ist die eigentliche
+Pointe: Die Agenten laufen nicht im Gleichschritt, sondern jeder in seinem
+eigenen Takt — `prime` am langsamsten, weil er nachdenkt.
+
+Die Farben folgen dem [Corporate Design der THM](https://go.thm.de/cd).
+
+**Generalprobe ohne Modell.** Vor der Vorlesung lässt sich das Dashboard
+prüfen, ohne dass Agenten laufen und Token kosten:
+
+```bash
+./scripts/dashboard-probelauf.py     in einem Pane
+./scripts/dashboard.py               in einem zweiten
+```
+
+Der Simulator zählt hoch, lässt die Sammler unterschiedlich weit
+hinterherhinken, pausiert `prime` zwischendurch und vergreift sich
+gelegentlich an einer Zahl. Er schreibt in dieselben Dateien wie die echten
+Agenten und darf deshalb nicht parallel zu `./scripts/start.sh` laufen.
 
 ## Anfragen zählen: warum Rate-Limits so schnell greifen
 
