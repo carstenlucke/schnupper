@@ -10,13 +10,13 @@ Thema KI und KI-Agenten.
 |---|---|---|
 | `ship-it/` | Web-Dashboard, 5 KI-Agenten führen einen Produktlaunch durch. Python-stdlib-Server + SPA. | `./start.sh` |
 | `the-counting-agents/` | Terminal-Demo, 5 Agenten kommunizieren über dateibasierte Event-Logs, je ein benanntes Pane in einem Herdr-Tab. | `./scripts/start.sh` (aus einem Herdr-Pane heraus) |
-| `the-counting-agents-pi/` | Dieselbe Demo mit der **pi CLI**, eigenen Werkzeugen (Custom Tools) und einem Modell in der Cloud. | `./scripts/start.sh` (aus einem Herdr-Pane heraus) |
+| `the-counting-agents-pi-herdr/` | Dieselbe Demo mit der **pi CLI**, eigenen Werkzeugen (Custom Tools) und einem Modell in der Cloud. | `./scripts/start.sh` (aus einem Herdr-Pane heraus) |
 
 **`ship-it/` hat eine eigene, ausführliche `CLAUDE.md`** — sie ist für alles
 maßgeblich, was dieses Projekt betrifft. Diese Datei hier regelt nur, was
 projektübergreifend gilt.
 
-`the-counting-agents/` und `the-counting-agents-pi/` zeigen dieselbe Demo mit
+`the-counting-agents/` und `the-counting-agents-pi-herdr/` zeigen dieselbe Demo mit
 zwei verschiedenen Agenten-Laufzeiten. Sie sind **absichtlich getrennte
 Projekte** und werden nicht zusammengeführt: Der Vergleich der beiden Fassungen
 ist der didaktische Gegenstand. Eine Änderung am einen ist keine Anweisung, das
@@ -60,7 +60,7 @@ jeweiligen Projekts. Die Laufzeit unterscheidet sich:
 |---|---|---|---|
 | `ship-it/` | OpenCode CLI | `.opencode/agents/` | `opencode.json`, je Agent überschreibbar |
 | `the-counting-agents/` | OpenCode CLI | `.opencode/agents/` | `opencode.json`, je Agent überschreibbar |
-| `the-counting-agents-pi/` | pi CLI | `agents/` | im Frontmatter jedes Agenten |
+| `the-counting-agents-pi-herdr/` | pi CLI | `agents/` | im Frontmatter jedes Agenten |
 
 Bei pi gibt es kein eingebautes Agenten-Konzept: `scripts/run-agent.sh` liest
 das Frontmatter und baut daraus den Aufruf (Systemprompt, Werkzeug-Allowlist,
@@ -73,8 +73,8 @@ Modell). Eigene Werkzeuge liegen dort als TypeScript unter `.pi/extensions/`.
   pflegen englische Doku mit deutscher Fassung als `*_de.md` — beide Fassungen
   zusammen ändern.
 - **Secrets** liegen in projektlokalen `.env`-Dateien, nie im Repo.
-  `ship-it/.env.example` und `the-counting-agents-pi/.env.example` sind die
-  Vorlagen. In `the-counting-agents-pi` steht dort auch
+  `ship-it/.env.example` und `the-counting-agents-pi-herdr/.env.example` sind die
+  Vorlagen. In `the-counting-agents-pi-herdr` steht dort auch
   `COUNTING_AGENTS_MODEL` — es übersteuert das Modell aller Agenten auf einmal
   und ist der Weg, im Hörsaal den Anbieter zu wechseln. Der optionale
   TensorX-Schlüssel ist bewusst ein eigener, vom global in pi hinterlegten
@@ -82,7 +82,7 @@ Modell). Eigene Werkzeuge liegen dort als TypeScript unter `.pi/extensions/`.
 - **Runtime-Artefakte** sind gitignored und werden nicht versioniert:
   `ship-it/projekte/`, die Logs und Zustandsdateien in
   `the-counting-agents/bus/` und `state/` sowie in
-  `the-counting-agents-pi/_bus/` und `_state/` — dort mit Unterstrich, damit
+  `the-counting-agents-pi-herdr/_bus/` und `_state/` — dort mit Unterstrich, damit
   sie sich von den bearbeiteten Verzeichnissen abheben.
 
 ## Git

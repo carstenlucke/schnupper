@@ -29,7 +29,7 @@ dadurch direkt sichtbar.
 cd the-counting-agents && ./scripts/start.sh
 ```
 
-### [`the-counting-agents-pi/`](the-counting-agents-pi/)
+### [`the-counting-agents-pi-herdr/`](the-counting-agents-pi-herdr/)
 
 Dieselbe Demo wie oben, aber mit der [pi CLI](https://pi.dev) statt OpenCode,
 einem Modell in der Cloud und **eigenen Werkzeugen**: Die Agenten haben keine
@@ -40,7 +40,7 @@ jeder Agent kann genau das, was seine Rolle verlangt. Der Vergleich beider
 Fassungen ist der didaktische Gegenstand.
 
 ```bash
-cd the-counting-agents-pi && ./scripts/start.sh
+cd the-counting-agents-pi-herdr && ./scripts/start.sh
 ```
 
 ## Aufbau
