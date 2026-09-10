@@ -89,6 +89,7 @@ Systemprompts definieren Rolle und Output-Format, aber **keine konkreten Dateipf
 - `opencode.json`: Provider (`openai`) + Default-Model
 - Agenten können das Model per Frontmatter überschreiben
 - Projekte unter `projekte/<slug>/` (gitignored, runtime-only)
+
 ## Konventionen
 
 - **Sprache**: Alle Agent-Outputs, UI-Texte, HTML-Kommentare und JS-Kommentare auf **Deutsch**. Keine englischen Kommentare im Code.
@@ -97,3 +98,11 @@ Systemprompts definieren Rolle und Output-Format, aber **keine konkreten Dateipf
 - **Slugs**: lowercase + Bindestriche, Umlaute werden ersetzt (ä→ae etc.)
 - **Keine Build-Pipeline**: Kein npm, kein Bundler – CDN + Python stdlib
 - **THM-Farben**: `thm-green: #80ba24`, `thm-blue: #002878`, `thm-gray: #4a5c66`, `thm-yellow: #f4aa00`, `thm-light-blue: #00b8e4`
+
+## Nicht anfassen
+
+`.github/workflows/release.yml` ist **bewusst inaktiv**. GitHub Actions liest
+nur `.github/workflows/` im Repo-Root, und der Tag-Trigger passt nicht mehr zum
+Namespace-Schema (`ship-it/vX.Y.Z`). Der Workflow bleibt als Referenz liegen —
+nicht verschieben, nicht „reparieren", nur auf ausdrückliche Anweisung
+reaktivieren.
