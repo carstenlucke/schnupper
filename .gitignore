@@ -1,0 +1,7 @@
+# Git-Arbeitskopien der Agenten-Werkzeuge. Rein lokal — sie enthalten
+# Checkouts dieses Repos und haben darin selbst nichts verloren.
+# Ohne Slash notiert, weil es Symlinks sind und Git die nicht als
+# Verzeichnisse behandelt.
+.agents/worktrees/
+.claude/worktrees
+.pi/worktrees

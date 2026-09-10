@@ -1,5 +1,0 @@
-# Hier legen die Agenten-Werkzeuge Git-Arbeitskopien ab. Das Verzeichnis
-# gehört ins Repo — damit die Symlinks .claude/worktrees und .pi/worktrees
-# nach einem frischen Clone nicht ins Leere zeigen —, sein Inhalt nicht.
-*
-!.gitignore
