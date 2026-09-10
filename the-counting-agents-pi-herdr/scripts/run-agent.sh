@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # run-agent.sh — Führt einen Agenten in einer Endlosschleife aus
-# Usage: ./scripts/run-agent.sh <agent-name>
+# Usage: [AGENT_SPEED=<faktor>] ./scripts/run-agent.sh <agent-name>
+#
+# AGENT_SPEED staucht oder streckt den Takt aus dem Frontmatter: 2 = doppelt so
+# schnell, 0.5 = halb so schnell. Voreinstellung ist 1.
 #
 # Ein Agent ist bei pi kein eigenes Programm, sondern ein Aufruf mit eigenem
 # Systemprompt, eigenem Werkzeugsatz und eigenem Modell. Alles drei steht im
@@ -13,13 +16,23 @@ PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 source "$PROJECT_DIR/scripts/agents-lib.sh"
 
 cd "$PROJECT_DIR"
+# Ein beim Aufruf mitgegebenes Tempo soll das aus der .env schlagen — load_env
+# überschreibt sonst alles, was schon in der Umgebung steht.
+SPEED_ARG="${AGENT_SPEED:-}"
 load_env "$PROJECT_DIR" || exit 1
+if [[ -n "$SPEED_ARG" ]]; then
+    AGENT_SPEED="$SPEED_ARG"
+fi
+AGENT_SPEED="${AGENT_SPEED:-1}"
+if ! valid_speed "$AGENT_SPEED"; then
+    echo "Hinweis: AGENT_SPEED='$AGENT_SPEED' ist keine positive Zahl — es gilt 1."
+    AGENT_SPEED=1
+fi
 
 AGENT_FILE="agents/$AGENT_NAME.md"
 [[ -f "$AGENT_FILE" ]] || { echo "Fehler: $AGENT_FILE gibt es nicht."; exit 1; }
 
-INTERVAL="$(agent_meta "$AGENT_FILE" interval)"
-INTERVAL="${INTERVAL:-3}"
+INTERVAL="$(agent_interval "$AGENT_FILE")"
 # Obergrenze für einen einzelnen Durchlauf. Gegen das Modell in der Cloud
 # dauert ein Durchlauf wenige Sekunden; 60s greifen nur bei einem echten
 # Hänger und schneiden den normalen Betrieb nie ab.
@@ -39,7 +52,13 @@ current_command() {
 echo "=== Agent '$AGENT_NAME' gestartet ==="
 echo "Modell:   $(agent_model "$AGENT_FILE")"
 echo "Werkzeug: $(agent_meta "$AGENT_FILE" tools)"
-echo "Takt:     ${INTERVAL}s (Abbruch nach ${TIMEOUT}s)"
+# `set -e` verträgt kein `[[ ... ]] && ...` auf oberster Ebene: Trifft die
+# Bedingung nicht zu, wäre das Skript hier zu Ende.
+TEMPO_HINWEIS=""
+if [[ "$AGENT_SPEED" != "1" ]]; then
+    TEMPO_HINWEIS=" · Tempo ${AGENT_SPEED}×"
+fi
+echo "Takt:     ${INTERVAL}s${TEMPO_HINWEIS} (Abbruch nach ${TIMEOUT}s)"
 echo ""
 
 while true; do

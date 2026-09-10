@@ -43,6 +43,30 @@ agent_meta() {
     sed -n '2,/^---$/p' "$1" | sed -n "s/^$2: *//p" | head -1
 }
 
+# Der Takt eines Agenten in Sekunden: `interval` aus seinem Frontmatter,
+# gestaucht oder gestreckt um AGENT_SPEED.
+#
+# AGENT_SPEED ist ein Tempofaktor wie am Abspielgerät: 2 heißt doppelt so
+# schnell (halber Takt), 0.5 halb so schnell (doppelter Takt), 1 lässt alles wie
+# im Frontmatter. Der Faktor gilt für alle Agenten gleich.
+# Ergebnis ist immer eine ganze Zahl, mindestens 1s.
+# Usage: agent_interval <datei>
+agent_interval() {
+    local base
+    base="$(agent_meta "$1" interval)"
+    awk -v b="${base:-3}" -v s="${AGENT_SPEED:-1}" 'BEGIN {
+        if (s + 0 <= 0) s = 1
+        v = int(b / s + 0.5)
+        print (v < 1) ? 1 : v
+    }'
+}
+
+# Prüft, ob ein Tempofaktor eine positive Zahl ist (1, 1.5, .5 — nicht -1, "x").
+# Usage: valid_speed <wert>
+valid_speed() {
+    awk -v s="$1" 'BEGIN { exit !(s ~ /^[0-9]*\.?[0-9]+$/ && s + 0 > 0) }'
+}
+
 # Das Modell, mit dem ein Agent tatsächlich läuft: COUNTING_AGENTS_MODEL aus
 # der .env, sonst der Eintrag aus seinem Frontmatter.
 # Usage: agent_model <datei>

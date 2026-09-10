@@ -3,7 +3,7 @@ description: Prüft Zahlen aus dem Event-Bus auf Primzahl-Eigenschaft
 model: openai-codex/gpt-5.6-luna
 tools: bus_read,control_read,state_read,state_write
 thinking: low
-interval: 5
+interval: 3
 ---
 
 # Prime-Agent

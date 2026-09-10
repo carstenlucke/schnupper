@@ -14,6 +14,12 @@
 #
 # Der Streifen unten startet das Web-Dashboard für den Beamer und gibt nur
 # seine Adresse aus. Mit --ohne-dashboard bleibt es bei den fünf Agenten-Panes.
+#
+# Usage: ./scripts/start.sh [--ohne-dashboard] [--speed <faktor>]
+#
+# --speed staucht oder streckt den Takt aller Agenten gemeinsam: 1.5 heißt
+# anderthalbfaches Tempo, 0.5 halbes. Dasselbe geht über die Umgebungsvariable
+# AGENT_SPEED oder einen Eintrag in der .env; der Aufruf hat Vorrang.
 
 set -euo pipefail
 
@@ -24,12 +30,35 @@ source "$PROJECT_DIR/scripts/agents-lib.sh"
 # --- Aufrufoptionen ---
 DASHBOARD_PORT="${DASHBOARD_PORT:-8777}"
 MIT_DASHBOARD=1
-[[ "${1:-}" == "--ohne-dashboard" ]] && MIT_DASHBOARD=0
+SPEED_ARG=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --ohne-dashboard) MIT_DASHBOARD=0; shift ;;
+        --speed)          SPEED_ARG="${2:?Fehler: --speed braucht einen Faktor, z. B. --speed 1.5}"; shift 2 ;;
+        --speed=*)        SPEED_ARG="${1#*=}"; shift ;;
+        *)
+            echo "Unbekannte Option: $1"
+            echo "Usage: ./scripts/start.sh [--ohne-dashboard] [--speed <faktor>]"
+            exit 1
+            ;;
+    esac
+done
 
 # --- Voraussetzungen prüfen ---
 herdr_require || exit 1
 command -v pi >/dev/null 2>&1 || { echo "Fehler: pi ist nicht installiert."; exit 1; }
 load_env "$PROJECT_DIR" || exit 1
+
+# Tempo festlegen — nach load_env, damit ein `AGENT_SPEED` aus der .env den
+# Aufruf nicht überschreibt: Aufruf schlägt .env schlägt Voreinstellung.
+AGENT_SPEED="${SPEED_ARG:-${AGENT_SPEED:-1}}"
+if ! valid_speed "$AGENT_SPEED"; then
+    echo "Fehler: '$AGENT_SPEED' ist kein Tempofaktor. Erwartet wird eine"
+    echo "        positive Zahl, etwa 1.5 (schneller) oder 0.5 (langsamer)."
+    exit 1
+fi
+export AGENT_SPEED
 
 # Ohne python3 läuft die Demo trotzdem — nur eben ohne Dashboard.
 if [[ $MIT_DASHBOARD -eq 1 ]] && ! command -v python3 >/dev/null 2>&1; then
@@ -101,11 +130,13 @@ fi
 # Kurze Pause, damit alle Shells ihren Prompt gezeichnet haben
 sleep 1
 
-herdr pane run "$PANE_COUNTER" "$PROJECT_DIR/scripts/run-agent.sh counter" >/dev/null
-herdr pane run "$PANE_CONTROL" "$PROJECT_DIR/scripts/run-control.sh"       >/dev/null
-herdr pane run "$PANE_ODD"     "$PROJECT_DIR/scripts/run-agent.sh odd"     >/dev/null
-herdr pane run "$PANE_EVEN"    "$PROJECT_DIR/scripts/run-agent.sh even"    >/dev/null
-herdr pane run "$PANE_PRIME"   "$PROJECT_DIR/scripts/run-agent.sh prime"   >/dev/null
+# Jedes Pane bekommt eine frische Shell — das Tempo muss deshalb im Aufruf
+# selbst stehen, exportieren allein reicht nicht.
+herdr pane run "$PANE_COUNTER" "AGENT_SPEED=$AGENT_SPEED $PROJECT_DIR/scripts/run-agent.sh counter" >/dev/null
+herdr pane run "$PANE_CONTROL" "$PROJECT_DIR/scripts/run-control.sh"                                >/dev/null
+herdr pane run "$PANE_ODD"     "AGENT_SPEED=$AGENT_SPEED $PROJECT_DIR/scripts/run-agent.sh odd"     >/dev/null
+herdr pane run "$PANE_EVEN"    "AGENT_SPEED=$AGENT_SPEED $PROJECT_DIR/scripts/run-agent.sh even"    >/dev/null
+herdr pane run "$PANE_PRIME"   "AGENT_SPEED=$AGENT_SPEED $PROJECT_DIR/scripts/run-agent.sh prime"   >/dev/null
 
 # Das Dashboard liest nur mit; es darf ruhig vor den ersten Zahlen laufen und
 # öffnet den Browser selbst.
@@ -121,6 +152,9 @@ echo "Herdr-Tab '$HERDR_DEMO_TAB_LABEL' ($TAB_ID) gestartet."
 echo ""
 echo "Panes:       counter · Zähler | control · Steuerung"
 echo "             odd · Ungerade | even · Gerade | prime · Primzahlen"
+if [[ "$AGENT_SPEED" != "1" ]]; then
+    echo "Tempo:       ${AGENT_SPEED}×  (Takt aus dem Frontmatter durch $AGENT_SPEED geteilt)"
+fi
 if [[ -n "$PANE_DASHBOARD" ]]; then
     echo "Dashboard:   http://127.0.0.1:$DASHBOARD_PORT/  (öffnet sich von selbst)"
 fi

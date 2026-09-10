@@ -150,12 +150,23 @@ Browser öffnet. Der Fokus landet auf der Steuerung.
 |---|---|
 | `./scripts/start.sh` | Tab anlegen, Agenten und Dashboard starten |
 | `./scripts/start.sh --ohne-dashboard` | Nur die fünf Agenten-Panes |
+| `./scripts/start.sh --speed 1.5` | Anderthalbfaches Tempo, `0.5` halbes |
 | `./scripts/stop.sh` | Alle stoppen, Tab schließen |
 | `./scripts/reset.sh` | Bus und Zustand leeren |
-| `./scripts/reset.sh --restart` | Leeren und neu starten |
+| `./scripts/reset.sh --restart` | Leeren und neu starten (nimmt `--speed` mit) |
 
 Im Steuerungs-Pane: Pfeiltasten zur Auswahl, Enter zum Ausführen, `q` beendet
 die Demo.
+
+**Tempo.** `--speed` staucht oder streckt den Takt aller Agenten gemeinsam,
+ohne dass eine Datei angefasst wird: `--speed 2` halbiert die Wartezeit
+zwischen zwei Durchläufen, `--speed 0.5` verdoppelt sie. Alle Agenten haben
+denselben Takt und werden gemeinsam gestaucht oder gestreckt; dass `prime`
+trotzdem hinterherhinkt, liegt an seinem Nachdenken, nicht an seinem Intervall.
+Dasselbe geht über `AGENT_SPEED` in der Umgebung oder in der `.env`; ein Faktor
+im Aufruf hat Vorrang. Im Hörsaal ist das der Hebel gegen Rate-Limits (siehe
+[Anfragen zählen](#anfragen-zählen-warum-rate-limits-so-schnell-greifen)) und
+gegen einen Bus, der schneller scrollt als man erzählen kann.
 
 ## Das Dashboard
 
@@ -195,8 +206,8 @@ anderen erklären, ohne dass die anderen ablenken. Nochmal klicken hebt es auf.
 
 **Rückstand.** Jede Agentenzeile zeigt, wie weit ihr Sammler dem Zähler
 hinterherhinkt. In den Panes ist das nicht zu sehen, und es ist die eigentliche
-Pointe: Die Agenten laufen nicht im Gleichschritt, sondern jeder in seinem
-eigenen Takt — `prime` am langsamsten, weil er nachdenkt.
+Pointe: Alle vier haben denselben Takt und laufen trotzdem nicht im
+Gleichschritt — `prime` am langsamsten, weil er nachdenkt.
 
 Die Farben folgen dem [Corporate Design der THM](https://go.thm.de/cd).
 
@@ -239,9 +250,10 @@ Was hilft, wenn ein Limit zuschlägt:
 
 - **Anbieter wechseln** — eine Zeile `COUNTING_AGENTS_MODEL` in der `.env`. Die
   Voreinstellung läuft deshalb über ein Abo-Modell und nicht über TensorX.
-- **Takt strecken** — `interval` im Frontmatter der Agenten hochsetzen. Bei 20
-  Sekunden bleibt die Demo unter 60 Anfragen pro Minute, wirkt im Vortrag aber
-  merklich zäher.
+- **Takt strecken** — `./scripts/start.sh --speed 0.15` beim Start, oder
+  dauerhaft `interval` im Frontmatter der Agenten hochsetzen. Bei 20 Sekunden
+  bleibt die Demo unter 60 Anfragen pro Minute, wirkt im Vortrag aber merklich
+  zäher.
 - **Weniger Agenten laufen lassen** — für manche Abschnitte reichen Counter und
   Prime.
 

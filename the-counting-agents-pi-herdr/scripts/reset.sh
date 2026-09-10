@@ -15,10 +15,13 @@ echo "Reset abgeschlossen."
 echo ""
 
 if [[ "${1:-}" == "--restart" ]]; then
+    shift
     echo "Starte neu..."
     "$PROJECT_DIR/scripts/stop.sh" 2>/dev/null || true
     sleep 1
-    exec "$PROJECT_DIR/scripts/start.sh"
+    # Alles Weitere geht an start.sh — so lässt sich beim Neustart auch das
+    # Tempo ändern: ./scripts/reset.sh --restart --speed 0.5
+    exec "$PROJECT_DIR/scripts/start.sh" "$@"
 fi
 
 echo "Zum Neustarten: ./scripts/reset.sh --restart"

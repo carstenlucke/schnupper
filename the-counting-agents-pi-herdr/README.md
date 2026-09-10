@@ -148,11 +148,22 @@ browser by itself. Focus lands on the steering pane.
 |---|---|
 | `./scripts/start.sh` | Create tab, start agents and dashboard |
 | `./scripts/start.sh --ohne-dashboard` | The five agent panes only |
+| `./scripts/start.sh --speed 1.5` | One-and-a-half times the pace, `0.5` half |
 | `./scripts/stop.sh` | Stop everything, close tab |
 | `./scripts/reset.sh` | Clear bus and state |
-| `./scripts/reset.sh --restart` | Clear and restart |
+| `./scripts/reset.sh --restart` | Clear and restart (passes `--speed` through) |
 
 In the steering pane: arrow keys to select, Enter to run, `q` ends the demo.
+
+**Pace.** `--speed` compresses or stretches the interval of all agents at once,
+without touching a file: `--speed 2` halves the wait between two runs,
+`--speed 0.5` doubles it. All agents share the same interval and are compressed
+or stretched together; `prime` still falls behind, but because it thinks, not
+because of its interval. The same works through `AGENT_SPEED` in the environment
+or in the `.env`; a factor given on the command line wins. In the lecture hall this
+is the lever against rate limits (see
+[Counting requests](#counting-requests-why-rate-limits-bite-so-quickly)) and against
+a bus that scrolls faster than you can talk.
 
 ## The dashboard
 
@@ -191,8 +202,8 @@ only that agent's numbers stay. It lets you explain one collector at a time
 without the others competing for attention. Click again to release.
 
 **Lag.** Each agent row shows how far its collector trails the counter. The
-panes don't show that, and it is the actual punchline: the agents do not run in
-lockstep, each moves at its own pace — `prime` slowest, because it thinks.
+panes don't show that, and it is the actual punchline: all four share the same
+interval and still do not run in lockstep — `prime` slowest, because it thinks.
 
 Colours follow the [THM corporate design](https://go.thm.de/cd).
 
@@ -234,8 +245,9 @@ What helps when a limit hits:
 
 - **Switch providers** — one `COUNTING_AGENTS_MODEL` line in the `.env`. That is
   why the default runs on a subscription model rather than TensorX.
-- **Stretch the interval** — raise `interval` in the agents' frontmatter. At 20
-  seconds the demo stays under 60 requests per minute, but it visibly drags.
+- **Stretch the interval** — `./scripts/start.sh --speed 0.15` at startup, or
+  raise `interval` in the agents' frontmatter for good. At 20 seconds the demo
+  stays under 60 requests per minute, but it visibly drags.
 - **Run fewer agents** — for some parts of the talk, counter and prime suffice.
 
 For the lecture the arithmetic itself is a good moment: five agents, each
