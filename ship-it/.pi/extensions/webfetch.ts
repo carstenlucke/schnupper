@@ -16,6 +16,10 @@ import { Type } from "typebox";
 // liest das Modell mit — eine lange Seite kostet sonst Zeit und Tokens, ohne
 // dass die Analyse besser wird.
 const MAX_ZEICHEN = 20_000;
+// Obergrenze für das, was überhaupt heruntergeladen wird. Die Kürzung auf
+// MAX_ZEICHEN kommt erst nach dem Laden — ohne diese Grenze könnte eine
+// riesige Seite den Speicher des Agenten volllaufen lassen.
+const MAX_BYTES = 5_000_000;
 const ZEITLIMIT_MS = 20_000;
 
 const ok = (text: string, details: Record<string, unknown>) => ({
@@ -47,6 +51,26 @@ function htmlZuText(html: string): string {
     .replace(/ *\n */g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
+}
+
+/** Liest den Text der Antwort, aber höchstens MAX_BYTES — der Rest wird gar nicht erst geladen. */
+async function leseBegrenzt(antwort: Response): Promise<{ text: string; abgeschnitten: boolean }> {
+  const leser = antwort.body?.getReader();
+  if (!leser) return { text: "", abgeschnitten: false };
+  const decoder = new TextDecoder();
+  let text = "";
+  let bytes = 0;
+  while (true) {
+    const { done, value } = await leser.read();
+    if (done) return { text: text + decoder.decode(), abgeschnitten: false };
+    if (bytes + value.byteLength > MAX_BYTES) {
+      text += decoder.decode(value.subarray(0, MAX_BYTES - bytes));
+      await leser.cancel().catch(() => {});
+      return { text, abgeschnitten: true };
+    }
+    bytes += value.byteLength;
+    text += decoder.decode(value, { stream: true });
+  }
 }
 
 export default function (pi: ExtensionAPI) {
@@ -96,16 +120,19 @@ export default function (pi: ExtensionAPI) {
       if (!/html|text|json|xml/i.test(typ)) {
         return fail(`${ziel.href} liefert keinen Text, sondern ${typ || "unbekannten Inhalt"}.`);
       }
-      const roh = await antwort.text();
+      const { text: roh, abgeschnitten } = await leseBegrenzt(antwort);
       const text = /html/i.test(typ) ? htmlZuText(roh) : roh.trim();
-      const gekuerzt =
-        text.length > MAX_ZEICHEN
-          ? `${text.slice(0, MAX_ZEICHEN)}\n\n[… gekürzt, ${text.length} Zeichen insgesamt]`
-          : text;
+      let gekuerzt = text.slice(0, MAX_ZEICHEN);
+      if (abgeschnitten) {
+        gekuerzt += `\n\n[… gekürzt, nur die ersten ${MAX_BYTES / 1_000_000} MB der Seite gelesen]`;
+      } else if (text.length > MAX_ZEICHEN) {
+        gekuerzt += `\n\n[… gekürzt, ${text.length} Zeichen insgesamt]`;
+      }
 
       return ok(`Quelle: ${antwort.url}\n\n${gekuerzt}`, {
         url: antwort.url,
         zeichen: text.length,
+        abgeschnitten,
       });
     },
   });

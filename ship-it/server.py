@@ -438,12 +438,9 @@ class PiAusgabe:
         if art == "text_end":
             return self._umbruch()
         if art == "toolcall_start":
-            # Den Werkzeugnamen trägt das Ereignis nicht selbst, sondern der
-            # Teil der halbfertigen Antwort, zu dem es gehört
-            inhalt = (a.get("partial") or {}).get("content") or []
-            index = a.get("contentIndex", -1)
-            teil = inhalt[index] if 0 <= index < len(inhalt) else {}
-            self.werkzeug = (teil.get("name") if isinstance(teil, dict) else None) or "?"
+            # Im JSON-Modus lässt pi die halbfertige Antwort (partial) weg und
+            # schreibt den Werkzeugnamen direkt ins Ereignis
+            self.werkzeug = a.get("toolName") or "?"
             self.werkzeug_zeichen = self.fortschritt_bei = 0
             return ""
         if art == "toolcall_delta" and self.werkzeug:
