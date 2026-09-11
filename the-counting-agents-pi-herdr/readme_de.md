@@ -10,11 +10,13 @@ aufeinander warten, sich pausieren lassen und wieder anlaufen.
 
 > Englische Fassung: [README.md](README.md)
 
-## Was hier anders ist als in `the-counting-agents`
+## Was hier anders ist als in der OpenCode-Fassung
 
-Das Schwesterprojekt macht dasselbe mit der **OpenCode CLI** und einem lokal
-über LM Studio bereitgestellten Modell. Dieses Projekt nutzt die **pi CLI** und
-ein Modell in der Cloud — und vor allem: **eigene Werkzeuge**.
+Die ursprüngliche Fassung dieser Demo, `the-counting-agents`, machte dasselbe
+mit der **OpenCode CLI** und einem lokal über LM Studio bereitgestellten Modell.
+Sie ist inzwischen aus dem Repo entfernt; ihr letzter Stand ist Commit
+`4d77661`. Dieses Projekt nutzt die **pi CLI** und ein Modell in der Cloud — und
+vor allem: **eigene Werkzeuge**.
 
 Bei OpenCode erledigen die Agenten ihre Arbeit mit den allgemeinen Werkzeugen
 `bash`, `read` und `write`. Sie bauen JSON von Hand zusammen, hängen es per

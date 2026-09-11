@@ -1,15 +1,15 @@
 # CLAUDE.md
 
-**The Counting Agents (pi)** — dieselbe Demo wie `the-counting-agents/`, aber
-mit der **pi CLI**, **eigenen Werkzeugen** (Custom Tools) und einem **Modell in
-der Cloud**. Fünf Agenten koordinieren sich über dateibasierte Event-Logs in
-einem [Herdr](https://herdr.dev)-Tab, darunter ein Dashboard für den Beamer.
+**The Counting Agents (pi)** — Terminal-Demo für eine Schnuppervorlesung, mit
+der **pi CLI**, **eigenen Werkzeugen** (Custom Tools) und einem **Modell in der
+Cloud**. Fünf Agenten koordinieren sich über dateibasierte Event-Logs in einem
+[Herdr](https://herdr.dev)-Tab, darunter ein Dashboard für den Beamer.
 
-> Die beiden Projekte sind absichtlich getrennt — der Vergleich der Laufzeiten
-> ist der didaktische Gegenstand. **Eine Änderung hier ist keine Anweisung, das
-> Schwesterprojekt nachzuziehen**, und umgekehrt.
+> Hervorgegangen aus der OpenCode-Fassung `the-counting-agents/`, die aus dem
+> Repo entfernt ist (letzter Stand: Commit `4d77661`). Der Vergleich mit ihr
+> bleibt der didaktische Gegenstand — die Doku bezieht sich weiter darauf.
 
-## Der Unterschied zum Schwesterprojekt
+## Der Unterschied zur OpenCode-Fassung
 
 Das ist kein Implementierungsdetail, sondern der Zweck des Projekts — beim
 Ändern nicht wegoptimieren:

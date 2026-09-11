@@ -1,7 +1,8 @@
 # Das Experiment: Was diese Fassung anders macht
 
-Dieses Projekt gibt es zweimal. `the-counting-agents` läuft mit der OpenCode
-CLI und einem Modell auf dem eigenen Rechner, diese Fassung mit der pi CLI,
+Dieses Projekt gab es zweimal. `the-counting-agents` lief mit der OpenCode CLI
+und einem Modell auf dem eigenen Rechner; es ist inzwischen aus dem Repo
+entfernt (letzter Stand: Commit `4d77661`). Diese Fassung läuft mit der pi CLI,
 einem Modell in der Cloud und eigenen Werkzeugen. Beide zeigen dasselbe: fünf
 Agenten, die über Dateien zusammenarbeiten.
 
@@ -77,7 +78,8 @@ und würde die Demo ihres Gegenstands berauben.
 ## Was gleich geblieben ist
 
 Die Architektur. Beide Fassungen teilen die Entscheidungen, die
-`the-counting-agents/docs/experiment_de.md` begründet:
+`the-counting-agents/docs/experiment_de.md` begründet (in der Git-Historie:
+`git show 4d77661:the-counting-agents/docs/experiment_de.md`):
 
 - **Zwei Dateien als Bus**, an die nur angehängt wird. Kein Broker, keine
   Warteschlange, kein Netzwerk. Man kann sie mit `cat` lesen — im Vortrag ein

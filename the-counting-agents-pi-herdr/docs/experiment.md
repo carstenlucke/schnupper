@@ -1,9 +1,10 @@
 # The experiment: what this version does differently
 
-This project exists twice. `the-counting-agents` runs on the OpenCode CLI with
-a model on your own machine; this version runs on the pi CLI with a model in
-the cloud and tools of its own. Both show the same thing: five agents
-collaborating through files.
+This project used to exist twice. `the-counting-agents` ran on the OpenCode CLI
+with a model on your own machine; it has since been removed from the
+repository (last state: commit `4d77661`). This version runs on the pi CLI with
+a model in the cloud and tools of its own. Both show the same thing: five
+agents collaborating through files.
 
 The comparison is the actual yield. What changes when agents get fitting tools
 instead of generic ones?
@@ -75,7 +76,8 @@ of its subject.
 ## What stayed the same
 
 The architecture. Both versions share the decisions argued in
-`the-counting-agents/docs/experiment.md`:
+`the-counting-agents/docs/experiment.md` (in the Git history:
+`git show 4d77661:the-counting-agents/docs/experiment.md`):
 
 - **Two files as the bus**, append-only. No broker, no queue, no network. You
   can read them with `cat` — invaluable on stage.

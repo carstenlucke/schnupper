@@ -10,11 +10,13 @@ and start up again.
 
 > German version: [readme_de.md](readme_de.md) — the demo itself is in German.
 
-## What differs from `the-counting-agents`
+## What differs from the OpenCode version
 
-The sister project does the same thing with the **OpenCode CLI** and a model
-served locally through LM Studio. This one uses the **pi CLI** and a model in
-the cloud — and above all: **its own tools**.
+The original version of this demo, `the-counting-agents`, did the same thing
+with the **OpenCode CLI** and a model served locally through LM Studio. It has
+since been removed from the repository; its last state is commit `4d77661`.
+This one uses the **pi CLI** and a model in the cloud — and above all: **its
+own tools**.
 
 Under OpenCode the agents do their work through the generic `bash`, `read` and
 `write` tools. They assemble JSON by hand, append it with `echo >>`, produce
