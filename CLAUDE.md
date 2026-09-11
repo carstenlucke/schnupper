@@ -9,8 +9,7 @@ Thema KI und KI-Agenten.
 | Verzeichnis | Was es ist | Start |
 |---|---|---|
 | `ship-it/` | Web-Dashboard, 5 KI-Agenten führen einen Produktlaunch durch. Python-stdlib-Server + SPA. | `./start.sh` |
-| `the-counting-agents/` | Terminal-Demo, 5 Agenten kommunizieren über dateibasierte Event-Logs, je ein benanntes Pane in einem Herdr-Tab. | `./scripts/start.sh` |
-| `the-counting-agents-pi-herdr/` | Dieselbe Demo mit der pi CLI, eigenen Werkzeugen und einem Modell in der Cloud. | `./scripts/start.sh` |
+| `the-counting-agents-pi-herdr/` | Terminal-Demo, 5 Agenten kommunizieren über dateibasierte Event-Logs, je ein benanntes Pane in einem Herdr-Tab. Läuft mit der pi CLI, eigenen Werkzeugen und einem Modell in der Cloud. | `./scripts/start.sh` |
 
 **Jedes Projekt hat eine eigene `CLAUDE.md`** — sie ist für alles maßgeblich,
 was das jeweilige Projekt betrifft. Diese Datei hier regelt nur, was
@@ -29,12 +28,6 @@ jedes Projekt muss für sich allein erklärbar und startbar sein.
 
 Immer im jeweiligen Projektverzeichnis arbeiten, nicht im Repo-Root.
 
-`the-counting-agents/` und `the-counting-agents-pi-herdr/` zeigen dieselbe Demo
-mit zwei verschiedenen Agenten-Laufzeiten. Sie sind **absichtlich getrennte
-Projekte** und werden nicht zusammengeführt: Der Vergleich der beiden Fassungen
-ist der didaktische Gegenstand. Eine Änderung am einen ist keine Anweisung, das
-andere nachzuziehen.
-
 ## Didaktischer Rahmen
 
 Zielgruppe ist ein Publikum ohne Programmiererfahrung. Das prägt den Code:
@@ -50,7 +43,7 @@ Zielgruppe ist ein Publikum ohne Programmiererfahrung. Das prägt den Code:
 
 ## Gemeinsames Muster
 
-In allen drei Projekten ist ein Agent eine **Markdown-Datei mit
+In beiden Projekten ist ein Agent eine **Markdown-Datei mit
 YAML-Frontmatter**: oben Modell und Werkzeuge, darunter die Aufgabe in normalem
 Deutsch. Wer einen Agenten anlegt oder ändert, folgt dem Muster des jeweiligen
 Projekts — Ablageort, Frontmatter-Felder und Modellwahl stehen in dessen
@@ -59,8 +52,8 @@ Projekts — Ablageort, Frontmatter-Felder und Modellwahl stehen in dessen
 ## Konventionen
 
 - **Sprache: Deutsch.** Code-Kommentare, UI-Texte, Agent-Outputs, Commit-
-  Messages und Dokumentation. Ausnahme: die beiden Counting-Agents-Projekte
-  pflegen englische Doku mit deutscher Fassung als `*_de.md` — beide Fassungen
+  Messages und Dokumentation. Ausnahme: `the-counting-agents-pi-herdr/` pflegt
+  englische Doku mit deutscher Fassung als `*_de.md` — beide Fassungen
   zusammen ändern.
 - **Secrets** liegen in projektlokalen `.env`-Dateien, nie im Repo. Die
   `.env.example` des Projekts ist die Vorlage.
@@ -69,10 +62,13 @@ Projekts — Ablageort, Frontmatter-Felder und Modellwahl stehen in dessen
 
 ## Git
 
-- **Tags sind namespaced**: `ship-it/v1.0.1`, `the-counting-agents/v0.1.1`.
+- **Tags sind namespaced** nach Projektverzeichnis, z. B. `ship-it/v1.0.1`.
   Ein Release betrifft immer nur ein Projekt.
 - Zu jedem Tag gehört ein Release Letter `RELEASE-vX.Y.Z.md` im jeweiligen
   Projektverzeichnis.
-- Die Historie beider Projekte wurde bei der Migration auf die neuen Pfade
+- Die Historie von `ship-it/` wurde bei der Migration auf die neuen Pfade
   umgeschrieben — `git log -- ship-it/` und `git blame` funktionieren über den
   gesamten Verlauf.
+- `the-counting-agents/`, die frühere OpenCode-Fassung der Counting-Agents-Demo,
+  ist entfernt. Code und Tags `the-counting-agents/v*` bleiben in der Historie;
+  der letzte Stand liegt in Commit `4d77661`.

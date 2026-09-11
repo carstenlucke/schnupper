@@ -26,15 +26,14 @@ bus_publish {"value": 42}
 ```
 
 Der zweite Unterschied ist der wichtigere: **Was ein Werkzeug erledigt, muss
-der Prompt nicht mehr erklären.** In der OpenCode-Fassung dieses Projekts stand
-in jedem Agent-Prompt eine halbe Seite Fehlerbehandlung — leere Dateien nicht
-mit dem Read-Tool öffnen, Zeitstempel ohne Millisekunden erzeugen, keine
-absoluten Pfade schreiben, `write` nicht für Log-Dateien verwenden. Das war
-keine Aufgabenbeschreibung, sondern eine Bedienungsanleitung für Werkzeuge, die
-für etwas anderes gedacht sind.
+der Prompt nicht erklären.** Mit allgemeinen Werkzeugen bräuchte jeder
+Agent-Prompt eine halbe Seite Fehlerbehandlung — leere Dateien nicht mit dem
+Read-Tool öffnen, Zeitstempel ohne Millisekunden erzeugen, keine absoluten Pfade
+schreiben, `write` nicht für Log-Dateien verwenden. Das wäre keine
+Aufgabenbeschreibung, sondern eine Bedienungsanleitung für Werkzeuge, die für
+etwas anderes gedacht sind.
 
-Jetzt steht diese Sorgfalt einmal im Code, und der Prompt beschreibt die
-Aufgabe.
+So steht diese Sorgfalt einmal im Code, und der Prompt beschreibt die Aufgabe.
 
 ## Wo die Werkzeuge liegen
 

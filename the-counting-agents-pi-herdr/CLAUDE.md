@@ -1,23 +1,19 @@
 # CLAUDE.md
 
-**The Counting Agents (pi)** — dieselbe Demo wie `the-counting-agents/`, aber
-mit der **pi CLI**, **eigenen Werkzeugen** (Custom Tools) und einem **Modell in
-der Cloud**. Fünf Agenten koordinieren sich über dateibasierte Event-Logs in
-einem [Herdr](https://herdr.dev)-Tab, darunter ein Dashboard für den Beamer.
+**The Counting Agents (pi)** — Terminal-Demo für eine Schnuppervorlesung, mit
+der **pi CLI**, **eigenen Werkzeugen** (Custom Tools) und einem **Modell in der
+Cloud**. Fünf Agenten koordinieren sich über dateibasierte Event-Logs in einem
+[Herdr](https://herdr.dev)-Tab, darunter ein Dashboard für den Beamer.
 
-> Die beiden Projekte sind absichtlich getrennt — der Vergleich der Laufzeiten
-> ist der didaktische Gegenstand. **Eine Änderung hier ist keine Anweisung, das
-> Schwesterprojekt nachzuziehen**, und umgekehrt.
-
-## Der Unterschied zum Schwesterprojekt
+## Worum es geht: eigene Werkzeuge
 
 Das ist kein Implementierungsdetail, sondern der Zweck des Projekts — beim
 Ändern nicht wegoptimieren:
 
 - **Eigene Werkzeuge statt generischer.** `bus_publish {"value": 42}` statt
-  `bash echo '{"type":"number",...}' >> _bus/numbers.log`. Dadurch schrumpfen
-  die Agent-Prompts von zwei Seiten Fehlerbehandlung auf ein Dutzend Zeilen
-  Aufgabenbeschreibung.
+  `bash echo '{"type":"number",...}' >> _bus/numbers.log`. Dadurch kommen die
+  Agent-Prompts mit einem Dutzend Zeilen Aufgabenbeschreibung aus statt mit
+  zwei Seiten Fehlerbehandlung.
 - **Keine eingebauten Werkzeuge.** Kein `bash`, kein `read`, kein `write`
   (Flag `-nbt`). Jeder Agent kann genau das, was seine Rolle verlangt — der
   Counter darf veröffentlichen, die Sammler dürfen nur lesen. Einem Agenten im
@@ -188,6 +184,9 @@ und darf **nicht parallel zu `./scripts/start.sh`** laufen.
   Commit-Messages.
 - **Doku zweisprachig**: zu jeder `*.md` in `docs/` und zur `README.md` gehört
   eine deutsche Fassung `*_de.md`. **Beide Fassungen zusammen ändern.**
+- **Keine Bezüge auf frühere Versionen des Projekts.** Die Doku beschreibt die
+  Demo, wie sie ist. Der Vergleich mit allgemeinen Werkzeugen (`bash`, `read`,
+  `write`) wird als Alternative erklärt, nicht als Vorgeschichte.
 - **Secrets nur in `.env`**, nie im Repo. `.env.example` ist die Vorlage.
 - **Bash mit `set -euo pipefail`**, kein `jq`, keine npm-Abhängigkeiten.
 - **Vorführbarkeit vor Eleganz.** Sichtbare Zwischenschritte und Wartezeiten

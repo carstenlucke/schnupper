@@ -24,14 +24,14 @@ With a custom tool it looks like this:
 bus_publish {"value": 42}
 ```
 
-The second difference matters more: **whatever a tool handles, the prompt no
-longer has to explain.** In the OpenCode version of this project every agent
-prompt carried half a page of error handling — don't open empty files with the
-read tool, produce timestamps without milliseconds, never write absolute paths,
-don't use `write` for log files. That was not a task description but an
-operating manual for tools built for something else.
+The second difference matters more: **whatever a tool handles, the prompt does
+not have to explain.** With generic tools every agent prompt would need half a
+page of error handling — don't open empty files with the read tool, produce
+timestamps without milliseconds, never write absolute paths, don't use `write`
+for log files. That would not be a task description but an operating manual for
+tools built for something else.
 
-Now that care lives in code once, and the prompt describes the task.
+This way that care lives in code once, and the prompt describes the task.
 
 ## Where the tools live
 

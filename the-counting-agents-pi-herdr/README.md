@@ -10,16 +10,15 @@ and start up again.
 
 > German version: [readme_de.md](readme_de.md) — the demo itself is in German.
 
-## What differs from `the-counting-agents`
+## Custom tools instead of generic ones
 
-The sister project does the same thing with the **OpenCode CLI** and a model
-served locally through LM Studio. This one uses the **pi CLI** and a model in
-the cloud — and above all: **its own tools**.
+The demo runs on the **pi CLI** with a model in the cloud — and above all with
+**its own tools**.
 
-Under OpenCode the agents do their work through the generic `bash`, `read` and
-`write` tools. They assemble JSON by hand, append it with `echo >>`, produce
-timestamps, guard against empty files. What shows up in the pane is a shell
-line.
+pi ships generic tools: `bash`, `read` and `write`. The demo could be built on
+them, too. The agents would then assemble JSON by hand, append it with
+`echo >>`, produce timestamps, guard against empty files. What would show up in
+the pane is a shell line.
 
 Here every operation gets its own tool with a name that says what it does:
 
@@ -34,8 +33,8 @@ bash echo '{"type":"number","seq":42,"value":42,"timestamp":"..."}' >> _bus/numb
 ```
 
 For an audience with no programming background, that is the whole difference.
-And the agent prompts shrink from two pages of error handling to twelve lines
-of task description.
+And the agent prompts get by with twelve lines of task description instead of
+two pages of error handling.
 
 Second difference: the agents have **no** built-in tools. No `bash`, no `read`,
 no `write`. Each can do exactly what its role requires — the counter may
