@@ -1,12 +1,8 @@
 ---
 description: Zielgruppenanalyse – identifiziert Personas, Marktsegmente und Kaufkraft
-model: openai/gpt-5.5
-reasoningEffort: medium
-tools:
-  bash: true
-  read: true
-  write: true
-  webfetch: true
+model: openai-codex/gpt-5.6-luna
+thinking: medium
+tools: read,write,bash,webfetch
 ---
 
 # Zielgruppen-Agent

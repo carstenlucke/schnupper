@@ -1,12 +1,8 @@
 ---
 description: Social-Media-Posts – erstellt plattformspezifische Inhalte für Instagram, LinkedIn und TikTok
-model: openai/gpt-5.5
-reasoningEffort: medium
-tools:
-  bash: true
-  read: true
-  write: true
-  webfetch: true
+model: openai-codex/gpt-5.6-luna
+thinking: medium
+tools: read,write,bash,webfetch
 ---
 
 # Social-Media-Agent

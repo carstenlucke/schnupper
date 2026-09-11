@@ -15,8 +15,8 @@
 Browser (Dashboard SPA)
     ↕ HTTP + SSE
 Python-Server (server.py, nur stdlib)
-    ↕ subprocess + PTY
-OpenCode CLI (opencode run --agent <name> <prompt>)
+    ↕ subprocess, JSON-Ereignisse auf stdout
+pi CLI (pi --mode json --model … --tools … --system-prompt <agents/name.md>)
     ↕ Datei-I/O
 projekte/<slug>/
 ```
@@ -27,7 +27,10 @@ projekte/<slug>/
 
 - `ThreadingHTTPServer` auf Port 8000
 - Statische Dateien aus `dashboard/`
-- Agent-Prozesse via PTY-Subprocess (ANSI-Farben erhalten)
+- Agent-Prozesse via `pi --mode json`; `PiAusgabe` übersetzt die Ereignisse
+  (Denken, Werkzeugaufrufe, Text, Tokenverbrauch) in farbigen Terminal-Text.
+  `pi -p` wäre einfacher, zeigt aber nur die Schlussantwort – das Terminal
+  bliebe während des Laufs leer.
 - **Status aus Dateisystem abgeleitet** (kein State-File): `done` = alle erwarteten Output-Dateien existieren, `running` = Prozess aktiv, `error` = Prozess beendet aber Outputs fehlen, `idle` = sonst
 
 ### API-Endpunkte
@@ -68,9 +71,36 @@ Kalkulation (sofort) ─────┤
                        Website
 ```
 
-## Agenten: .opencode/agents/
+## Agenten: agents/
 
-5 Agent-Definitionen mit YAML-Frontmatter (`description`, `model`, `reasoningEffort`, `tools`).
+pi hat **kein eingebautes Agenten-Konzept**. Ein Agent ist eine Markdown-Datei;
+`build_pi_command()` in `server.py` liest das Frontmatter und baut daraus den
+pi-Aufruf, der Text darunter wird zum Systemprompt.
+
+```markdown
+---
+description: Zielgruppenanalyse – identifiziert Personas, Marktsegmente und Kaufkraft
+model: openai-codex/gpt-5.6-luna
+thinking: medium
+tools: read,write,bash,webfetch
+skills: popular-web-designs
+---
+```
+
+Das Frontmatter ist bewusst flach: eine Zeile je Feld, Listen kommagetrennt,
+keine Kommentare – der Parser in `read_agent()` liest `schlüssel: wert`.
+
+| Feld | Wird zu |
+|---|---|
+| `model` | `--model` (außer `SHIP_IT_MODEL` in `.env` ist gesetzt) |
+| `thinking` | `--thinking` (`off`, `minimal`, `low`, `medium`, `high`, `xhigh`) |
+| `tools` | `--tools` – Allowlist, andere Werkzeuge gibt es für den Agenten nicht |
+| `skills` | optional; je Name ein `--skill .pi/skills/<name>` |
+| `description` | nur Anzeige im Dashboard |
+
+Ein neuer Agent braucht außer der Datei einen Eintrag in `AGENT_PATHS`,
+`AGENT_ORDER` und `AGENT_LABELS` in `server.py` sowie die
+Abhängigkeitslogik im Frontend.
 
 | Agent | Liest | Schreibt |
 |-------|-------|----------|
@@ -86,8 +116,17 @@ Systemprompts definieren Rolle und Output-Format, aber **keine konkreten Dateipf
 
 ## Konfiguration
 
-- `opencode.json`: Provider (`openai`) + Default-Model
-- Agenten können das Model per Frontmatter überschreiben
+- Modell je Agent im Frontmatter; `SHIP_IT_MODEL` in `.env` schlägt alle
+  zugleich – der Weg, im Hörsaal den Anbieter zu wechseln. Die Anmeldung beim
+  Anbieter erledigt pi selbst (`pi` → `/login`); in `.env` steht nur der
+  `OPENAI_API_KEY` für die Bildgenerierung
+- `.pi/extensions/webfetch.ts`: Werkzeug `webfetch` – pi bringt keins fürs
+  Internet mit. Alle `.ts` dort bekommt jeder Agent per `-e`, freigeschaltet
+  ist aber nur, was in seinem `tools:` steht
+- `.pi/skills/popular-web-designs`: Design-Vorlagen, per `skills:` nur beim
+  Website-Agenten
+- Globale pi-Extensions, -Skills und CLAUDE.md erreichen die Agenten **nicht**
+  (`-ne -ns -nc`) – die Demo läuft auf jedem Rechner gleich
 - Projekte unter `projekte/<slug>/` (gitignored, runtime-only)
 
 ## Konventionen

@@ -13,6 +13,15 @@ elif lsof -ti :8000 >/dev/null 2>&1; then
     exit 1
 fi
 
+# Die Agenten laufen über die pi CLI – ohne sie startet zwar das Dashboard,
+# aber kein einziger Agent
+if ! command -v pi >/dev/null 2>&1; then
+    echo "FEHLER: pi CLI nicht gefunden."
+    echo "  Installieren mit:  npm install -g @earendil-works/pi-coding-agent"
+    echo "  Danach einmal 'pi' starten und mit /login beim Modell-Anbieter anmelden."
+    exit 1
+fi
+
 # Projekte-Verzeichnis anlegen
 mkdir -p projekte
 

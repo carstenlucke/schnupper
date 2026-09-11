@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 """Ship It! Dashboard – Python-Backend (stdlib only).
 
-Startet OpenCode-Agenten als PTY-Subprozesse, streamt Output per SSE,
-verwaltet Projekte und liefert das Dashboard aus.
+Startet die Agenten als pi-Subprozesse, übersetzt ihre Ereignisse in
+Terminal-Text, streamt ihn per SSE, verwaltet Projekte und liefert das
+Dashboard aus.
 """
 
 import json
 import os
-import pty
-import select
 import signal
 import subprocess
+import sys
 import threading
 import re
-import termios
 import shutil
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 import base64
@@ -24,6 +23,9 @@ PORT = 8000
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJEKTE_DIR = os.path.join(BASE_DIR, "projekte")
 DASHBOARD_DIR = os.path.join(BASE_DIR, "dashboard")
+AGENTS_DIR = os.path.join(BASE_DIR, "agents")
+PI_EXTENSIONS_DIR = os.path.join(BASE_DIR, ".pi", "extensions")
+PI_SKILLS_DIR = os.path.join(BASE_DIR, ".pi", "skills")
 
 
 def _load_dotenv():
@@ -100,7 +102,7 @@ AGENT_LABELS = {
 # ---------------------------------------------------------------------------
 # Prozess-Verwaltung (in-memory)
 # ---------------------------------------------------------------------------
-# Key: (slug, agent_name) → {"process": Popen, "master_fd": int, "output": list[str], "exit_code": int|None}
+# Key: (slug, agent_name) → {"process": Popen, "output": list[str], "exit_code": int|None}
 running_processes: dict[tuple[str, str], dict] = {}
 process_lock = threading.Lock()
 
@@ -199,8 +201,292 @@ AUSGABE (schreibe in diese Dateien, erstelle Verzeichnisse falls nötig):
 {aufgabe}"""
 
 
+# ---------------------------------------------------------------------------
+# Agenten-Dateien: agents/<name>.md
+# ---------------------------------------------------------------------------
+# pi kennt keine Agenten. Ein Agent ist hier ein pi-Aufruf mit eigenem
+# Systemprompt, eigenem Modell und eigenen Werkzeugen – alles drei steht in
+# einer Markdown-Datei: oben das Frontmatter, darunter die Aufgabe.
+
+
+def read_agent(agent: str) -> tuple[dict, str, str] | None:
+    """Lies eine Agenten-Datei. Liefert (Frontmatter, Systemprompt, Rohtext)."""
+    agent_file = os.path.join(AGENTS_DIR, f"{agent}.md")
+    if not os.path.exists(agent_file):
+        return None
+
+    with open(agent_file, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    body = content
+    meta = {}
+    if content.startswith("---"):
+        end = content.find("---", 3)
+        if end != -1:
+            frontmatter = content[3:end].strip()
+            body = content[end + 3 :].strip()
+            for line in frontmatter.split("\n"):
+                if ":" in line and not line.startswith(" "):
+                    key, _, value = line.partition(":")
+                    meta[key.strip()] = value.strip()
+    return meta, body, content
+
+
+def agent_model(meta: dict) -> str:
+    """Das Modell, mit dem ein Agent tatsächlich läuft: SHIP_IT_MODEL aus der
+    .env schlägt den `model:`-Eintrag – für alle Agenten zugleich."""
+    return os.environ.get("SHIP_IT_MODEL") or meta.get("model", "")
+
+
+def _liste(wert: str) -> list[str]:
+    """Kommagetrennte Frontmatter-Angabe als Liste: "read, write" → [read, write]"""
+    return [teil.strip() for teil in wert.split(",") if teil.strip()]
+
+
+def build_pi_command(meta: dict, system_prompt: str, prompt: str) -> list[str]:
+    """Baue den pi-Aufruf für einen Agenten aus seinem Frontmatter.
+
+    Die Flags im Einzelnen:
+      --mode json   jedes Ereignis als JSON-Zeile – Denken, Werkzeugaufrufe,
+                    Text. `-p` allein zeigt nur die Schlussantwort, das Terminal
+                    im Dashboard bliebe minutenlang leer
+      --no-session  kein Gesprächsverlauf, jeder Lauf beginnt bei null
+      -nc           CLAUDE.md/AGENTS.md ignorieren – der Agent kennt nur
+                    seinen Prompt
+      -ns, -np      Skills und Prompt-Vorlagen nicht selbst einsammeln; ein
+                    Skill kommt nur über `skills:` im Frontmatter dazu
+      -ne, -e       nur die Werkzeuge aus .pi/extensions/ laden, nichts, was
+                    global auf dem Rechner installiert ist
+      --tools       genau die Werkzeuge aus dem Frontmatter, keine weiteren
+    """
+    cmd = ["pi", "--mode", "json", "--no-session", "-nc", "-ns", "-np", "-ne"]
+    if os.path.isdir(PI_EXTENSIONS_DIR):
+        for name in sorted(os.listdir(PI_EXTENSIONS_DIR)):
+            if name.endswith(".ts"):
+                cmd += ["-e", os.path.join(PI_EXTENSIONS_DIR, name)]
+
+    model = agent_model(meta)
+    if model:
+        cmd += ["--model", model]
+    if meta.get("thinking"):
+        cmd += ["--thinking", meta["thinking"]]
+    if meta.get("tools"):
+        cmd += ["--tools", ",".join(_liste(meta["tools"]))]
+    for skill in _liste(meta.get("skills", "")):
+        cmd += ["--skill", os.path.join(PI_SKILLS_DIR, skill)]
+
+    cmd += ["--system-prompt", system_prompt, "--", prompt]
+    return cmd
+
+
+# ---------------------------------------------------------------------------
+# pi-Ereignisse → Terminal
+# ---------------------------------------------------------------------------
+# Farben für das xterm.js-Terminal im Dashboard (ANSI-Escape-Sequenzen)
+ANSI_RESET = "\x1b[0m"
+ANSI_FETT = "\x1b[1m"
+ANSI_BLASS = "\x1b[2m"
+ANSI_KURSIV = "\x1b[3m"
+ANSI_ROT = "\x1b[31m"
+ANSI_GELB = "\x1b[33m"
+ANSI_CYAN = "\x1b[36m"
+ZEILE_LEEREN = "\r\x1b[K"
+
+
+def _zahl(n: int) -> str:
+    """Tausenderpunkte wie im Deutschen: 12345 → 12.345"""
+    return f"{n:,}".replace(",", ".")
+
+
+def _groesse(zeichen: int) -> str:
+    """Textlänge zum Vorlesen: 830 Zeichen, 5,2 KB"""
+    if zeichen < 1024:
+        return f"{zeichen} Zeichen"
+    return f"{zeichen / 1024:.1f} KB".replace(".", ",")
+
+
+def _gekuerzt(text: str, max_zeilen: int) -> str:
+    """Die ersten Zeilen eines Werkzeugergebnisses, eingerückt."""
+    zeilen = text.splitlines()
+    gezeigt = [f"  {z[:200]}" for z in zeilen[:max_zeilen]]
+    if len(zeilen) > max_zeilen:
+        gezeigt.append(f"  … ({len(zeilen) - max_zeilen} weitere Zeilen)")
+    return "\n".join(gezeigt)
+
+
+def _werkzeug_kurz(name: str, args: dict) -> str:
+    """Die Argumente eines Werkzeugaufrufs in einer Zeile – das, was man sehen will."""
+    if name == "write":
+        groesse = _groesse(len(args.get("content", "")))
+        return f"{args.get('path', '')} {ANSI_BLASS}({groesse}){ANSI_RESET}"
+    if name == "bash":
+        befehl = args.get("command", "").strip().splitlines()
+        if not befehl:
+            return ""
+        return befehl[0][:200] + (" …" if len(befehl) > 1 else "")
+    for feld in ("path", "url"):
+        if feld in args:
+            return str(args[feld])
+    return json.dumps(args, ensure_ascii=False)[:200]
+
+
+class PiAusgabe:
+    """Übersetzt den Ereignisstrom von `pi --mode json` in Terminal-Text.
+
+    pi meldet jeden Zwischenschritt als JSON-Zeile: Denken, Text,
+    Werkzeugaufrufe samt Ergebnis. Hier wird daraus das, was im
+    Dashboard-Terminal zu sehen ist – der Agent soll beim Arbeiten sichtbar
+    sein, nicht erst am Ende.
+    """
+
+    def __init__(self):
+        self.zeilenanfang = True  # Steht der Cursor am Zeilenanfang?
+        self.werkzeug = None  # Werkzeug, dessen Aufruf das Modell gerade schreibt
+        self.werkzeug_zeichen = 0  # Bisher gestreamte Zeichen dieses Aufrufs
+        self.fortschritt_bei = 0  # Stand der zuletzt gezeigten Fortschrittszeile
+
+    def verarbeite(self, zeile: str) -> str:
+        """Übersetze eine Ausgabezeile von pi in Text fürs Terminal."""
+        zeile = zeile.strip()
+        if not zeile:
+            return ""
+        try:
+            ereignis = json.loads(zeile)
+        except json.JSONDecodeError:
+            ereignis = None
+        if not isinstance(ereignis, dict):
+            # Keine Ereigniszeile, sondern eine Meldung von pi selbst – meist
+            # ein Fehler beim Start (unbekanntes Modell, fehlender Login)
+            return self._ausgabe(f"{self._umbruch()}{ANSI_ROT}{zeile}{ANSI_RESET}\n")
+        return self._ausgabe(self._uebersetze(ereignis))
+
+    # Farbcodes am Textende – sie verschieben den Cursor nicht
+    _ANSI_AM_ENDE = re.compile(r"(?:\x1b\[[0-9;]*[A-Za-z])+$")
+
+    def _ausgabe(self, text: str) -> str:
+        sichtbar = self._ANSI_AM_ENDE.sub("", text)
+        if sichtbar:
+            self.zeilenanfang = sichtbar.endswith("\n")
+        return text
+
+    def _umbruch(self) -> str:
+        return "" if self.zeilenanfang else "\n"
+
+    def _uebersetze(self, e: dict) -> str:
+        typ = e.get("type")
+        if typ == "message_update":
+            return self._stream(e.get("assistantMessageEvent") or {})
+
+        if typ == "tool_execution_start":
+            name = e.get("toolName", "?")
+            anfang = ZEILE_LEEREN if self.fortschritt_bei else self._umbruch()
+            self.werkzeug, self.fortschritt_bei = None, 0
+            kurz = _werkzeug_kurz(name, e.get("args") or {})
+            return f"{anfang}{ANSI_CYAN}→ {ANSI_FETT}{name}{ANSI_RESET} {kurz}\n"
+
+        if typ == "tool_execution_end":
+            ergebnis = e.get("result") or {}
+            text = "".join(
+                teil.get("text", "")
+                for teil in ergebnis.get("content") or []
+                if teil.get("type") == "text"
+            ).strip()
+            if e.get("isError"):
+                return f"{ANSI_ROT}{_gekuerzt(text or 'Fehler', 4)}{ANSI_RESET}\n"
+            if e.get("toolName") == "bash" and text:
+                return f"{ANSI_BLASS}{_gekuerzt(text, 6)}{ANSI_RESET}\n"
+            return ""
+
+        if typ == "message_end":
+            nachricht = e.get("message") or {}
+            if nachricht.get("role") == "assistant" and nachricht.get(
+                "stopReason"
+            ) in ("error", "aborted"):
+                grund = nachricht.get("errorMessage") or "Anfrage abgebrochen"
+                return f"{self._umbruch()}{ANSI_ROT}✗ {grund}{ANSI_RESET}\n"
+            return ""
+
+        if typ == "auto_retry_start":
+            sekunden = e.get("delayMs", 0) / 1000
+            return (
+                f"{self._umbruch()}{ANSI_GELB}↻ {e.get('errorMessage', 'Fehler beim Anbieter')}"
+                f" – neuer Versuch {e.get('attempt')}/{e.get('maxAttempts')}"
+                f" in {sekunden:.0f}s{ANSI_RESET}\n"
+            )
+
+        if typ == "agent_end" and not e.get("willRetry"):
+            return self._verbrauch(e.get("messages") or [])
+        return ""
+
+    def _stream(self, a: dict) -> str:
+        """Was das Modell gerade Stück für Stück erzeugt."""
+        art = a.get("type")
+        if art == "thinking_start":
+            return f"{self._umbruch()}{ANSI_BLASS}{ANSI_KURSIV}💭 "
+        if art == "thinking_delta":
+            # Die Denk-Zusammenfassungen kommen als Markdown – ** und
+            # Leerzeilen stören im Terminal
+            delta = a.get("delta", "").replace("**", "")
+            delta = re.sub(r"\n{2,}", "\n", delta)
+            return f"{ANSI_BLASS}{ANSI_KURSIV}{delta}{ANSI_RESET}"
+        if art == "thinking_end":
+            return f"{ANSI_RESET}{self._umbruch()}"
+        if art == "text_start":
+            return self._umbruch()
+        if art == "text_delta":
+            return a.get("delta", "")
+        if art == "text_end":
+            return self._umbruch()
+        if art == "toolcall_start":
+            # Im JSON-Modus lässt pi die halbfertige Antwort (partial) weg und
+            # schreibt den Werkzeugnamen direkt ins Ereignis
+            self.werkzeug = a.get("toolName") or "?"
+            self.werkzeug_zeichen = self.fortschritt_bei = 0
+            return ""
+        if art == "toolcall_delta" and self.werkzeug:
+            # Ein langer Aufruf – write mit einer ganzen Website – entsteht über
+            # Minuten, bevor das Werkzeug überhaupt läuft. Eine mitlaufende Zeile
+            # zeigt, dass der Agent gerade schreibt und nicht hängt.
+            self.werkzeug_zeichen += len(a.get("delta", ""))
+            if self.werkzeug_zeichen - self.fortschritt_bei >= 1000:
+                anfang = ZEILE_LEEREN if self.fortschritt_bei else self._umbruch()
+                self.fortschritt_bei = self.werkzeug_zeichen
+                groesse = _groesse(self.werkzeug_zeichen)
+                return f"{anfang}{ANSI_BLASS}✎ {self.werkzeug} … {groesse}{ANSI_RESET}"
+        return ""
+
+    def _verbrauch(self, nachrichten: list) -> str:
+        """Schlusszeile: wie viel Text das Modell gelesen und geschrieben hat."""
+        gelesen = geschrieben = 0
+        kosten = 0.0
+        for n in nachrichten:
+            if n.get("role") != "assistant":
+                continue
+            usage = n.get("usage") or {}
+            gelesen += usage.get("input", 0) + usage.get("cacheRead", 0)
+            geschrieben += usage.get("output", 0)
+            kosten += (usage.get("cost") or {}).get("total", 0)
+        if not gelesen and not geschrieben:
+            return ""
+        zeile = f"Tokens: {_zahl(gelesen)} gelesen · {_zahl(geschrieben)} geschrieben"
+        if kosten > 0:
+            zeile += f" · Listenpreis: {kosten:.2f} $".replace(".", ",")
+        return f"{self._umbruch()}\n{ANSI_BLASS}{zeile}{ANSI_RESET}\n"
+
+
+def _kopfzeilen(meta: dict) -> str:
+    """Was vor dem ersten Ereignis im Terminal steht: womit der Agent arbeitet."""
+    zeilen = [f"Modell:    {agent_model(meta) or '(pi-Voreinstellung)'}"]
+    if meta.get("thinking"):
+        zeilen[0] += f" · Denken: {meta['thinking']}"
+    zeilen.append(f"Werkzeuge: {', '.join(_liste(meta.get('tools', ''))) or '–'}")
+    if meta.get("skills"):
+        zeilen.append(f"Skills:    {', '.join(_liste(meta['skills']))}")
+    return f"{ANSI_BLASS}" + "\n".join(zeilen) + f"{ANSI_RESET}\n\n"
+
+
 def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
-    """Starte einen OpenCode-Agent als PTY-Subprocess."""
+    """Starte einen Agenten als pi-Subprozess."""
     key = (slug, agent)
 
     with process_lock:
@@ -210,91 +496,73 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
             if proc and proc.poll() is None:
                 return {"error": "Agent läuft bereits"}
 
+    definition = read_agent(agent)
+    if not definition:
+        return {"error": f"agents/{agent}.md nicht gefunden"}
+    meta, system_prompt, _ = definition
+
     prompt = build_run_prompt(slug, agent, feedback)
-    cmd = ["opencode", "run", "--agent", agent, prompt]
+    cmd = build_pi_command(meta, system_prompt, prompt)
 
     import sys
 
-    print(f"[agent-start] {slug}/{agent} → {' '.join(cmd[:4])} '...'", file=sys.stderr)
-
-    # PTY erstellen für ANSI-Farben
-    master_fd, slave_fd = pty.openpty()
-
-    # Flusssteuerung deaktivieren – verhindert, dass XON/XOFF-Zeichen
-    # (0x11/0x13) in den Datenstrom gelangen und Dateien kontaminieren
-    try:
-        attrs = termios.tcgetattr(slave_fd)
-        attrs[0] &= ~(termios.IXON | termios.IXOFF | termios.IXANY)
-        termios.tcsetattr(slave_fd, termios.TCSANOW, attrs)
-    except termios.error:
-        pass
+    print(
+        f"[agent-start] {slug}/{agent} → pi --model {agent_model(meta)} "
+        f"--tools {meta.get('tools', '')} '...'",
+        file=sys.stderr,
+    )
 
     try:
         proc = subprocess.Popen(
             cmd,
-            stdout=slave_fd,
-            stderr=slave_fd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            # pi liest die Standardeingabe mit in den Auftrag ein. Bliebe sie
+            # offen, wartete der Agent für immer auf ihr Ende.
             stdin=subprocess.DEVNULL,
             cwd=BASE_DIR,
-            env={**os.environ, "TERM": "xterm-256color"},
+            text=True,
+            encoding="utf-8",
+            errors="replace",
         )
+    except FileNotFoundError:
+        return {
+            "error": "pi CLI nicht gefunden – installieren mit "
+            "'npm install -g @earendil-works/pi-coding-agent'"
+        }
     except Exception as e:
-        os.close(master_fd)
-        os.close(slave_fd)
         print(f"[agent-error] {slug}/{agent}: {e}", file=sys.stderr)
         return {"error": str(e)}
-    os.close(slave_fd)
 
     proc_info = {
         "process": proc,
-        "master_fd": master_fd,
-        "output": [],
+        "output": [_kopfzeilen(meta)],
         "exit_code": None,
     }
 
     with process_lock:
         running_processes[key] = proc_info
 
-    # Background-Thread zum Lesen des Outputs
+    # Background-Thread: Ereignisse lesen, übersetzen, für den SSE-Stream sammeln
     def reader():
+        ausgabe = PiAusgabe()
         try:
-            while True:
-                r, _, _ = select.select([master_fd], [], [], 0.5)
-                if r:
-                    try:
-                        data = os.read(master_fd, 4096)
-                        if not data:
-                            break
-                        proc_info["output"].append(
-                            data.decode("utf-8", errors="replace")
-                        )
-                    except OSError:
-                        break
-                if proc.poll() is not None:
-                    # Restliche Daten lesen
-                    try:
-                        while True:
-                            r, _, _ = select.select([master_fd], [], [], 0.1)
-                            if r:
-                                data = os.read(master_fd, 4096)
-                                if not data:
-                                    break
-                                proc_info["output"].append(
-                                    data.decode("utf-8", errors="replace")
-                                )
-                            else:
-                                break
-                    except OSError:
-                        pass
-                    break
+            for zeile in proc.stdout:
+                # Ein Ereignis in unerwarteter Form – etwa Werkzeugargumente,
+                # die das Modell falsch gebaut hat – darf den Leser nicht
+                # beenden: sonst bliebe der Rest des Laufs unsichtbar und pi
+                # wartete womöglich auf eine volle Pipe
+                try:
+                    text = ausgabe.verarbeite(zeile)
+                except Exception as e:
+                    print(f"[agent-warn] {slug}/{agent}: {e!r}", file=sys.stderr)
+                    continue
+                if text:
+                    proc_info["output"].append(text)
+        except (OSError, ValueError):
+            pass
         finally:
-            try:
-                os.close(master_fd)
-            except OSError:
-                pass
-            proc_info["exit_code"] = (
-                proc.returncode if proc.returncode is not None else proc.wait()
-            )
+            proc_info["exit_code"] = proc.wait()
 
     t = threading.Thread(target=reader, daemon=True)
     t.start()
@@ -702,26 +970,13 @@ class ShipItHandler(SimpleHTTPRequestHandler):
             self._send_json({"error": "Unbekannter Agent"}, 400)
             return
 
-        agent_file = os.path.join(BASE_DIR, ".opencode", "agents", f"{agent_name}.md")
-        if not os.path.exists(agent_file):
+        definition = read_agent(agent_name)
+        if not definition:
             self._send_json({"error": "Agent-Datei nicht gefunden"}, 404)
             return
-
-        with open(agent_file, "r", encoding="utf-8") as f:
-            content = f.read()
-
-        # YAML-Frontmatter extrahieren und entfernen
-        body = content
-        meta = {}
-        if content.startswith("---"):
-            end = content.find("---", 3)
-            if end != -1:
-                frontmatter = content[3:end].strip()
-                body = content[end + 3 :].strip()
-                for line in frontmatter.split("\n"):
-                    if ":" in line and not line.startswith(" "):
-                        key, _, value = line.partition(":")
-                        meta[key.strip()] = value.strip()
+        meta, body, content = definition
+        # Das Badge im Dashboard zeigt das Modell, das wirklich läuft
+        meta = {**meta, "model": agent_model(meta)}
 
         self._send_json(
             {

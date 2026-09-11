@@ -1,12 +1,9 @@
 ---
 description: Landingpage – erstellt eine responsive One-Page-Website für das Produkt
-model: openai/gpt-5.5
-reasoningEffort: medium
-tools:
-  bash: true
-  read: true
-  write: true
-  webfetch: true
+model: openai-codex/gpt-5.6-luna
+thinking: medium
+tools: read,write,bash,webfetch
+skills: popular-web-designs
 ---
 
 # Website-Agent

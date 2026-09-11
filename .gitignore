@@ -5,3 +5,6 @@
 .agents/worktrees/
 .claude/worktrees
 .pi/worktrees
+
+# macOS
+.DS_Store
