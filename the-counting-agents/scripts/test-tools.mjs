@@ -116,6 +116,24 @@ check("nach einem Reset zählt der Counter von vorn", JSON.parse((await call("st
 await pause();
 await call("state_write", { agent: "odd", last_seq: 0, numbers: [] });
 check("nach state_write ist der Reset erledigt", JSON.parse((await call("control_read", { agent: "odd" })).text).reset_requested === false);
+await call("state_write", { agent: "odd", last_seq: 2 });
+check("ein weiteres state_write löst keinen zweiten Reset aus", JSON.parse((await call("control_read", { agent: "odd" })).text).reset_requested === false);
+
+// Ein Reset, der mitten in einem Durchlauf eintrifft, darf nicht verloren
+// gehen: Der Durchlauf hat den Steuerbus vor dem Reset gelesen und schreibt
+// seinen Zustand erst danach. Erledigt ist der Reset erst, wenn ein Agent ihn
+// gesehen und dann geschrieben hat.
+await call("control_read", { agent: "prime" });
+await call("state_write", { agent: "prime", last_seq: 0, numbers: [] });
+await pause();
+await call("control_read", { agent: "prime" }); // Durchlauf beginnt, noch kein Reset
+await pause();
+await call("control_send", { target: "prime", command: "reset" });
+await pause();
+await call("state_write", { agent: "prime", last_seq: 3, numbers: [2, 3] }); // Durchlauf endet nach dem Reset
+check("Reset mitten im Durchlauf geht nicht verloren", JSON.parse((await call("control_read", { agent: "prime" })).text).reset_requested === true);
+await call("state_write", { agent: "prime", last_seq: 0, numbers: [] });
+check("gesehen und geschrieben: Reset erledigt", JSON.parse((await call("control_read", { agent: "prime" })).text).reset_requested === false);
 
 r = await call("state_read", { agent: "all" });
 check("state_read 'all' liefert alle vier", Object.keys(JSON.parse(r.text)).join(",") === AGENTS.join(","));

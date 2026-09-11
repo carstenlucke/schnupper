@@ -56,6 +56,11 @@ interface AgentState {
   count?: number;
   status?: string;
   updated_at?: string | null;
+  // Quittung für Resets: control_read trägt ein, welchen Reset es dem Agenten
+  // gemeldet hat; state_write bestätigt genau diesen. Ein Reset gilt erst
+  // dann als erledigt (siehe control_read).
+  reset_seen_at?: string | null;
+  reset_done_at?: string | null;
 }
 
 // --- Dateizugriff ---------------------------------------------------------
@@ -143,6 +148,12 @@ function readStoredState(agent: AgentName): AgentState {
   } catch {
     return defaultState(agent);
   }
+}
+
+function writeStoredState(state: AgentState): void {
+  const file = stateFile(state.agent);
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, `${JSON.stringify(state)}\n`, "utf8");
 }
 
 const ok = (payload: unknown) => ({
@@ -244,8 +255,8 @@ export default function (pi: ExtensionAPI) {
       "Befehle an den Agenten selbst und an 'all', spätere überschreiben frühere. " +
       "Gibt status (running/paused/stopped), verbose (true: ausführlich berichten) und " +
       "reset_requested zurück. reset_requested ist true, wenn ein Neustart verlangt wurde, " +
-      "seit der Agent zuletzt seinen Zustand geschrieben hat — er gilt als erledigt, " +
-      "sobald der Agent seinen Zustand wieder schreibt.",
+      "den der Agent noch nicht erledigt hat — erledigt ist er, sobald der Agent ihn " +
+      "hier gesehen und danach seinen Zustand geschrieben hat.",
     parameters: Type.Object({
       agent: StringEnum(AGENTS, { description: "Für welchen Agenten gefragt wird" }),
     }),
@@ -282,11 +293,18 @@ export default function (pi: ExtensionAPI) {
         }
       }
 
-      // Ein Reset gilt als erledigt, sobald der Agent danach seinen State
-      // geschrieben hat. Ohne diesen Vergleich würde er sich bei jedem
+      // Ein Reset gilt erst als erledigt, wenn der Agent ihn hier gesehen und
+      // danach seinen Zustand geschrieben hat — nicht schon, wenn irgendein
+      // state_write jünger ist als der Reset. Sonst verschluckt ihn ein
+      // Durchlauf, der vor dem Reset gelesen und erst danach geschrieben hat;
+      // bei zehn Sekunden je Durchlauf und drei Sekunden Takt ist das der
+      // Normalfall. Und ohne die Quittung würde sich der Agent bei jedem
       // Durchlauf erneut zurücksetzen und nie wieder vorankommen.
-      const updatedAt = readState(params.agent).updated_at ?? null;
-      const resetRequested = lastReset !== null && (updatedAt === null || lastReset > updatedAt);
+      const stored = readStoredState(params.agent);
+      const resetRequested = lastReset !== null && (stored.reset_done_at ?? null) !== lastReset;
+      if (resetRequested && (stored.reset_seen_at ?? null) !== lastReset) {
+        writeStoredState({ ...stored, reset_seen_at: lastReset });
+      }
 
       return ok({ status, verbose, reset_requested: resetRequested });
     },
@@ -389,10 +407,10 @@ export default function (pi: ExtensionAPI) {
       // hier behauptet.
       if (agent === "counter") state.last_value = counterValue();
       state.updated_at = now();
+      // Quittiert den Reset, den control_read zuletzt gemeldet hat — und nur den.
+      state.reset_done_at = state.reset_seen_at ?? null;
 
-      const file = stateFile(agent);
-      fs.mkdirSync(path.dirname(file), { recursive: true });
-      fs.writeFileSync(file, `${JSON.stringify(state)}\n`, "utf8");
+      writeStoredState(state);
       return ok(state);
     },
   });
