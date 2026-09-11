@@ -52,9 +52,11 @@ Request 5  →  model: "→ 1"                                            989 in
 ```
 
 Four tool calls, **five requests to the model**, one line of output. The
-sequence comes from the prompt — those four steps stand there in that order.
-The model follows it because it is written there, not because anything forces
-it to.
+sequence comes from the prompt — but not as a list of tool names; it is a
+sentence: check for instructions; see where you left off; put the next number
+on the bus; remember how far you got. Which tool belongs to which clause the
+model works out from the tool descriptions. It follows the order because it is
+written there, not because anything forces it to.
 
 You can count this yourself at any time:
 

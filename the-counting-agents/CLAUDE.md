@@ -96,6 +96,16 @@ interval: 3
 Die Werkzeug-Allowlist je Agent ist **didaktisch gemeint** — nicht großzügiger
 setzen, um einen Durchlauf zu retten.
 
+**Der Prompt unter dem Frontmatter ist natürliche Sprache.** Er beschreibt die
+Aufgabe so, wie man sie einem Menschen erklären würde („sieh nach, wo du
+stehst, nenn die nächste Zahl, merk dir, wie weit du bist"), und nennt kein
+Werkzeug beim Namen — das ist der Punkt, den die Vorlesung zeigen soll.
+Werkzeugnamen stehen nur im `tools:`-Feld und erscheinen als Aufrufe im Pane.
+Das *Wie* eines Handgriffs (welches Feld, welcher Parameter) gehört in die
+`description` des Werkzeugs in `counting-tools.ts`, nicht in den Prompt. Der
+Agent muss allerdings seinen eigenen Namen kennen („Du heißt **odd**"), weil
+die Werkzeuge ihn als Parameter verlangen.
+
 ## Werkzeuge: .pi/extensions/
 
 | Datei | Zweck |
@@ -104,7 +114,9 @@ setzen, um einen Durchlauf zu retten.
 | `tensorx-schnupper.ts` | Meldet TensorX unter eigenem Namen an, mit eigenem Schlüssel und `max_tokens: 4096` |
 
 Nach Änderungen an den Werkzeugen `node scripts/test-tools.mjs` laufen lassen —
-prüft sie direkt, ohne Modell und ohne Kosten. Hintergrund:
+prüft sie direkt, ohne Modell und ohne Kosten. **Aber nie, während die Demo
+läuft:** Der Test arbeitet auf den echten `_bus/`- und `_state/`-Dateien und
+leert sie zu Beginn. Hintergrund:
 [`docs/pi-custom-tools_de.md`](docs/pi-custom-tools_de.md).
 
 ## Modell und Rate-Limits

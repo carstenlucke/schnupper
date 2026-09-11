@@ -33,8 +33,11 @@ muss es bei jedem Durchlauf neu lesen und befolgen.
 ## Die Gegenprobe
 
 Hier steht dieses Wissen einmal im Code der Werkzeuge. Der Prompt des
-Odd-Agenten ist dreißig Zeilen lang und enthält nur, was er tun soll — mit
-einer einzigen Regel zur Mechanik: Der Durchlauf endet mit `state_write`.
+Odd-Agenten ist dreißig Zeilen lang, nennt kein einziges Werkzeug beim Namen
+und enthält nur, was er tun soll — mit einer einzigen Regel zur Mechanik: Am
+Ende jedes Durchlaufs merkt er sich, wie weit er ist, sonst bekommt er beim
+nächsten Mal dieselben Zahlen noch einmal vorgelegt. Welches Werkzeug das
+erledigt, steht in dessen Beschreibung, nicht im Prompt.
 
 Was dabei sichtbar wird:
 
@@ -46,9 +49,8 @@ aufgerufen, oder gar nicht. Das ist die interessantere Sorte — sie handelt von
 der Aufgabe, nicht vom Werkzeugkasten.
 
 Und sie lässt sich beheben, ohne das Modell zu wechseln. Als ein Modell in
-einem Testlauf den abschließenden `state_write` ausließ, half kein besseres
-Modell, sondern ein Satz im Prompt, der sagt, warum dieser Aufruf nicht
-optional ist.
+einem Testlauf das abschließende Merken ausließ, half kein besseres Modell,
+sondern ein Satz im Prompt, der sagt, warum dieser Schritt nicht optional ist.
 
 ### Was man wegnimmt, ist wirksamer als was man verbietet
 

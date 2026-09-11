@@ -52,9 +52,12 @@ Anfrage 5  →  Modell: "→ 1"                                           989 ei
 ```
 
 Vier Werkzeugaufrufe, **fünf Anfragen an das Modell**, eine Zeile Ausgabe. Die
-Schrittfolge stammt aus dem Prompt — dort stehen genau diese vier Schritte in
-dieser Reihenfolge. Das Modell hält sich daran, weil es dort steht, nicht weil
-irgendetwas es erzwingt.
+Schrittfolge stammt aus dem Prompt — dort steht sie allerdings nicht als Liste
+von Werkzeugnamen, sondern als Satz: nachsehen, ob es Anweisungen gibt;
+nachsehen, wo man steht; die nächste Zahl in den Bus stellen; sich merken, wie
+weit man ist. Welches Werkzeug zu welchem Halbsatz gehört, entnimmt das Modell
+den Werkzeugbeschreibungen. Es hält sich an die Reihenfolge, weil sie dort
+steht, nicht weil irgendetwas sie erzwingt.
 
 Nachrechnen kann man das jederzeit selbst:
 

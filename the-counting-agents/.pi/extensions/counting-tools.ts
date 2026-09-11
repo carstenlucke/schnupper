@@ -206,7 +206,9 @@ export default function (pi: ExtensionAPI) {
     label: "Bus · lesen",
     description:
       "Liest neue Ereignisse aus dem Event-Bus (_bus/numbers.log): alle mit einer " +
-      "Sequenznummer größer als `since`. Gibt die Ereignisse, die höchste " +
+      "Sequenznummer größer als `since`. So holt sich ein Agent, was seit seinem " +
+      "letzten Durchlauf dazugekommen ist — `since` ist die zuletzt verarbeitete " +
+      "Sequenznummer aus seinem Zustand. Gibt die Ereignisse, die höchste " +
       "Sequenznummer im Bus und die Zahl der noch nicht gelieferten Ereignisse zurück.",
     parameters: Type.Object({
       since: Type.Number({
@@ -238,10 +240,12 @@ export default function (pi: ExtensionAPI) {
     name: "control_read",
     label: "Steuerung · lesen",
     description:
-      "Fragt ab, was für einen Agenten gerade gilt. Wertet _bus/control.log aus: " +
+      "Fragt ab, welche Anweisungen für einen Agenten gerade gelten. Wertet _bus/control.log aus: " +
       "Befehle an den Agenten selbst und an 'all', spätere überschreiben frühere. " +
-      "Gibt status (running/paused/stopped), verbose (an/aus) und reset_requested zurück. " +
-      "reset_requested ist true, wenn seit dem letzten state_write ein Reset angefordert wurde.",
+      "Gibt status (running/paused/stopped), verbose (true: ausführlich berichten) und " +
+      "reset_requested zurück. reset_requested ist true, wenn ein Neustart verlangt wurde, " +
+      "seit der Agent zuletzt seinen Zustand geschrieben hat — er gilt als erledigt, " +
+      "sobald der Agent seinen Zustand wieder schreibt.",
     parameters: Type.Object({
       agent: StringEnum(AGENTS, { description: "Für welchen Agenten gefragt wird" }),
     }),
@@ -319,9 +323,11 @@ export default function (pi: ExtensionAPI) {
     name: "state_read",
     label: "Zustand · lesen",
     description:
-      "Liest den gespeicherten Zustand eines Agenten aus _state/<agent>.json. " +
-      "Mit 'all' kommen alle vier Zustände auf einmal. Fehlt eine Datei, kommen " +
-      "die Startwerte zurück — ein Fehler ist das nie.",
+      "Liest den gespeicherten Zustand eines Agenten aus _state/<agent>.json — das, " +
+      "was er sich beim letzten Durchlauf gemerkt hat: last_seq (wie weit er im Bus " +
+      "ist), numbers (was er gesammelt hat), beim Counter last_value (die zuletzt " +
+      "veröffentlichte Zahl). Mit 'all' kommen alle vier Zustände auf einmal. Fehlt " +
+      "eine Datei, kommen die Startwerte zurück — ein Fehler ist das nie.",
     parameters: Type.Object({
       agent: StringEnum([...AGENTS, "all"] as const, {
         description: "Welcher Zustand gelesen wird",
@@ -343,13 +349,16 @@ export default function (pi: ExtensionAPI) {
     name: "state_write",
     label: "Zustand · schreiben",
     description:
-      "Schreibt den Zustand eines Agenten nach _state/<agent>.json. Nur die " +
-      "angegebenen Felder werden geändert, alles andere bleibt stehen. " +
-      "Anzahl (count) und Zeitstempel werden automatisch gesetzt.",
+      "Schreibt den Zustand eines Agenten nach _state/<agent>.json — damit merkt er " +
+      "sich am Ende eines Durchlaufs, wie weit er ist (last_seq) und was er gesammelt " +
+      "hat (numbers). Nur die angegebenen Felder werden geändert, alles andere bleibt " +
+      "stehen. Anzahl (count) und Zeitstempel werden automatisch gesetzt.",
     parameters: Type.Object({
       agent: StringEnum(AGENTS, { description: "Wessen Zustand geschrieben wird" }),
       last_seq: Type.Optional(
-        Type.Number({ description: "Zuletzt verarbeitete Sequenznummer aus dem Bus" }),
+        Type.Number({
+          description: "Zuletzt verarbeitete Sequenznummer aus dem Bus; 0 heißt: von vorn",
+        }),
       ),
       last_value: Type.Optional(
         Type.Number({

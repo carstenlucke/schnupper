@@ -32,8 +32,10 @@ obey it on every single run.
 ## The counter-test
 
 Here that knowledge sits in the tools' code, once. The odd agent's prompt is
-thirty lines long and contains only what it should do — with a single rule
-about mechanics: the run ends with `state_write`.
+thirty lines long, names not a single tool, and contains only what it should
+do — with a single rule about mechanics: at the end of every run it remembers
+how far it got, or it will be handed the same numbers again next time. Which
+tool does that is stated in the tool's description, not in the prompt.
 
 What becomes visible:
 
@@ -45,8 +47,8 @@ time, or not at all. That is the more interesting sort — it is about the task,
 not about the toolbox.
 
 And it can be fixed without changing models. When a model skipped the closing
-`state_write` during a test run, no better model was needed — one sentence in
-the prompt explaining why that call is not optional was.
+"remember how far you got" during a test run, no better model was needed — one
+sentence in the prompt explaining why that step is not optional was.
 
 ### Taking something away beats forbidding it
 
