@@ -1,60 +1,58 @@
-# The experiment: what this version does differently
+# The experiment: custom tools instead of generic ones
 
-This project used to exist twice. `the-counting-agents` ran on the OpenCode CLI
-with a model on your own machine; it has since been removed from the
-repository (last state: commit `4d77661`). This version runs on the pi CLI with
-a model in the cloud and tools of its own. Both show the same thing: five
-agents collaborating through files.
+This demo shows five agents collaborating through files. That would work with
+the generic tools pi ships — `bash`, `read`, `write`. Instead, the demo gives
+its agents tools of their own, cut to fit, and takes the generic ones away.
 
 The comparison is the actual yield. What changes when agents get fitting tools
 instead of generic ones?
 
 > Deutsche Fassung: [experiment_de.md](experiment_de.md)
 
-## The starting observation
+## The trouble with generic tools
 
-In the OpenCode version, more than half of every agent prompt consists of
+With generic tools, more than half of every agent prompt soon consists of
 instructions that have nothing to do with the task:
 
 - produce timestamps with `date -u +%Y-%m-%dT%H:%M:%SZ`, because BSD `date`
   does not know the millisecond format
-- do not open empty files with the read tool, because that triggers an offset
-  error
+- do not open empty files with the read tool, because that can trigger an
+  offset error
 - write log files with `bash` and `echo >>`, never with `write`, because
   `write` replaces the file
 - no absolute paths, no leading slashes
-- always read `bus/numbers.log` in full, because the read tool's offset counts
+- always read `_bus/numbers.log` in full, because the read tool's offset counts
   lines, not sequence numbers
 
-Every one of those lines is there because a run once failed on it. They are not
+Every one of those lines gets added because a run fails on it. They are not
 wrong — they are merely in the wrong place. This is knowledge about tools,
 stored in a prompt, repeated across five files, and every model has to read and
 obey it on every single run.
 
 ## The counter-test
 
-In this version that knowledge sits in the tools' code, once. The odd agent's
-prompt is thirty lines afterwards and contains only what it should do — with a
-single rule about mechanics: the run ends with `state_write`.
+Here that knowledge sits in the tools' code, once. The odd agent's prompt is
+thirty lines long and contains only what it should do — with a single rule
+about mechanics: the run ends with `state_write`.
 
 What becomes visible:
 
 ### Errors move from runtime into design
 
-An agent can no longer open an empty file incorrectly, because it does not open
-files at all. What remains are errors of a different kind: a tool called at the
-wrong time, or not at all. That is the more interesting sort — it is about the
-task, not about the toolbox.
+An agent cannot open an empty file incorrectly, because it does not open files
+at all. What remains are errors of a different kind: a tool called at the wrong
+time, or not at all. That is the more interesting sort — it is about the task,
+not about the toolbox.
 
-And it can be fixed without changing models. When the local model skipped the
-closing `state_write` during a test run, no better model was needed — one
-sentence in the prompt explaining why that call is not optional was.
+And it can be fixed without changing models. When a model skipped the closing
+`state_write` during a test run, no better model was needed — one sentence in
+the prompt explaining why that call is not optional was.
 
 ### Taking something away beats forbidding it
 
-The collector agents must not write to the bus. In the OpenCode version that is
-a rule in the prompt — and a model that goes off the rails can break it,
-because `bash` is right there. Here they simply lack the tool.
+The collector agents must not write to the bus. With generic tools that would
+be a rule in the prompt — and a model that goes off the rails could break it,
+because `bash` would be right there. Here they simply lack the tool.
 `--no-builtin-tools` removes `bash`, `read` and `write`; `--tools` grants
 exactly four names.
 
@@ -73,11 +71,9 @@ The line runs where things get interesting: whether 91 is prime remains the
 model's call. An `is_prime` tool would be more reliable and would rob the demo
 of its subject.
 
-## What stayed the same
+## What stays deliberately simple
 
-The architecture. Both versions share the decisions argued in
-`the-counting-agents/docs/experiment.md` (in the Git history:
-`git show 4d77661:the-counting-agents/docs/experiment.md`):
+The architecture is cut for the lecture hall:
 
 - **Two files as the bus**, append-only. No broker, no queue, no network. You
   can read them with `cat` — invaluable on stage.
@@ -87,12 +83,12 @@ The architecture. Both versions share the decisions argued in
 - **The prime agent is deliberately slow.** One number per run, so the pane
   shows it falling behind while the others carry on.
 
-## What this version costs
+## What the cloud model costs
 
-Honesty is part of it: the model now runs in the cloud. That is fast — a run
-takes seconds instead of a minute and a half — and it costs money, if not much.
-Five agents across one lecture stay within cents; pi displays the cost per run
-in the pane.
+Honesty is part of it: the model runs in the cloud. That is fast — a run takes
+seconds, with a local model more like a minute and a half — and it costs money,
+if not much. Five agents across one lecture stay within cents; pi displays the
+cost per run in the pane.
 
 In exchange, the lecture-hall setup disappears: no LM Studio, no model to load,
 no wait on the first run. To show the demo without a network, put a local model

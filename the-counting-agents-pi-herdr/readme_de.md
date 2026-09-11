@@ -10,18 +10,15 @@ aufeinander warten, sich pausieren lassen und wieder anlaufen.
 
 > Englische Fassung: [README.md](README.md)
 
-## Was hier anders ist als in der OpenCode-Fassung
+## Eigene Werkzeuge statt allgemeiner
 
-Die ursprüngliche Fassung dieser Demo, `the-counting-agents`, machte dasselbe
-mit der **OpenCode CLI** und einem lokal über LM Studio bereitgestellten Modell.
-Sie ist inzwischen aus dem Repo entfernt; ihr letzter Stand ist Commit
-`4d77661`. Dieses Projekt nutzt die **pi CLI** und ein Modell in der Cloud — und
-vor allem: **eigene Werkzeuge**.
+Die Demo läuft mit der **pi CLI** und einem Modell in der Cloud — und vor allem
+mit **eigenen Werkzeugen**.
 
-Bei OpenCode erledigen die Agenten ihre Arbeit mit den allgemeinen Werkzeugen
-`bash`, `read` und `write`. Sie bauen JSON von Hand zusammen, hängen es per
-`echo >>` an eine Datei an, erzeugen Zeitstempel, fangen leere Dateien ab. Was
-im Pane erscheint, ist eine Shell-Zeile.
+pi bringt allgemeine Werkzeuge mit: `bash`, `read` und `write`. Damit ließe
+sich die Demo auch bauen. Die Agenten müssten dann JSON von Hand
+zusammensetzen, es per `echo >>` an eine Datei anhängen, Zeitstempel erzeugen,
+leere Dateien abfangen. Im Pane erschiene eine Shell-Zeile.
 
 Hier bekommt jeder Handgriff ein eigenes Werkzeug mit sprechendem Namen:
 
@@ -36,8 +33,8 @@ bash echo '{"type":"number","seq":42,"value":42,"timestamp":"..."}' >> _bus/numb
 ```
 
 Für ein Publikum ohne Programmiererfahrung ist das der ganze Unterschied. Und
-die Agent-Prompts schrumpfen von zwei Seiten Fehlerbehandlung auf zwölf Zeilen
-Aufgabenbeschreibung.
+die Agent-Prompts kommen mit zwölf Zeilen Aufgabenbeschreibung aus statt mit
+zwei Seiten Fehlerbehandlung.
 
 Zweiter Unterschied: Die Agenten haben **keine** eingebauten Werkzeuge. Kein
 `bash`, kein `read`, kein `write`. Jeder kann genau das, was seine Rolle
