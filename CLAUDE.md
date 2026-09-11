@@ -9,7 +9,7 @@ Thema KI und KI-Agenten.
 | Verzeichnis | Was es ist | Start |
 |---|---|---|
 | `ship-it/` | Web-Dashboard, 5 KI-Agenten führen einen Produktlaunch durch. Python-stdlib-Server + SPA. | `./start.sh` |
-| `the-counting-agents-pi-herdr/` | Terminal-Demo, 5 Agenten kommunizieren über dateibasierte Event-Logs, je ein benanntes Pane in einem Herdr-Tab. Läuft mit der pi CLI, eigenen Werkzeugen und einem Modell in der Cloud. | `./scripts/start.sh` |
+| `the-counting-agents/` | Terminal-Demo, 5 Agenten kommunizieren über dateibasierte Event-Logs, je ein benanntes Pane in einem Herdr-Tab. Läuft mit der pi CLI, eigenen Werkzeugen und einem Modell in der Cloud. | `./scripts/start.sh` |
 
 **Jedes Projekt hat eine eigene `CLAUDE.md`** — sie ist für alles maßgeblich,
 was das jeweilige Projekt betrifft. Diese Datei hier regelt nur, was
@@ -52,7 +52,7 @@ Projekts — Ablageort, Frontmatter-Felder und Modellwahl stehen in dessen
 ## Konventionen
 
 - **Sprache: Deutsch.** Code-Kommentare, UI-Texte, Agent-Outputs, Commit-
-  Messages und Dokumentation. Ausnahme: `the-counting-agents-pi-herdr/` pflegt
+  Messages und Dokumentation. Ausnahme: `the-counting-agents/` pflegt
   englische Doku mit deutscher Fassung als `*_de.md` — beide Fassungen
   zusammen ändern.
 - **Secrets** liegen in projektlokalen `.env`-Dateien, nie im Repo. Die
@@ -69,6 +69,11 @@ Projekts — Ablageort, Frontmatter-Felder und Modellwahl stehen in dessen
 - Die Historie von `ship-it/` wurde bei der Migration auf die neuen Pfade
   umgeschrieben — `git log -- ship-it/` und `git blame` funktionieren über den
   gesamten Verlauf.
-- `the-counting-agents/`, die frühere OpenCode-Fassung der Counting-Agents-Demo,
-  ist entfernt. Code und Tags `the-counting-agents/v*` bleiben in der Historie;
-  der letzte Stand liegt in Commit `4d77661`.
+- Unter `the-counting-agents/` lag früher die OpenCode-Fassung der
+  Counting-Agents-Demo; ihr letzter Stand liegt in Commit `4d77661`. Die heutige
+  pi-Fassung hieß bis dahin `the-counting-agents-pi-herdr/` und trägt seither
+  den frei gewordenen Namen. Folgen:
+  - `git log -- the-counting-agents/` mischt beide Fassungen. Den Verlauf der
+    pi-Fassung liefert `git log --follow` auf eine einzelne Datei.
+  - Die Tags `the-counting-agents/v0.1.0` und `v0.1.1` gehören zur
+    OpenCode-Fassung. Releases der pi-Fassung brauchen eine höhere Nummer.

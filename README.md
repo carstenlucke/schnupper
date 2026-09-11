@@ -17,7 +17,7 @@ Slidev-Präsentation.
 cd ship-it && ./start.sh
 ```
 
-### [`the-counting-agents-pi-herdr/`](the-counting-agents-pi-herdr/)
+### [`the-counting-agents/`](the-counting-agents/)
 
 Terminalbasierte Demo eines Multi-Agenten-Systems. Fünf autonome Agenten
 (Counter, Odd, Even, Prime, Control) kommunizieren ausschließlich über
@@ -33,7 +33,7 @@ Laufzeit ist die [pi CLI](https://pi.dev) mit einem Modell in der Cloud und
 das, was seine Rolle verlangt.
 
 ```bash
-cd the-counting-agents-pi-herdr && ./scripts/start.sh
+cd the-counting-agents && ./scripts/start.sh
 ```
 
 ## Aufbau
@@ -44,20 +44,22 @@ ein Projekt lässt sich unabhängig von den anderen starten.
 
 ## Historie
 
-`ship-it/` und `the-counting-agents/` wurden aus eigenständigen Repositories
-übernommen; ihre vollständige Git-Historie ist erhalten und auf die neuen Pfade umgeschrieben:
+`ship-it/` und die ursprüngliche Fassung von `the-counting-agents/` wurden aus
+eigenständigen Repositories übernommen; ihre vollständige Git-Historie ist
+erhalten und auf die neuen Pfade umgeschrieben:
 
 ```bash
 git log -- ship-it/
 git log --follow -- ship-it/server.py
 ```
 
-`the-counting-agents/`, die ursprüngliche Fassung der Counting-Agents-Demo mit
-OpenCode und einem lokalen Modell in LM Studio, ist inzwischen entfernt. Code
-und Tags `the-counting-agents/v*` bleiben in der Historie; der letzte Stand
-liegt in Commit `4d77661`:
+Die ursprüngliche Fassung der Counting-Agents-Demo lief mit OpenCode und einem
+lokalen Modell in LM Studio. Sie ist entfernt; die pi-Fassung, zuvor
+`the-counting-agents-pi-herdr/`, trägt jetzt ihren Namen. Code und Tags
+`the-counting-agents/v0.1.x` der OpenCode-Fassung bleiben in der Historie; der
+letzte Stand liegt in Commit `4d77661`:
 
 ```bash
-git log -- the-counting-agents/
 git show 4d77661:the-counting-agents/README.md
+git log --follow -- the-counting-agents/scripts/start.sh   # Verlauf der pi-Fassung
 ```
