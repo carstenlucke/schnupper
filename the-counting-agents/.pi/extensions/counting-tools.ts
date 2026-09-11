@@ -56,6 +56,11 @@ interface AgentState {
   count?: number;
   status?: string;
   updated_at?: string | null;
+  // Quittung für Resets: control_read trägt ein, welchen Reset es dem Agenten
+  // gemeldet hat; state_write bestätigt genau diesen. Ein Reset gilt erst
+  // dann als erledigt (siehe control_read).
+  reset_seen_at?: string | null;
+  reset_done_at?: string | null;
 }
 
 // --- Dateizugriff ---------------------------------------------------------
@@ -145,6 +150,12 @@ function readStoredState(agent: AgentName): AgentState {
   }
 }
 
+function writeStoredState(state: AgentState): void {
+  const file = stateFile(state.agent);
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, `${JSON.stringify(state)}\n`, "utf8");
+}
+
 const ok = (payload: unknown) => ({
   content: [{ type: "text" as const, text: JSON.stringify(payload) }],
   details: payload as Record<string, unknown>,
@@ -206,7 +217,9 @@ export default function (pi: ExtensionAPI) {
     label: "Bus · lesen",
     description:
       "Liest neue Ereignisse aus dem Event-Bus (_bus/numbers.log): alle mit einer " +
-      "Sequenznummer größer als `since`. Gibt die Ereignisse, die höchste " +
+      "Sequenznummer größer als `since`. So holt sich ein Agent, was seit seinem " +
+      "letzten Durchlauf dazugekommen ist — `since` ist die zuletzt verarbeitete " +
+      "Sequenznummer aus seinem Zustand. Gibt die Ereignisse, die höchste " +
       "Sequenznummer im Bus und die Zahl der noch nicht gelieferten Ereignisse zurück.",
     parameters: Type.Object({
       since: Type.Number({
@@ -238,10 +251,12 @@ export default function (pi: ExtensionAPI) {
     name: "control_read",
     label: "Steuerung · lesen",
     description:
-      "Fragt ab, was für einen Agenten gerade gilt. Wertet _bus/control.log aus: " +
+      "Fragt ab, welche Anweisungen für einen Agenten gerade gelten. Wertet _bus/control.log aus: " +
       "Befehle an den Agenten selbst und an 'all', spätere überschreiben frühere. " +
-      "Gibt status (running/paused/stopped), verbose (an/aus) und reset_requested zurück. " +
-      "reset_requested ist true, wenn seit dem letzten state_write ein Reset angefordert wurde.",
+      "Gibt status (running/paused/stopped), verbose (true: ausführlich berichten) und " +
+      "reset_requested zurück. reset_requested ist true, wenn ein Neustart verlangt wurde, " +
+      "den der Agent noch nicht erledigt hat — erledigt ist er, sobald der Agent ihn " +
+      "hier gesehen und danach seinen Zustand geschrieben hat.",
     parameters: Type.Object({
       agent: StringEnum(AGENTS, { description: "Für welchen Agenten gefragt wird" }),
     }),
@@ -278,11 +293,18 @@ export default function (pi: ExtensionAPI) {
         }
       }
 
-      // Ein Reset gilt als erledigt, sobald der Agent danach seinen State
-      // geschrieben hat. Ohne diesen Vergleich würde er sich bei jedem
+      // Ein Reset gilt erst als erledigt, wenn der Agent ihn hier gesehen und
+      // danach seinen Zustand geschrieben hat — nicht schon, wenn irgendein
+      // state_write jünger ist als der Reset. Sonst verschluckt ihn ein
+      // Durchlauf, der vor dem Reset gelesen und erst danach geschrieben hat;
+      // bei zehn Sekunden je Durchlauf und drei Sekunden Takt ist das der
+      // Normalfall. Und ohne die Quittung würde sich der Agent bei jedem
       // Durchlauf erneut zurücksetzen und nie wieder vorankommen.
-      const updatedAt = readState(params.agent).updated_at ?? null;
-      const resetRequested = lastReset !== null && (updatedAt === null || lastReset > updatedAt);
+      const stored = readStoredState(params.agent);
+      const resetRequested = lastReset !== null && (stored.reset_done_at ?? null) !== lastReset;
+      if (resetRequested && (stored.reset_seen_at ?? null) !== lastReset) {
+        writeStoredState({ ...stored, reset_seen_at: lastReset });
+      }
 
       return ok({ status, verbose, reset_requested: resetRequested });
     },
@@ -319,9 +341,11 @@ export default function (pi: ExtensionAPI) {
     name: "state_read",
     label: "Zustand · lesen",
     description:
-      "Liest den gespeicherten Zustand eines Agenten aus _state/<agent>.json. " +
-      "Mit 'all' kommen alle vier Zustände auf einmal. Fehlt eine Datei, kommen " +
-      "die Startwerte zurück — ein Fehler ist das nie.",
+      "Liest den gespeicherten Zustand eines Agenten aus _state/<agent>.json — das, " +
+      "was er sich beim letzten Durchlauf gemerkt hat: last_seq (wie weit er im Bus " +
+      "ist), numbers (was er gesammelt hat), beim Counter last_value (die zuletzt " +
+      "veröffentlichte Zahl). Mit 'all' kommen alle vier Zustände auf einmal. Fehlt " +
+      "eine Datei, kommen die Startwerte zurück — ein Fehler ist das nie.",
     parameters: Type.Object({
       agent: StringEnum([...AGENTS, "all"] as const, {
         description: "Welcher Zustand gelesen wird",
@@ -343,13 +367,16 @@ export default function (pi: ExtensionAPI) {
     name: "state_write",
     label: "Zustand · schreiben",
     description:
-      "Schreibt den Zustand eines Agenten nach _state/<agent>.json. Nur die " +
-      "angegebenen Felder werden geändert, alles andere bleibt stehen. " +
-      "Anzahl (count) und Zeitstempel werden automatisch gesetzt.",
+      "Schreibt den Zustand eines Agenten nach _state/<agent>.json — damit merkt er " +
+      "sich am Ende eines Durchlaufs, wie weit er ist (last_seq) und was er gesammelt " +
+      "hat (numbers). Nur die angegebenen Felder werden geändert, alles andere bleibt " +
+      "stehen. Anzahl (count) und Zeitstempel werden automatisch gesetzt.",
     parameters: Type.Object({
       agent: StringEnum(AGENTS, { description: "Wessen Zustand geschrieben wird" }),
       last_seq: Type.Optional(
-        Type.Number({ description: "Zuletzt verarbeitete Sequenznummer aus dem Bus" }),
+        Type.Number({
+          description: "Zuletzt verarbeitete Sequenznummer aus dem Bus; 0 heißt: von vorn",
+        }),
       ),
       last_value: Type.Optional(
         Type.Number({
@@ -380,10 +407,10 @@ export default function (pi: ExtensionAPI) {
       // hier behauptet.
       if (agent === "counter") state.last_value = counterValue();
       state.updated_at = now();
+      // Quittiert den Reset, den control_read zuletzt gemeldet hat — und nur den.
+      state.reset_done_at = state.reset_seen_at ?? null;
 
-      const file = stateFile(agent);
-      fs.mkdirSync(path.dirname(file), { recursive: true });
-      fs.writeFileSync(file, `${JSON.stringify(state)}\n`, "utf8");
+      writeStoredState(state);
       return ok(state);
     },
   });
