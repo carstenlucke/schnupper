@@ -23,11 +23,11 @@ const ok = (text: string, details: Record<string, unknown>) => ({
   details,
 });
 
-const fail = (message: string) => ({
-  content: [{ type: "text" as const, text: message }],
-  details: { error: message },
-  isError: true,
-});
+// Fehler meldet pi nur, wenn execute wirft – ein zurückgegebenes isError
+// ignoriert es. Nur so zeigt das Dashboard den Fehlschlag rot an.
+const fail = (message: string): never => {
+  throw new Error(message);
+};
 
 /** Macht aus HTML lesbaren Text: Skripte, Stile und Tags raus, Absätze bleiben. */
 function htmlZuText(html: string): string {

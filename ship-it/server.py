@@ -10,6 +10,7 @@ import json
 import os
 import signal
 import subprocess
+import sys
 import threading
 import re
 import shutil
@@ -437,7 +438,12 @@ class PiAusgabe:
         if art == "text_end":
             return self._umbruch()
         if art == "toolcall_start":
-            self.werkzeug = a.get("toolName", "?")
+            # Den Werkzeugnamen trägt das Ereignis nicht selbst, sondern der
+            # Teil der halbfertigen Antwort, zu dem es gehört
+            inhalt = (a.get("partial") or {}).get("content") or []
+            index = a.get("contentIndex", -1)
+            teil = inhalt[index] if 0 <= index < len(inhalt) else {}
+            self.werkzeug = (teil.get("name") if isinstance(teil, dict) else None) or "?"
             self.werkzeug_zeichen = self.fortschritt_bei = 0
             return ""
         if art == "toolcall_delta" and self.werkzeug:
@@ -545,7 +551,15 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
         ausgabe = PiAusgabe()
         try:
             for zeile in proc.stdout:
-                text = ausgabe.verarbeite(zeile)
+                # Ein Ereignis in unerwarteter Form – etwa Werkzeugargumente,
+                # die das Modell falsch gebaut hat – darf den Leser nicht
+                # beenden: sonst bliebe der Rest des Laufs unsichtbar und pi
+                # wartete womöglich auf eine volle Pipe
+                try:
+                    text = ausgabe.verarbeite(zeile)
+                except Exception as e:
+                    print(f"[agent-warn] {slug}/{agent}: {e!r}", file=sys.stderr)
+                    continue
                 if text:
                     proc_info["output"].append(text)
         except (OSError, ValueError):
