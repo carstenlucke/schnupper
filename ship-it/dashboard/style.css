@@ -4,55 +4,63 @@
 */
 
 /* ============================================================
-   Farbthema: Hell (Basis-Definition; Dunkel ist Standard im Markup)
-   Basierend auf THM Corporate Design – Grün (#80BA24) + Grau (#4A5C66)
+   Farbthema: Hell – Standardanwendung laut THM-CD-Manual (go.thm.de/cd)
+   Hauptfarben: THM Grün #80BA24 (Akzente, Buttons, Links) und
+   THM Grau #4A5C66 (Fließtext, Überschriften, Kopfleiste).
+   Flächen: Weiß und helles Grau (#F5F5F5 bis #E0E0E0).
+   Welches Thema aktiv ist, entscheidet die Klasse "dark" am <html>-Element.
    ============================================================ */
 :root {
-  --base: 244 245 247;
-  --surface: 255 255 255;
-  --surface-low: 240 242 243;
-  --surface-mid: 246 247 248;
-  --surface-high: 255 255 255;
-  --header: 74 92 102;
+  --base: 245 245 245;             /* #F5F5F5 – Seitengrund */
+  --surface: 255 255 255;          /* #FFFFFF – Karten, Inhaltsfläche */
+  --surface-low: 245 245 245;      /* #F5F5F5 – Leisten über/unter dem Inhalt */
+  --surface-mid: 235 235 235;      /* #EBEBEB */
+  --surface-high: 255 255 255;     /* #FFFFFF – Dialoge, Dropdowns */
+  --header: 74 92 102;             /* THM Grau #4A5C66 */
   --on-header: 255 255 255;
-  --sidebar: 226 229 232;
-  --sidebar-alt: 238 240 242;
-  --on-surface: 26 34 40;
-  --on-surface-variant: 90 105 114;
-  --on-accent: 26 34 40;
-  --accent: 128 186 36;
-  --accent-hover: 109 160 30;
-  --warning: 244 170 0;
-  --error-color: 156 19 46;
+  --sidebar: 224 224 224;          /* #E0E0E0 – Agentenliste */
+  --sidebar-alt: 235 235 235;      /* #EBEBEB – Artefaktliste */
+  --on-surface: 42 56 64;          /* THM Grau dunkel #2A3840 – Überschriften, Labels */
+  --on-surface-variant: 74 92 102; /* THM Grau #4A5C66 – Fließtext (5,6:1 auf Weiß) */
+  --on-accent: 255 255 255;        /* Weiß auf Grün, wie im CD-Manual vorgesehen */
+  --accent: 128 186 36;            /* THM Grün #80BA24 */
+  --accent-hover: 106 158 26;      /* #6A9E1A – abgedunkeltes Grün, WCAG AA auf Weiß */
+  --warning: 244 170 0;            /* THM Gelb #F4AA00 */
+  --error-color: 156 19 46;        /* THM Rot #9C132E */
   --error-container: 255 235 235;
-  --code-color: 77 122 15;
-  --code-bg: 241 243 245;
+  --code-color: 106 158 26;        /* #6A9E1A – Grün für kleinen Text auf hellem Grund */
+  --code-bg: 245 245 245;
+  --terminal-bg: 26 37 43;         /* #1A252B – Terminal ist in beiden Themen dunkel */
   color-scheme: light;
 }
 
 /* ============================================================
-   Farbthema: Dunkel (Anthrazit)
+   Farbthema: Dunkel – aus den Negativ-Regeln des CD-Manuals abgeleitet
+   Grund: THM Grau dunkel #2A3840 bzw. #1A252B, Flächen #344750,
+   Text Weiß/Offwhite #E8ECF0, THM Grün bleibt Akzentfarbe (4,5:1 auf #2A3840).
+   Die Kopfleiste bleibt THM Grau, damit die Marke in beiden Themen gleich wirkt.
    ============================================================ */
 .dark {
-  --base: 24 31 35;
-  --surface: 30 39 45;
-  --surface-low: 35 46 52;
-  --surface-mid: 42 54 61;
-  --surface-high: 51 66 75;
-  --header: 42 54 61;
+  --base: 26 37 43;                /* #1A252B – Seitengrund */
+  --surface: 33 46 53;             /* #212E35 – Inhaltsfläche */
+  --surface-low: 42 56 64;         /* #2A3840 – Leisten über/unter dem Inhalt */
+  --surface-mid: 46 62 70;         /* #2E3E46 */
+  --surface-high: 52 71 80;        /* #344750 – Dialoge, Dropdowns */
+  --header: 74 92 102;             /* THM Grau #4A5C66 */
   --on-header: 255 255 255;
-  --sidebar: 55 70 78;
-  --sidebar-alt: 45 58 66;
-  --on-surface: 224 227 229;
-  --on-surface-variant: 145 158 166;
-  --on-accent: 26 34 40;
-  --accent: 128 186 36;
-  --accent-hover: 156 216 66;
-  --warning: 244 170 0;
-  --error-color: 239 100 90;
+  --sidebar: 52 71 80;             /* #344750 – Agentenliste */
+  --sidebar-alt: 42 56 64;         /* #2A3840 – Artefaktliste */
+  --on-surface: 232 236 240;       /* Offwhite #E8ECF0 */
+  --on-surface-variant: 178 190 198; /* #B2BEC6 – gedämpfter Fließtext */
+  --on-accent: 255 255 255;
+  --accent: 128 186 36;            /* THM Grün #80BA24 */
+  --accent-hover: 143 204 48;      /* #8FCC30 – leicht aufgehelltes Grün */
+  --warning: 244 170 0;            /* THM Gelb #F4AA00 */
+  --error-color: 222 72 96;        /* #DE4860 – THM Rot aufgehellt, lesbar auf dunklem Grund */
   --error-container: 80 10 20;
-  --code-color: 168 216 110;
-  --code-bg: 18 23 27;
+  --code-color: 168 216 110;       /* #A8D86E – aufgehelltes Grün für Code */
+  --code-bg: 26 37 43;             /* #1A252B */
+  --terminal-bg: 26 37 43;
   color-scheme: dark;
 }
 

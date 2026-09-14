@@ -162,26 +162,55 @@ marked.use({
 
 // ---------------------------------------------------------------------------
 // Farbthema (Hell/Dunkel)
+// Die Farbwerte selbst stehen in style.css (THM Corporate Design). Hier wird nur
+// die Klasse "dark" am <html>-Element geschaltet. Reihenfolge der Entscheidung:
+// gespeicherte Wahl (localStorage) → Systemeinstellung des Browsers.
+// Das erste Setzen vor dem Rendern übernimmt ein Inline-Skript in index.html.
 // ---------------------------------------------------------------------------
-function initTheme() {
-  const saved = localStorage.getItem("ship-it-theme");
-  if (saved === "light") {
-    document.documentElement.classList.remove("dark");
+const THEME_KEY = "ship-it-theme";
+const systemDarkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+function readSavedTheme() {
+  try {
+    return localStorage.getItem(THEME_KEY);
+  } catch (e) {
+    return null;
   }
-  updateThemeIcon();
+}
+
+function applyTheme(isDark) {
+  document.documentElement.classList.toggle("dark", isDark);
+  updateThemeToggle();
+}
+
+function initTheme() {
+  const saved = readSavedTheme();
+  applyTheme(saved ? saved === "dark" : systemDarkQuery.matches);
+
+  // Solange nichts gespeichert ist, folgt das Dashboard der Systemeinstellung
+  systemDarkQuery.addEventListener("change", (e) => {
+    if (!readSavedTheme()) applyTheme(e.matches);
+  });
 }
 
 function toggleTheme() {
-  document.documentElement.classList.toggle("dark");
-  const isDark = document.documentElement.classList.contains("dark");
-  localStorage.setItem("ship-it-theme", isDark ? "dark" : "light");
-  updateThemeIcon();
+  const isDark = !document.documentElement.classList.contains("dark");
+  try {
+    localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
+  } catch (e) {}
+  applyTheme(isDark);
 }
 
-function updateThemeIcon() {
+function updateThemeToggle() {
   const isDark = document.documentElement.classList.contains("dark");
   const icon = document.getElementById("theme-toggle-icon");
+  const btn = document.getElementById("theme-toggle");
   if (icon) icon.textContent = isDark ? "light_mode" : "dark_mode";
+  if (btn) {
+    const label = isDark ? "Zum hellen Farbthema wechseln" : "Zum dunklen Farbthema wechseln";
+    btn.setAttribute("aria-label", label);
+    btn.title = label;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -759,17 +788,18 @@ function selectAgent(agentName, { loadFiles = true } = {}) {
 }
 
 // ---------------------------------------------------------------------------
-// Terminal (immer dunkel/Anthrazit, unabhängig vom Farbthema)
+// Terminal (immer dunkel, unabhängig vom Farbthema – Werte wie --terminal-bg
+// in style.css: THM Grau dunkel #1A252B, Offwhite #E8ECF0, THM Grün #80BA24)
 // ---------------------------------------------------------------------------
 function getOrCreateTerminal(agentName) {
   if (terminals[agentName]) return terminals[agentName];
 
   const term = new Terminal({
     theme: {
-      background: "#181f23",
-      foreground: "#e0e3e5",
+      background: "#1a252b",
+      foreground: "#e8ecf0",
       cursor: "#80ba24",
-      cursorAccent: "#181f23",
+      cursorAccent: "#1a252b",
       selectionBackground: "rgba(128, 186, 36, 0.3)",
     },
     fontSize: 12,
@@ -1013,9 +1043,9 @@ async function handleGenerateImage(agentName, imageFileName) {
 
     if (result.error) {
       const errorSpan = document.createElement("span");
-      errorSpan.className = "text-red-400";
+      errorSpan.className = "text-error";
       errorSpan.textContent = result.error;
-      btn.innerHTML = `<span class="material-symbols-outlined text-[16px] text-red-400">error</span>`;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[16px] text-error">error</span>`;
       btn.appendChild(errorSpan);
       setTimeout(() => {
         btn.innerHTML = originalHTML;
@@ -1028,8 +1058,8 @@ async function handleGenerateImage(agentName, imageFileName) {
   } catch (error) {
     console.error("Fehler bei der Bildgenerierung:", error);
     btn.innerHTML = `
-      <span class="material-symbols-outlined text-[16px] text-red-400">error</span>
-      <span class="text-red-400">Unerwarteter Fehler bei der Bildgenerierung.</span>
+      <span class="material-symbols-outlined text-[16px] text-error">error</span>
+      <span class="text-error">Unerwarteter Fehler bei der Bildgenerierung.</span>
     `;
     setTimeout(() => {
       btn.innerHTML = originalHTML;

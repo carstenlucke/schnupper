@@ -104,6 +104,7 @@ ship-it/
 - **Ergebnis-Tab** rendert Markdown-Artefakte
 - **Vorschau-Tab** zeigt HTML-Artefakte (Website, App) im iframe
 - **Feedback-Input** zum Überarbeiten von Agent-Outputs
+- **Hell-/Dunkelmodus** im THM-Corporate-Design (Grün `#80BA24`, Grau `#4A5C66`); Umschalter im Header, Standard folgt der Systemeinstellung
 
 ## KI-Bildgenerierung
 

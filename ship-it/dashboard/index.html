@@ -1,9 +1,22 @@
 <!DOCTYPE html>
-<html class="dark" lang="de">
+<html lang="de">
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>Ship It! Dashboard</title>
+
+  <!-- Farbthema vor dem ersten Rendern setzen (kein Aufblitzen des falschen Themas):
+       gespeicherte Wahl aus localStorage, sonst die Systemeinstellung des Browsers -->
+  <script>
+    (function () {
+      var gespeichert = null;
+      try { gespeichert = localStorage.getItem("ship-it-theme"); } catch (e) {}
+      var dunkel = gespeichert
+        ? gespeichert === "dark"
+        : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.classList.toggle("dark", dunkel);
+    })();
+  </script>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -45,6 +58,7 @@
             "error": "rgb(var(--error-color) / <alpha-value>)",
             "error-container": "rgb(var(--error-container) / <alpha-value>)",
             "code": "rgb(var(--code-color) / <alpha-value>)",
+            "terminal": "rgb(var(--terminal-bg) / <alpha-value>)",
             "thm-green": "#80ba24",
             "thm-gray": "#4a5c66",
             "thm-yellow": "#f4aa00",
@@ -68,8 +82,8 @@
   <!-- ===================== HEADER ===================== -->
   <header class="fixed top-0 w-full h-12 z-50 bg-header shadow-sm flex items-center justify-between px-4">
     <button id="home-btn" type="button" class="flex items-center gap-2 rounded px-1 py-0.5 hover:bg-on-header/10 transition-colors" aria-label="Zur Startseite" title="Zur Startseite">
-      <img src="icon2.png" alt="Ship It!" class="h-7 hidden dark:block"/>
-      <img src="icon1.png" alt="Ship It!" class="h-7 block dark:hidden"/>
+      <!-- Kopfleiste ist in beiden Themen THM Grau, daher immer die weiße Logovariante -->
+      <img src="icon2.png" alt="Ship It!" class="h-7"/>
       <span class="text-on-header font-headline font-bold text-lg tracking-tight">Ship It! Dashboard</span>
     </button>
     <div class="flex items-center gap-4">
@@ -90,9 +104,9 @@
           </div>
         </div>
       </div>
-      <!-- Farbthema-Umschalter -->
-      <button id="theme-toggle" class="flex items-center justify-center w-8 h-8 rounded-full bg-on-header/10 hover:bg-on-header/20 transition-colors" title="Theme wechseln">
-        <span id="theme-toggle-icon" class="material-symbols-outlined text-on-header text-[18px]">light_mode</span>
+      <!-- Farbthema-Umschalter (Hell/Dunkel); Icon und Beschriftung setzt app.js -->
+      <button id="theme-toggle" type="button" class="flex items-center justify-center w-8 h-8 rounded-full bg-on-header/10 hover:bg-on-header/20 transition-colors" aria-label="Farbthema wechseln" title="Farbthema wechseln">
+        <span id="theme-toggle-icon" class="material-symbols-outlined text-on-header text-[18px]" aria-hidden="true">light_mode</span>
       </button>
     </div>
   </header>
@@ -195,7 +209,7 @@
       </div>
 
       <!-- Terminal (standardmäßig ausgeblendet) -->
-      <div id="content-terminal" class="hidden flex-1 overflow-hidden bg-[#181f23]">
+      <div id="content-terminal" class="hidden flex-1 overflow-hidden bg-terminal">
         <div id="terminal-container" class="h-full w-full"></div>
       </div>
 
@@ -252,8 +266,6 @@
     </div>
   </div>
 
-  <!-- Farbthema: Flash des falschen Themes verhindern -->
-  <script>if(localStorage.getItem("ship-it-theme")==="light")document.documentElement.classList.remove("dark")</script>
   <script src="app.js"></script>
 </body>
 </html>
