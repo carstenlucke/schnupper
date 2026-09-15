@@ -789,6 +789,7 @@ function oeffneStrom(slug) {
       case "text": textDelta(ereignis); break;
       case "denken": denkDelta(ereignis); break;
       case "beitrag_ende": beitragEnde(ereignis); break;
+      case "verworfen": beitragVerworfen(ereignis.text); break;
       case "fehler":
       case "meldung":
         // pi fängt den Beitrag neu an — was bisher in der Blase steht, kommt
@@ -884,9 +885,22 @@ function blaseZuruecksetzen() {
   aktiveBlase.denkBox.classList.add("hidden");
 }
 
-function systemBlase(text) {
+function beitragVerworfen(text) {
+  // Der Server hat den angefangenen Beitrag weggeworfen. Die Blase stehen zu
+  // lassen und durchzustreichen ist ehrlicher, als sie verschwinden zu
+  // lassen: man sieht, wie weit das Modell gekommen ist, und dass es nicht
+  // zählt.
+  if (aktiveBlase) {
+    aktiveBlase.wurzel.classList.remove("blase-tippt");
+    aktiveBlase.wurzel.classList.add("blase-verworfen");
+    aktiveBlase = null;
+  }
+  systemBlase(text, "text-on-surface-variant border-on-surface/10 bg-surface-mid");
+}
+
+function systemBlase(text, klassen = "text-error border-error/40 bg-error-container/40") {
   const kasten = document.createElement("div");
-  kasten.className = "text-sm text-error border border-error/40 bg-error-container/40 rounded-md p-3";
+  kasten.className = `text-sm border rounded-md p-3 ${klassen}`;
   kasten.textContent = text;
   $verlauf.appendChild(kasten);
   scrolleWennAmEnde();

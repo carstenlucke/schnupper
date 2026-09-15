@@ -861,7 +861,15 @@ def _party_schleife(lauf: Lauf, profile: list[dict]) -> None:
 
             if lauf.abbruch.is_set():
                 # Ein halber Satz im Verlauf würde alle Folgeprompts
-                # vergiften — der Teilbeitrag wird verworfen.
+                # vergiften — der Teilbeitrag wird verworfen. Das muss auch
+                # ankommen: der Ereignispuffer wird nie gekürzt (sonst
+                # verlieren die mitlesenden SSE-Verbindungen ihren Index),
+                # die angefangene Blase bleibt also stehen. Ohne diese
+                # Kennzeichnung sähe sie beim Neuladen aus wie ein fertiger
+                # Beitrag, den es im Verlauf gar nicht gibt.
+                sende(lauf, {"art": "verworfen",
+                             "text": "Abgebrochen — dieser Beitrag zählt "
+                                     "nicht und steht nicht im Verlauf."}, nr)
                 break
 
             if rc != 0 or strom.fehler or not strom.voller_text:

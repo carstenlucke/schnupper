@@ -156,6 +156,16 @@ body {
 }
 
 /* Der Denkbereich ist zugeklappt, bis jemand ihn aufmacht. */
+/* Mitten im Satz abgebrochen und deshalb nicht in den Verlauf übernommen.
+   Bleibt lesbar, ist aber klar als nicht gezählt zu erkennen. */
+.blase-verworfen {
+  opacity: 0.55;
+}
+.blase-verworfen .blase-text {
+  text-decoration: line-through;
+  text-decoration-color: rgb(var(--on-surface-variant) / 0.55);
+}
+
 .blase-denken summary {
   cursor: pointer;
   list-style: none;
