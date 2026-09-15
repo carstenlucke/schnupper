@@ -361,6 +361,9 @@ textarea.feld::placeholder { color: rgb(var(--on-surface-variant) / 0.7); }
   flex-shrink: 0;
 }
 
+/* Die Kopfleiste ist in beiden Themen dunkel, deshalb steht die Bildmarke
+   immer auf #1A252B bzw. #10181D. THM Grün bleibt unverändert; THM Grau
+   #4A5C66 wäre dort zu dunkel und ist auf #7C8D96 aufgehellt. */
 .logo-gruen { fill: #80BA24; }
 .logo-grau  { fill: #7C8D96; }
 

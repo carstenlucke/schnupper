@@ -4,9 +4,10 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Agent Party</title>
-  <!-- Favicon inline, damit das Projekt ohne Bilddatei auskommt: dasselbe
-       Quadratraster wie das Logo in der Kopfleiste -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231A252B'/%3E%3Crect x='5' y='5' width='7' height='7' fill='%2380BA24'/%3E%3Crect x='14' y='5' width='7' height='7' fill='%234A5C66'/%3E%3Crect x='5' y='14' width='7' height='7' fill='%234A5C66'/%3E%3Crect x='14' y='14' width='7' height='7' fill='%2380BA24'/%3E%3Crect x='23' y='14' width='4' height='7' fill='%2380BA24'/%3E%3Crect x='14' y='23' width='7' height='4' fill='%234A5C66'/%3E%3C/svg%3E"/>
+  <!-- Favicon inline, damit das Projekt ohne Bilddatei auskommt: dieselbe
+       Bildmarke wie in der Kopfleiste, auf 24 von 32 Einheiten zentriert,
+       damit sie in der Browserleiste Luft zum Rand hat -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231A252B'/%3E%3Crect x='13' y='4'  width='6' height='6' fill='%237C8D96'/%3E%3Crect x='4'  y='13' width='6' height='6' fill='%237C8D96'/%3E%3Crect x='13' y='13' width='6' height='6' fill='%2380BA24'/%3E%3Crect x='22' y='13' width='6' height='6' fill='%237C8D96'/%3E%3Crect x='13' y='22' width='6' height='6' fill='%237C8D96'/%3E%3C/svg%3E"/>
 
   <!-- Farbthema vor dem ersten Rendern setzen (kein Aufblitzen des falschen Themas):
        gespeicherte Wahl aus localStorage, sonst die Systemeinstellung des Browsers -->
@@ -85,13 +86,15 @@
        Zeile. -->
   <header class="kopfleiste">
     <div class="kopf-marke">
-      <svg class="kopf-logo" viewBox="0 0 32 32" aria-hidden="true">
-        <rect x="1" y="1" width="8" height="8" class="logo-gruen"/>
-        <rect x="11" y="1" width="8" height="8" class="logo-grau"/>
-        <rect x="1" y="11" width="8" height="8" class="logo-grau"/>
-        <rect x="11" y="11" width="8" height="8" class="logo-gruen"/>
-        <rect x="21" y="11" width="8" height="8" class="logo-gruen"/>
-        <rect x="11" y="21" width="8" height="8" class="logo-grau"/>
+      <!-- Bildmarke StudiumPlus: Kreuz aus fünf Quadraten, die Mitte in THM
+           Grün. Das Raster ist am Logo abgemessen — Quadrat zu Lücke verhält
+           sich 2:1, hier 8 zu 4 auf 32 Einheiten. -->
+      <svg class="kopf-logo" viewBox="0 0 32 32" role="img" aria-label="StudiumPlus">
+        <rect x="12" y="0"  width="8" height="8" class="logo-grau"/>
+        <rect x="0"  y="12" width="8" height="8" class="logo-grau"/>
+        <rect x="12" y="12" width="8" height="8" class="logo-gruen"/>
+        <rect x="24" y="12" width="8" height="8" class="logo-grau"/>
+        <rect x="12" y="24" width="8" height="8" class="logo-grau"/>
       </svg>
       <div>
         <p class="kopf-titel">Agent Party</p>
