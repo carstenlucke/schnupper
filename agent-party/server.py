@@ -112,6 +112,15 @@ def jetzt_iso() -> str:
     return datetime.now().isoformat(timespec="seconds")
 
 
+def _einzeilig(wert) -> str:
+    """Eine Zeile draus machen — so, wie das flache Frontmatter es braucht.
+
+    Zeilenumbrüche würden es zerreißen, drei Bindestriche ebenso: sie sähen
+    beim nächsten Lesen aus wie das Ende des Kopfteils.
+    """
+    return re.sub(r"-{3,}", "–", " ".join(str(wert).split()))
+
+
 def _kurz(text: str, zeichen: int) -> str:
     text = text.strip()
     if len(text) <= zeichen:
@@ -217,13 +226,10 @@ def profil_pruefen(daten: dict) -> tuple[dict, str | None]:
     if farbe not in FARBEN:
         farbe = "grau"
 
-    # Der Zeilenumbruch würde das flache Frontmatter zerreißen.
-    beschreibung = " ".join(str(daten.get("beschreibung", "")).split())
-
     return {
-        "name": " ".join(name.split()),
-        "beschreibung": beschreibung,
-        "model": " ".join(str(daten.get("model", "")).split()),
+        "name": _einzeilig(name),
+        "beschreibung": _einzeilig(daten.get("beschreibung", "")),
+        "model": _einzeilig(daten.get("model", "")),
         "thinking": thinking,
         "farbe": farbe,
         "text": text,
@@ -532,9 +538,13 @@ class PiStrom:
             return self._strom(ereignis.get("assistantMessageEvent") or {})
 
         if art == "message_end":
-            grund = ereignis.get("stopReason")
-            if grund in ("error", "aborted"):
-                self.fehler = ereignis.get("errorMessage") or f"pi meldet: {grund}"
+            # stopReason und errorMessage stecken in der Nachricht, nicht im
+            # Ereignis selbst. Eine Ebene zu hoch gelesen, und jeder
+            # Anbieterfehler bliebe unsichtbar — pi endet dabei mit Code 0.
+            nachricht = ereignis.get("message") or {}
+            grund = nachricht.get("stopReason")
+            if nachricht.get("role") == "assistant" and grund in ("error", "aborted"):
+                self.fehler = nachricht.get("errorMessage") or f"pi meldet: {grund}"
                 return {"art": "fehler", "text": self.fehler}
             return None
 
@@ -542,7 +552,13 @@ class PiStrom:
             sekunden = round((ereignis.get("delayMs") or 0) / 1000)
             versuch = ereignis.get("attempt", "?")
             maximal = ereignis.get("maxAttempts", "?")
-            return {"art": "meldung",
+            # pi verwirft den angefangenen Beitrag und streamt ihn neu. Was
+            # bisher kam, muss deshalb auch hier weg — sonst steht der Anfang
+            # zweimal in verlauf.jsonl und vergiftet alle Folgeprompts.
+            self.text.clear()
+            self.denken.clear()
+            self.fehler = None
+            return {"art": "meldung", "neustart": True,
                     "text": f"Neuer Versuch {versuch}/{maximal} in {sekunden} s"}
 
         if art == "agent_end" and not ereignis.get("willRetry"):
@@ -697,7 +713,15 @@ def party_loeschen(slug: str) -> bool:
     ordner = sicherer_pfad(slug, PARTYS_DIR)
     if not ordner or not os.path.isdir(ordner):
         return False
+    with laeufe_lock:
+        lauf = laeufe.get(slug)
     stoppe_party(slug)
+    # Erst wenn die Schleife durch ist, darf das Verzeichnis weg: sonst
+    # schreibt der Thread gleich noch einen fertigen Beitrag in eine Datei,
+    # deren Ordner es nicht mehr gibt, und stirbt mit Traceback.
+    frist = time.monotonic() + 5
+    while lauf and not lauf.beendet and time.monotonic() < frist:
+        time.sleep(0.05)
     with laeufe_lock:
         laeufe.pop(slug, None)
     shutil.rmtree(ordner, ignore_errors=True)
@@ -805,7 +829,8 @@ def _party_schleife(lauf: Lauf, profile: list[dict]) -> None:
                 try:
                     lauf.prozess = starte_pi(baue_pi_befehl(
                         profil["text"], prompt,
-                        sitzung.get("modell", ""), profil["thinking"]))
+                        sitzung.get("modell") or profil.get("model", ""),
+                        profil["thinking"]))
                 except FileNotFoundError:
                     lauf.fehler = ("pi wurde nicht gefunden. Installieren mit: "
                                    "npm install -g @earendil-works/pi-coding-agent")
@@ -927,6 +952,12 @@ MIME_TYPEN = {
 class PartyHandler(SimpleHTTPRequestHandler):
 
     # ---------------------------------------------------------------- Routing
+
+    def do_HEAD(self):
+        # Nicht erben: die Variante von SimpleHTTPRequestHandler bedient sich
+        # am Arbeitsverzeichnis und ginge damit an _serve_static() vorbei —
+        # HEAD /server.py hätte Größe und Datum des Quelltexts verraten.
+        self._serve_static(urlparse(self.path).path, nur_kopf=True)
 
     def do_GET(self):
         pfad = urlparse(self.path).path
@@ -1116,7 +1147,10 @@ class PartyHandler(SimpleHTTPRequestHandler):
             "starter": starter,
             "teilnehmer": teilnehmer,
             "runden": runden,
-            "modell": str(daten.get("modell", "")).strip() or STANDARD_MODELL,
+            # Leer heißt: das Modell aus dem jeweiligen Profil, sonst der
+            # Serverstandard. Hier STANDARD_MODELL einzusetzen würde das Feld
+            # in der Profildatei stillschweigend entwerten.
+            "modell": str(daten.get("modell", "")).strip(),
             "erstellt": jetzt_iso(),
         }
         if not sitzung_schreiben(slug, sitzung):
@@ -1250,7 +1284,10 @@ class PartyHandler(SimpleHTTPRequestHandler):
         self.wfile.flush()
 
     def _read_body(self):
-        laenge = int(self.headers.get("Content-Length", 0))
+        try:
+            laenge = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            laenge = 0
         if laenge == 0:
             self._send_json({"fehler": "Leere Anfrage"}, 400)
             return None
@@ -1268,7 +1305,7 @@ class PartyHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(rumpf)
 
-    def _serve_static(self, pfad):
+    def _serve_static(self, pfad, nur_kopf=False):
         if pfad in ("/", ""):
             pfad = "/index.html"
         datei = os.path.realpath(os.path.join(DASHBOARD_DIR, pfad.lstrip("/")))
@@ -1288,7 +1325,8 @@ class PartyHandler(SimpleHTTPRequestHandler):
                          MIME_TYPEN.get(endung, "application/octet-stream"))
         self.send_header("Content-Length", str(len(inhalt)))
         self.end_headers()
-        self.wfile.write(inhalt)
+        if not nur_kopf:
+            self.wfile.write(inhalt)
 
     def log_message(self, format, *args):
         print(f"[{self.log_date_time_string()}] {format % args}", file=sys.stderr)

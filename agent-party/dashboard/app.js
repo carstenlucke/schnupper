@@ -390,11 +390,11 @@ function gewaehlteFarbe() {
   return gewaehlt ? gewaehlt.value : "grau";
 }
 
-function rendereModellauswahl(select, wert) {
+function rendereModellauswahl(select, wert, standardLabel = "Standardmodell des Servers") {
   select.innerHTML = "";
   const standard = document.createElement("option");
   standard.value = "";
-  standard.textContent = "Standardmodell des Servers";
+  standard.textContent = standardLabel;
   select.appendChild(standard);
 
   let letzterAnbieter = null;
@@ -700,7 +700,9 @@ async function ladeUndRendereEinrichten() {
   besetzung = besetzung.filter((slug) => profilFinden(slug));
   rendereAuswahl();
   rendereBesetzung();
-  rendereModellauswahl($feldPartymodell, $feldPartymodell.value);
+  // Leer heißt hier: jedes Profil spricht mit dem Modell aus seiner Datei.
+  rendereModellauswahl($feldPartymodell, $feldPartymodell.value,
+    "Modell aus dem jeweiligen Profil");
   const partys = await ladePartys();
   rendereParties(Array.isArray(partys) ? partys : []);
 }
@@ -766,7 +768,9 @@ function rendereFortschritt(status) {
   $partyFortschritt.textContent =
     `${STATUS_TEXT[status] || status} · ${fertigeBeitraege} von ${aktuelleParty.erwartet} Beiträgen`;
   $partyStopBtn.classList.toggle("hidden", status !== "laeuft");
-  $partyFortBtn.classList.toggle("hidden", status !== "pausiert" && status !== "fehler");
+  // Auch "neu": wer vor dem ersten Beitrag abbricht, landet wieder dort —
+  // ohne diesen Knopf ließe sich die Party danach nur noch löschen.
+  $partyFortBtn.classList.toggle("hidden", status === "laeuft" || status === "fertig");
 }
 
 function oeffneStrom(slug) {
@@ -786,7 +790,12 @@ function oeffneStrom(slug) {
       case "denken": denkDelta(ereignis); break;
       case "beitrag_ende": beitragEnde(ereignis); break;
       case "fehler":
-      case "meldung": systemBlase(ereignis.text); break;
+      case "meldung":
+        // pi fängt den Beitrag neu an — was bisher in der Blase steht, kommt
+        // gleich noch einmal und müsste sonst doppelt dastehen.
+        if (ereignis.neustart) blaseZuruecksetzen();
+        systemBlase(ereignis.text);
+        break;
     }
   };
 
@@ -865,6 +874,14 @@ function beitragEnde(ereignis) {
   }
   rendereFortschritt(aktuelleParty ? aktuelleParty.status : "laeuft");
   scrolleWennAmEnde();
+}
+
+function blaseZuruecksetzen() {
+  if (!aktiveBlase) return;
+  aktiveBlase.roh = "";
+  aktiveBlase.textEl.textContent = "";
+  aktiveBlase.denkEl.textContent = "";
+  aktiveBlase.denkBox.classList.add("hidden");
 }
 
 function systemBlase(text) {
