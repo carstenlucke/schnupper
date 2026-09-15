@@ -37,6 +37,9 @@ let aktuelleParty = null;       // {slug, sitzung, status, erwartet}
 let partyQuelle = null;         // EventSource
 let aktiveBlase = null;         // {wurzel, textEl, denkEl, roh}
 let fertigeBeitraege = 0;
+let zwischenrufe = 0;           // Einwürfe der Gesprächsleitung in dieser Sitzung
+let letzteRunde = 0;            // für den Rundentrenner im Verlauf
+let beitragZaehler = {};        // Slug -> Anzahl Beiträge, für die Teilnehmerkarte
 let scrollAngefordert = false;
 
 // ---------------------------------------------------------------------------
@@ -73,6 +76,10 @@ const neueParty = (daten) =>
   api("/api/partys", { method: "POST", body: JSON.stringify(daten) });
 const starteParty = (slug) => api(`/api/partys/${slug}/start`, { method: "POST" });
 const stoppeParty = (slug) => api(`/api/partys/${slug}/stop`, { method: "POST" });
+const wirfEin = (slug, text) =>
+  api(`/api/partys/${slug}/zwischenruf`, { method: "POST", body: JSON.stringify({ text }) });
+const haengeRundeAn = (slug) => api(`/api/partys/${slug}/runde`, { method: "POST" });
+const starteFazit = (slug) => api(`/api/partys/${slug}/fazit`, { method: "POST" });
 const entferneParty = (slug) => api(`/api/partys/${slug}`, { method: "DELETE" });
 
 // ---------------------------------------------------------------------------
@@ -120,12 +127,27 @@ const $einrichtenHinweis = document.getElementById("einrichten-hinweis");
 
 const $partyTitel = document.getElementById("party-titel");
 const $partyStarter = document.getElementById("party-starter");
-const $partyChips = document.getElementById("party-chips");
+const $partyMeta = document.getElementById("party-meta");
+const $partyStatusBadge = document.getElementById("party-status-badge");
 const $partyFortschritt = document.getElementById("party-fortschritt");
-const $partyStopBtn = document.getElementById("party-stop-btn");
-const $partyFortBtn = document.getElementById("party-fort-btn");
+const $teilnehmerListe = document.getElementById("teilnehmer-liste");
+const $kennzahlRunde = document.getElementById("kennzahl-runde");
+const $kennzahlBeitraege = document.getElementById("kennzahl-beitraege");
+const $kennzahlZwischenrufe = document.getElementById("kennzahl-zwischenrufe");
 const $verlauf = document.getElementById("verlauf");
 const $blasenVorlage = document.getElementById("blasen-vorlage");
+const $zwischenrufVorlage = document.getElementById("zwischenruf-vorlage");
+const $rundenVorlage = document.getElementById("runden-vorlage");
+
+const $steuerleiste = document.getElementById("steuerleiste");
+const $zwischenrufFeld = document.getElementById("zwischenruf-feld");
+const $einwerfenBtn = document.getElementById("einwerfen-btn");
+const $rundeBtn = document.getElementById("runde-btn");
+const $fazitBtn = document.getElementById("fazit-btn");
+const $partyStopBtn = document.getElementById("party-stop-btn");
+const $partyFortBtn = document.getElementById("party-fort-btn");
+const $neuePartyBtn = document.getElementById("neue-party-btn");
+const $steuerHinweis = document.getElementById("steuer-hinweis");
 
 const $dialogHintergrund = document.getElementById("dialog-hintergrund");
 const $dialogTitel = document.getElementById("dialog-titel");
@@ -299,6 +321,7 @@ function zeigeAnsicht(name, arg) {
   $ansichtProfile.hidden = name !== "profile";
   $ansichtEinrichten.hidden = name !== "einrichten";
   $ansichtParty.hidden = name !== "party";
+  $steuerleiste.hidden = name !== "party";
   $tabProfile.setAttribute("aria-selected", String(name === "profile"));
   $tabEinrichten.setAttribute("aria-selected", String(name === "einrichten"));
   $tabParty.setAttribute("aria-selected", String(name === "party"));
@@ -774,40 +797,98 @@ async function oeffneParty(slug) {
 
   aktuelleParty = daten;
   $tabParty.disabled = false;
-  $partyTitel.textContent = daten.sitzung.titel;
-  $partyStarter.textContent = daten.sitzung.starter;
-  rendereChips(daten.sitzung.teilnehmer);
+  rendereKopfblock(daten);
 
   $verlauf.innerHTML = "";
   aktiveBlase = null;
   fertigeBeitraege = 0;
+  zwischenrufe = 0;
+  letzteRunde = 0;
+  beitragZaehler = {};
+  zeigeHinweis($steuerHinweis, "");
+  rendereTeilnehmer(null);
   rendereFortschritt(daten.status);
   oeffneStrom(slug);
 }
 
-function rendereChips(teilnehmer) {
-  $partyChips.innerHTML = "";
-  teilnehmer.forEach((slug, index) => {
-    const profil = profilFinden(slug) || { name: slug, farbe: "grau" };
-    const chip = document.createElement("span");
-    chip.className = `profil-${profil.farbe} inline-flex items-center gap-1.5 text-xs px-2 py-1 rounded bg-surface-mid`;
-    chip.innerHTML = `
-      <span class="text-on-surface-variant">${index + 1}</span>
-      <span class="profil-flaeche w-2 h-2 rounded-full" aria-hidden="true"></span>
-      <span class="profil-schrift font-medium">${escapeHtml(profil.name)}</span>`;
-    $partyChips.appendChild(chip);
+/** Zwei Buchstaben als Zeichen des Profils — mehr trägt das Quadrat nicht. */
+function initialen(name) {
+  const woerter = String(name || "").trim().split(/\s+/).filter(Boolean);
+  if (!woerter.length) return "??";
+  if (woerter.length === 1) return woerter[0].slice(0, 2).toUpperCase();
+  return (woerter[0][0] + woerter[1][0]).toUpperCase();
+}
+
+function rendereKopfblock(daten) {
+  $partyTitel.textContent = daten.sitzung.titel;
+  $partyStarter.textContent = daten.sitzung.starter;
+
+  const anzahl = daten.sitzung.teilnehmer.length;
+  const runden = daten.sitzung.runden;
+  const modell = daten.sitzung.modell;
+  $partyMeta.textContent = [
+    `${anzahl} ${anzahl === 1 ? "Agent" : "Agenten"}`,
+    `${runden} ${runden === 1 ? "Runde" : "Runden"}`,
+    // Der Anbieter steht schon in der Einrichtung; hier reicht das Modell.
+    modell ? modell.split("/").pop() : "Modell je Profil",
+  ].join(" · ");
+}
+
+/** Die Teilnehmerkarte rechts. `aktiv` ist der Slug, der gerade formuliert. */
+function rendereTeilnehmer(aktiv) {
+  if (!aktuelleParty) return;
+  $teilnehmerListe.innerHTML = "";
+
+  aktuelleParty.sitzung.teilnehmer.forEach((slug) => {
+    const profil = profilFinden(slug) || { name: slug, beschreibung: "", farbe: "grau" };
+    const zeile = document.createElement("li");
+    zeile.className = `teilnehmer-zeile profil-${profil.farbe}`;
+    const zweite = slug === aktiv
+      ? `<span class="teilnehmer-spricht puls">formuliert …</span>`
+      : `<span class="teilnehmer-rolle">${escapeHtml(profil.beschreibung)}</span>`;
+    zeile.innerHTML = `
+      <span class="beitrag-zeichen zeichen-klein profil-flaeche" aria-hidden="true">${escapeHtml(initialen(profil.name))}</span>
+      <span class="min-w-0">
+        <span class="teilnehmer-name block">${escapeHtml(profil.name)}</span>
+        ${zweite}
+      </span>
+      <span class="teilnehmer-zahl">${beitragZaehler[slug] || 0}</span>`;
+    $teilnehmerListe.appendChild(zeile);
   });
+}
+
+function rendereKennzahlen() {
+  if (!aktuelleParty) return;
+  $kennzahlRunde.textContent =
+    `${letzteRunde || 1} von ${aktuelleParty.sitzung.runden}`;
+  $kennzahlBeitraege.textContent = `${fertigeBeitraege} von ${aktuelleParty.erwartet}`;
+  $kennzahlZwischenrufe.textContent = String(zwischenrufe);
 }
 
 function rendereFortschritt(status) {
   if (!aktuelleParty) return;
   aktuelleParty.status = status;
+  const laeuft = status === "laeuft";
+
+  $partyStatusBadge.textContent = STATUS_TEXT[status] || status;
+  if (laeuft) {
+    const punkt = document.createElement("span");
+    punkt.className = "badge-punkt puls";
+    $partyStatusBadge.prepend(punkt);
+  }
   $partyFortschritt.textContent =
-    `${STATUS_TEXT[status] || status} · ${fertigeBeitraege} von ${aktuelleParty.erwartet} Beiträgen`;
-  $partyStopBtn.classList.toggle("hidden", status !== "laeuft");
+    `${fertigeBeitraege} von ${aktuelleParty.erwartet} Beiträgen`;
+  rendereKennzahlen();
+
+  // Anhalten greift nur in einen laufenden Beitrag; eine weitere Runde gibt
+  // es erst, wenn die geplanten durch sind. Einwerfen geht immer: der
+  // Impuls wartet notfalls auf die nächste Runde.
+  $partyStopBtn.disabled = !laeuft;
+  $rundeBtn.disabled = status !== "fertig";
+  $fazitBtn.disabled = laeuft || fertigeBeitraege === 0;
   // Auch "neu": wer vor dem ersten Beitrag abbricht, landet wieder dort —
   // ohne diesen Knopf ließe sich die Party danach nur noch löschen.
-  $partyFortBtn.classList.toggle("hidden", status === "laeuft" || status === "fertig");
+  $partyFortBtn.classList.toggle("hidden", laeuft || status === "fertig");
 }
 
 function oeffneStrom(slug) {
@@ -826,6 +907,7 @@ function oeffneStrom(slug) {
       case "text": textDelta(ereignis); break;
       case "denken": denkDelta(ereignis); break;
       case "beitrag_ende": beitragEnde(ereignis); break;
+      case "zwischenruf": zwischenrufAnzeigen(ereignis); break;
       case "verworfen": beitragVerworfen(ereignis.text); break;
       case "fehler":
       case "meldung":
@@ -843,6 +925,7 @@ function oeffneStrom(slug) {
       aktiveBlase.wurzel.classList.remove("blase-tippt");
       aktiveBlase = null;
     }
+    rendereTeilnehmer(null);
     rendereFortschritt(nachricht.data || "fertig");
   });
 
@@ -860,15 +943,42 @@ function schliesseStrom() {
   }
 }
 
+/** Vor dem ersten Beitrag einer Runde eine Trennlinie mit Rundennummer. */
+function rundenTrenner(runde) {
+  if (!runde || runde === letzteRunde) return;
+  letzteRunde = runde;
+  const trenner = $rundenVorlage.content.firstElementChild.cloneNode(true);
+  trenner.querySelector(".runden-marke").textContent = `Runde ${runde}`;
+  $verlauf.appendChild(trenner);
+}
+
 function beitragStart(ereignis) {
+  const fazit = ereignis.sorte === "fazit";
+  if (!fazit) rundenTrenner(ereignis.runde);
+
   const profil = profilFinden(ereignis.profil) || {
     name: ereignis.name || ereignis.profil,
+    beschreibung: "",
     farbe: ereignis.farbe || "grau",
   };
   const wurzel = $blasenVorlage.content.firstElementChild.cloneNode(true);
   wurzel.classList.add(`profil-${profil.farbe}`);
-  wurzel.querySelector(".blase-name").textContent = profil.name;
-  wurzel.querySelector(".blase-runde").textContent = `Runde ${ereignis.runde}`;
+  if (fazit) wurzel.classList.add("beitrag-fazit");
+
+  const zeichen = wurzel.querySelector(".beitrag-zeichen");
+  if (fazit) {
+    zeichen.classList.remove("profil-flaeche");
+    zeichen.innerHTML =
+      '<span class="material-symbols-outlined text-[22px]">summarize</span>';
+  } else {
+    zeichen.textContent = initialen(profil.name);
+  }
+
+  wurzel.querySelector(".blase-name").textContent = fazit ? "Fazit" : profil.name;
+  wurzel.querySelector(".blase-rolle").textContent =
+    fazit ? "Gesprächsleitung" : profil.beschreibung;
+  wurzel.querySelector(".blase-runde").textContent =
+    fazit ? "" : `Runde ${ereignis.runde}`;
   wurzel.classList.toggle("blase-tippt", !ereignis.nachgeliefert);
 
   $verlauf.appendChild(wurzel);
@@ -879,6 +989,7 @@ function beitragStart(ereignis) {
     denkBox: wurzel.querySelector(".blase-denken"),
     roh: "",
   };
+  if (!ereignis.nachgeliefert && !fazit) rendereTeilnehmer(ereignis.profil);
   scrolleWennAmEnde();
 }
 
@@ -899,7 +1010,14 @@ function denkDelta(ereignis) {
 }
 
 function beitragEnde(ereignis) {
-  fertigeBeitraege += 1;
+  // Das Fazit ist kein Redebeitrag: es zählt weder gegen die Rundenzahl noch
+  // in der Teilnehmerkarte.
+  if (ereignis.sorte !== "fazit") {
+    fertigeBeitraege += 1;
+    if (ereignis.profil) {
+      beitragZaehler[ereignis.profil] = (beitragZaehler[ereignis.profil] || 0) + 1;
+    }
+  }
   if (aktiveBlase) {
     aktiveBlase.wurzel.classList.remove("blase-tippt");
     aktiveBlase.textEl.innerHTML = marked.parse(aktiveBlase.roh);
@@ -910,7 +1028,19 @@ function beitragEnde(ereignis) {
     }
     aktiveBlase = null;
   }
+  rendereTeilnehmer(null);
   rendereFortschritt(aktuelleParty ? aktuelleParty.status : "laeuft");
+  scrolleWennAmEnde();
+}
+
+function zwischenrufAnzeigen(ereignis) {
+  const wurzel = $zwischenrufVorlage.content.firstElementChild.cloneNode(true);
+  wurzel.querySelector(".zwischenruf-text").textContent = ereignis.text;
+  wurzel.querySelector(".blase-runde").textContent =
+    ereignis.runde ? `Runde ${ereignis.runde}` : "";
+  $verlauf.appendChild(wurzel);
+  zwischenrufe += 1;
+  rendereKennzahlen();
   scrolleWennAmEnde();
 }
 
@@ -941,6 +1071,82 @@ function systemBlase(text, klassen = "text-error border-error/40 bg-error-contai
   kasten.textContent = text;
   $verlauf.appendChild(kasten);
   scrolleWennAmEnde();
+}
+
+// ---------------------------------------------------------------------------
+// Steuerleiste: eingreifen, verlängern, abschließen
+// ---------------------------------------------------------------------------
+// Solange eine Anfrage unterwegs ist, ist der Griff belegt. Der gesperrte
+// Knopf allein genügt nicht: die Enter-Taste kommt daran vorbei, und das Feld
+// wird erst nach der Antwort geleert — zweimal Enter schickte sonst denselben
+// Satz zweimal los.
+let einwurfLaeuft = false;
+
+async function zwischenrufEinwerfen() {
+  if (!aktuelleParty || einwurfLaeuft) return true;
+  const text = $zwischenrufFeld.value.trim();
+  if (!text) return true;
+
+  zeigeHinweis($steuerHinweis, "");
+  einwurfLaeuft = true;
+  $einwerfenBtn.disabled = true;
+  const ergebnis = await wirfEin(aktuelleParty.slug, text);
+  einwurfLaeuft = false;
+  $einwerfenBtn.disabled = false;
+  if (ergebnis.fehler) {
+    zeigeHinweis($steuerHinweis, ergebnis.fehler);
+    return false;
+  }
+
+  $zwischenrufFeld.value = "";
+  // Läuft gerade nichts, gibt es auch keinen Strom, der den Einwurf zurück
+  // ins Dashboard trägt — dann hängt ihn die Ansicht selbst an.
+  if (!ergebnis.live) zwischenrufAnzeigen(ergebnis.eintrag);
+  return true;
+}
+
+async function rundeAnhaengen() {
+  if (!aktuelleParty) return;
+  // Sofort sperren: zwei Anfragen hintereinander sind unterwegs, und ein
+  // zweiter Klick hängt eine Runde an, die der Server gleich wieder
+  // zurücknimmt. Auf dem Erfolgsweg setzt oeffneParty() den Knopf neu.
+  $rundeBtn.disabled = true;
+
+  // Steht noch ein Impuls im Feld, geht er der Runde voraus: ein Griff für
+  // „so, und jetzt redet bitte darüber".
+  if (!(await zwischenrufEinwerfen())) {
+    $rundeBtn.disabled = false;
+    return;
+  }
+
+  const ergebnis = await haengeRundeAn(aktuelleParty.slug);
+  if (ergebnis.fehler) {
+    $rundeBtn.disabled = false;
+    await zeigeDialog({
+      titel: "Die Runde startet nicht",
+      text: ergebnis.fehler,
+      mitAbbrechen: false,
+    });
+    return;
+  }
+  oeffneParty(aktuelleParty.slug);
+}
+
+async function fazitAnfordern() {
+  if (!aktuelleParty) return;
+  $fazitBtn.disabled = true;
+  const ergebnis = await starteFazit(aktuelleParty.slug);
+  if (ergebnis.fehler) {
+    $fazitBtn.disabled = false;
+    await zeigeDialog({
+      titel: "Kein Fazit",
+      text: ergebnis.fehler,
+      mitAbbrechen: false,
+    });
+    return;
+  }
+  // Neu aufbauen: der Strom zeigt das Fazit dann live, wie einen Beitrag.
+  oeffneParty(aktuelleParty.slug);
 }
 
 async function partyFortsetzen() {
@@ -986,6 +1192,15 @@ function setzeListener() {
 
   $partyStopBtn.addEventListener("click", partyAbbrechen);
   $partyFortBtn.addEventListener("click", partyFortsetzen);
+  $einwerfenBtn.addEventListener("click", zwischenrufEinwerfen);
+  $zwischenrufFeld.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    zwischenrufEinwerfen();
+  });
+  $rundeBtn.addEventListener("click", rundeAnhaengen);
+  $fazitBtn.addEventListener("click", fazitAnfordern);
+  $neuePartyBtn.addEventListener("click", () => zeigeAnsicht("einrichten"));
 
   window.addEventListener("popstate", ausHash);
   window.addEventListener("beforeunload", schliesseStrom);

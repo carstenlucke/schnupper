@@ -48,6 +48,10 @@ MIN_TEILNEHMER = 2
 VERLAUF_ZEICHEN = 6000
 BEITRAG_ZEICHEN = 800
 
+# Ein Zwischenruf ist ein Satz, kein Vortrag. Länger abgeschnitten, statt
+# abgelehnt — im Hörsaal soll nichts an einer Kleinigkeit scheitern.
+ZWISCHENRUF_ZEICHEN = 500
+
 SAFE_SEGMENT_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 
@@ -362,6 +366,18 @@ Regeln für den Rollentext unter der zweiten Bindestrichzeile:
   gesamten Text.
 """
 
+# So heißt der Mensch am Rechner im Prompt: die Person, die die Runde leitet,
+# dazwischenruft und am Ende ein Fazit zieht.
+LEITUNG = "Gesprächsleitung"
+
+ZWISCHENRUF_VORLAGE = """
+ZWISCHENRUF DER GESPRÄCHSLEITUNG
+{texte}
+Nimm diesen Einwurf ernst: Er ist keine Wortmeldung, auf die du antwortest,
+sondern die Vorgabe, an der du dich ausrichtest. Geh gleich zu Beginn darauf
+ein und bleibe dabei in deiner Rolle.
+"""
+
 BEITRAG_VORLAGE = """Du nimmst an einer Gesprächsrunde teil. Du sprichst als {name}.
 
 THEMA
@@ -374,7 +390,7 @@ WER MITDISKUTIERT
 
 BISHERIGER VERLAUF
 {verlauf}
-
+{zwischenruf}
 DU BIST JETZT AN DER REIHE — Runde {runde} von {runden}.
 Antworte als {name}, auf Deutsch, in der Ich-Form.
 Gehe auf mindestens einen Beitrag vor dir ein und nenne die Person beim Namen,
@@ -383,6 +399,43 @@ Schreibe 3 bis 6 Sätze und höchstens 120 Wörter.
 Gib nur deinen Redebeitrag aus: kein Namensschild davor, keine Anführungszeichen,
 keine Regieanweisungen, keine Aufzählungspunkte, keine Überschriften, keine Emoji.
 Wiederhole nicht, was schon gesagt wurde — bring etwas Neues ein.
+"""
+
+
+# Das Fazit ist der einzige Beitrag, dessen Rolle nicht aus profile/ kommt:
+# Die Gesprächsleitung ist keine Stimme am Tisch, sondern der Blick von außen.
+# Ihr Systemprompt steht deshalb hier im Code — wie der für „Profil
+# ausarbeiten" auch.
+SYSTEMPROMPT_FAZIT = """Du bist die Gesprächsleitung einer Diskussionsrunde und ziehst am Ende Bilanz.
+Du hast selbst keine Meinung zum Thema und ergreifst für niemanden Partei. Du
+hörst zu und ordnest ein.
+
+Schreibe auf Deutsch, sachlich und ohne Floskeln. Kein Vorwort, keine Anrede,
+keine Rückfrage, keine Emoji.
+
+Gib genau drei Abschnitte aus, jeder mit dieser Überschrift und darunter zwei
+bis vier Sätzen:
+
+**Worin sie sich einig sind**
+**Wo sie sich widersprechen**
+**Was offen bleibt**
+
+Nenne die Beteiligten beim Namen, wenn du ihre Position wiedergibst. Erfinde
+nichts dazu: Was im Verlauf nicht vorkommt, steht auch nicht im Fazit. Bleib
+insgesamt unter 220 Wörtern."""
+
+FAZIT_VORLAGE = """Fasse diese Gesprächsrunde zusammen.
+
+THEMA
+{titel}
+
+{starter}
+
+WER MITDISKUTIERT HAT
+{teilnehmer}
+
+DER VERLAUF
+{verlauf}
 """
 
 
@@ -409,6 +462,37 @@ def teilnehmer_block(profile: list[dict], ich_platz: int) -> str:
     return "\n".join(zeilen)
 
 
+def _sprecher(eintrag: dict, namen: dict[str, str]) -> str:
+    """Wer hat das gesagt — für den Verlauf im Prompt.
+
+    Die Gesprächsleitung ist der Mensch am Rechner. Sie tritt unter eigenem
+    Namen auf, damit die Profile ihren Einwurf nicht für den Beitrag einer
+    anderen Rolle halten und ihn beantworten statt aufzugreifen.
+    """
+    art = eintrag.get("art", "beitrag")
+    if art == "zwischenruf":
+        return f"{LEITUNG} (Zwischenruf)"
+    if art == "fazit":
+        return f"{LEITUNG} (Zwischenfazit)"
+    slug = eintrag.get("profil", "")
+    return namen.get(slug, slug)
+
+
+def offene_zwischenrufe(eintraege: list[dict]) -> list[str]:
+    """Die Zwischenrufe, auf die noch niemand geantwortet hat.
+
+    Alles ab dem letzten Beitrag: was davor liegt, ist im Verlauf schon
+    aufgegriffen worden und braucht keine eigene Aufforderung mehr.
+    """
+    offen = []
+    for eintrag in reversed(eintraege):
+        if ist_beitrag(eintrag):
+            break
+        if eintrag.get("art") == "zwischenruf":
+            offen.append(eintrag.get("text", ""))
+    return list(reversed(offen))
+
+
 def kuerze_verlauf(eintraege: list[dict], namen: dict[str, str]) -> str:
     """Den Gesprächsverlauf für den Prompt aufbereiten.
 
@@ -422,7 +506,7 @@ def kuerze_verlauf(eintraege: list[dict], namen: dict[str, str]) -> str:
         return "(Noch hat niemand gesprochen. Du eröffnest die Runde.)"
 
     stuecke = [
-        f"{namen.get(e['profil'], e['profil'])}: {_kurz(e['text'], BEITRAG_ZEICHEN)}"
+        f"{_sprecher(e, namen)}: {_kurz(e['text'], BEITRAG_ZEICHEN)}"
         for e in eintraege
     ]
 
@@ -445,14 +529,30 @@ def baue_beitrag_prompt(sitzung: dict, profile: list[dict], ich_platz: int,
     """
     ich = profile[ich_platz]
     namen = {p["slug"]: p["name"] for p in profile}
+    offen = offene_zwischenrufe(eintraege)
     return BEITRAG_VORLAGE.format(
         name=ich["name"],
         titel=sitzung.get("titel", ""),
         starter=sitzung.get("starter", ""),
         teilnehmer=teilnehmer_block(profile, ich_platz),
         verlauf=kuerze_verlauf(eintraege, namen),
+        zwischenruf=ZWISCHENRUF_VORLAGE.format(
+            texte="\n".join(f"„{text}“" for text in offen)) if offen else "",
         runde=runde,
         runden=sitzung.get("runden", 1),
+    )
+
+
+def baue_fazit_prompt(sitzung: dict, profile: list[dict],
+                      eintraege: list[dict]) -> str:
+    namen = {p["slug"]: p["name"] for p in profile}
+    return FAZIT_VORLAGE.format(
+        titel=sitzung.get("titel", ""),
+        starter=sitzung.get("starter", ""),
+        teilnehmer="\n".join(
+            f"- {p['name']}" + (f" – {p['beschreibung']}" if p["beschreibung"] else "")
+            for p in profile),
+        verlauf=kuerze_verlauf(eintraege, namen),
     )
 
 
@@ -659,13 +759,35 @@ def verlauf_lesen(slug: str) -> list[dict]:
     return eintraege
 
 
+# Zwei Threads hängen an dieselbe Datei an: die Party-Schleife einen Beitrag,
+# ein Request-Thread einen Zwischenruf. Eine Zeile je Schreibvorgang, unter
+# einem Lock — sonst schieben sich zwei halbe JSON-Zeilen ineinander.
+verlauf_lock = threading.Lock()
+
+
 def verlauf_anhaengen(slug: str, eintrag: dict) -> None:
     pfad = verlauf_pfad(slug)
     if not pfad:
         return
-    with open(pfad, "a", encoding="utf-8") as f:
+    with verlauf_lock, open(pfad, "a", encoding="utf-8") as f:
         f.write(json.dumps(eintrag, ensure_ascii=False) + "\n")
         f.flush()
+
+
+def ist_beitrag(eintrag: dict) -> bool:
+    """Zählt dieser Eintrag als Redebeitrag?
+
+    In der jsonl steht dreierlei: Beiträge der Profile, Zwischenrufe der
+    Gesprächsleitung und das Fazit. Nur das erste zählt gegen
+    `runden × teilnehmer` — ein Zwischenruf darf keine Runde verschlucken.
+    Einträge ohne `art` stammen aus einer Sitzung von vor dieser
+    Unterscheidung und sind Beiträge.
+    """
+    return eintrag.get("art", "beitrag") == "beitrag"
+
+
+def nur_beitraege(eintraege: list[dict]) -> list[dict]:
+    return [e for e in eintraege if ist_beitrag(e)]
 
 
 def party_erwartet(sitzung: dict) -> int:
@@ -687,7 +809,7 @@ def party_status(slug: str, sitzung: dict | None = None) -> str:
     if lauf and not lauf.beendet:
         return "laeuft"
 
-    anzahl = len(verlauf_lesen(slug))
+    anzahl = len(nur_beitraege(verlauf_lesen(slug)))
     if anzahl >= party_erwartet(sitzung):
         return "fertig"
     if lauf and lauf.fehler:
@@ -711,7 +833,7 @@ def party_liste() -> list[dict]:
             "slug": slug,
             "sitzung": sitzung,
             "status": party_status(slug, sitzung),
-            "beitraege": len(verlauf_lesen(slug)),
+            "beitraege": len(nur_beitraege(verlauf_lesen(slug))),
             "erwartet": party_erwartet(sitzung),
         })
     partys.sort(key=lambda p: p["sitzung"].get("erstellt", ""), reverse=True)
@@ -761,14 +883,26 @@ class Lauf:
         # entsteht bei einem Stop während des Prozessstarts ein Waisen-pi,
         # der im Hintergrund weiterredet.
         self.prozess_lock = threading.Lock()
+        # Zwischenrufe, die noch in die Datei müssen. Sie kommen aus einem
+        # Request-Thread, geschrieben werden sie vom Schleifen-Thread —
+        # siehe schreibe_einwuerfe().
+        self.einwuerfe: list[dict] = []
+        self.einwurf_lock = threading.Lock()
 
 
 laeufe: dict[str, Lauf] = {}
 laeufe_lock = threading.Lock()
 
 
-def sende(lauf: Lauf, ereignis: dict, beitrag_nr: int) -> None:
-    lauf.ereignisse.append({"beitrag_nr": beitrag_nr, **ereignis})
+def sende(lauf: Lauf, ereignis: dict, eintrag_nr: int) -> None:
+    """Ein Ereignis in den Puffer — mit der Marke, die es einordnet.
+
+    `eintrag_nr` ist die Zahl der Zeilen, die zum Zeitpunkt des Ereignisses
+    in verlauf.jsonl standen. Der Stream filtert daran ab, was eine neu
+    verbundene Verbindung schon aus der Datei bekommen hat (siehe
+    _party_stream). Beiträge, Zwischenrufe und Fazit zählen dafür gemeinsam.
+    """
+    lauf.ereignisse.append({"eintrag_nr": eintrag_nr, **ereignis})
 
 
 def starte_party(slug: str) -> tuple[dict, int]:
@@ -783,8 +917,9 @@ def starte_party(slug: str) -> tuple[dict, int]:
             return {"fehler": f"Das Profil „{teilnehmer}“ gibt es nicht mehr."}, 409
         profile.append(profil)
 
-    if len(verlauf_lesen(slug)) >= party_erwartet(sitzung):
-        return {"fehler": "Diese Party ist schon durch."}, 409
+    if len(nur_beitraege(verlauf_lesen(slug))) >= party_erwartet(sitzung):
+        return {"fehler": "Diese Party ist schon durch. „Weitere Runde“ "
+                          "hängt eine an."}, 409
 
     # Prüfen und Eintragen in einem Zug: ein Doppelklick auf „Start" darf
     # nicht zwei Threads erzeugen, die in dieselbe jsonl schreiben.
@@ -797,7 +932,90 @@ def starte_party(slug: str) -> tuple[dict, int]:
 
     threading.Thread(target=_party_schleife, args=(lauf, profile),
                      daemon=True).start()
-    return {"status": "gestartet", "ab_beitrag": len(verlauf_lesen(slug))}, 200
+    return {"status": "gestartet",
+            "ab_beitrag": len(nur_beitraege(verlauf_lesen(slug)))}, 200
+
+
+def schreibe_einwuerfe(lauf: Lauf) -> None:
+    """Wartende Zwischenrufe an die Datei anhängen.
+
+    Das tut nur der Schleifen-Thread, und nur zwischen zwei Beiträgen. Täte
+    es der Request-Thread sofort, stünde der Zwischenruf in der Datei vor
+    einer Blase, deren Ereignisse schon die Marke davor tragen — eine
+    Verbindung, die genau dann neu aufmacht, bekäme den laufenden Beitrag
+    weggefiltert. Sichtbar ist der Einwurf trotzdem sofort: wirf_ein() legt
+    ihn zusätzlich in den Ereignispuffer.
+    """
+    with lauf.einwurf_lock:
+        offen, lauf.einwuerfe = lauf.einwuerfe, []
+    for eintrag in offen:
+        verlauf_anhaengen(lauf.slug, eintrag)
+
+
+def _pi_durchlauf(lauf: Lauf, marke: int, system_prompt: str, prompt: str,
+                  modell: str, thinking: str) -> tuple[str, str, float] | None:
+    """Ein pi-Prozess von vorn bis hinten: Ereignisse raus, Ergebnis zurück.
+
+    Liefert (Text, Denken, Dauer) — oder None, wenn abgebrochen wurde oder
+    etwas schiefging; die Meldung dafür ist dann schon im Puffer. Beitrag und
+    Fazit teilen sich diesen Weg, damit es die Abbruchbehandlung nur einmal
+    gibt.
+    """
+    begonnen = time.monotonic()
+
+    with lauf.prozess_lock:
+        if lauf.abbruch.is_set():
+            return None
+        try:
+            lauf.prozess = starte_pi(baue_pi_befehl(
+                system_prompt, prompt, modell, thinking))
+        except FileNotFoundError:
+            lauf.fehler = ("pi wurde nicht gefunden. Installieren mit: "
+                           "npm install -g @earendil-works/pi-coding-agent")
+            sende(lauf, {"art": "fehler", "text": lauf.fehler}, marke)
+            return None
+
+    prozess = lauf.prozess
+    strom = PiStrom()
+    try:
+        for zeile in prozess.stdout:
+            if lauf.abbruch.is_set():
+                break
+            try:
+                ereignis = strom.verarbeite(zeile)
+            except Exception as fehler:
+                # Nie den Leser sterben lassen — sonst läuft pi auf eine
+                # volle Pipe und hängt.
+                print(f"[party-warn] {lauf.slug}: {fehler!r}", file=sys.stderr)
+                continue
+            if ereignis:
+                sende(lauf, ereignis, marke)
+    except (OSError, ValueError):
+        pass
+
+    rc = prozess.wait()
+    with lauf.prozess_lock:
+        lauf.prozess = None
+
+    if lauf.abbruch.is_set():
+        # Ein halber Satz im Verlauf würde alle Folgeprompts vergiften — der
+        # Teilbeitrag wird verworfen. Das muss auch ankommen: der
+        # Ereignispuffer wird nie gekürzt (sonst verlieren die mitlesenden
+        # SSE-Verbindungen ihren Index), die angefangene Blase bleibt also
+        # stehen. Ohne diese Kennzeichnung sähe sie beim Neuladen aus wie ein
+        # fertiger Beitrag, den es im Verlauf gar nicht gibt.
+        sende(lauf, {"art": "verworfen",
+                     "text": "Abgebrochen — dieser Beitrag zählt "
+                             "nicht und steht nicht im Verlauf."}, marke)
+        return None
+
+    if rc != 0 or strom.fehler or not strom.voller_text:
+        lauf.fehler = strom.fehler or f"pi endete mit Code {rc}"
+        sende(lauf, {"art": "fehler", "text": lauf.fehler}, marke)
+        return None
+
+    return (strom.voller_text, strom.volles_denken,
+            round(time.monotonic() - begonnen, 1))
 
 
 def _party_schleife(lauf: Lauf, profile: list[dict]) -> None:
@@ -810,103 +1028,234 @@ def _party_schleife(lauf: Lauf, profile: list[dict]) -> None:
     sitzung = lauf.sitzung
     teilnehmer = sitzung.get("teilnehmer", [])
     nach_slug = {p["slug"]: p for p in profile}
-
-    beitraege = verlauf_lesen(slug)
-    nr = len(beitraege)
     gesamt = party_erwartet(sitzung)
 
     try:
-        while nr < gesamt and not lauf.abbruch.is_set():
+        while not lauf.abbruch.is_set():
+            # Vor jedem Beitrag frisch von der Platte: seit dem letzten kann
+            # ein Zwischenruf dazugekommen sein, und der gehört in den Prompt.
+            schreibe_einwuerfe(lauf)
+            eintraege = verlauf_lesen(slug)
+            nr = len(nur_beitraege(eintraege))
+            if nr >= gesamt:
+                break
+
+            # Die Marke ist die Dateilänge, nicht die Beitragszahl: sonst
+            # zählten Stream und Datei verschieden, sobald ein Zwischenruf
+            # dazwischenliegt.
+            marke = len(eintraege)
             runde, platz = divmod(nr, len(teilnehmer))
             profil = nach_slug[teilnehmer[platz]]
 
             sende(lauf, {
                 "art": "beitrag_start",
+                "sorte": "beitrag",
                 "runde": runde + 1,
                 "profil": profil["slug"],
                 "name": profil["name"],
                 "farbe": profil["farbe"],
-            }, nr)
+            }, marke)
 
-            prompt = baue_beitrag_prompt(sitzung, profile, platz,
-                                         runde + 1, beitraege)
-            begonnen = time.monotonic()
-
-            with lauf.prozess_lock:
-                if lauf.abbruch.is_set():
-                    break
-                try:
-                    lauf.prozess = starte_pi(baue_pi_befehl(
-                        profil["text"], prompt,
-                        sitzung.get("modell") or profil.get("model", ""),
-                        profil["thinking"]))
-                except FileNotFoundError:
-                    lauf.fehler = ("pi wurde nicht gefunden. Installieren mit: "
-                                   "npm install -g @earendil-works/pi-coding-agent")
-                    sende(lauf, {"art": "fehler", "text": lauf.fehler}, nr)
-                    break
-
-            prozess = lauf.prozess
-            strom = PiStrom()
-            try:
-                for zeile in prozess.stdout:
-                    if lauf.abbruch.is_set():
-                        break
-                    try:
-                        ereignis = strom.verarbeite(zeile)
-                    except Exception as fehler:
-                        # Nie den Leser sterben lassen — sonst läuft pi auf
-                        # eine volle Pipe und hängt.
-                        print(f"[party-warn] {slug}: {fehler!r}", file=sys.stderr)
-                        continue
-                    if ereignis:
-                        sende(lauf, ereignis, nr)
-            except (OSError, ValueError):
-                pass
-
-            rc = prozess.wait()
-            with lauf.prozess_lock:
-                lauf.prozess = None
-
-            if lauf.abbruch.is_set():
-                # Ein halber Satz im Verlauf würde alle Folgeprompts
-                # vergiften — der Teilbeitrag wird verworfen. Das muss auch
-                # ankommen: der Ereignispuffer wird nie gekürzt (sonst
-                # verlieren die mitlesenden SSE-Verbindungen ihren Index),
-                # die angefangene Blase bleibt also stehen. Ohne diese
-                # Kennzeichnung sähe sie beim Neuladen aus wie ein fertiger
-                # Beitrag, den es im Verlauf gar nicht gibt.
-                sende(lauf, {"art": "verworfen",
-                             "text": "Abgebrochen — dieser Beitrag zählt "
-                                     "nicht und steht nicht im Verlauf."}, nr)
+            ergebnis = _pi_durchlauf(
+                lauf, marke, profil["text"],
+                baue_beitrag_prompt(sitzung, profile, platz, runde + 1, eintraege),
+                sitzung.get("modell") or profil.get("model", ""),
+                profil["thinking"])
+            if ergebnis is None:
                 break
 
-            if rc != 0 or strom.fehler or not strom.voller_text:
-                lauf.fehler = strom.fehler or f"pi endete mit Code {rc}"
-                sende(lauf, {"art": "fehler", "text": lauf.fehler}, nr)
-                break
-
+            text, denken, dauer = ergebnis
             eintrag = {
+                "art": "beitrag",
                 "runde": runde + 1,
                 "profil": profil["slug"],
-                "text": strom.voller_text,
-                "denken": strom.volles_denken,
+                "text": text,
+                "denken": denken,
                 "zeit": jetzt_iso(),
-                "dauer_s": round(time.monotonic() - begonnen, 1),
+                "dauer_s": dauer,
             }
             # Erst schreiben, dann melden: ein Browser, der genau dazwischen
             # neu verbindet, bekommt den Beitrag aus der Datei statt gar nicht.
             verlauf_anhaengen(slug, eintrag)
-            beitraege.append(eintrag)
             sende(lauf, {
                 "art": "beitrag_ende",
+                "sorte": "beitrag",
                 "runde": eintrag["runde"],
                 "profil": eintrag["profil"],
                 "dauer_s": eintrag["dauer_s"],
-            }, nr)
-            nr += 1
+            }, marke)
     finally:
+        # Was noch in der Warteschlange liegt, gehört trotzdem in die Datei —
+        # sonst wäre der Zwischenruf weg, den jemand Sekunden vor dem Stopp
+        # eingeworfen hat. Erst die Marke, dann leeren: wer in wirf_ein()
+        # davor noch `beendet == False` liest, landet in dieser Liste und
+        # wird hier geschrieben; wer danach liest, schreibt selbst. Andersherum
+        # fiele ein Zwischenruf genau dazwischen unter den Tisch.
         lauf.beendet = True
+        schreibe_einwuerfe(lauf)
+
+
+def _fazit_schleife(lauf: Lauf, profile: list[dict]) -> None:
+    """Ein einziger Durchlauf: die Gesprächsleitung zieht Bilanz.
+
+    Läuft über dieselbe Registry wie eine Party — solange das Fazit
+    entsteht, ist die Sitzung belegt und niemand startet ihr eine Runde
+    dazwischen.
+    """
+    slug = lauf.slug
+    sitzung = lauf.sitzung
+    try:
+        eintraege = verlauf_lesen(slug)
+        marke = len(eintraege)
+        runde = int(sitzung.get("runden", 1))
+
+        sende(lauf, {
+            "art": "beitrag_start",
+            "sorte": "fazit",
+            "runde": runde,
+            "profil": "fazit",
+            "name": LEITUNG,
+            "farbe": "grau",
+        }, marke)
+
+        ergebnis = _pi_durchlauf(
+            lauf, marke, SYSTEMPROMPT_FAZIT,
+            baue_fazit_prompt(sitzung, profile, eintraege),
+            sitzung.get("modell", ""), "low")
+        if ergebnis is None:
+            return
+
+        text, denken, dauer = ergebnis
+        eintrag = {
+            "art": "fazit",
+            "runde": runde,
+            "profil": "fazit",
+            "text": text,
+            "denken": denken,
+            "zeit": jetzt_iso(),
+            "dauer_s": dauer,
+        }
+        verlauf_anhaengen(slug, eintrag)
+        sende(lauf, {
+            "art": "beitrag_ende",
+            "sorte": "fazit",
+            "runde": runde,
+            "profil": "fazit",
+            "dauer_s": dauer,
+        }, marke)
+    finally:
+        # Reihenfolge wie in _party_schleife — siehe dort.
+        lauf.beendet = True
+        schreibe_einwuerfe(lauf)
+
+
+def starte_fazit(slug: str) -> tuple[dict, int]:
+    sitzung = sitzung_lesen(slug)
+    if not sitzung:
+        return {"fehler": "Party nicht gefunden"}, 404
+
+    eintraege = verlauf_lesen(slug)
+    if not nur_beitraege(eintraege):
+        return {"fehler": "Noch hat niemand gesprochen."}, 409
+
+    # Die Profile nur für die Namen im Prompt — ein gelöschtes Profil darf
+    # das Fazit nicht verhindern, der Verlauf steht ja schon.
+    profile = [profil_lesen(t) or {"slug": t, "name": t, "beschreibung": ""}
+               for t in sitzung.get("teilnehmer", [])]
+
+    with laeufe_lock:
+        vorhanden = laeufe.get(slug)
+        if vorhanden and not vorhanden.beendet:
+            return {"fehler": "Erst muss die Runde durch sein."}, 409
+        lauf = Lauf(slug, sitzung)
+        laeufe[slug] = lauf
+
+    threading.Thread(target=_fazit_schleife, args=(lauf, profile),
+                     daemon=True).start()
+    return {"status": "gestartet"}, 200
+
+
+def wirf_ein(slug: str, text: str) -> tuple[dict, int]:
+    """Einen Zwischenruf der Gesprächsleitung in die Sitzung geben.
+
+    Er wirkt auf den nächsten Beitrag: die Schleife liest den Verlauf vor
+    jedem Durchlauf neu, und baue_beitrag_prompt() hebt hervor, worauf noch
+    niemand geantwortet hat.
+    """
+    sitzung = sitzung_lesen(slug)
+    if not sitzung:
+        return {"fehler": "Party nicht gefunden"}, 404
+
+    text = " ".join(str(text).split())
+    if not text:
+        return {"fehler": "Der Zwischenruf ist leer."}, 400
+    text = text[:ZWISCHENRUF_ZEICHEN]
+
+    eintraege = verlauf_lesen(slug)
+    plaetze = len(sitzung.get("teilnehmer", [])) or 1
+    eintrag = {
+        "art": "zwischenruf",
+        "runde": len(nur_beitraege(eintraege)) // plaetze + 1,
+        "text": text,
+        "zeit": jetzt_iso(),
+    }
+
+    with laeufe_lock:
+        lauf = laeufe.get(slug)
+
+    if lauf and not lauf.beendet:
+        with lauf.einwurf_lock:
+            lauf.einwuerfe.append(eintrag)
+        sende(lauf, {"art": "zwischenruf", "runde": eintrag["runde"],
+                     "text": text}, len(eintraege))
+        return {"status": "eingeworfen", "live": True, "eintrag": eintrag}, 200
+
+    # Läuft gerade nichts, schreibt der Request-Thread selbst — es gibt
+    # keinen Beitrag, dessen Marke dabei kaputtgehen könnte.
+    verlauf_anhaengen(slug, eintrag)
+    return {"status": "eingeworfen", "live": False, "eintrag": eintrag}, 200
+
+
+# Lesen, Erhöhen, Schreiben und Starten sind für „Weitere Runde" ein Zug.
+# Ohne diese Sperre erhöhen zwei schnelle Klicks beide von 2 auf 3, der
+# zweite scheitert am schon laufenden Thread und nimmt beim Rollback die
+# Runde des ersten wieder zurück: die Schleife redet dann drei Runden lang,
+# während die sitzung.json zwei behauptet.
+runden_lock = threading.Lock()
+
+
+def naechste_runde(slug: str) -> tuple[dict, int]:
+    """Eine Runde anhängen und gleich loslaufen.
+
+    MAX_RUNDEN deckelt das Einrichten, nicht das Nachlegen: wie oft die
+    Gesprächsleitung im Hörsaal verlängert, entscheidet der Verlauf des
+    Gesprächs und nicht das Formular.
+    """
+    with runden_lock:
+        sitzung = sitzung_lesen(slug)
+        if not sitzung:
+            return {"fehler": "Party nicht gefunden"}, 404
+
+        with laeufe_lock:
+            lauf = laeufe.get(slug)
+        if lauf and not lauf.beendet:
+            return {"fehler": "Diese Party läuft bereits."}, 409
+
+        vorher = int(sitzung.get("runden", 1))
+        sitzung["runden"] = vorher + 1
+        sitzung_schreiben(slug, sitzung)
+
+        antwort, status = starte_party(slug)
+        if status != 200:
+            # Der Start ist gescheitert — etwa weil ein Profil fehlt. Dann darf
+            # die Runde auch nicht in der Datei stehen bleiben, sonst gilt die
+            # Sitzung als unfertig und lässt sich nur noch fortsetzen.
+            sitzung["runden"] = vorher
+            sitzung_schreiben(slug, sitzung)
+            return antwort, status
+
+        antwort["runden"] = sitzung["runden"]
+        return antwort, status
 
 
 def stoppe_party(slug: str) -> bool:
@@ -1007,6 +1356,12 @@ class PartyHandler(SimpleHTTPRequestHandler):
             self._party_start(teile[3])
         elif pfad.startswith("/api/partys/") and pfad.endswith("/stop"):
             self._party_stop(teile[3])
+        elif pfad.startswith("/api/partys/") and pfad.endswith("/zwischenruf"):
+            self._party_zwischenruf(teile[3])
+        elif pfad.startswith("/api/partys/") and pfad.endswith("/runde"):
+            self._party_runde(teile[3])
+        elif pfad.startswith("/api/partys/") and pfad.endswith("/fazit"):
+            self._party_fazit(teile[3])
         else:
             self.send_error(404)
 
@@ -1195,7 +1550,7 @@ class PartyHandler(SimpleHTTPRequestHandler):
             "slug": slug,
             "sitzung": sitzung,
             "status": party_status(slug, sitzung),
-            "beitraege": len(verlauf_lesen(slug)),
+            "beitraege": len(nur_beitraege(verlauf_lesen(slug))),
             "erwartet": party_erwartet(sitzung),
         })
 
@@ -1210,6 +1565,21 @@ class PartyHandler(SimpleHTTPRequestHandler):
         gestoppt = stoppe_party(slug)
         self._send_json({"status": "gestoppt" if gestoppt else "lief nicht"})
 
+    def _party_zwischenruf(self, slug):
+        daten = self._read_body()
+        if daten is None:
+            return
+        antwort, status = wirf_ein(slug, daten.get("text", ""))
+        self._send_json(antwort, status)
+
+    def _party_runde(self, slug):
+        antwort, status = naechste_runde(slug)
+        self._send_json(antwort, status)
+
+    def _party_fazit(self, slug):
+        antwort, status = starte_fazit(slug)
+        self._send_json(antwort, status)
+
     def _party_loeschen(self, slug):
         if not party_loeschen(slug):
             self._send_json({"fehler": "Party nicht gefunden"}, 404)
@@ -1221,9 +1591,12 @@ class PartyHandler(SimpleHTTPRequestHandler):
 
         Reihenfolge ist Teil des Vertrags: erst die Datei lesen (ergibt n),
         dann nachliefern, dann erst die Registry. Der laufende Beitrag hat
-        beitrag_nr == n und liegt vollständig im Ereignispuffer; alles
+        eintrag_nr == n und liegt vollständig im Ereignispuffer; alles
         darunter steht in der Datei. So gibt es weder Lücke noch Dopplung —
         ganz ohne Lock, weil die Ereignisliste nur wächst.
+
+        `n` zählt Zeilen, nicht Beiträge: Zwischenrufe und Fazit stehen in
+        derselben Datei und verschieben die Marke mit.
         """
         if not sitzung_lesen(slug):
             self._send_json({"fehler": "Party nicht gefunden"}, 404)
@@ -1231,17 +1604,30 @@ class PartyHandler(SimpleHTTPRequestHandler):
 
         self._sse_kopf()
         try:
-            beitraege = verlauf_lesen(slug)
-            n = len(beitraege)
+            eintraege = verlauf_lesen(slug)
+            n = len(eintraege)
             profile = {p["slug"]: p for p in profil_liste()}
 
-            for eintrag in beitraege:
-                profil = profile.get(eintrag["profil"], {})
+            for eintrag in eintraege:
+                art = eintrag.get("art", "beitrag")
+                if art == "zwischenruf":
+                    self._sse_ereignis({
+                        "art": "zwischenruf",
+                        "runde": eintrag.get("runde", 1),
+                        "text": eintrag.get("text", ""),
+                        "nachgeliefert": True,
+                    })
+                    continue
+
+                slug_profil = eintrag.get("profil", "")
+                profil = profile.get(slug_profil, {})
                 self._sse_ereignis({
                     "art": "beitrag_start",
+                    "sorte": art,
                     "runde": eintrag.get("runde", 1),
-                    "profil": eintrag["profil"],
-                    "name": profil.get("name", eintrag["profil"]),
+                    "profil": slug_profil,
+                    "name": LEITUNG if art == "fazit"
+                            else profil.get("name", slug_profil),
                     "farbe": profil.get("farbe", "grau"),
                     "nachgeliefert": True,
                 })
@@ -1250,8 +1636,9 @@ class PartyHandler(SimpleHTTPRequestHandler):
                 self._sse_ereignis({"art": "text", "delta": eintrag.get("text", "")})
                 self._sse_ereignis({
                     "art": "beitrag_ende",
+                    "sorte": art,
                     "runde": eintrag.get("runde", 1),
-                    "profil": eintrag["profil"],
+                    "profil": slug_profil,
                     "dauer_s": eintrag.get("dauer_s", 0),
                 })
 
@@ -1269,10 +1656,10 @@ class PartyHandler(SimpleHTTPRequestHandler):
                 while index < len(ereignisse):
                     ereignis = ereignisse[index]
                     index += 1
-                    if ereignis.get("beitrag_nr", 0) < n:
+                    if ereignis.get("eintrag_nr", 0) < n:
                         continue
                     self._sse_ereignis(
-                        {k: v for k, v in ereignis.items() if k != "beitrag_nr"})
+                        {k: v for k, v in ereignis.items() if k != "eintrag_nr"})
                     letzter_ping = time.monotonic()
 
                 if lauf.beendet and index >= len(lauf.ereignisse):
