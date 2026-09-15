@@ -1087,9 +1087,12 @@ def _party_schleife(lauf: Lauf, profile: list[dict]) -> None:
     finally:
         # Was noch in der Warteschlange liegt, gehört trotzdem in die Datei —
         # sonst wäre der Zwischenruf weg, den jemand Sekunden vor dem Stopp
-        # eingeworfen hat.
-        schreibe_einwuerfe(lauf)
+        # eingeworfen hat. Erst die Marke, dann leeren: wer in wirf_ein()
+        # davor noch `beendet == False` liest, landet in dieser Liste und
+        # wird hier geschrieben; wer danach liest, schreibt selbst. Andersherum
+        # fiele ein Zwischenruf genau dazwischen unter den Tisch.
         lauf.beendet = True
+        schreibe_einwuerfe(lauf)
 
 
 def _fazit_schleife(lauf: Lauf, profile: list[dict]) -> None:
@@ -1141,8 +1144,9 @@ def _fazit_schleife(lauf: Lauf, profile: list[dict]) -> None:
             "dauer_s": dauer,
         }, marke)
     finally:
-        schreibe_einwuerfe(lauf)
+        # Reihenfolge wie in _party_schleife — siehe dort.
         lauf.beendet = True
+        schreibe_einwuerfe(lauf)
 
 
 def starte_fazit(slug: str) -> tuple[dict, int]:
@@ -1212,6 +1216,14 @@ def wirf_ein(slug: str, text: str) -> tuple[dict, int]:
     return {"status": "eingeworfen", "live": False, "eintrag": eintrag}, 200
 
 
+# Lesen, Erhöhen, Schreiben und Starten sind für „Weitere Runde" ein Zug.
+# Ohne diese Sperre erhöhen zwei schnelle Klicks beide von 2 auf 3, der
+# zweite scheitert am schon laufenden Thread und nimmt beim Rollback die
+# Runde des ersten wieder zurück: die Schleife redet dann drei Runden lang,
+# während die sitzung.json zwei behauptet.
+runden_lock = threading.Lock()
+
+
 def naechste_runde(slug: str) -> tuple[dict, int]:
     """Eine Runde anhängen und gleich loslaufen.
 
@@ -1219,30 +1231,31 @@ def naechste_runde(slug: str) -> tuple[dict, int]:
     Gesprächsleitung im Hörsaal verlängert, entscheidet der Verlauf des
     Gesprächs und nicht das Formular.
     """
-    sitzung = sitzung_lesen(slug)
-    if not sitzung:
-        return {"fehler": "Party nicht gefunden"}, 404
+    with runden_lock:
+        sitzung = sitzung_lesen(slug)
+        if not sitzung:
+            return {"fehler": "Party nicht gefunden"}, 404
 
-    with laeufe_lock:
-        lauf = laeufe.get(slug)
-    if lauf and not lauf.beendet:
-        return {"fehler": "Diese Party läuft bereits."}, 409
+        with laeufe_lock:
+            lauf = laeufe.get(slug)
+        if lauf and not lauf.beendet:
+            return {"fehler": "Diese Party läuft bereits."}, 409
 
-    vorher = int(sitzung.get("runden", 1))
-    sitzung["runden"] = vorher + 1
-    sitzung_schreiben(slug, sitzung)
-
-    antwort, status = starte_party(slug)
-    if status != 200:
-        # Der Start ist gescheitert — etwa weil ein Profil fehlt. Dann darf
-        # die Runde auch nicht in der Datei stehen bleiben, sonst gilt die
-        # Sitzung als unfertig und lässt sich nur noch fortsetzen.
-        sitzung["runden"] = vorher
+        vorher = int(sitzung.get("runden", 1))
+        sitzung["runden"] = vorher + 1
         sitzung_schreiben(slug, sitzung)
-        return antwort, status
 
-    antwort["runden"] = sitzung["runden"]
-    return antwort, status
+        antwort, status = starte_party(slug)
+        if status != 200:
+            # Der Start ist gescheitert — etwa weil ein Profil fehlt. Dann darf
+            # die Runde auch nicht in der Datei stehen bleiben, sonst gilt die
+            # Sitzung als unfertig und lässt sich nur noch fortsetzen.
+            sitzung["runden"] = vorher
+            sitzung_schreiben(slug, sitzung)
+            return antwort, status
+
+        antwort["runden"] = sitzung["runden"]
+        return antwort, status
 
 
 def stoppe_party(slug: str) -> bool:

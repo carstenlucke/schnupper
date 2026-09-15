@@ -1076,14 +1076,22 @@ function systemBlase(text, klassen = "text-error border-error/40 bg-error-contai
 // ---------------------------------------------------------------------------
 // Steuerleiste: eingreifen, verlängern, abschließen
 // ---------------------------------------------------------------------------
+// Solange eine Anfrage unterwegs ist, ist der Griff belegt. Der gesperrte
+// Knopf allein genügt nicht: die Enter-Taste kommt daran vorbei, und das Feld
+// wird erst nach der Antwort geleert — zweimal Enter schickte sonst denselben
+// Satz zweimal los.
+let einwurfLaeuft = false;
+
 async function zwischenrufEinwerfen() {
-  if (!aktuelleParty) return true;
+  if (!aktuelleParty || einwurfLaeuft) return true;
   const text = $zwischenrufFeld.value.trim();
   if (!text) return true;
 
   zeigeHinweis($steuerHinweis, "");
+  einwurfLaeuft = true;
   $einwerfenBtn.disabled = true;
   const ergebnis = await wirfEin(aktuelleParty.slug, text);
+  einwurfLaeuft = false;
   $einwerfenBtn.disabled = false;
   if (ergebnis.fehler) {
     zeigeHinweis($steuerHinweis, ergebnis.fehler);
@@ -1099,12 +1107,21 @@ async function zwischenrufEinwerfen() {
 
 async function rundeAnhaengen() {
   if (!aktuelleParty) return;
+  // Sofort sperren: zwei Anfragen hintereinander sind unterwegs, und ein
+  // zweiter Klick hängt eine Runde an, die der Server gleich wieder
+  // zurücknimmt. Auf dem Erfolgsweg setzt oeffneParty() den Knopf neu.
+  $rundeBtn.disabled = true;
+
   // Steht noch ein Impuls im Feld, geht er der Runde voraus: ein Griff für
   // „so, und jetzt redet bitte darüber".
-  if (!(await zwischenrufEinwerfen())) return;
+  if (!(await zwischenrufEinwerfen())) {
+    $rundeBtn.disabled = false;
+    return;
+  }
 
   const ergebnis = await haengeRundeAn(aktuelleParty.slug);
   if (ergebnis.fehler) {
+    $rundeBtn.disabled = false;
     await zeigeDialog({
       titel: "Die Runde startet nicht",
       text: ergebnis.fehler,
@@ -1117,8 +1134,10 @@ async function rundeAnhaengen() {
 
 async function fazitAnfordern() {
   if (!aktuelleParty) return;
+  $fazitBtn.disabled = true;
   const ergebnis = await starteFazit(aktuelleParty.slug);
   if (ergebnis.fehler) {
+    $fazitBtn.disabled = false;
     await zeigeDialog({
       titel: "Kein Fazit",
       text: ergebnis.fehler,
@@ -1175,7 +1194,9 @@ function setzeListener() {
   $partyFortBtn.addEventListener("click", partyFortsetzen);
   $einwerfenBtn.addEventListener("click", zwischenrufEinwerfen);
   $zwischenrufFeld.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") zwischenrufEinwerfen();
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    zwischenrufEinwerfen();
   });
   $rundeBtn.addEventListener("click", rundeAnhaengen);
   $fazitBtn.addEventListener("click", fazitAnfordern);

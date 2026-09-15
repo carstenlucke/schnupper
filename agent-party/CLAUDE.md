@@ -119,6 +119,10 @@ Drei Stellen, die genau so sein müssen:
    stünde ein Zwischenruf in der Datei vor einer Blase, deren Ereignisse schon
    die Marke davor tragen — eine Verbindung, die genau dann neu aufmacht,
    bekäme den laufenden Beitrag weggefiltert.
+5. **Am Ende erst `lauf.beendet = True`, dann `schreibe_einwuerfe()`.**
+   Andersherum verschwindet ein Zwischenruf, der genau zwischen Leeren und
+   Marke eintrifft: `wirf_ein()` sähe noch einen laufenden `Lauf`, legte ihn
+   in eine Liste, die niemand mehr liest, und meldete trotzdem Erfolg.
 
 ### Eingreifen in die laufende Sitzung
 
@@ -136,7 +140,10 @@ drei Griffe, alle in der Steuerleiste unter dem Verlauf:
 - **Weitere Runde** (`naechste_runde`) — erhöht `runden` in `sitzung.json` um
   eins und startet sofort. `MAX_RUNDEN` deckelt nur das Einrichten: wie oft im
   Hörsaal verlängert wird, entscheidet das Gespräch. Scheitert der Start, geht
-  die Rundenzahl zurück, sonst gälte die Sitzung als unfertig.
+  die Rundenzahl zurück, sonst gälte die Sitzung als unfertig. Lesen, Erhöhen,
+  Schreiben und Starten liegen zusammen unter `runden_lock`: zwei schnelle
+  Klicks erhöhten sonst beide von 2 auf 3, der zweite scheiterte am laufenden
+  Thread und nähme beim Rollback die Runde des ersten gleich mit.
 - **Fazit** (`starte_fazit`) — ein einzelner Durchlauf über dieselbe Registry
   wie eine Party, damit währenddessen niemand eine Runde dazwischenstartet.
   Ergebnis ist ein Eintrag `art: fazit`; er zählt nicht gegen die Rundenzahl,
