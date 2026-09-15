@@ -54,8 +54,11 @@
             "on-accent": "rgb(var(--on-accent) / <alpha-value>)",
             "accent": "rgb(var(--accent) / <alpha-value>)",
             "accent-hover": "rgb(var(--accent-hover) / <alpha-value>)",
+            "accent-text": "rgb(var(--accent-text) / <alpha-value>)",
             "warning": "rgb(var(--warning) / <alpha-value>)",
+            "warning-text": "rgb(var(--warning-text) / <alpha-value>)",
             "error": "rgb(var(--error-color) / <alpha-value>)",
+            "error-strong": "rgb(var(--error-strong) / <alpha-value>)",
             "error-container": "rgb(var(--error-container) / <alpha-value>)",
             "code": "rgb(var(--code-color) / <alpha-value>)",
             "terminal": "rgb(var(--terminal-bg) / <alpha-value>)",
@@ -97,7 +100,7 @@
         <div id="projekt-dropdown" class="hidden absolute right-0 top-full mt-1 w-64 bg-surface-high border border-on-surface/10 rounded-lg shadow-2xl overflow-hidden z-50">
           <div id="projekt-list" class="max-h-60 overflow-y-auto"></div>
           <div class="border-t border-on-surface/10">
-            <button id="new-projekt-btn" class="w-full flex items-center gap-2 px-4 py-3 text-xs text-accent hover:bg-on-surface/5 transition-colors">
+            <button id="new-projekt-btn" class="w-full flex items-center gap-2 px-4 py-3 text-xs text-accent-text hover:bg-on-surface/5 transition-colors">
               <span class="material-symbols-outlined text-[16px]">add</span>
               Neues Projekt
             </button>
@@ -186,7 +189,7 @@
           <button id="preview-open-btn" class="hidden items-center gap-1 px-3 py-1 text-xs bg-on-surface/10 rounded hover:bg-on-surface/20 transition-colors">
             <span class="material-symbols-outlined text-[14px]">open_in_new</span>Im Browser öffnen
           </button>
-          <button id="produkt-edit-btn" class="hidden items-center gap-1 px-3 py-1 text-xs bg-accent/20 text-accent rounded hover:bg-accent/30 transition-colors" aria-label="Produkt bearbeiten">
+          <button id="produkt-edit-btn" class="hidden items-center gap-1 px-3 py-1 text-xs bg-accent/20 text-accent-text rounded hover:bg-accent/30 transition-colors" aria-label="Produkt bearbeiten">
             <span class="material-symbols-outlined text-[14px]">edit</span>Bearbeiten
           </button>
           <button id="produkt-cancel-btn" class="hidden items-center gap-1 px-3 py-1 text-xs text-on-surface/60 border border-on-surface/10 rounded hover:bg-on-surface/5 transition-colors" aria-label="Bearbeitung abbrechen">
@@ -259,7 +262,7 @@
         <button type="button" id="confirm-modal-cancel" class="px-4 py-2 text-xs text-on-surface/60 border border-on-surface/10 rounded-lg hover:bg-on-surface/5 transition-colors">
           Abbrechen
         </button>
-        <button type="button" id="confirm-modal-confirm" class="px-4 py-2 text-xs font-bold rounded-lg bg-error text-white hover:opacity-90 transition-colors">
+        <button type="button" id="confirm-modal-confirm" class="px-4 py-2 text-xs font-bold rounded-lg bg-error-strong text-white hover:opacity-90 transition-colors">
           Bestätigen
         </button>
       </div>

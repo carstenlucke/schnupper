@@ -233,10 +233,10 @@ function showDialog({
     if (variant === "danger") {
       $confirmModalIcon.textContent = "warning";
       $confirmModalIcon.className = "material-symbols-outlined text-error text-[22px]";
-      $confirmModalConfirm.className = "px-4 py-2 text-xs font-bold rounded-lg bg-error text-white hover:opacity-90 transition-colors";
+      $confirmModalConfirm.className = "px-4 py-2 text-xs font-bold rounded-lg bg-error-strong text-white hover:opacity-90 transition-colors";
     } else {
       $confirmModalIcon.textContent = "info";
-      $confirmModalIcon.className = "material-symbols-outlined text-accent text-[22px]";
+      $confirmModalIcon.className = "material-symbols-outlined text-accent-text text-[22px]";
       $confirmModalConfirm.className = "px-4 py-2 text-xs font-bold rounded-lg bg-accent text-on-accent hover:brightness-110 transition-all";
     }
 
@@ -548,7 +548,7 @@ function renderAgentList() {
 
     let statusText = "";
     if (agent.status === "running") {
-      statusText = `<span class="text-warning">${agent.file_count} Dateien working...</span>`;
+      statusText = `<span class="text-warning-text">${agent.file_count} Dateien working...</span>`;
     } else if (agent.status === "done") {
       statusText = `${agent.file_count} ${agent.file_count === 1 ? 'Datei' : 'Dateien'}`;
     } else if (agent.status === "error") {
@@ -564,7 +564,7 @@ function renderAgentList() {
           <span class="text-xs font-medium text-on-surface/80">${agent.label}</span>
         </div>
         ${agent.status === "idle" && canStart ? `
-          <button class="start-btn w-6 h-6 flex items-center justify-center rounded bg-accent/20 text-accent hover:bg-accent/30 transition-colors" title="Agent starten">
+          <button class="start-btn w-6 h-6 flex items-center justify-center rounded bg-accent/20 text-accent-text hover:bg-accent/30 transition-colors" title="Agent starten">
             <span class="material-symbols-outlined text-[14px]">play_arrow</span>
           </button>
         ` : ""}
@@ -572,10 +572,10 @@ function renderAgentList() {
       <div class="flex items-center justify-between ml-4">
         <span class="text-[10px] text-on-surface/40 ${agent.status === 'running' ? 'italic' : ''}">${statusText}</span>
         <div class="flex items-center gap-0.5">
-          <button class="prompt-btn prompt-formatted w-5 h-5 flex items-center justify-center rounded hover:bg-on-surface/10 text-on-surface/30 hover:text-accent transition-colors" title="Systemprompt formatiert" aria-label="Systemprompt formatiert anzeigen">
+          <button class="prompt-btn prompt-formatted w-5 h-5 flex items-center justify-center rounded hover:bg-on-surface/10 text-on-surface/30 hover:text-accent-text transition-colors" title="Systemprompt formatiert" aria-label="Systemprompt formatiert anzeigen">
             <span class="material-symbols-outlined text-[14px]">article</span>
           </button>
-          <button class="prompt-btn prompt-raw w-5 h-5 flex items-center justify-center rounded hover:bg-on-surface/10 text-on-surface/30 hover:text-accent transition-colors" title="Systemprompt Quelltext" aria-label="Systemprompt als Quelltext anzeigen">
+          <button class="prompt-btn prompt-raw w-5 h-5 flex items-center justify-center rounded hover:bg-on-surface/10 text-on-surface/30 hover:text-accent-text transition-colors" title="Systemprompt Quelltext" aria-label="Systemprompt als Quelltext anzeigen">
             <span class="material-symbols-outlined text-[14px]">code</span>
           </button>
         </div>
@@ -627,7 +627,7 @@ function renderProduktEntry() {
   const div = document.createElement("div");
   div.className = `agent-item flex items-center gap-2 p-3 rounded-sm cursor-pointer ${isProduktSelected ? 'selected' : ''}`;
   div.innerHTML = `
-    <span class="material-symbols-outlined text-accent text-[18px]">description</span>
+    <span class="material-symbols-outlined text-accent-text text-[18px]">description</span>
     <span class="text-xs font-medium text-on-surface/80">Produkt</span>
   `;
   div.addEventListener("click", () => selectProdukt());
@@ -788,19 +788,31 @@ function selectAgent(agentName, { loadFiles = true } = {}) {
 }
 
 // ---------------------------------------------------------------------------
-// Terminal (immer dunkel, unabhängig vom Farbthema – Werte wie --terminal-bg
-// in style.css: THM Grau dunkel #1A252B, Offwhite #E8ECF0, THM Grün #80BA24)
+// Terminal (immer dunkel, unabhängig vom Farbthema). xterm.js kennt keine
+// CSS-Variablen, darum werden die Werte aus style.css einmal ausgelesen –
+// so laufen Terminalfläche und umgebender Container nicht auseinander.
 // ---------------------------------------------------------------------------
+
+/** Liest eine Farbvariable aus style.css ("R G B") und baut daraus eine
+    rgb()/rgba()-Angabe in Kommaschreibweise – die versteht xterm.js. */
+function farbe(name, alpha) {
+  const kanaele = getComputedStyle(document.documentElement)
+    .getPropertyValue(name).trim().split(/\s+/).join(", ");
+  return alpha === undefined
+    ? `rgb(${kanaele})`
+    : `rgba(${kanaele}, ${alpha})`;
+}
+
 function getOrCreateTerminal(agentName) {
   if (terminals[agentName]) return terminals[agentName];
 
   const term = new Terminal({
     theme: {
-      background: "#1a252b",
-      foreground: "#e8ecf0",
-      cursor: "#80ba24",
-      cursorAccent: "#1a252b",
-      selectionBackground: "rgba(128, 186, 36, 0.3)",
+      background: farbe("--terminal-bg"),
+      foreground: farbe("--terminal-fg"),
+      cursor: farbe("--terminal-cursor"),
+      cursorAccent: farbe("--terminal-bg"),
+      selectionBackground: farbe("--terminal-cursor", 0.3),
     },
     fontSize: 12,
     fontFamily: "'SF Mono', 'Fira Code', 'Cascadia Code', monospace",
@@ -1005,7 +1017,7 @@ async function loadArtifactList(agentName) {
       btnDiv.className = "px-2 pt-2 mt-1 border-t border-on-surface/5";
       btnDiv.innerHTML = `
         <button id="generate-image-btn"
-                class="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-bold bg-accent/20 text-accent hover:bg-accent/30 rounded transition-colors"
+                class="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-bold bg-accent/20 text-accent-text hover:bg-accent/30 rounded transition-colors"
                 aria-label="${btnLabel}"
                 data-agent="${agentName}" data-image="${genCfg.image}">
           <span class="material-symbols-outlined text-[16px]">${btnIcon}</span>
@@ -1094,7 +1106,7 @@ async function showAgentPrompt(agentName, raw) {
   // Meta-Badges
   const metaHtml = `<div class="mb-4 flex flex-wrap gap-2">${
     data.meta.model
-      ? `<span class="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-medium bg-accent/10 text-accent rounded-full">
+      ? `<span class="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-medium bg-accent/10 text-accent-text rounded-full">
           <span class="material-symbols-outlined text-[12px]">smart_toy</span>${escapeHtml(data.meta.model)}</span>`
       : ''
   }${
@@ -1198,7 +1210,7 @@ function showTerminalView() {
   terminalVisible = true;
   $contentTerminal.classList.remove("hidden");
   $contentResult.classList.add("hidden");
-  $terminalToggle.classList.add("text-accent");
+  $terminalToggle.classList.add("text-accent-text");
   $terminalToggle.classList.remove("text-on-surface/40");
   if (currentAgent && terminals[currentAgent]) {
     requestAnimationFrame(() => terminals[currentAgent].fitAddon.fit());
@@ -1209,7 +1221,7 @@ function showResultView() {
   terminalVisible = false;
   $contentResult.classList.remove("hidden");
   $contentTerminal.classList.add("hidden");
-  $terminalToggle.classList.remove("text-accent");
+  $terminalToggle.classList.remove("text-accent-text");
   $terminalToggle.classList.add("text-on-surface/40");
 }
 

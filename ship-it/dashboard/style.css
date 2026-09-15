@@ -9,6 +9,13 @@
    THM Grau #4A5C66 (Fließtext, Überschriften, Kopfleiste).
    Flächen: Weiß und helles Grau (#F5F5F5 bis #E0E0E0).
    Welches Thema aktiv ist, entscheidet die Klasse "dark" am <html>-Element.
+
+   Fläche und Schrift getrennt: THM Grün und THM Gelb sind in Reinform zu
+   hell für kleinen Text auf hellem Grund (2,3:1 bzw. 2,0:1 auf Weiß). Sie
+   bleiben darum Füllfarbe (--accent, --warning) für Flächen, Icons, Ränder
+   und Statuspunkte; für Text gibt es die abgedunkelten Varianten
+   --accent-text und --warning-text. Umgekehrt trägt --error-strong die
+   Rotfläche, auf der weiße Schrift steht.
    ============================================================ */
 :root {
   --base: 245 245 245;             /* #F5F5F5 – Seitengrund */
@@ -22,23 +29,34 @@
   --sidebar-alt: 235 235 235;      /* #EBEBEB – Artefaktliste */
   --on-surface: 42 56 64;          /* THM Grau dunkel #2A3840 – Überschriften, Labels */
   --on-surface-variant: 74 92 102; /* THM Grau #4A5C66 – Fließtext (5,6:1 auf Weiß) */
-  --on-accent: 255 255 255;        /* Weiß auf Grün, wie im CD-Manual vorgesehen */
-  --accent: 128 186 36;            /* THM Grün #80BA24 */
-  --accent-hover: 106 158 26;      /* #6A9E1A – abgedunkeltes Grün, WCAG AA auf Weiß */
-  --warning: 244 170 0;            /* THM Gelb #F4AA00 */
-  --error-color: 156 19 46;        /* THM Rot #9C132E */
+  --on-accent: 42 56 64;           /* THM Grau dunkel #2A3840 auf Grün (5,2:1) */
+  --accent: 128 186 36;            /* THM Grün #80BA24 – Flächen, Icons, Ränder, Punkte */
+  --accent-hover: 143 204 48;      /* #8FCC30 – aufgehelltes Grün für Hover auf grünen
+                                      Flächen; dunkle Schrift darauf 6,2:1 */
+  --accent-text: 69 107 13;        /* #456B0D – Grün für Text: 6,3:1 auf Weiß, 4,2:1 auf getönter Fläche */
+  --warning: 244 170 0;            /* THM Gelb #F4AA00 – Statuspunkte, Flächen */
+  --warning-text: 132 90 0;        /* #845A00 – abgedunkeltes Gelb für Text (4,6:1 auf #E0E0E0) */
+  --error-color: 156 19 46;        /* THM Rot #9C132E – Text und Ränder (6,3:1 auf #E0E0E0) */
+  --error-strong: 156 19 46;       /* Rotfläche unter weißer Schrift (8,3:1) */
   --error-container: 255 235 235;
-  --code-color: 106 158 26;        /* #6A9E1A – Grün für kleinen Text auf hellem Grund */
+  --code-color: 77 122 15;         /* #4D7A0F – Grün für kleinen Text auf hellem Grund (4,6:1) */
   --code-bg: 245 245 245;
-  --terminal-bg: 26 37 43;         /* #1A252B – Terminal ist in beiden Themen dunkel */
+  /* Terminal: in beiden Themen gleich, darum nur hier definiert und von
+     .dark geerbt. app.js liest diese Werte per getComputedStyle aus. */
+  --terminal-bg: 26 37 43;         /* #1A252B – THM Grau dunkel */
+  --terminal-fg: 232 236 240;      /* #E8ECF0 – Offwhite (11,9:1) */
+  --terminal-cursor: 128 186 36;   /* THM Grün #80BA24 */
   color-scheme: light;
 }
 
 /* ============================================================
    Farbthema: Dunkel – aus den Negativ-Regeln des CD-Manuals abgeleitet
-   Grund: THM Grau dunkel #2A3840 bzw. #1A252B, Flächen #344750,
-   Text Weiß/Offwhite #E8ECF0, THM Grün bleibt Akzentfarbe (4,5:1 auf #2A3840).
+   Grund: THM Grau dunkel #1A252B, Inhaltsfläche #212E35, Leisten #2A3840,
+   Dialoge und Agentenliste #344750, Text Weiß/Offwhite #E8ECF0.
    Die Kopfleiste bleibt THM Grau, damit die Marke in beiden Themen gleich wirkt.
+   Dieselbe Trennung von Fläche und Schrift wie im Hellmodus: THM Grün füllt,
+   das aufgehellte --accent-text beschriftet – auf der hellsten Fläche
+   (#344750) reicht das reine Grün sonst nicht für kleinen Text.
    ============================================================ */
 .dark {
   --base: 26 37 43;                /* #1A252B – Seitengrund */
@@ -52,15 +70,17 @@
   --sidebar-alt: 42 56 64;         /* #2A3840 – Artefaktliste */
   --on-surface: 232 236 240;       /* Offwhite #E8ECF0 */
   --on-surface-variant: 178 190 198; /* #B2BEC6 – gedämpfter Fließtext */
-  --on-accent: 255 255 255;
-  --accent: 128 186 36;            /* THM Grün #80BA24 */
-  --accent-hover: 143 204 48;      /* #8FCC30 – leicht aufgehelltes Grün */
-  --warning: 244 170 0;            /* THM Gelb #F4AA00 */
-  --error-color: 222 72 96;        /* #DE4860 – THM Rot aufgehellt, lesbar auf dunklem Grund */
+  --on-accent: 42 56 64;           /* THM Grau dunkel #2A3840 auf Grün (5,2:1) */
+  --accent: 128 186 36;            /* THM Grün #80BA24 – Flächen, Icons, Ränder, Punkte */
+  --accent-hover: 143 204 48;      /* #8FCC30 – wie im Hellmodus */
+  --accent-text: 168 216 110;      /* #A8D86E – Grün für Text: 8,4:1 auf #212E35, 4,3:1 auf getönter Fläche */
+  --warning: 244 170 0;            /* THM Gelb #F4AA00 – auch als Text (4,9:1 auf #344750) */
+  --warning-text: 244 170 0;
+  --error-color: 240 154 166;      /* #F09AA6 – THM Rot so weit aufgehellt, dass es auf allen dunklen Flächen 4,5:1 erreicht */
+  --error-strong: 168 30 53;       /* #A81E35 – Rotfläche unter weißer Schrift (7,2:1) */
   --error-container: 80 10 20;
   --code-color: 168 216 110;       /* #A8D86E – aufgehelltes Grün für Code */
   --code-bg: 26 37 43;             /* #1A252B */
-  --terminal-bg: 26 37 43;
   color-scheme: dark;
 }
 
@@ -189,9 +209,9 @@ body {
 #result-content ul { list-style-type: disc; }
 #result-content ol { list-style-type: decimal; }
 #result-content li { margin-bottom: 0.25rem; }
-#result-content li::marker { color: rgb(var(--accent)); }
+#result-content li::marker { color: rgb(var(--accent-text)); }
 #result-content strong { color: rgb(var(--on-surface)); }
-#result-content em { color: rgb(var(--accent)); }
+#result-content em { color: rgb(var(--accent-text)); }
 #result-content blockquote {
   border-left: 3px solid rgb(var(--accent));
   padding-left: 1rem;
