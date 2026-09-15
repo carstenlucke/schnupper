@@ -208,7 +208,9 @@ hinterherhinkt. In den Panes ist das nicht zu sehen, und es ist die eigentliche
 Pointe: Alle vier haben denselben Takt und laufen trotzdem nicht im
 Gleichschritt — `prime` am langsamsten, weil er nachdenkt.
 
-Die Farben folgen dem [Corporate Design der THM](https://go.thm.de/cd).
+Die Farben folgen dem [Corporate Design der THM](https://go.thm.de/cd). Dunkel
+ist voreingestellt, weil ein Beamer dunkler ist als jeder Bildschirm; der Knopf
+im Kopf wechselt auf das helle Thema, und der Browser merkt sich die Wahl.
 
 **Generalprobe ohne Modell.** Vor der Vorlesung lässt sich das Dashboard
 prüfen, ohne dass Agenten laufen und Token kosten:

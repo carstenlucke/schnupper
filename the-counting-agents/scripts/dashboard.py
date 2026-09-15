@@ -5,7 +5,8 @@ Läuft neben der Demo und zeigt, was in den fünf Panes untergeht: welche Zahl
 schon bei wem angekommen ist, wie weit jeder Sammler zurückliegt, welche
 Befehle die Steuerung geschickt hat. Große Schrift, ruhige Übergänge, ein
 Fenster, das sich auf den Beamer legen lässt, ohne dass Herdr im Weg ist.
-Farben nach dem THM-Corporate-Design.
+Farben nach dem THM-Corporate-Design, dunkel voreingestellt; ein Umschalter im
+Kopf wechselt auf die helle Standardanwendung, die Wahl merkt sich der Browser.
 
     ./scripts/dashboard.py            startet auf Port 8777 und öffnet den Browser
     ./scripts/dashboard.py 9000       anderer Port
@@ -41,12 +42,24 @@ PAGE = r"""<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Counting Agents</title>
+<!-- Farbthema vor dem ersten Rendern setzen, damit nichts aufblitzt. Dunkel ist
+     die Voreinstellung (Beamer); eine Wahl über den Umschalter bleibt gespeichert. -->
+<script>
+  (function () {
+    var wahl = null;
+    try { wahl = localStorage.getItem("counting-agents-theme"); } catch (e) {}
+    if (wahl === "light") document.documentElement.dataset.theme = "light";
+  })();
+</script>
 <style>
-  /* Farben nach dem THM-Corporate-Design (CD-Manual, 3. Auflage), in der
-     dunklen Ableitung — der Beamer im Hörsaal ist dunkler als jeder Bildschirm. */
+  /* Farben nach dem THM-Corporate-Design (CD-Manual, 3. Auflage). Voreingestellt
+     ist die dunkle Ableitung — der Beamer im Hörsaal ist dunkler als jeder
+     Bildschirm. Der Umschalter im Kopf wechselt auf die helle Standardanwendung
+     des Manuals (Weiß und helles Grau, Text in THM Grau). */
   :root {
     --bg: #1a252b;      /* THM Grau, maximal abgedunkelt */
     --panel: #2a3840;
+    --panel-hover: #31414a;
     --line: #4a5c66;    /* THM Grau */
     --text: #e8ecf0;
     --muted: #93a4ae;
@@ -55,14 +68,37 @@ PAGE = r"""<!doctype html>
     /* Die drei Zusatzfarben des CD sind laut Manual für Infografiken gedacht —
        genau das ist das Zahlenband. Jeder Sammler bekommt eine davon, und sie
        gilt überall gleich: auf der Kachel, im Chip vor dem Namen, im Balken,
-       in der Legende. THM Rot bleibt allein den Fehlern vorbehalten. */
+       in der Legende. THM Rot bleibt allein den Fehlern vorbehalten.
+       „-bg" ist die Kachelfüllung, „-ink" die Ziffer darauf. */
     --odd: #00b8e4;     /* THM Hellblau */
     --odd-bg: #10323c;
+    --odd-ink: #d6f2fb;
     --even: #80ba24;    /* THM Grün */
     --even-bg: #24331a;
+    --even-ink: #e7f4d2;
     --prime: #f4aa00;   /* THM Gelb */
     --wrong: #b8243f;   /* THM Rot, für dunklen Grund aufgehellt */
     --wrong-bg: #3a1a22;
+    --wrong-ink: #ffc6cf;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --bg: #f5f5f5;      /* helles Grau laut Manual */
+    --panel: #ffffff;
+    --panel-hover: #eef1f3;
+    --line: #c9d1d6;    /* THM Grau, stark aufgehellt */
+    --text: #2a3840;    /* THM Grau dunkel */
+    --muted: #4a5c66;   /* THM Grau — 5,6:1 auf Weiß */
+    --open: #d5dbdf;
+
+    --odd-bg: #e0f6fc;
+    --odd-ink: #0a5d74;
+    --even-bg: #ecf5da;
+    --even-ink: #3f6a0f;
+    --wrong: #9c132e;   /* THM Rot, unverändert */
+    --wrong-bg: #fbe4e8;
+    --wrong-ink: #7a0f24;
+    color-scheme: light;
   }
   * { box-sizing: border-box; }
   body {
@@ -83,6 +119,25 @@ PAGE = r"""<!doctype html>
     letter-spacing: .14em; text-transform: uppercase; color: var(--text);
   }
   .sub { color: var(--muted); font-size: clamp(13px, 1.1vw, 17px); }
+  /* Der Umschalter sitzt rechts im Kopf, neben der Uhr — ein runder Knopf wie
+     im Ship-It-Dashboard. Er zeigt, wohin er schaltet: auf der dunklen Seite
+     die Sonne, auf der hellen den Mond. Die Symbole sind Inline-SVG, damit die
+     Seite ohne Netz und ohne Icon-Font auskommt. */
+  #thema {
+    margin-left: auto; align-self: center; flex: none;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); background: var(--panel);
+    border: 1px solid var(--line); padding: 0; cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+  }
+  #thema:hover { color: var(--text); background: var(--panel-hover); }
+  #thema:focus-visible { outline: 2px solid #80ba24; outline-offset: 2px; }
+  #thema svg { width: 18px; height: 18px; display: block; }
+  #thema .mond { display: none; }
+  :root[data-theme="light"] #thema .sonne { display: none; }
+  :root[data-theme="light"] #thema .mond { display: block; }
+  #uhr { margin-left: 0; }
   .summary {
     margin: clamp(12px, 1.4vw, 20px) 0 clamp(18px, 2vw, 30px);
     font-size: clamp(16px, 1.6vw, 26px); color: var(--muted);
@@ -109,10 +164,10 @@ PAGE = r"""<!doctype html>
                 color .5s ease, opacity .35s ease;
     animation: einblenden .45s ease both;
   }
-  .tile.hat-odd  { border-color: var(--odd);  background: var(--odd-bg);  color: #d6f2fb; }
-  .tile.hat-even { border-color: var(--even); background: var(--even-bg); color: #e7f4d2; }
+  .tile.hat-odd  { border-color: var(--odd);  background: var(--odd-bg);  color: var(--odd-ink); }
+  .tile.hat-even { border-color: var(--even); background: var(--even-bg); color: var(--even-ink); }
   /* Zuletzt definiert, damit ein Rechenfehler jede andere Färbung übertönt. */
-  .tile.wrong { border-color: var(--wrong); background: var(--wrong-bg); color: #ffc6cf; }
+  .tile.wrong { border-color: var(--wrong); background: var(--wrong-bg); color: var(--wrong-ink); }
 
   .tile.soll-prime::after, .tile.hat-prime::after {
     content: ""; position: absolute; top: 5px; right: 6px;
@@ -159,8 +214,8 @@ PAGE = r"""<!doctype html>
     transition: border-left-color .4s ease, background .2s ease;
   }
   .agent.klickbar { cursor: pointer; }
-  .agent.klickbar:hover { background: #31414a; }
-  .agent.fokus { background: #31414a; box-shadow: inset 0 0 0 1px var(--muted); }
+  .agent.klickbar:hover { background: var(--panel-hover); }
+  .agent.fokus { background: var(--panel-hover); box-shadow: inset 0 0 0 1px var(--muted); }
   /* Der linke Balken trägt die Farbe des Agenten — dieselbe wie im Band.
      Der Betriebszustand kommt ohne eigene Farbe aus: durchgezogen läuft,
      gestrichelt pausiert, gepunktet gestoppt. Sonst müsste sich „pausiert"
@@ -201,7 +256,7 @@ PAGE = r"""<!doctype html>
   .ticker h2 { font-size: 1em; letter-spacing: .1em; text-transform: uppercase;
                color: var(--muted); margin: 0 0 8px; font-weight: 600; }
   .ticker li { list-style: none; padding: 3px 0; }
-  .ticker time { color: var(--line); margin-right: 12px; }
+  .ticker time { color: var(--muted); opacity: .7; margin-right: 12px; }
   .ticker b { color: var(--text); font-weight: 600; }
 
   footer { margin-top: clamp(20px, 2vw, 34px); color: var(--muted); opacity: .7;
@@ -213,7 +268,16 @@ PAGE = r"""<!doctype html>
   <header>
     <h1>Counting Agents</h1>
     <span class="sub">pi &middot; Herdr</span>
-    <span class="sub" id="uhr" style="margin-left:auto"></span>
+    <button id="thema" type="button" aria-label="Farbthema wechseln">
+      <svg class="sonne" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+      </svg>
+      <svg class="mond" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+      </svg>
+    </button>
+    <span class="sub" id="uhr"></span>
   </header>
 
   <p class="summary" id="summary">Warte auf den Bus&hellip;</p>
@@ -335,6 +399,25 @@ function zeichne(data) {
   zeichneAgenten(data);
   zeichneTicker(data.control);
 }
+
+// Farbthema: Dunkel ist die Voreinstellung, die Wahl überlebt das Neuladen.
+// Welches Symbol der Knopf zeigt, regelt das CSS über data-theme; hier wird
+// nur die Beschriftung für Screenreader nachgezogen.
+const thema = document.getElementById("thema");
+function zeigeThema() {
+  const hell = document.documentElement.dataset.theme === "light";
+  const label = hell ? "Zum dunklen Farbthema wechseln" : "Zum hellen Farbthema wechseln";
+  thema.setAttribute("aria-label", label);
+  thema.title = label;
+}
+thema.addEventListener("click", () => {
+  const hell = document.documentElement.dataset.theme !== "light";
+  if (hell) document.documentElement.dataset.theme = "light";
+  else delete document.documentElement.dataset.theme;
+  try { localStorage.setItem("counting-agents-theme", hell ? "light" : "dark"); } catch (e) {}
+  zeigeThema();
+});
+zeigeThema();
 
 const quelle = new EventSource("/events");
 quelle.onmessage = (e) => zeichne(JSON.parse(e.data));

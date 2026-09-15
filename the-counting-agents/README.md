@@ -204,7 +204,10 @@ without the others competing for attention. Click again to release.
 panes don't show that, and it is the actual punchline: all four share the same
 interval and still do not run in lockstep — `prime` slowest, because it thinks.
 
-Colours follow the [THM corporate design](https://go.thm.de/cd).
+Colours follow the [THM corporate design](https://go.thm.de/cd). The dark
+theme is the default because a projector is darker than any screen; the
+button in the header switches to the light theme, and the browser remembers
+the choice.
 
 **Dress rehearsal without a model.** Before the lecture you can check the
 dashboard without running agents and spending tokens:
