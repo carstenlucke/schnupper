@@ -394,13 +394,16 @@ def systemprompt_entwurf() -> str:
     )
 
 
-def teilnehmer_block(profile: list[dict], ich: str) -> str:
+def teilnehmer_block(profile: list[dict], ich_platz: int) -> str:
     zeilen = []
-    for profil in profile:
+    for platz, profil in enumerate(profile):
         zeile = f"- {profil['name']}"
         if profil["beschreibung"]:
             zeile += f" – {profil['beschreibung']}"
-        if profil["slug"] == ich:
+        # Über den Platz, nicht über den Slug: eine von Hand bearbeitete oder
+        # ältere sitzung.json kann dasselbe Profil zweimal enthalten, und dann
+        # trügen beide Zeilen "(das bist du)".
+        if platz == ich_platz:
             zeile += " (das bist du)"
         zeilen.append(zeile)
     return "\n".join(zeilen)
@@ -433,14 +436,20 @@ def kuerze_verlauf(eintraege: list[dict], namen: dict[str, str]) -> str:
     )
 
 
-def baue_beitrag_prompt(sitzung: dict, profile: list[dict], ich: dict,
+def baue_beitrag_prompt(sitzung: dict, profile: list[dict], ich_platz: int,
                         runde: int, eintraege: list[dict]) -> str:
+    """Der Prompt für einen Beitrag — wer dran ist, sagt der Platz.
+
+    Der Platz und nicht das Profil, damit es auch dann eindeutig bleibt, wenn
+    in einer alten sitzung.json dasselbe Profil zweimal am Tisch sitzt.
+    """
+    ich = profile[ich_platz]
     namen = {p["slug"]: p["name"] for p in profile}
     return BEITRAG_VORLAGE.format(
         name=ich["name"],
         titel=sitzung.get("titel", ""),
         starter=sitzung.get("starter", ""),
-        teilnehmer=teilnehmer_block(profile, ich["slug"]),
+        teilnehmer=teilnehmer_block(profile, ich_platz),
         verlauf=kuerze_verlauf(eintraege, namen),
         runde=runde,
         runden=sitzung.get("runden", 1),
@@ -819,7 +828,7 @@ def _party_schleife(lauf: Lauf, profile: list[dict]) -> None:
                 "farbe": profil["farbe"],
             }, nr)
 
-            prompt = baue_beitrag_prompt(sitzung, profile, profil,
+            prompt = baue_beitrag_prompt(sitzung, profile, platz,
                                          runde + 1, beitraege)
             begonnen = time.monotonic()
 
@@ -1142,6 +1151,15 @@ class PartyHandler(SimpleHTTPRequestHandler):
             if not profil_lesen(slug):
                 self._send_json({"fehler": f"Das Profil „{slug}“ gibt es nicht."}, 400)
                 return
+        # Der Name ist die Identität des Agenten — im Teilnehmerblock, im
+        # Verlauf und in der Anweisung, die Person beim Namen zu nennen.
+        # Zweimal dasselbe Profil hieße zweimal derselbe Name.
+        if len(set(teilnehmer)) != len(teilnehmer):
+            self._send_json({
+                "fehler": "Jedes Profil sitzt nur einmal am Tisch. Für zwei "
+                          "ähnliche Stimmen im Profil-Editor „Duplizieren“ "
+                          "und der Kopie einen eigenen Namen geben."}, 400)
+            return
         runden = max(1, min(MAX_RUNDEN, runden))
 
         slug = slugify(titel)

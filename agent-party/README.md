@@ -121,8 +121,8 @@ agent-party/
 - **Drei Ansichten** über eine Tab-Leiste: Profile, Party einrichten, Party läuft
 - **Profil ausarbeiten lassen** — ein Satz genügt, das Modell schreibt das
   Profil, der Entwurf ist vor dem Speichern änderbar
-- **Besetzung mit Reihenfolge** — dasselbe Profil darf auch zweimal am Tisch
-  sitzen
+- **Besetzung mit Reihenfolge** — jedes Profil sitzt einmal am Tisch; für zwei
+  ähnliche Stimmen legt „Duplizieren" im Profil-Editor eine Kopie an
 - **Modellwechsel im UI** — zwischen ChatGPT-Abo, TensorX und LM Studio, ohne
   Neustart
 - **Sprechblasen** in der Profilfarbe, live per Server-Sent Events, mit

@@ -13,6 +13,9 @@ const FARBEN = [
   { wert: "blau", label: "Blau" },
 ];
 
+// So viele Plätze hat der Tisch — dieselbe Grenze wie MAX_TEILNEHMER im Server.
+const MAX_TEILNEHMER = 8;
+
 const STATUS_TEXT = {
   neu: "Noch nicht gestartet",
   laeuft: "Läuft",
@@ -29,7 +32,7 @@ let profile = [];               // Serverliste, Quelle der Wahrheit für Name un
 let modelle = [];
 let editorSlug = null;          // null = neues Profil
 let entwurfAbbruch = null;      // AbortController; nicht-null = Entwurf läuft
-let besetzung = [];             // Slugs in Sprechreihenfolge, Mehrfachnennung erlaubt
+let besetzung = [];             // Slugs in Sprechreihenfolge, jeder höchstens einmal
 let aktuelleParty = null;       // {slug, sitzung, status, erwartet}
 let partyQuelle = null;         // EventSource
 let aktiveBlase = null;         // {wurzel, textEl, denkEl, roh}
@@ -95,6 +98,7 @@ const $feldText = document.getElementById("feld-text");
 const $speichernBtn = document.getElementById("speichern-btn");
 const $abbrechenBtn = document.getElementById("abbrechen-btn");
 const $loeschenBtn = document.getElementById("loeschen-btn");
+const $duplizierenBtn = document.getElementById("duplizieren-btn");
 const $editorHinweis = document.getElementById("editor-hinweis");
 
 const $entwurfIdee = document.getElementById("entwurf-idee");
@@ -435,8 +439,37 @@ function oeffneEditor(slug) {
   rendereFarbwahl(profil ? profil.farbe : "gruen");
   rendereModellauswahl($feldModel, profil ? profil.model : "");
   $loeschenBtn.classList.toggle("hidden", !profil);
+  $duplizierenBtn.classList.toggle("hidden", !profil);
   zeigeHinweis($editorHinweis, "");
   rendereProfilRaster();
+}
+
+function dupliziereProfil() {
+  if (!editorSlug) return;
+  // Die Kopie liegt nur im Editor, noch nichts auf der Platte: Name freilegen,
+  // alles andere stehen lassen, gespeichert wird auf Knopfdruck. So bleibt das
+  // Anlegen einer zweiten, ähnlichen Stimme ein bewusster Schritt.
+  editorSlug = null;
+  $feldName.value = freierName($feldName.value);
+  $editorTitel.textContent = "Neues Profil";
+  $loeschenBtn.classList.add("hidden");
+  $duplizierenBtn.classList.add("hidden");
+  zeigeHinweis($editorHinweis, "");
+  rendereProfilRaster();
+  $feldName.focus();
+  $feldName.select();
+}
+
+function freierName(name) {
+  const vergeben = new Set(profile.map((p) => p.name));
+  const basis = name.trim().replace(/ \(Variante( \d+)?\)$/, "");
+  let kandidat = `${basis} (Variante)`;
+  let nummer = 1;
+  while (vergeben.has(kandidat)) {
+    nummer += 1;
+    kandidat = `${basis} (Variante ${nummer})`;
+  }
+  return kandidat;
 }
 
 async function speichereProfil() {
@@ -585,8 +618,12 @@ function rendereAuswahl() {
     const kachel = baueKachel(profil, { auswaehlbar: true });
     if (besetzung.includes(profil.slug)) kachel.classList.add("kachel-gewaehlt");
     kachel.addEventListener("click", () => {
-      if (besetzung.length >= 8) return;
-      besetzung.push(profil.slug);
+      // Jedes Profil sitzt höchstens einmal am Tisch, der Klick schaltet also
+      // um — und die Markierung auf der Kachel sagt endlich das, wonach sie
+      // aussieht. Zwei ähnliche Stimmen? Dafür gibt es "Duplizieren".
+      const platz = besetzung.indexOf(profil.slug);
+      if (platz >= 0) besetzung.splice(platz, 1);
+      else if (besetzung.length < MAX_TEILNEHMER) besetzung.push(profil.slug);
       rendereAuswahl();
       rendereBesetzung();
     });
@@ -940,6 +977,7 @@ function setzeListener() {
   $speichernBtn.addEventListener("click", speichereProfil);
   $abbrechenBtn.addEventListener("click", () => oeffneEditor(null));
   $loeschenBtn.addEventListener("click", loescheProfil);
+  $duplizierenBtn.addEventListener("click", dupliziereProfil);
   $entwurfBtn.addEventListener("click", entwurfStarten);
 
   $feldTitel.addEventListener("input", pruefeStartbereit);

@@ -188,6 +188,7 @@
               <div class="flex items-center gap-2 mt-4">
                 <button id="speichern-btn" type="button" class="knopf knopf-primaer">Speichern</button>
                 <button id="abbrechen-btn" type="button" class="knopf knopf-rand">Neu</button>
+                <button id="duplizieren-btn" type="button" class="knopf knopf-rand hidden">Duplizieren</button>
                 <button id="loeschen-btn" type="button" class="knopf knopf-gefahr ml-auto hidden">Löschen</button>
               </div>
               <p id="editor-hinweis" class="text-xs text-error mt-2 hidden"></p>
@@ -203,8 +204,10 @@
           <div class="lg:col-span-3">
             <h1 class="font-headline text-xl font-semibold mb-3">Wer soll mitdiskutieren?</h1>
             <p class="text-sm text-on-surface-variant mb-4">
-              Klick die Profile an, die am Tisch sitzen sollen. Ein Profil darf auch
-              zweimal dabei sein. Die Reihenfolge rechts ist die Sprechreihenfolge.
+              Klick die Profile an, die am Tisch sitzen sollen — noch ein Klick nimmt
+              sie wieder weg. Jedes Profil sitzt einmal am Tisch. Für zwei ähnliche
+              Stimmen dupliziere das Profil und gib ihm einen eigenen Namen. Die
+              Reihenfolge rechts ist die Sprechreihenfolge.
             </p>
             <div id="auswahl-raster" class="grid gap-3 sm:grid-cols-2"></div>
 

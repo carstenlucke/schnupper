@@ -205,9 +205,10 @@ eine Tab-Leiste, verlinkbar über `#profile`, `#einrichten`, `#party/<slug>`.
 
 - **Profile** — Kachelraster links, Editor rechts. Zweiter Weg zum Profil: „Rolle
   in einem Satz beschreiben" → „Ausarbeiten lassen" → der Entwurf läuft live in
-  die Textarea und ist vor dem Speichern änderbar.
-- **Party einrichten** — Profile anklicken (Mehrfachnennung erlaubt, dasselbe
-  Profil darf zweimal am Tisch sitzen), Reihenfolge per Hoch/Runter, Thema,
+  die Textarea und ist vor dem Speichern änderbar. „Duplizieren" legt eine Kopie
+  mit freiem Namen in den Editor; gespeichert wird erst auf Knopfdruck.
+- **Party einrichten** — Profile anklicken (der Klick schaltet um, jedes Profil
+  sitzt höchstens einmal am Tisch), Reihenfolge per Hoch/Runter, Thema,
   Einstiegsfrage, Runden 1–5, Modell.
 - **Party läuft** — je Beitrag eine Sprechblase mit Farbbalken, darunter ein
   aufklappbarer Bereich „Was das Modell gedacht hat".
@@ -218,9 +219,18 @@ an, jedes Delta hängt per `append()` einen Textknoten an, und erst bei
 `innerHTML` pro Delta ersetzt, lässt die Ansicht bei jedem Zeichen flackern und
 zerstört die Textauswahl — nicht „vereinfachen".
 
-Die Besetzung wird durchgehend über den **Index** angesprochen, nie über den
-Slug: dasselbe Profil darf mehrfach in der Runde sitzen, ein Zugriff über den
-Slug träfe dann den falschen Platz.
+**Jedes Profil sitzt höchstens einmal am Tisch.** Der Name ist die Identität
+des Agenten: er steht im Teilnehmerblock, im Verlauf und in der Anweisung,
+die Person beim Namen zu nennen. Profilnamen sind schon beim Anlegen eindeutig
+(`_profil_anlegen` weist einen zweiten gleichen ab), und die Besetzung hält das
+durch — `_party_anlegen` lehnt eine doppelte Nennung mit 400 ab, die Kachel
+schaltet um statt anzuhängen. Wer zwei ähnliche Stimmen will, dupliziert das
+Profil und gibt ihm einen eigenen Namen.
+
+Angesprochen wird die Besetzung trotzdem über den **Index**: sie ist eine
+Reihenfolge, keine Menge. Hoch, Runter und Wegnehmen arbeiten am Platz, und
+`teilnehmer_block` markiert „(das bist du)" ebenfalls über den Platz — falls
+doch einmal eine von Hand bearbeitete `sitzung.json` in die Schleife läuft.
 
 `EventSource` kann kein POST. Der Entwurfsstrom läuft deshalb über `fetch` plus
 `ReadableStream` (`sseLesen()`), der Party-Stream über `EventSource`.
