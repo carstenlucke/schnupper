@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agent Party</title>
+  <!-- Favicon inline, damit das Projekt ohne Bilddatei auskommt -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%234A5C66'/%3E%3Ccircle cx='11' cy='13' r='4' fill='%2380BA24'/%3E%3Ccircle cx='21' cy='13' r='4' fill='%2300B8E4'/%3E%3Ccircle cx='16' cy='22' r='4' fill='%23F4AA00'/%3E%3C/svg%3E"/>
+
+  <!-- Farbthema vor dem ersten Rendern setzen (kein Aufblitzen des falschen Themas):
+       gespeicherte Wahl aus localStorage, sonst die Systemeinstellung des Browsers -->
+  <script>
+    (function () {
+      var gespeichert = null;
+      try { gespeichert = localStorage.getItem("agent-party-theme"); } catch (e) {}
+      var dunkel = gespeichert
+        ? gespeichert === "dark"
+        : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.classList.toggle("dark", dunkel);
+    })();
+  </script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+
+  <!-- Barlow: der im THM-CD dokumentierte Ersatz für die lizenzpflichtige
+       Hausschrift DIN Pro -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <!-- marked.js: rendert den fertigen Beitrag -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "base": "rgb(var(--base) / <alpha-value>)",
+            "surface": "rgb(var(--surface) / <alpha-value>)",
+            "surface-low": "rgb(var(--surface-low) / <alpha-value>)",
+            "surface-mid": "rgb(var(--surface-mid) / <alpha-value>)",
+            "surface-high": "rgb(var(--surface-high) / <alpha-value>)",
+            "header": "rgb(var(--header) / <alpha-value>)",
+            "on-header": "rgb(var(--on-header) / <alpha-value>)",
+            "on-surface": "rgb(var(--on-surface) / <alpha-value>)",
+            "on-surface-variant": "rgb(var(--on-surface-variant) / <alpha-value>)",
+            "on-accent": "rgb(var(--on-accent) / <alpha-value>)",
+            "accent": "rgb(var(--accent) / <alpha-value>)",
+            "accent-hover": "rgb(var(--accent-hover) / <alpha-value>)",
+            "accent-text": "rgb(var(--accent-text) / <alpha-value>)",
+            "warning": "rgb(var(--warning) / <alpha-value>)",
+            "warning-text": "rgb(var(--warning-text) / <alpha-value>)",
+            "error": "rgb(var(--error-color) / <alpha-value>)",
+            "error-strong": "rgb(var(--error-strong) / <alpha-value>)",
+            "error-container": "rgb(var(--error-container) / <alpha-value>)",
+            "code": "rgb(var(--code-color) / <alpha-value>)",
+            "thm-green": "#80ba24",
+            "thm-gray": "#4a5c66",
+            "thm-yellow": "#f4aa00",
+            "thm-red": "#9c132e",
+            "thm-light-blue": "#00b8e4",
+            "thm-blue": "#002878",
+          },
+          fontFamily: {
+            "headline": ["Barlow", "sans-serif"],
+            "body": ["Barlow", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="bg-base text-on-surface font-body min-h-screen flex flex-col">
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="h-12 bg-header shadow-sm flex items-center justify-between px-4 shrink-0">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-on-header text-[20px]" aria-hidden="true">forum</span>
+      <span class="text-on-header font-headline font-semibold text-lg tracking-tight">Agent Party</span>
+    </div>
+    <button id="theme-toggle" type="button"
+            class="flex items-center justify-center w-8 h-8 rounded-full bg-on-header/10 hover:bg-on-header/20 transition-colors"
+            aria-label="Farbthema wechseln" title="Farbthema wechseln">
+      <span id="theme-toggle-icon" class="material-symbols-outlined text-on-header text-[18px]" aria-hidden="true">light_mode</span>
+    </button>
+  </header>
+
+  <!-- ===================== TAB-LEISTE ===================== -->
+  <nav class="bg-surface-low border-b border-on-surface/10 px-4 shrink-0">
+    <div class="max-w-6xl mx-auto flex gap-1" role="tablist">
+      <button id="tab-profile" class="tab" role="tab" aria-selected="true" type="button">Profile</button>
+      <button id="tab-einrichten" class="tab" role="tab" aria-selected="false" type="button">Party einrichten</button>
+      <button id="tab-party" class="tab" role="tab" aria-selected="false" type="button" disabled>Party</button>
+    </div>
+  </nav>
+
+  <main class="flex-1 overflow-y-auto">
+    <div class="max-w-6xl mx-auto px-4 py-6">
+
+      <!-- ===================== ANSICHT 1: PROFILE ===================== -->
+      <section id="ansicht-profile" role="tabpanel" aria-labelledby="tab-profile">
+        <div class="grid gap-6 lg:grid-cols-5">
+
+          <!-- Kachelraster -->
+          <div class="lg:col-span-3">
+            <div class="flex items-center justify-between mb-3">
+              <h1 class="font-headline text-xl font-semibold">Rollenprofile</h1>
+              <span id="profile-anzahl" class="text-xs px-2 py-1 rounded bg-on-surface/10 text-on-surface-variant">0 Profile</span>
+            </div>
+            <p class="text-sm text-on-surface-variant mb-4">
+              Ein Profil ist eine Markdown-Datei: oben Modell und Farbe, darunter die
+              Rolle in normalem Deutsch. Dieser Text ist der Systemprompt — mehr steckt
+              hinter einem „KI-Agenten" nicht.
+            </p>
+            <div id="profil-raster" class="grid gap-3 sm:grid-cols-2"></div>
+          </div>
+
+          <!-- Editor -->
+          <div class="lg:col-span-2">
+            <div class="bg-surface border border-on-surface/10 rounded-md p-4 lg:sticky lg:top-4">
+              <h2 id="editor-titel" class="font-headline text-lg font-semibold mb-3">Neues Profil</h2>
+
+              <!-- Ausarbeiten lassen -->
+              <div class="mb-4 pb-4 border-b border-on-surface/10">
+                <label for="entwurf-idee" class="block text-xs font-medium text-on-surface-variant mb-1">
+                  Beschreibe die Rolle in einem Satz
+                </label>
+                <textarea id="entwurf-idee" rows="2" class="feld mb-2"
+                          placeholder="ein grantiger Hausmeister, der alles für überflüssig hält"></textarea>
+                <div class="flex items-center gap-2">
+                  <button id="entwurf-btn" type="button" class="knopf knopf-rand text-xs">
+                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">auto_awesome</span>
+                    <span id="entwurf-btn-text">Ausarbeiten lassen</span>
+                  </button>
+                  <span id="entwurf-status" class="text-xs text-on-surface-variant"></span>
+                </div>
+                <details id="entwurf-denken-box" class="blase-denken mt-2 hidden">
+                  <summary class="text-xs text-on-surface-variant flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px] blase-denken-pfeil transition-transform" aria-hidden="true">expand_more</span>
+                    Was das Modell gerade denkt
+                  </summary>
+                  <div id="entwurf-denken" class="blase-denken-text mt-1"></div>
+                </details>
+              </div>
+
+              <!-- Formular -->
+              <div class="space-y-3">
+                <div>
+                  <label for="feld-name" class="block text-xs font-medium text-on-surface-variant mb-1">Name</label>
+                  <input id="feld-name" type="text" class="feld" placeholder="Skeptische Ökonomin"/>
+                </div>
+                <div>
+                  <label for="feld-beschreibung" class="block text-xs font-medium text-on-surface-variant mb-1">Kurzbeschreibung</label>
+                  <input id="feld-beschreibung" type="text" class="feld" placeholder="Rechnet jede Idee auf Kosten und Nutzen herunter"/>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label for="feld-model" class="block text-xs font-medium text-on-surface-variant mb-1">Modell</label>
+                    <select id="feld-model" class="feld"></select>
+                  </div>
+                  <div>
+                    <label for="feld-thinking" class="block text-xs font-medium text-on-surface-variant mb-1">Denken</label>
+                    <select id="feld-thinking" class="feld">
+                      <option value="off">aus</option>
+                      <option value="minimal">minimal</option>
+                      <option value="low">wenig</option>
+                      <option value="medium" selected>mittel</option>
+                      <option value="high">viel</option>
+                      <option value="xhigh">sehr viel</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <span class="block text-xs font-medium text-on-surface-variant mb-1">Farbe</span>
+                  <div id="farbwahl" class="flex gap-2"></div>
+                </div>
+                <div>
+                  <label for="feld-text" class="block text-xs font-medium text-on-surface-variant mb-1">Die Rolle</label>
+                  <textarea id="feld-text" rows="9" class="feld" placeholder="Du bist …"></textarea>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 mt-4">
+                <button id="speichern-btn" type="button" class="knopf knopf-primaer">Speichern</button>
+                <button id="abbrechen-btn" type="button" class="knopf knopf-rand">Neu</button>
+                <button id="duplizieren-btn" type="button" class="knopf knopf-rand hidden">Duplizieren</button>
+                <button id="loeschen-btn" type="button" class="knopf knopf-gefahr ml-auto hidden">Löschen</button>
+              </div>
+              <p id="editor-hinweis" class="text-xs text-error mt-2 hidden"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== ANSICHT 2: PARTY EINRICHTEN ===================== -->
+      <section id="ansicht-einrichten" role="tabpanel" aria-labelledby="tab-einrichten" hidden>
+        <div class="grid gap-6 lg:grid-cols-5">
+
+          <div class="lg:col-span-3">
+            <h1 class="font-headline text-xl font-semibold mb-3">Wer soll mitdiskutieren?</h1>
+            <p class="text-sm text-on-surface-variant mb-4">
+              Klick die Profile an, die am Tisch sitzen sollen — noch ein Klick nimmt
+              sie wieder weg. Jedes Profil sitzt einmal am Tisch. Für zwei ähnliche
+              Stimmen dupliziere das Profil und gib ihm einen eigenen Namen. Die
+              Reihenfolge rechts ist die Sprechreihenfolge.
+            </p>
+            <div id="auswahl-raster" class="grid gap-3 sm:grid-cols-2"></div>
+
+            <h2 class="font-headline text-lg font-semibold mt-8 mb-3">Bisherige Partys</h2>
+            <div id="party-liste" class="space-y-2"></div>
+          </div>
+
+          <div class="lg:col-span-2">
+            <div class="bg-surface border border-on-surface/10 rounded-md p-4 lg:sticky lg:top-4">
+              <h2 class="font-headline text-lg font-semibold mb-3">Die Runde</h2>
+
+              <div id="besetzung" class="space-y-2 mb-4"></div>
+
+              <div class="space-y-3">
+                <div>
+                  <label for="feld-titel" class="block text-xs font-medium text-on-surface-variant mb-1">Thema</label>
+                  <input id="feld-titel" type="text" class="feld" placeholder="Sollen Schulen KI verbieten?"/>
+                </div>
+                <div>
+                  <label for="feld-starter" class="block text-xs font-medium text-on-surface-variant mb-1">Einstiegsfrage</label>
+                  <textarea id="feld-starter" rows="3" class="feld"
+                            placeholder="Diskutiert, ob Schulen den Einsatz von KI verbieten sollten."></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label for="feld-runden" class="block text-xs font-medium text-on-surface-variant mb-1">Runden</label>
+                    <input id="feld-runden" type="number" min="1" max="5" value="2" class="feld"/>
+                  </div>
+                  <div>
+                    <label for="feld-partymodell" class="block text-xs font-medium text-on-surface-variant mb-1">Modell</label>
+                    <select id="feld-partymodell" class="feld"></select>
+                  </div>
+                </div>
+              </div>
+
+              <button id="party-start-btn" type="button" class="knopf knopf-primaer w-full mt-4" disabled>
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">play_arrow</span>
+                Party starten
+              </button>
+              <p id="einrichten-hinweis" class="text-xs text-error mt-2 hidden"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== ANSICHT 3: PARTY LÄUFT ===================== -->
+      <section id="ansicht-party" role="tabpanel" aria-labelledby="tab-party" hidden>
+        <div class="bg-surface border border-on-surface/10 rounded-md p-4 mb-4">
+          <div class="flex items-start justify-between gap-4 flex-wrap">
+            <div>
+              <h1 id="party-titel" class="font-headline text-xl font-semibold"></h1>
+              <p id="party-starter" class="text-sm text-on-surface-variant mt-1"></p>
+              <div id="party-chips" class="flex flex-wrap gap-2 mt-3"></div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="party-fortschritt" class="text-xs px-2 py-1 rounded bg-on-surface/10 text-on-surface-variant"></span>
+              <button id="party-stop-btn" type="button" class="knopf knopf-gefahr hidden">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">stop</span>
+                Abbrechen
+              </button>
+              <button id="party-fort-btn" type="button" class="knopf knopf-primaer hidden">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">play_arrow</span>
+                Fortsetzen
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="verlauf" class="space-y-3"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Vorlage für eine Sprechblase: die Struktur steht im HTML, nicht als
+       Zeichenkette im JavaScript -->
+  <template id="blasen-vorlage">
+    <article class="blase p-3">
+      <div class="flex items-baseline gap-2 mb-1">
+        <span class="blase-name profil-schrift font-headline font-semibold text-sm"></span>
+        <span class="blase-runde text-[11px] text-on-surface-variant"></span>
+        <span class="blase-dauer text-[11px] text-on-surface-variant ml-auto"></span>
+      </div>
+      <div class="blase-text text-sm leading-relaxed"></div>
+      <details class="blase-denken mt-2 hidden">
+        <summary class="text-xs text-on-surface-variant flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px] blase-denken-pfeil transition-transform" aria-hidden="true">expand_more</span>
+          Was das Modell gedacht hat
+        </summary>
+        <div class="blase-denken-text mt-1"></div>
+      </details>
+    </article>
+  </template>
+
+  <!-- Dialog für Bestätigungen und Hinweise -->
+  <div id="dialog-hintergrund" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-surface-high border border-on-surface/10 rounded-md shadow-2xl max-w-md w-full p-5">
+      <h3 id="dialog-titel" class="font-headline text-lg font-semibold mb-2"></h3>
+      <p id="dialog-text" class="text-sm text-on-surface-variant mb-4"></p>
+      <div class="flex justify-end gap-2">
+        <button id="dialog-abbrechen" type="button" class="knopf knopf-rand">Abbrechen</button>
+        <button id="dialog-ok" type="button" class="knopf knopf-primaer">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

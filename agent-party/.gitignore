@@ -1,0 +1,12 @@
+# Runtime: die Partys entstehen in der Vorlesung und gehören nicht ins Repo
+partys/
+
+# Konfiguration mit lokalen Werten
+.env
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc

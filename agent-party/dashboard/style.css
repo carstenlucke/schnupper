@@ -1,0 +1,338 @@
+/* Agent Party – Styles
+   Farbthema-System: CSS Custom Properties + Tailwind Alpha-Unterstützung.
+   Farben als leerzeichengetrennte RGB-Kanäle: rgb(var(--name) / alpha)
+*/
+
+/* ============================================================
+   Farbthema: Hell – Standardanwendung laut THM-CD-Manual (go.thm.de/cd)
+   Hauptfarben: THM Grün #80BA24 (Akzente, Buttons) und THM Grau #4A5C66
+   (Fließtext, Überschriften, Kopfleiste). Flächen Weiß bis #EBEBEB.
+   Welches Thema aktiv ist, entscheidet die Klasse "dark" am <html>-Element.
+
+   Fläche und Schrift bleiben getrennt: THM Grün und THM Gelb sind in
+   Reinform zu hell für kleinen Text auf hellem Grund (2,3:1 bzw. 2,0:1 auf
+   Weiß). Sie bleiben Füllfarbe (--accent, --warning); für Text gibt es die
+   abgedunkelten Varianten --accent-text und --warning-text.
+   ============================================================ */
+:root {
+  --base: 245 245 245;             /* #F5F5F5 – Seitengrund */
+  --surface: 255 255 255;          /* #FFFFFF – Karten, Inhaltsfläche */
+  --surface-low: 245 245 245;      /* #F5F5F5 – Leisten über/unter dem Inhalt */
+  --surface-mid: 235 235 235;      /* #EBEBEB – hellste Tönung, Kontrastreferenz */
+  --surface-high: 255 255 255;     /* #FFFFFF – Dialoge, Dropdowns */
+  --header: 74 92 102;             /* THM Grau #4A5C66 */
+  --on-header: 255 255 255;
+  --on-surface: 42 56 64;          /* THM Grau dunkel #2A3840 – Überschriften */
+  --on-surface-variant: 74 92 102; /* THM Grau #4A5C66 – Fließtext (7,0:1 auf Weiß) */
+  --on-accent: 42 56 64;           /* Dunkles Grau auf Grün (5,2:1) */
+  --accent: 128 186 36;            /* THM Grün #80BA24 – Flächen, Ränder, Punkte */
+  --accent-hover: 143 204 48;      /* #8FCC30 – aufgehelltes Grün für Hover */
+  --accent-text: 69 107 13;        /* #456B0D – Grün für Text (6,2:1 auf Weiß) */
+  --warning: 244 170 0;            /* THM Gelb #F4AA00 – Statuspunkte, Flächen */
+  --warning-text: 132 90 0;        /* #845A00 – abgedunkeltes Gelb für Text */
+  --error-color: 156 19 46;        /* THM Rot #9C132E – Text und Ränder */
+  --error-strong: 156 19 46;       /* Rotfläche unter weißer Schrift (8,2:1) */
+  --error-container: 255 235 235;
+  --code-color: 77 122 15;         /* #4D7A0F – Grün für kleinen Text */
+  --code-bg: 245 245 245;
+  color-scheme: light;
+}
+
+/* ============================================================
+   Farbthema: Dunkel – aus den Negativ-Regeln des CD-Manuals abgeleitet.
+   Grund #1A252B, Inhaltsfläche #212E35, Leisten #2A3840, Dialoge #344750.
+   Die Kopfleiste bleibt THM Grau, damit die Marke in beiden Themen gleich
+   wirkt.
+   ============================================================ */
+.dark {
+  --base: 26 37 43;                /* #1A252B – Seitengrund */
+  --surface: 33 46 53;             /* #212E35 – Inhaltsfläche */
+  --surface-low: 42 56 64;         /* #2A3840 – Leisten */
+  --surface-mid: 46 62 70;         /* #2E3E46 */
+  --surface-high: 52 71 80;        /* #344750 – Dialoge, hellste dunkle Fläche */
+  --header: 74 92 102;             /* THM Grau #4A5C66 */
+  --on-header: 255 255 255;
+  --on-surface: 232 236 240;       /* Offwhite #E8ECF0 */
+  --on-surface-variant: 178 190 198; /* #B2BEC6 – gedämpfter Fließtext */
+  --on-accent: 42 56 64;
+  --accent: 128 186 36;
+  --accent-hover: 143 204 48;
+  --accent-text: 168 216 110;      /* #A8D86E – Grün für Text (8,4:1 auf #212E35) */
+  --warning: 244 170 0;
+  --warning-text: 255 192 61;      /* #FFC03D – auch auf #344750 noch 5,9:1 */
+  --error-color: 244 168 179;      /* #F4A8B3 – auf allen dunklen Flächen ≥ 5,1:1 */
+  --error-strong: 168 30 53;       /* #A81E35 – Rotfläche unter weißer Schrift */
+  --error-container: 80 10 20;
+  --code-color: 168 216 110;
+  --code-bg: 26 37 43;
+  color-scheme: dark;
+}
+
+/* ============================================================
+   Basis
+   ============================================================ */
+body {
+  font-family: 'Barlow', sans-serif;
+  background-color: rgb(var(--base));
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ============================================================
+   Profilfarben – die sechs CD-Farben
+
+   Fläche und Schrift sind getrennt: --profil füllt den 4px-Balken und den
+   Punkt, --profil-text beschriftet den Namen darüber. Alle Textwerte sind
+   gegen die ungünstigste Fläche des jeweiligen Themas nachgerechnet
+   (hell #EBEBEB, dunkel #344750) und erreichen dort mindestens 4,8:1.
+   Wer eine Farbe ändert, rechnet vorher nach.
+   ============================================================ */
+.profil-gruen    { --profil: #80BA24; --profil-text: #456B0D; }
+.profil-grau     { --profil: #4A5C66; --profil-text: #4A5C66; }
+.profil-rot      { --profil: #9C132E; --profil-text: #9C132E; }
+.profil-gelb     { --profil: #F4AA00; --profil-text: #845A00; }
+.profil-hellblau { --profil: #00B8E4; --profil-text: #00708C; }
+.profil-blau     { --profil: #002878; --profil-text: #002878; }
+
+.dark .profil-gruen    { --profil-text: #A8D86E; }
+.dark .profil-grau     { --profil-text: #B2BEC6; }
+.dark .profil-rot      { --profil-text: #F4A8B3; }
+.dark .profil-gelb     { --profil-text: #FFC03D; }
+.dark .profil-hellblau { --profil-text: #5FD4F2; }
+.dark .profil-blau     { --profil-text: #9DBEFF; }
+
+.profil-flaeche { background-color: var(--profil, #4A5C66); }
+.profil-schrift { color: var(--profil-text, #4A5C66); }
+.profil-rand    { border-color: var(--profil, #4A5C66); }
+
+/* ============================================================
+   Sprechblasen
+   ============================================================ */
+.blase {
+  border-left: 4px solid var(--profil, #4A5C66);
+  background-color: rgb(var(--surface));
+  border-top: 1px solid rgb(var(--on-surface) / 0.08);
+  border-right: 1px solid rgb(var(--on-surface) / 0.08);
+  border-bottom: 1px solid rgb(var(--on-surface) / 0.08);
+  border-radius: 0 6px 6px 0;
+  box-shadow: 0 1px 2px rgba(34, 44, 49, 0.06);
+  transition: box-shadow 150ms ease;
+}
+
+.blase-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Solange ein Beitrag streamt, blinkt ein Cursor hinter dem Text. */
+.blase-tippt .blase-text::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background-color: var(--profil, #4A5C66);
+  animation: blinken 1s step-end infinite;
+}
+
+@keyframes blinken {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.puls {
+  animation: pulsieren 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulsieren {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Der Denkbereich ist zugeklappt, bis jemand ihn aufmacht. */
+/* Mitten im Satz abgebrochen und deshalb nicht in den Verlauf übernommen.
+   Bleibt lesbar, ist aber klar als nicht gezählt zu erkennen. */
+.blase-verworfen {
+  opacity: 0.55;
+}
+.blase-verworfen .blase-text {
+  text-decoration: line-through;
+  text-decoration-color: rgb(var(--on-surface-variant) / 0.55);
+}
+
+.blase-denken summary {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.blase-denken summary::-webkit-details-marker { display: none; }
+
+.blase-denken[open] summary .blase-denken-pfeil {
+  transform: rotate(180deg);
+}
+
+.blase-denken-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgb(var(--on-surface-variant));
+  background-color: rgb(var(--surface-mid));
+  border-radius: 4px;
+  padding: 8px 10px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+/* ============================================================
+   Markdown im fertigen Beitrag
+   ============================================================ */
+.md p { margin: 0 0 8px 0; }
+.md p:last-child { margin-bottom: 0; }
+.md strong { font-weight: 600; color: rgb(var(--on-surface)); }
+.md em { font-style: italic; }
+.md ul, .md ol { margin: 0 0 8px 20px; }
+.md li { margin-bottom: 2px; }
+.md code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: rgb(var(--code-color));
+  background-color: rgb(var(--code-bg));
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+.md a { color: rgb(var(--accent-text)); text-decoration: underline; }
+
+/* ============================================================
+   Bedienelemente – scharfe Ecken, 1px-Ränder, keine Verläufe
+   ============================================================ */
+.feld {
+  width: 100%;
+  background-color: rgb(var(--surface));
+  color: rgb(var(--on-surface));
+  border: 1px solid rgb(var(--on-surface) / 0.18);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 14px;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.feld:focus {
+  outline: none;
+  border-color: rgb(var(--accent));
+  box-shadow: 0 0 0 2px rgb(var(--accent) / 0.25);
+}
+
+.feld::placeholder { color: rgb(var(--on-surface-variant) / 0.7); }
+
+.knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.knopf:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.knopf-primaer {
+  background-color: rgb(var(--accent));
+  color: rgb(var(--on-accent));
+}
+.knopf-primaer:not(:disabled):hover { background-color: rgb(var(--accent-hover)); }
+
+.knopf-rand {
+  background-color: transparent;
+  color: rgb(var(--on-surface));
+  border-color: rgb(var(--on-surface) / 0.22);
+}
+.knopf-rand:not(:disabled):hover { background-color: rgb(var(--on-surface) / 0.06); }
+
+.knopf-gefahr {
+  background-color: transparent;
+  color: rgb(var(--error-color));
+  border-color: rgb(var(--error-color) / 0.4);
+}
+.knopf-gefahr:not(:disabled):hover { background-color: rgb(var(--error-color) / 0.1); }
+
+/* Die Kachel eines Profils: 4px-Balken links als Akzentkante. */
+.kachel {
+  border-left: 4px solid var(--profil, #4A5C66);
+  background-color: rgb(var(--surface));
+  border-top: 1px solid rgb(var(--on-surface) / 0.1);
+  border-right: 1px solid rgb(var(--on-surface) / 0.1);
+  border-bottom: 1px solid rgb(var(--on-surface) / 0.1);
+  border-radius: 0 6px 6px 0;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.kachel:hover {
+  box-shadow: 0 2px 6px rgba(34, 44, 49, 0.1);
+}
+
+.kachel-gewaehlt {
+  box-shadow: 0 0 0 2px rgb(var(--accent) / 0.55);
+}
+
+/* Farbwahl im Editor */
+.farbwahl input { position: absolute; opacity: 0; pointer-events: none; }
+
+.farbwahl span {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background-color: var(--profil);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 140ms ease;
+}
+
+.farbwahl input:checked + span {
+  border-color: rgb(var(--on-surface));
+}
+
+.farbwahl input:focus-visible + span {
+  box-shadow: 0 0 0 2px rgb(var(--accent) / 0.5);
+}
+
+/* Statuspunkte der Partyliste */
+.status-punkt { width: 8px; height: 8px; border-radius: 9999px; }
+.status-neu      { background-color: rgb(var(--on-surface) / 0.3); }
+.status-laeuft   { background-color: rgb(var(--warning)); }
+.status-pausiert { background-color: rgb(var(--warning)); }
+.status-fertig   { background-color: rgb(var(--accent)); }
+.status-fehler   { background-color: rgb(var(--error-color)); }
+
+/* Tab-Leiste */
+.tab {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgb(var(--on-surface-variant));
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease;
+}
+
+.tab:hover { color: rgb(var(--on-surface)); }
+
+.tab[aria-selected="true"] {
+  color: rgb(var(--accent-text));
+  border-bottom-color: rgb(var(--accent));
+}
+
+.tab:disabled { opacity: 0.4; cursor: not-allowed; }

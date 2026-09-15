@@ -36,6 +36,24 @@ das, was seine Rolle verlangt.
 cd the-counting-agents && ./scripts/start.sh
 ```
 
+### [`agent-party/`](agent-party/)
+
+Web-Demo, die den Spieß umdreht: Statt fertigen Agenten zuzusehen, bauen die
+Teilnehmenden sie selbst. Sie schreiben Rollenprofile — von Hand oder von einem
+Sprachmodell ausarbeiten lassen —, stellen daraus eine Besetzung zusammen und
+geben ihr ein Thema. Danach diskutieren die gewählten Profile reihum, Beitrag
+für Beitrag im Browser sichtbar.
+
+Ein Profil ist eine Markdown-Datei, deren Text **wörtlich** zum Systemprompt
+wird. Wer im Vortrag einen Satz darin ändert und dieselbe Party neu startet,
+sieht die Diskussion kippen — das ist die ganze Pointe. Die Agenten haben
+bewusst **keine Werkzeuge** und **kein Gedächtnis**: Der Gesprächsverlauf geht
+jedes Mal neu als Text in den Prompt.
+
+```bash
+cd agent-party && ./start.sh
+```
+
 ## Aufbau
 
 Jedes Projekt ist eigenständig: eigenes README, eigene Konfiguration, eigene
