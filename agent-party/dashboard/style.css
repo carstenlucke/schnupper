@@ -215,7 +215,15 @@ body {
 /* ============================================================
    Bedienelemente – scharfe Ecken, 1px-Ränder, keine Verläufe
    ============================================================ */
-.feld {
+/* Elementqualifiziert, nicht nur `.feld`: Das Tailwind-Plugin `forms` setzt
+   seine Grundstile über Attributselektoren (`[type='text']`, `[type='number']`).
+   Die haben dieselbe Spezifität wie eine Klasse und stehen später im Dokument —
+   ein blankes `.feld` verliert dagegen, und das Eingabefeld bliebe im
+   Dunkelmodus weiß. `textarea` und `select` trifft das Plugin nur als
+   Elementselektor, die waren darum nie betroffen. */
+input.feld,
+select.feld,
+textarea.feld {
   width: 100%;
   background-color: rgb(var(--surface));
   color: rgb(var(--on-surface));
@@ -226,13 +234,16 @@ body {
   transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 
-.feld:focus {
+input.feld:focus,
+select.feld:focus,
+textarea.feld:focus {
   outline: none;
   border-color: rgb(var(--accent));
   box-shadow: 0 0 0 2px rgb(var(--accent) / 0.25);
 }
 
-.feld::placeholder { color: rgb(var(--on-surface-variant) / 0.7); }
+input.feld::placeholder,
+textarea.feld::placeholder { color: rgb(var(--on-surface-variant) / 0.7); }
 
 .knopf {
   display: inline-flex;
