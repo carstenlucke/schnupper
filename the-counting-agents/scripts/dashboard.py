@@ -64,6 +64,7 @@ PAGE = r"""<!doctype html>
     --text: #e8ecf0;
     --muted: #93a4ae;
     --open: #3c4e58;    /* Kachel, die noch niemand hat */
+    --zeit: #8595a0;    /* Zeitmarken und Fußzeile — leiser als --text, aber lesbar */
 
     /* Die drei Zusatzfarben des CD sind laut Manual für Infografiken gedacht —
        genau das ist das Zahlenband. Jeder Sammler bekommt eine davon, und sie
@@ -90,6 +91,7 @@ PAGE = r"""<!doctype html>
     --text: #2a3840;    /* THM Grau dunkel */
     --muted: #4a5c66;   /* THM Grau — 5,6:1 auf Weiß */
     --open: #d5dbdf;
+    --zeit: #5c6f7a;
 
     --odd-bg: #e0f6fc;
     --odd-ink: #0a5d74;
@@ -132,7 +134,7 @@ PAGE = r"""<!doctype html>
     transition: background .2s ease, color .2s ease;
   }
   #thema:hover { color: var(--text); background: var(--panel-hover); }
-  #thema:focus-visible { outline: 2px solid #80ba24; outline-offset: 2px; }
+  #thema:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
   #thema svg { width: 18px; height: 18px; display: block; }
   #thema .mond { display: none; }
   :root[data-theme="light"] #thema .sonne { display: none; }
@@ -256,10 +258,10 @@ PAGE = r"""<!doctype html>
   .ticker h2 { font-size: 1em; letter-spacing: .1em; text-transform: uppercase;
                color: var(--muted); margin: 0 0 8px; font-weight: 600; }
   .ticker li { list-style: none; padding: 3px 0; }
-  .ticker time { color: var(--muted); opacity: .7; margin-right: 12px; }
+  .ticker time { color: var(--zeit); margin-right: 12px; }
   .ticker b { color: var(--text); font-weight: 600; }
 
-  footer { margin-top: clamp(20px, 2vw, 34px); color: var(--muted); opacity: .7;
+  footer { margin-top: clamp(20px, 2vw, 34px); color: var(--zeit);
            font-size: clamp(11px, .9vw, 15px); }
   .offline { color: var(--wrong); }
 </style>
