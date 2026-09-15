@@ -41,11 +41,19 @@ Kein API-Schlüssel nötig — die Anmeldung erledigt pi.
 5. Thema + Einstiegsfrage     → „Sollen Schulen KI verbieten?"
 6. [Party starten]            → die Runde diskutiert, Beitrag für Beitrag
 7. Denkbereich aufklappen     → „Was das Modell gedacht hat"
-8. Ein Profil umschreiben     → dieselbe Party neu starten, Unterschied zeigen
+8. Zwischenruf einwerfen      → „Bleibt konkret: Nennt Zahlen." — der nächste
+                                Beitrag geht darauf ein
+9. [Weitere Runde]            → die Runden sind durch, es geht trotzdem weiter
+10. [Fazit erstellen]         → die Gesprächsleitung fasst zusammen
+11. Ein Profil umschreiben    → dieselbe Party neu starten, Unterschied zeigen
 ```
 
-Schritt 8 ist der Höhepunkt: dieselbe Frage, dieselbe Besetzung, ein geänderter
+Schritt 11 ist der Höhepunkt: dieselbe Frage, dieselbe Besetzung, ein geänderter
 Satz im Profil — und die Diskussion dreht sich.
+
+Schritt 8 zeigt nebenbei, warum das Ganze funktioniert: Der Zwischenruf ist
+nichts weiter als eine Zeile mehr im Verlauf, die beim nächsten Aufruf im Prompt
+steht. Wer ihn einwirft, sieht dem Gespräch beim Abbiegen zu.
 
 ## Die mitgelieferten Profile
 
@@ -99,6 +107,9 @@ profile/<slug>.md   ·   partys/<slug>/
   abgebrochene Party lässt sich fortsetzen, auch nach einem Serverneustart
 - **Sequenzielle Runde** — die Profile antworten aufeinander, Beitrag für
   Beitrag. Im Hörsaal ist das Nacheinander der Punkt
+- **Die Rundenzahl ist nur der Anfang** — eine Sitzung lässt sich beliebig oft
+  verlängern, und jeder Zwischenruf wird Teil des Verlaufs, den alle folgenden
+  Beiträge im Prompt bekommen
 - **Live-Denkschritte** — der Server übersetzt die Ereignisse von pi in
   Sprechblasen mit aufklappbarem Denkbereich
 
@@ -118,7 +129,8 @@ agent-party/
 
 ## Dashboard
 
-- **Drei Ansichten** über eine Tab-Leiste: Profile, Party einrichten, Party läuft
+- **Drei Ansichten** über die Navigation in der Kopfleiste: Agentenprofile,
+  Party vorbereiten, Sitzung
 - **Profil ausarbeiten lassen** — ein Satz genügt, das Modell schreibt das
   Profil, der Entwurf ist vor dem Speichern änderbar
 - **Besetzung mit Reihenfolge** — jedes Profil sitzt einmal am Tisch; für zwei
@@ -126,7 +138,12 @@ agent-party/
 - **Modellwechsel im UI** — zwischen ChatGPT-Abo, TensorX und LM Studio, ohne
   Neustart
 - **Sprechblasen** in der Profilfarbe, live per Server-Sent Events, mit
-  aufklappbarem Bereich „Was das Modell gedacht hat"
+  aufklappbarem Bereich „Was das Modell gedacht hat"; rechts eine Übersicht mit
+  Besetzung, Beitragszähler und Rundenstand
+- **Eingreifen während der Sitzung** — ein Zwischenruf der Gesprächsleitung geht
+  in den Prompt des nächsten Beitrags ein, „Weitere Runde" hängt eine Runde an,
+  wenn die geplanten durch sind, und „Fazit erstellen" lässt die Sitzung
+  zusammenfassen
 - **Hell-/Dunkelmodus** im THM-Corporate-Design (Grün `#80BA24`, Grau
   `#4A5C66`); Umschalter im Header, Standard folgt der Systemeinstellung
 - **Neuladen verliert nichts** — der gespeicherte Verlauf wird nachgeliefert

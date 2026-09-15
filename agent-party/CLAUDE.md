@@ -56,11 +56,16 @@ Port **8100** — 8000 gehört `ship-it/`, 8777 dem Dashboard von
 ## Backend: server.py
 
 - `ThreadingHTTPServer` auf Port 8100, statische Dateien aus `dashboard/`
-- **Status aus dem Dateisystem abgeleitet** (kein State-File): Zeilen in
-  `verlauf.jsonl` gegen `runden × len(teilnehmer)` ergeben
+- **Status aus dem Dateisystem abgeleitet** (kein State-File): die *Beiträge*
+  in `verlauf.jsonl` gegen `runden × len(teilnehmer)` ergeben
   `neu` / `laeuft` / `pausiert` / `fertig` / `fehler`. Ein Serverneustart
   mitten in der Party führt auf `pausiert`; „Fortsetzen" macht dort weiter, wo
   die Datei aufhört.
+- **Die jsonl enthält dreierlei**: Beiträge (`art: beitrag`), Zwischenrufe der
+  Gesprächsleitung (`art: zwischenruf`) und das Fazit (`art: fazit`). Gezählt
+  wird nur das erste — `ist_beitrag()` und `nur_beitraege()` sind die einzige
+  Stelle dafür, ein Zwischenruf darf keine Runde verschlucken. Einträge ohne
+  `art` sind Beiträge aus einer älteren Sitzung.
 - `PiStrom` übersetzt die JSON-Ereignisse von pi in Ereignisse fürs Dashboard.
   `pi -p` wäre einfacher, zeigt aber nur die Schlussantwort — die Denkschritte
   blieben unsichtbar.
@@ -80,6 +85,9 @@ Port **8100** — 8000 gehört `ship-it/`, 8777 dem Dashboard von
 | GET | `/api/partys/<slug>` | Sitzung + Status, **ohne** Verlauf |
 | POST | `/api/partys/<slug>/start` | Durchlauf starten oder fortsetzen |
 | POST | `/api/partys/<slug>/stop` | Durchlauf abbrechen |
+| POST | `/api/partys/<slug>/zwischenruf` | Impuls der Gesprächsleitung (`{text}`) |
+| POST | `/api/partys/<slug>/runde` | Eine Runde anhängen und starten |
+| POST | `/api/partys/<slug>/fazit` | Die Gesprächsleitung zieht Bilanz |
 | GET | `/api/partys/<slug>/stream` | SSE: Verlauf + Beiträge live |
 | DELETE | `/api/partys/<slug>` | Sitzung löschen |
 
@@ -106,15 +114,52 @@ Drei Stellen, die genau so sein müssen:
    der genau dazwischen neu verbindet, bekommt den Beitrag aus der Datei statt
    gar nicht. Ein abgebrochener Teilbeitrag wird **nicht** geschrieben — ein
    halber Satz im Verlauf vergiftet alle Folgeprompts.
+4. **Zwischenrufe hängt nur der Schleifen-Thread an** (`schreibe_einwuerfe()`),
+   und nur zwischen zwei Beiträgen. Schriebe der Request-Thread sie sofort,
+   stünde ein Zwischenruf in der Datei vor einer Blase, deren Ereignisse schon
+   die Marke davor tragen — eine Verbindung, die genau dann neu aufmacht,
+   bekäme den laufenden Beitrag weggefiltert.
+
+### Eingreifen in die laufende Sitzung
+
+Der Mensch am Rechner heißt im Prompt **Gesprächsleitung** (`LEITUNG`). Er hat
+drei Griffe, alle in der Steuerleiste unter dem Verlauf:
+
+- **Zwischenruf** (`wirf_ein`) — der Text landet als eigener Eintrag im
+  Verlauf und damit im Prompt jedes folgenden Beitrags. Was seit dem letzten
+  Beitrag dazukam, hebt `baue_beitrag_prompt()` zusätzlich als eigenen Block
+  hervor (`offene_zwischenrufe`, `ZWISCHENRUF_VORLAGE`) — mit der Ansage, dass
+  das keine Wortmeldung ist, auf die man antwortet, sondern eine Vorgabe.
+  Sichtbar ist der Einwurf sofort (Ereignispuffer), geschrieben wird er, sobald
+  der laufende Beitrag steht. Läuft gerade nichts, schreibt der Request-Thread
+  selbst — dann gibt es keine Marke, die kaputtgehen könnte.
+- **Weitere Runde** (`naechste_runde`) — erhöht `runden` in `sitzung.json` um
+  eins und startet sofort. `MAX_RUNDEN` deckelt nur das Einrichten: wie oft im
+  Hörsaal verlängert wird, entscheidet das Gespräch. Scheitert der Start, geht
+  die Rundenzahl zurück, sonst gälte die Sitzung als unfertig.
+- **Fazit** (`starte_fazit`) — ein einzelner Durchlauf über dieselbe Registry
+  wie eine Party, damit währenddessen niemand eine Runde dazwischenstartet.
+  Ergebnis ist ein Eintrag `art: fazit`; er zählt nicht gegen die Rundenzahl,
+  und eine weitere Runde danach ist ausdrücklich möglich.
+
+Beitrag und Fazit teilen sich `_pi_durchlauf()` — Prozessstart, Ereignisse,
+Abbruch und Fehlerfall gibt es nur einmal.
 
 ### SSE
 
 Der Stream liefert zuerst den gespeicherten Verlauf nach (je Beitrag ein
-`beitrag_start` / `text` / `beitrag_ende` mit `nachgeliefert: true`) und hängt
-sich danach an den Ereignispuffer des laufenden Threads. Die Reihenfolge ist
-Teil des Vertrags: erst die Datei lesen (ergibt `n`), dann nachliefern, dann die
-Registry — und aus dem Puffer nur, was `beitrag_nr >= n` hat. So gibt es weder
-Lücke noch Dopplung, ganz ohne Lock, weil die Ereignisliste nur wächst.
+`beitrag_start` / `text` / `beitrag_ende` mit `nachgeliefert: true`, je
+Zwischenruf ein `zwischenruf`) und hängt sich danach an den Ereignispuffer des
+laufenden Threads. Die Reihenfolge ist Teil des Vertrags: erst die Datei lesen
+(ergibt `n`), dann nachliefern, dann die Registry — und aus dem Puffer nur, was
+`eintrag_nr >= n` hat. So gibt es weder Lücke noch Dopplung, ganz ohne Lock,
+weil die Ereignisliste nur wächst.
+
+`eintrag_nr` ist die **Zeilenzahl der Datei** zum Zeitpunkt des Ereignisses,
+nicht die Beitragsnummer: Zwischenrufe und Fazit stehen in derselben Datei und
+verschieben die Marke mit. `beitrag_start` und `beitrag_ende` tragen zusätzlich
+ein `sorte`-Feld (`beitrag` oder `fazit`), damit das Frontend die Fazitkarte
+anders zeichnet und nicht mitzählt.
 
 Alle 15 s geht ein `: ping` raus. Zwischen zwei Beiträgen kann es lange still
 sein.
@@ -189,7 +234,7 @@ pi --mode json --no-session -nt -nc -ns -np -ne \
 `stdin=subprocess.DEVNULL` ist **Pflicht**: pi liest die Standardeingabe sonst
 mit in den Auftrag ein und wartet für immer auf ihr Ende.
 
-Zwei Aufrufarten, derselbe Code:
+Drei Aufrufarten, derselbe Code:
 
 1. **Party-Beitrag** — Systemprompt ist der Rollentext, der Prompt enthält
    Thema, Teilnehmerliste, bisherigen Verlauf und die Aufforderung zu antworten.
@@ -197,21 +242,37 @@ Zwei Aufrufarten, derselbe Code:
    gewünschten Ausgabeformat, der Prompt ist die Stichwortidee. Die Lebensdauer
    des Prozesses ist exakt die des Requests: bricht der Browser ab, räumt der
    `finally`-Block pi weg. Deshalb braucht dieser Weg keinen Stop-Endpunkt.
+3. **Fazit** — Systemprompt ist `SYSTEMPROMPT_FAZIT`, der Prompt enthält Thema,
+   Besetzung und den ganzen Verlauf. Das ist die einzige Rolle, die **nicht**
+   aus `profile/` kommt: Die Gesprächsleitung ist keine Stimme am Tisch,
+   sondern der Blick von außen, und niemand soll sie versehentlich löschen.
 
 ## Frontend: dashboard/
 
-SPA ohne Build, ein klassisches Skript im globalen Scope. Drei Ansichten über
-eine Tab-Leiste, verlinkbar über `#profile`, `#einrichten`, `#party/<slug>`.
+SPA ohne Build, ein klassisches Skript im globalen Scope. Drei Ansichten,
+erreichbar über die Navigation **in der Kopfleiste** (die Ids heißen weiterhin
+`tab-*`), verlinkbar über `#profile`, `#einrichten`, `#party/<slug>`.
 
-- **Profile** — Kachelraster links, Editor rechts. Zweiter Weg zum Profil: „Rolle
-  in einem Satz beschreiben" → „Ausarbeiten lassen" → der Entwurf läuft live in
-  die Textarea und ist vor dem Speichern änderbar. „Duplizieren" legt eine Kopie
-  mit freiem Namen in den Editor; gespeichert wird erst auf Knopfdruck.
-- **Party einrichten** — Profile anklicken (der Klick schaltet um, jedes Profil
+- **Agentenprofile** — Kachelraster links, Editor rechts. Zweiter Weg zum Profil:
+  „Rolle in einem Satz beschreiben" → „Ausarbeiten lassen" → der Entwurf läuft
+  live in die Textarea und ist vor dem Speichern änderbar. „Duplizieren" legt eine
+  Kopie mit freiem Namen in den Editor; gespeichert wird erst auf Knopfdruck.
+- **Party vorbereiten** — Profile anklicken (der Klick schaltet um, jedes Profil
   sitzt höchstens einmal am Tisch), Reihenfolge per Hoch/Runter, Thema,
   Einstiegsfrage, Runden 1–5, Modell.
-- **Party läuft** — je Beitrag eine Sprechblase mit Farbbalken, darunter ein
-  aufklappbarer Bereich „Was das Modell gedacht hat".
+- **Sitzung** — oben ein dunkler Themenblock (Status, Fortschritt, Besetzung in
+  Zahlen, Thema, Einstiegsfrage), darunter links der Verlauf, rechts die Karten
+  „Teilnehmer" (mit Beitragszähler und „formuliert …" beim aktiven Sprecher) und
+  „Sitzung" (Runde, Beiträge, Zwischenrufe). Je Beitrag ein Zeichen mit
+  Initialen neben einer Karte mit Farbbalken; vor dem ersten Beitrag einer Runde
+  ein Trenner.
+
+Die **Steuerleiste** klebt unter dem Inhalt und ist nur in der Sitzungsansicht
+sichtbar: Zwischenruf einwerfen, weitere Runde, Fazit erstellen, anhalten oder
+fortsetzen. Steht beim Klick auf „Weitere Runde" noch Text im Zwischenruffeld,
+geht der Einwurf der Runde voraus — ein Griff für „so, und jetzt redet bitte
+darüber". Nach „Weitere Runde" und „Fazit erstellen" baut `oeffneParty()` die
+Ansicht neu auf, damit der Strom das Neue live zeigt.
 
 **Die Sprechblase wächst inkrementell.** `beitrag_start` legt einen DOM-Knoten
 an, jedes Delta hängt per `append()` einen Textknoten an, und erst bei
@@ -246,13 +307,22 @@ Vier Teile, wie in `ship-it/`:
 4. Umschalter im Header; ohne gespeicherte Wahl folgt die App
    `prefers-color-scheme` und reagiert auf dessen Änderung
 
+**Kopfleiste und Themenblock sind in beiden Themen dunkel** (`--header`, hell
+`#1A252B`, dunkel `#10181D`) — anders als in `ship-it/`, wo die Kopfleiste THM
+Grau bleibt. Die Wortmarke soll auf dem Beamer wie ein Titelbalken stehen, und
+der Themenblock der Sitzung führt sie nach unten fort. Schrift darauf:
+`--on-header`, gedämpft `--on-header-variant` (`#A8B4BC`).
+
 **Fläche und Schrift sind getrennt.** THM Grün und Gelb verfehlen in Reinform
 als Textfarbe auf hellem Grund WCAG AA (2,3:1 bzw. 2,0:1). Sie füllen darum
 Flächen (`--accent`, `--warning`), für Text gelten `--accent-text` und
 `--warning-text`.
 
-Dasselbe gilt für die sechs Profilfarben: `--profil` füllt den 4px-Balken und
-den Punkt, `--profil-text` beschriftet den Namen. Alle Textwerte sind gegen die
+Dasselbe gilt für die sechs Profilfarben: `--profil` füllt den 4px-Balken, den
+Punkt und das Zeichen mit den Initialen, `--profil-text` beschriftet den Namen
+daneben. Die Schrift **auf** der Farbfläche ist `--profil-auf` — Weiß auf Grau,
+Rot und Blau, dunkles `#1A252B` auf Grün, Gelb und Hellblau, wo Weiß unter
+3:1 bliebe. Alle Textwerte sind gegen die
 ungünstigste Fläche des jeweiligen Themas nachgerechnet (hell `#EBEBEB`, dunkel
 `#344750`) und erreichen dort mindestens 4,8:1:
 
@@ -300,6 +370,9 @@ es hier **absichtlich nicht**: so einfach wie möglich lokal lauffähig.
   `rounded-lg`), `rounded-full` nur für Statuspunkte und den Themen-Umschalter,
   1px-Ränder, 4px-Balken als Akzentkante, keine Verläufe, Übergänge 120–180ms.
   Bewusst schärfer als `ship-it/`, das `rounded-xl` verwendet.
+- **Überschriften in Versalien**, Barlow Condensed, mit grüner Unterkante
+  (`.karten-titel`, `.abschnitt-titel`); dieselbe Marke wie unter dem aktiven
+  Navigationspunkt. Namen von Profilen in Karten und Listen ebenso.
 - **Keine Build-Pipeline**: kein npm, kein Bundler — CDN + Python stdlib.
 
 ## Nicht wegoptimieren

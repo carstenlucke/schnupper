@@ -20,8 +20,9 @@
   --surface-low: 245 245 245;      /* #F5F5F5 – Leisten über/unter dem Inhalt */
   --surface-mid: 235 235 235;      /* #EBEBEB – hellste Tönung, Kontrastreferenz */
   --surface-high: 255 255 255;     /* #FFFFFF – Dialoge, Dropdowns */
-  --header: 74 92 102;             /* THM Grau #4A5C66 */
+  --header: 26 37 43;              /* #1A252B – Kopfleiste und Themenblock */
   --on-header: 255 255 255;
+  --on-header-variant: 168 180 188; /* #A8B4BC – gedämpfte Schrift auf dem Dunkel */
   --on-surface: 42 56 64;          /* THM Grau dunkel #2A3840 – Überschriften */
   --on-surface-variant: 74 92 102; /* THM Grau #4A5C66 – Fließtext (7,0:1 auf Weiß) */
   --on-accent: 42 56 64;           /* Dunkles Grau auf Grün (5,2:1) */
@@ -50,8 +51,9 @@
   --surface-low: 42 56 64;         /* #2A3840 – Leisten */
   --surface-mid: 46 62 70;         /* #2E3E46 */
   --surface-high: 52 71 80;        /* #344750 – Dialoge, hellste dunkle Fläche */
-  --header: 74 92 102;             /* THM Grau #4A5C66 */
+  --header: 16 24 29;              /* #10181D – eine Stufe unter dem Seitengrund */
   --on-header: 255 255 255;
+  --on-header-variant: 168 180 188; /* #A8B4BC */
   --on-surface: 232 236 240;       /* Offwhite #E8ECF0 */
   --on-surface-variant: 178 190 198; /* #B2BEC6 – gedämpfter Fließtext */
   --on-accent: 42 56 64;
@@ -92,12 +94,12 @@ body {
    (hell #EBEBEB, dunkel #344750) und erreichen dort mindestens 4,8:1.
    Wer eine Farbe ändert, rechnet vorher nach.
    ============================================================ */
-.profil-gruen    { --profil: #80BA24; --profil-text: #456B0D; }
-.profil-grau     { --profil: #4A5C66; --profil-text: #4A5C66; }
-.profil-rot      { --profil: #9C132E; --profil-text: #9C132E; }
-.profil-gelb     { --profil: #F4AA00; --profil-text: #845A00; }
-.profil-hellblau { --profil: #00B8E4; --profil-text: #00708C; }
-.profil-blau     { --profil: #002878; --profil-text: #002878; }
+.profil-gruen    { --profil: #80BA24; --profil-text: #456B0D; --profil-auf: #1A252B; }
+.profil-grau     { --profil: #4A5C66; --profil-text: #4A5C66; --profil-auf: #FFFFFF; }
+.profil-rot      { --profil: #9C132E; --profil-text: #9C132E; --profil-auf: #FFFFFF; }
+.profil-gelb     { --profil: #F4AA00; --profil-text: #845A00; --profil-auf: #1A252B; }
+.profil-hellblau { --profil: #00B8E4; --profil-text: #00708C; --profil-auf: #1A252B; }
+.profil-blau     { --profil: #002878; --profil-text: #002878; --profil-auf: #FFFFFF; }
 
 .dark .profil-gruen    { --profil-text: #A8D86E; }
 .dark .profil-grau     { --profil-text: #B2BEC6; }
@@ -317,22 +319,453 @@ body {
 .status-fertig   { background-color: rgb(var(--accent)); }
 .status-fehler   { background-color: rgb(var(--error-color)); }
 
-/* Tab-Leiste */
-.tab {
+/* ============================================================
+   Kopfleiste – Marke links, Ansichten rechts
+
+   Sie ist in beiden Themen dunkel: der Themenblock der Sitzung führt sie
+   nach unten fort, und die Wortmarke soll auf dem Beamer stehen wie ein
+   Titelbalken, nicht wie eine Werkzeugleiste.
+   ============================================================ */
+.kopfleiste {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
   padding: 10px 16px;
+  background-color: rgb(var(--header));
+  color: rgb(var(--on-header));
+  flex-shrink: 0;
+}
+
+.kopf-marke {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kopf-logo {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.logo-gruen { fill: #80BA24; }
+.logo-grau  { fill: #7C8D96; }
+
+.kopf-titel {
+  font-family: 'Barlow Condensed', 'Barlow', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.kopf-unterzeile {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(var(--on-header-variant));
+}
+
+.kopf-navigation {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-punkt {
+  padding: 8px 12px;
   font-size: 14px;
   font-weight: 500;
-  color: rgb(var(--on-surface-variant));
+  color: rgb(var(--on-header-variant));
+  background: transparent;
+  border: none;
   border-bottom: 2px solid transparent;
   cursor: pointer;
   transition: color 140ms ease, border-color 140ms ease;
 }
 
-.tab:hover { color: rgb(var(--on-surface)); }
+.nav-punkt:hover:not(:disabled) { color: rgb(var(--on-header)); }
 
-.tab[aria-selected="true"] {
-  color: rgb(var(--accent-text));
+.nav-punkt[aria-selected="true"] {
+  color: rgb(var(--on-header));
   border-bottom-color: rgb(var(--accent));
 }
 
-.tab:disabled { opacity: 0.4; cursor: not-allowed; }
+.nav-punkt:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.theme-knopf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: 8px;
+  border-radius: 9999px;
+  color: rgb(var(--on-header));
+  background-color: rgb(var(--on-header) / 0.1);
+  border: none;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.theme-knopf:hover { background-color: rgb(var(--on-header) / 0.2); }
+
+/* ============================================================
+   Themenblock der Sitzung
+   ============================================================ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background-color: rgb(var(--header));
+  color: rgb(var(--on-header));
+  border-radius: 6px;
+  margin-bottom: 24px;
+}
+
+/* Das Raster rechts ist reine Fläche: ein Verweis auf das Logo, kein
+   Datenbild. Es verschwindet auf schmalen Schirmen. */
+.hero-raster {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100%;
+  background-image:
+    linear-gradient(rgb(var(--accent) / 0.55) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--accent) / 0.55) 1px, transparent 1px);
+  background-size: 14px 14px;
+  opacity: 0.3;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 70%);
+  mask-image: linear-gradient(90deg, transparent, #000 70%);
+}
+
+.hero-inhalt {
+  position: relative;
+  padding: 24px;
+}
+
+.hero-zeile {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.hero-meta {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(var(--on-header-variant));
+}
+
+.hero-titel {
+  font-family: 'Barlow Condensed', 'Barlow', sans-serif;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.15;
+  max-width: 44ch;
+}
+
+.hero-starter {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgb(var(--on-header-variant));
+  max-width: 60ch;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-voll {
+  background-color: rgb(var(--accent));
+  color: #1A252B;
+}
+
+.badge-rand {
+  border: 1px solid rgb(var(--accent) / 0.6);
+  color: #A8D86E;
+}
+
+.badge-punkt {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: currentColor;
+}
+
+/* ============================================================
+   Sitzung: Verlauf links, Übersicht rechts
+   ============================================================ */
+.party-raster {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .party-raster { grid-template-columns: minmax(0, 1fr) 300px; }
+  .party-spalte { position: sticky; top: 16px; }
+}
+
+.party-spalte {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.karte {
+  background-color: rgb(var(--surface));
+  border: 1px solid rgb(var(--on-surface) / 0.1);
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.karte-gedaempft { background-color: rgb(var(--surface-mid)); }
+
+/* Überschrift mit grüner Unterkante — dieselbe Marke wie in der Navigation */
+.karten-titel,
+.abschnitt-titel {
+  display: inline-block;
+  font-family: 'Barlow Condensed', 'Barlow', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding-bottom: 4px;
+  border-bottom: 2px solid rgb(var(--accent));
+  margin-bottom: 14px;
+}
+
+.abschnitt-titel { font-size: 20px; }
+
+.teilnehmer-zeile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.teilnehmer-name {
+  font-family: 'Barlow Condensed', 'Barlow', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.teilnehmer-rolle {
+  font-size: 12px;
+  color: rgb(var(--on-surface-variant));
+  line-height: 1.3;
+}
+
+.teilnehmer-spricht {
+  font-size: 12px;
+  color: rgb(var(--accent-text));
+}
+
+.teilnehmer-zahl {
+  margin-left: auto;
+  font-family: 'Barlow Condensed', 'Barlow', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgb(var(--on-surface));
+}
+
+.kennzahlen {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 12px;
+  align-items: baseline;
+}
+
+.kennzahlen dt {
+  font-size: 13px;
+  color: rgb(var(--on-surface-variant));
+}
+
+.kennzahlen dd {
+  font-family: 'Barlow Condensed', 'Barlow', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ============================================================
+   Beiträge: Zeichen links, Karte rechts
+   ============================================================ */
+.beitrag {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.beitrag > .blase,
+.beitrag > .zwischenruf-karte {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Die Initialen sitzen außerhalb der Karte: so bleibt die Sprechreihenfolge
+   auch dann ablesbar, wenn die Karten unterschiedlich hoch sind. */
+.beitrag-zeichen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  font-family: 'Barlow Condensed', 'Barlow', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--profil-auf, #FFFFFF);
+}
+
+/* Dieselbe Marke, kleiner: in der Teilnehmerkarte rechts. */
+.zeichen-klein {
+  width: 34px;
+  height: 34px;
+  font-size: 14px;
+}
+
+.blase-kopf {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.blase-name {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.blase-rolle { font-size: 12px; }
+
+.blase-runde,
+.blase-dauer {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgb(var(--on-surface-variant));
+}
+
+.blase-runde { margin-left: auto; }
+
+/* Das Fazit ist kein Redebeitrag: keine Profilfarbe, eine ruhige Fläche. */
+.beitrag-fazit .beitrag-zeichen {
+  background-color: rgb(var(--on-surface) / 0.12);
+  color: rgb(var(--on-surface));
+}
+
+.beitrag-fazit .blase {
+  border-left-color: rgb(var(--on-surface) / 0.35);
+  background-color: rgb(var(--surface-mid));
+}
+
+/* ============================================================
+   Zwischenruf der Gesprächsleitung – THM Gelb als Akzentkante
+   ============================================================ */
+.zwischenruf-karte {
+  border-left: 4px solid rgb(var(--warning));
+  background-color: rgb(var(--warning) / 0.1);
+  border-top: 1px solid rgb(var(--warning) / 0.35);
+  border-right: 1px solid rgb(var(--warning) / 0.35);
+  border-bottom: 1px solid rgb(var(--warning) / 0.35);
+  border-radius: 0 6px 6px 0;
+}
+
+.zwischenruf-zeichen {
+  background-color: rgb(var(--warning));
+  color: #1A252B;
+}
+
+.zwischenruf-rolle {
+  font-size: 12px;
+  color: rgb(var(--warning-text));
+}
+
+.zwischenruf-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* ============================================================
+   Rundentrenner
+   ============================================================ */
+.runden-trenner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.runden-marke {
+  font-family: 'Barlow Condensed', 'Barlow', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(var(--on-surface-variant));
+}
+
+.runden-linie {
+  flex: 1;
+  height: 1px;
+  background-color: rgb(var(--on-surface) / 0.15);
+}
+
+/* ============================================================
+   Steuerleiste am unteren Rand
+   ============================================================ */
+.steuerleiste {
+  flex-shrink: 0;
+  background-color: rgb(var(--surface));
+  border-top: 1px solid rgb(var(--on-surface) / 0.12);
+  box-shadow: 0 -2px 8px rgba(34, 44, 49, 0.08);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.knopf-sekundaer {
+  background-color: rgb(var(--header));
+  color: rgb(var(--on-header));
+}
+.knopf-sekundaer:not(:disabled):hover { background-color: rgb(var(--header) / 0.85); }
+
+/* Anhalten bricht einen laufenden Beitrag ab — das darf aussehen, wie es ist. */
+.knopf-stop {
+  background-color: rgb(var(--error-strong));
+  color: #FFFFFF;
+}
+.knopf-stop:not(:disabled):hover { background-color: rgb(var(--error-strong) / 0.85); }
+
+.verweis {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgb(var(--accent-text));
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.verweis:hover { text-decoration: underline; }
