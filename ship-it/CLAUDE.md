@@ -136,7 +136,8 @@ Systemprompts definieren Rolle und Output-Format, aber **keine konkreten Dateipf
 - **Accessibility**: Icon-Only-Buttons brauchen immer ein `aria-label` (und/oder `title`).
 - **Slugs**: lowercase + Bindestriche, Umlaute werden ersetzt (ä→ae etc.)
 - **Keine Build-Pipeline**: Kein npm, kein Bundler – CDN + Python stdlib
-- **THM-Farben**: `thm-green: #80ba24`, `thm-blue: #002878`, `thm-gray: #4a5c66`, `thm-yellow: #f4aa00`, `thm-light-blue: #00b8e4`
+- **THM-Farben**: `thm-green: #80ba24`, `thm-gray: #4a5c66`, `thm-red: #9c132e`, `thm-yellow: #f4aa00`, `thm-light-blue: #00b8e4`, `thm-blue: #002878` (CD-Manual, `go.thm.de/cd`)
+- **Farbthema**: Hell = CD-Standard (Weiß/Hellgrau, Text THM Grau), Dunkel = aus den Negativ-Regeln abgeleitet (`#2A3840`, `#344750`, `#1A252B`). Beide Paletten stehen als CSS-Variablen in `style.css`; Tailwind greift per `rgb(var(--…) / <alpha-value>)` darauf zu. Neue Farben dort ergänzen, keine Tailwind-Standardfarben wie `text-red-400`. **Fläche und Schrift sind getrennt**: `accent`, `warning` und `error` füllen Flächen, Icons, Ränder und Statuspunkte; für Text gelten `accent-text` und `warning-text`, für weiße Schrift auf Rot `error-strong`. Reines THM Grün oder Gelb als Textfarbe auf hellem Grund verfehlt WCAG AA (2,3:1 bzw. 2,0:1) — neue Textfarben vor dem Einbau gegen die hellste bzw. dunkelste Fläche durchrechnen, auf der sie landen können. Der Umschalter im Header speichert die Wahl in `localStorage` (`ship-it-theme`), ohne Wahl gilt die Systemeinstellung. Terminal und Kopfleiste sind in beiden Themen gleich.
 
 ## Nicht anfassen
 
