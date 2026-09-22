@@ -102,6 +102,8 @@ PAGE = r"""<!doctype html>
     --even: 128 186 36;     --even-text: 69 107 13;     /* THM Grün */
     --prime: 244 170 0;     --prime-text: 132 90 0;     /* THM Gelb */
     --wrong: 156 19 46;     --wrong-text: 156 19 46;    /* THM Rot */
+
+    --hover-schatten: 0 2px 6px rgba(34, 44, 49, .12);
     color-scheme: light;
   }
 
@@ -121,7 +123,12 @@ PAGE = r"""<!doctype html>
     --odd-text: 95 212 242;                               /* #5FD4F2 */
     --even-text: 168 216 110;                             /* #A8D86E */
     --prime-text: 255 192 61;                             /* #FFC03D */
-    --wrong: 168 30 53;      --wrong-text: 244 168 179;   /* #A81E35 */
+    /* THM Rot, für dunklen Grund aufgehellt: in Reinform hebt es sich weder
+       von der Kachelfüllung noch vom Grund ab, und der Fehlgriff des
+       Prim-Agenten ist genau der Moment, der auf dem Beamer auffallen soll. */
+    --wrong: 224 90 112;     --wrong-text: 244 168 179;   /* #E05A70 */
+
+    --hover-schatten: 0 0 0 1px rgb(var(--on-surface) / .3);
     color-scheme: dark;
   }
 
@@ -298,8 +305,13 @@ PAGE = r"""<!doctype html>
     transition: border-left-color .4s ease, box-shadow 140ms ease;
   }
   .agent.klickbar { cursor: pointer; }
-  .agent.klickbar:hover { box-shadow: 0 2px 6px rgba(34, 44, 49, .12); }
-  .agent.fokus { box-shadow: 0 0 0 2px rgb(var(--accent) / .55); }
+  /* Der Hover-Schatten ist themenabhängig: ein dunkler Schlagschatten wäre auf
+     dem dunklen Grund unsichtbar, dort tritt eine helle Kante an seine Stelle. */
+  .agent.klickbar:hover { box-shadow: var(--hover-schatten); }
+  /* Der Fokusring muss den Hover-Schatten übertönen — sonst verschwindet er,
+     sobald die Maus auf der angeklickten Zeile stehen bleibt. */
+  .agent.fokus,
+  .agent.klickbar.fokus:hover { box-shadow: 0 0 0 2px rgb(var(--accent) / .55); }
   /* Der linke Balken trägt die Farbe des Agenten — dieselbe wie im Band.
      Der Betriebszustand kommt ohne eigene Farbe aus: durchgezogen läuft,
      gestrichelt pausiert, gepunktet gestoppt. Sonst müsste sich „pausiert"
@@ -352,7 +364,7 @@ PAGE = r"""<!doctype html>
   #ticker { list-style: none; margin: 0; padding: 0; }
   #ticker li { padding: 3px 0; font-size: clamp(12px, 1.1vw, 18px);
                color: rgb(var(--on-surface-variant)); }
-  #ticker time { color: rgb(var(--on-surface-variant) / .75); margin-right: 12px; }
+  #ticker time { color: rgb(var(--on-surface-variant) / .9); margin-right: 12px; }
   #ticker b { color: rgb(var(--on-surface)); font-weight: 600; }
 
   footer { margin-top: clamp(18px, 2vw, 30px); color: rgb(var(--on-surface-variant));
@@ -374,7 +386,7 @@ PAGE = r"""<!doctype html>
         <rect x="12" y="24" width="8" height="8" class="logo-grau"/>
       </svg>
       <div>
-        <p class="kopf-titel">Counting Agents</p>
+        <h1 class="kopf-titel">Counting Agents</h1>
         <p class="kopf-unterzeile">pi &middot; Herdr &middot; Event-Bus</p>
       </div>
     </div>
