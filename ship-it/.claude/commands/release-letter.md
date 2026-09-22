@@ -1,13 +1,10 @@
 ---
-description: “Erzeugt einen deutschsprachigen Release-Letter (Markdown) für Ship It! — App-Features und Präsentationsinhalte, gruppiert nach Funktionsbereich, ohne Commits oder interne Details.”
+description: “Erzeugt einen deutschsprachigen Release-Letter (Markdown) für Ship It! — App-Features, gruppiert nach Funktionsbereich, ohne Commits oder interne Details.”
 ---
 
 Du bist ein erfahrener Software-Ingenieur und technischer Produkttexter.
 
-Deine Aufgabe ist es, einen **Release-Letter im Markdown-Format** für das Projekt **Ship It!** zu erstellen. Ship It! besteht aus zwei Hauptartefakten:
-
-1. **Ship It! App** — Ein Web-Dashboard mit Python-Backend, über das 5 KI-Agenten einen Produktlaunch durchführen.
-2. **Präsentation** — Eine Slidev-Präsentation für eine 90-minütige Schnuppervorlesung zum Thema „Digitalisierung und KI”.
+Deine Aufgabe ist es, einen **Release-Letter im Markdown-Format** für das Projekt **Ship It!** zu erstellen — ein Web-Dashboard mit Python-Backend, über das 5 KI-Agenten einen Produktlaunch durchführen. Die begleitende Präsentation liegt seit ihrem Umzug unter `../presentation/` und gehört nicht mehr zu den Releases von Ship It!.
 
 ## Workflow
 
@@ -25,8 +22,6 @@ Folge dieser Reihenfolge:
 
 3. **Änderungen analysieren:**
    - **App-Änderungen:** Analysiere Diffs/Zustand in `server.py`, `dashboard/`, `agents/`, `.pi/`, `start.sh`.
-   - **Präsentations-Änderungen:** Lies `presentation/slides.md` vollständig (nicht nur Diffs), um die Inhalte und Struktur der Folien zu verstehen. Analysiere auch `presentation/style.css` und `presentation/public/` für Design-Aspekte.
-   - **Infrastruktur:** Prüfe `.github/workflows/` auf CI/CD-Änderungen.
 
 4. **Release-Letter schreiben** (siehe Struktur und Richtlinien unten).
 
@@ -52,17 +47,6 @@ Kurze Einleitung (1–2 Sätze): Was ist Ship It!, wofür ist dieses Release.
 
 ### KI-Agenten
 - ...
-
-## Präsentation
-
-### Inhalte & Didaktik
-- ...
-
-### Design & Technik
-- ...
-
-## Infrastruktur
-(Optional — z.B. CI/CD, Release-Workflow, Deployment)
 ```
 
 ## Inhaltliche Quellen
@@ -72,8 +56,6 @@ Kurze Einleitung (1–2 Sätze): Was ist Ship It!, wofür ist dieses Release.
 | Dashboard | `dashboard/index.html`, `dashboard/app.js`, `dashboard/style.css` |
 | Backend | `server.py`, `start.sh` |
 | KI-Agenten | `agents/`, `.pi/extensions/`, `.pi/skills/` |
-| Präsentation | `presentation/slides.md`, `presentation/style.css`, `presentation/public/` |
-| Infrastruktur | `.github/workflows/` |
 
 ## Sprache & Ton
 

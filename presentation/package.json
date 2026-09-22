@@ -1,0 +1,18 @@
+{
+  "name": "schnuppervorlesung-ki",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "export": "slidev export --dark false --output schnuppervorlesung-ki"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.135",
+    "@slidev/cli": "^52.14.2",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.59.1"
+  }
+}

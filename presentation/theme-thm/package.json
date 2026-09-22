@@ -1,0 +1,30 @@
+{
+  "name": "slidev-theme-thm",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Slidev-Theme nach dem Design-System „THM & StudiumPlus“ (Light Mode) für die Schnuppervorlesung",
+  "keywords": [
+    "slidev-theme",
+    "slidev",
+    "thm"
+  ],
+  "engines": {
+    "slidev": ">=52.0.0"
+  },
+  "slidev": {
+    "defaults": {
+      "aspectRatio": "16/9",
+      "canvasWidth": 980,
+      "fonts": {
+        "sans": "Barlow",
+        "serif": "Barlow",
+        "mono": "JetBrains Mono",
+        "weights": "300,400,500,600,700",
+        "italic": true
+      }
+    }
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.135"
+  }
+}
