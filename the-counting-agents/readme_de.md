@@ -214,7 +214,9 @@ Markdown: oben das Frontmatter mit Modell und Werkzeugen, darunter der
 Systemprompt, den das Modell bekommt. Über die Reiter oder die Pfeiltasten
 geht es von Agent zu Agent, Esc schließt das Fenster. Die Datei wird bei jedem
 Öffnen frisch gelesen. Nimmt man einem Agenten im Vortrag ein Werkzeug weg,
-zeigt das Fenster schon die geänderte Zeile.
+zeigt das Fenster schon die geänderte Zeile. Schlägt `COUNTING_AGENTS_MODEL`
+aus der `.env` die Zeile `model:`, steht daneben, mit welchem Modell der Agent
+tatsächlich läuft.
 
 Farben und Gestaltung folgen dem
 [Corporate Design der THM](https://go.thm.de/cd): dunkle Kopfleiste mit der

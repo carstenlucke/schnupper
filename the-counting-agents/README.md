@@ -210,6 +210,8 @@ frontmatter with model and tools at the top, below it the system prompt the
 model receives. The tabs or the arrow keys move from agent to agent, Esc closes
 the window. The file is read fresh on every opening. If you take a tool away
 from an agent during the lecture, the window already shows the changed line.
+If `COUNTING_AGENTS_MODEL` in the `.env` overrides the `model:` line, the window
+says so next to it and names the model the agent actually runs on.
 
 Colours and layout follow the [THM corporate design](https://go.thm.de/cd):
 dark header bar with the logo mark, section titles with a green underline,

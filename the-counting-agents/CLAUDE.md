@@ -191,6 +191,8 @@ Der Knopf „Prompt“ zeigt die Agentendatei (`/agent/<name>`, nur die fünf
 bekannten Namen) mit eingefärbtem Markdown. Die Hervorhebung ist ein kleiner
 Zeilen-Durchgang im Seitenskript, **keine Bibliothek**. Neue Markdown-
 Auszeichnungen in den Agentendateien brauchen dort gegebenenfalls eine Regel.
+Setzt die `.env` `COUNTING_AGENTS_MODEL`, schickt der Server es als Kopfzeile
+`X-Modell-Env` mit, und das Fenster vermerkt es an der Zeile `model:`.
 
 Das Dashboard rechnet **selbst nach**, welche Zahlen prim sind, und färbt
 Fehlgriffe des Prim-Agenten rot. Dieser Fall ist der beste Moment der

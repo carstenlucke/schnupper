@@ -32,6 +32,7 @@ import json
 import os
 import sys
 import time
+import urllib.parse
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -339,6 +340,8 @@ PAGE = r"""<!doctype html>
   .chip.even  { border-color: rgb(var(--even));  background: rgb(var(--even) / .14); }
   .chip.prime { border-color: rgb(var(--prime)); background: rgb(var(--prime)); border-radius: 50%; }
   .chip.counter { border-color: rgb(var(--counter)); background: transparent; }
+  /* Hülle um alles außer dem Prompt-Knopf; ihre Kinder sitzen direkt im Raster. */
+  .agent .teile { display: contents; }
   .agent .status { color: rgb(var(--on-surface-variant)); white-space: nowrap; }
   .agent.paused  .status { color: rgb(var(--on-surface)); }
   .agent.stopped .status { color: rgb(var(--error-color)); }
@@ -408,11 +411,9 @@ PAGE = r"""<!doctype html>
   .reiter button:hover { color: rgb(var(--on-header)); }
   .reiter button[aria-selected="true"] { color: rgb(var(--on-header)); border-bottom-color: rgb(var(--accent)); }
   .reiter button:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; }
-  .reiter .chip { border-color: rgb(var(--on-header) / .3); background: transparent; }
-  .reiter .chip.odd   { border-color: rgb(var(--odd));   background: rgb(var(--odd) / .14); }
-  .reiter .chip.even  { border-color: rgb(var(--even));  background: rgb(var(--even) / .14); }
-  .reiter .chip.prime { border-color: rgb(var(--prime)); background: rgb(var(--prime)); }
-  .reiter .chip.counter { border-color: rgb(var(--counter)); }
+  /* Die Sammler und der Zähler behalten ihre Chip-Farben; nur die Steuerung hat
+     keine eigene und braucht auf der dunklen Kopfleiste eine helle Kante. */
+  .reiter .chip.control { border-color: rgb(var(--on-header) / .3); background: transparent; }
   #prompt-zu {
     width: 32px; height: 32px; flex: none; border-radius: 9999px; border: none;
     font-size: 20px; line-height: 1; cursor: pointer;
@@ -460,6 +461,7 @@ PAGE = r"""<!doctype html>
                      border-radius: 3px; padding: 0 3px; }
   .md .block-code { color: rgb(var(--on-surface)); }
   .md .fehlt    { color: rgb(var(--error-color)); }
+  .md .hinweis  { color: rgb(var(--on-surface-variant)); font-style: italic; }
 
   footer { margin-top: clamp(18px, 2vw, 30px); color: rgb(var(--on-surface-variant));
            font-size: clamp(11px, .9vw, 15px); }
@@ -542,7 +544,7 @@ PAGE = r"""<!doctype html>
   </main>
 
   <!-- Das Prompt-Fenster: ein Reiter je Agent, darunter seine Datei. -->
-  <dialog id="prompt-fenster" aria-labelledby="prompt-reiter">
+  <dialog id="prompt-fenster" aria-label="Agentendatei">
     <div class="fenster-kopf">
       <div class="reiter" id="prompt-reiter" role="tablist" aria-label="Agentendateien"></div>
       <button type="button" id="prompt-zu" aria-label="Schließen" title="Schließen (Esc)">&times;</button>
@@ -556,6 +558,7 @@ const LABEL = {
   odd:     ["odd", "Ungerade"],
   even:    ["even", "Gerade"],
   prime:   ["prime", "Primzahlen"],
+  control: ["control", "Steuerung"],   // nur für das Prompt-Fenster, keine Zeile
 };
 // Das Zeichen vor dem Wort trägt den Zustand mit — auf dem Beamer erkennt man
 // eine Form aus der letzten Reihe zuverlässiger als einen Farbton.
@@ -599,18 +602,40 @@ function setzeFokus(name) {
   }
 }
 
+// Die Zeilen entstehen einmal und bleiben stehen; neu gesetzt wird nur ihr
+// Inhalt. Der Prompt-Knopf überlebt so jede Aktualisierung — sonst würde er
+// mehrmals pro Sekunde ausgetauscht, und ein Klick, der gerade in einen
+// Austausch fällt, käme nie an.
+const agentZeilen = new Map();   // Name -> {zeile, teile}
+
+function agentZeile(name) {
+  let z = agentZeilen.get(name);
+  if (z) return z;
+  const zeile = document.createElement("div");
+  zeile.dataset.agent = name;
+  zeile.innerHTML = `<span class="teile"></span>
+    <button type="button" class="knopf-prompt" data-prompt="${name}">Prompt</button>`;
+  if (SAMMLER.includes(name)) {
+    // Der Prompt-Knopf liegt in der Zeile, soll aber nicht zugleich den Fokus umschalten.
+    zeile.addEventListener("click", (e) => {
+      if (!e.target.closest("[data-prompt]")) setzeFokus(name);
+    });
+  }
+  document.getElementById("agents").appendChild(zeile);
+  z = { zeile, teile: zeile.firstElementChild };
+  agentZeilen.set(name, z);
+  return z;
+}
+
 function zeichneAgenten(data) {
-  const ziel = document.getElementById("agents");
   const latest = data.bus.latest_seq || 1;
-  ziel.innerHTML = "";
   for (const name of ["counter", "odd", "even", "prime"]) {
     const a = data.agents[name];
     const [kurz, lang] = LABEL[name];
-    const zeile = document.createElement("div");
+    const { zeile, teile } = agentZeile(name);
     zeile.className = "agent a-" + name + " " + a.status
       + (SAMMLER.includes(name) ? " klickbar" : "")
       + (fokus === name ? " fokus" : "");
-    zeile.dataset.agent = name;
 
     const mitte = name === "counter"
       ? `<span class="zahl">Wert ${a.last_value}</span><span></span><span></span>`
@@ -618,18 +643,10 @@ function zeichneAgenten(data) {
          <span class="lag ${a.lag ? "zurueck" : "aktuell"}">${a.lag ? a.lag + " zurück" : "aktuell"}</span>
          <span class="balken"><i style="width:${Math.min(100, 100 * a.last_seq / latest)}%"></i></span>`;
 
-    zeile.innerHTML = `
+    teile.innerHTML = `
       <span class="name"><i class="chip ${name}"></i>${kurz}<small>${lang}</small></span>
       <span class="status">${STATUS[a.status] || a.status}${a.still ? ` <span class="still">· seit ${Math.round(a.idle_seconds)}s still</span>` : ""}</span>
-      ${mitte}
-      <button type="button" class="knopf-prompt" data-prompt="${name}">Prompt</button>`;
-    if (SAMMLER.includes(name)) {
-      // Der Prompt-Knopf liegt in der Zeile, soll aber nicht zugleich den Fokus umschalten.
-      zeile.addEventListener("click", (e) => {
-        if (!e.target.closest("[data-prompt]")) setzeFokus(name);
-      });
-    }
-    ziel.appendChild(zeile);
+      ${mitte}`;
   }
 }
 
@@ -660,10 +677,7 @@ function zeichne(data) {
 // Wortlaut und färbt das Markdown ein, ohne es umzusetzen — eine
 // Hervorhebungs-Bibliothek wäre eine Abhängigkeit mehr, und für die Handvoll
 // Auszeichnungen in den Agentendateien reicht ein Zeilen-Durchgang.
-const PROMPT_AGENTEN = [
-  ["counter", "Zähler"], ["odd", "Ungerade"], ["even", "Gerade"],
-  ["prime", "Primzahlen"], ["control", "Steuerung"],
-];
+const PROMPT_AGENTEN = Object.keys(LABEL);
 const fenster = document.getElementById("prompt-fenster");
 const reiter = document.getElementById("prompt-reiter");
 const inhalt = document.getElementById("prompt-inhalt");
@@ -706,7 +720,9 @@ function mdRumpf(zeilen) {
 
 // Frontmatter: Schlüssel, Doppelpunkt, Wert. Bei `tools` wird jedes Werkzeug
 // einzeln hervorgehoben — das ist die Zeile, an der man im Vortrag dreht.
-function mdFrontmatter(zeilen) {
+// `modell` ist COUNTING_AGENTS_MODEL aus der .env: Es schlägt die Zeile
+// `model:`, und das Fenster sagt dazu, womit der Agent wirklich läuft.
+function mdFrontmatter(zeilen, modell) {
   return zeilen.map(zeile => {
     if (zeile === "---") return zeichen(zeile);
     const m = zeile.match(/^([\w-]+)(:\s*)(.*)$/);
@@ -714,13 +730,17 @@ function mdFrontmatter(zeilen) {
     const wert = m[1] === "tools"
       ? m[3].split(/(,\s*)/).map((w, i) => i % 2 ? zeichen(w) : `<span class="werkzeug">${esc(w)}</span>`).join("")
       : `<span class="wert">${esc(m[3])}</span>`;
-    return `<span class="schluessel">${esc(m[1])}</span>${zeichen(m[2])}${wert}`;
+    const hinweis = m[1] === "model" && modell && modell !== m[3].trim()
+      ? `<span class="hinweis">  ← läuft mit ${esc(modell)} (COUNTING_AGENTS_MODEL in .env)</span>`
+      : "";
+    return `<span class="schluessel">${esc(m[1])}</span>${zeichen(m[2])}${wert}${hinweis}`;
   }).join("\n");
 }
 
 // Aufgeteilt wie in agents-lib.sh: bis zum zweiten `---` das Frontmatter,
-// danach der Systemprompt.
-function zeigeDatei(name, text) {
+// danach der Systemprompt. Eine Abweichung ist gewollt: agent_prompt lässt
+// jede Zeile `---` weg, auch eine im Rumpf — hier bleibt die Datei im Wortlaut.
+function zeigeDatei(name, text, modell) {
   const zeilen = text.replace(/\r\n/g, "\n").split("\n");
   let kopf = [], rumpf = zeilen;
   if (zeilen[0] === "---") {
@@ -734,7 +754,7 @@ function zeigeDatei(name, text) {
     `<p class="datei-name">Datei <code>agents/${name}.md</code></p>` +
     (kopf.length ? `<div class="teil">
       <p class="teil-titel">Frontmatter <span>— daraus werden die Einstellungen für pi: Modell, Werkzeuge, Nachdenken</span></p>
-      <pre class="md frontmatter">${mdFrontmatter(kopf)}</pre></div>` : "") +
+      <pre class="md frontmatter">${mdFrontmatter(kopf, modell)}</pre></div>` : "") +
     `<div class="teil">
       <p class="teil-titel">Systemprompt <span>— dieser Text geht als Auftrag an das Modell</span></p>
       <pre class="md">${mdRumpf(rumpf)}</pre></div>`;
@@ -748,29 +768,36 @@ async function zeigePrompt(name) {
   }
   if (!fenster.open) fenster.showModal();
   const nummer = ++promptAnfrage;
-  let text = null;
+  let text = null, modell = null;
+  let fehler = "Keine Verbindung — läuft dashboard.py noch?";
   try {
     const antwort = await fetch("/agent/" + name, { cache: "no-store" });
-    if (antwort.ok) text = await antwort.text();
+    if (antwort.ok) {
+      text = await antwort.text();
+      const kopf = antwort.headers.get("X-Modell-Env");
+      if (kopf) modell = decodeURIComponent(kopf);
+    } else {
+      fehler = "Datei nicht gefunden.";
+    }
   } catch (e) {}
   if (nummer !== promptAnfrage) return;
   if (text === null) {
     inhalt.innerHTML = `<p class="datei-name">Datei <code>agents/${name}.md</code></p>
-      <pre class="md"><span class="fehlt">Datei nicht lesbar — läuft dashboard.py noch?</span></pre>`;
+      <pre class="md"><span class="fehlt">${fehler}</span></pre>`;
     return;
   }
-  zeigeDatei(name, text);
+  zeigeDatei(name, text, modell);
 }
 
-reiter.innerHTML = PROMPT_AGENTEN.map(([name, lang]) =>
-  `<button type="button" role="tab" data-reiter="${name}" aria-selected="false" title="${lang}"><i class="chip ${name}"></i>${name}</button>`
+reiter.innerHTML = PROMPT_AGENTEN.map(name =>
+  `<button type="button" role="tab" data-reiter="${name}" aria-selected="false" title="${LABEL[name][1]}"><i class="chip ${name}"></i>${name}</button>`
 ).join("");
 reiter.addEventListener("click", (e) => {
   const knopf = e.target.closest("[data-reiter]");
   if (knopf) zeigePrompt(knopf.dataset.reiter);
 });
-// Die Knöpfe in den Agentenzeilen entstehen bei jeder Aktualisierung neu,
-// deshalb ein Zuhörer für alle, statt einen je Knopf.
+// Ein Zuhörer für alle Prompt-Knöpfe: die in den Agentenzeilen und den in
+// der Steuerungs-Karte.
 document.addEventListener("click", (e) => {
   const knopf = e.target.closest("[data-prompt]");
   if (knopf) zeigePrompt(knopf.dataset.prompt);
@@ -781,7 +808,7 @@ fenster.addEventListener("click", (e) => { if (e.target === fenster) fenster.clo
 // Mit den Pfeiltasten von Agent zu Agent — praktisch mit dem Presenter.
 fenster.addEventListener("keydown", (e) => {
   if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
-  const namen = PROMPT_AGENTEN.map(([name]) => name);
+  const namen = PROMPT_AGENTEN;
   const schritt = e.key === "ArrowRight" ? 1 : -1;
   const i = (namen.indexOf(offenerPrompt) + schritt + namen.length) % namen.length;
   e.preventDefault();
@@ -848,6 +875,11 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", "text/plain; charset=utf-8")
         self.send_header("Cache-Control", "no-store")
+        # Das Modell aus der .env schlägt die Zeile `model:` der Datei; das
+        # Fenster soll zeigen, womit der Agent tatsächlich läuft.
+        modell = dashboard_data.model_override()
+        if modell:
+            self.send_header("X-Modell-Env", urllib.parse.quote(modell, safe="/:@"))
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
