@@ -7,7 +7,9 @@
   - Rückwärts aus einer Demo heraus — oder von `nach-demos` zurück in eine
     Demo — geht es zur Übersicht.
 
-  Sprünge über Links oder `G` bleiben unberührt. Welche Demo eine Folie
+  Sprünge über Links oder `G` bleiben unberührt — außer ihr Ziel ist
+  zufällig die Nachbarfolie: Der Router sieht nur Start und Ziel, nicht,
+  wie der Wechsel ausgelöst wurde. Welche Demo eine Folie
   gehört, steht in ihrem Frontmatter als `demo:` (gesetzt am `src:`-Eintrag
   in slides.md). Gilt für Publikums- und Moderatoransicht, nicht für
   Übersicht und Export.
