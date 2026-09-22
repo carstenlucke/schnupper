@@ -208,6 +208,14 @@ hinterherhinkt. In den Panes ist das nicht zu sehen, und es ist die eigentliche
 Pointe: Alle vier haben denselben Takt und laufen trotzdem nicht im
 Gleichschritt — `prime` am langsamsten, weil er nachdenkt.
 
+**Prompt ansehen.** Der Knopf „Prompt“ in jeder Agentenzeile und in der
+Steuerungs-Karte öffnet die Agentendatei im Wortlaut, mit hervorgehobenem
+Markdown: oben das Frontmatter mit Modell und Werkzeugen, darunter der
+Systemprompt, den das Modell bekommt. Über die Reiter oder die Pfeiltasten
+geht es von Agent zu Agent, Esc schließt das Fenster. Die Datei wird bei jedem
+Öffnen frisch gelesen. Nimmt man einem Agenten im Vortrag ein Werkzeug weg,
+zeigt das Fenster schon die geänderte Zeile.
+
 Farben und Gestaltung folgen dem
 [Corporate Design der THM](https://go.thm.de/cd): dunkle Kopfleiste mit der
 Bildmarke, Abschnittstitel mit grüner Unterkante, Karten mit farbiger Kante

@@ -187,6 +187,11 @@ CSS-Variablen, Thema über die Klasse `dark` am `<html>`-Element, Schrift Barlow
 mit Systemschrift als Rückfall. **Die Seite hat keine Abhängigkeit außer der
 Schrift** — bleibt sie im Hörsaal aus, ändert sich nur das Schriftbild.
 
+Der Knopf „Prompt“ zeigt die Agentendatei (`/agent/<name>`, nur die fünf
+bekannten Namen) mit eingefärbtem Markdown. Die Hervorhebung ist ein kleiner
+Zeilen-Durchgang im Seitenskript, **keine Bibliothek**. Neue Markdown-
+Auszeichnungen in den Agentendateien brauchen dort gegebenenfalls eine Regel.
+
 Das Dashboard rechnet **selbst nach**, welche Zahlen prim sind, und färbt
 Fehlgriffe des Prim-Agenten rot. Dieser Fall ist der beste Moment der
 Vorlesung — nicht wegkürzen.
