@@ -180,8 +180,12 @@ Stand in den Bus.
 
 `scripts/dashboard.py` (Port 8777, `--kein-browser`, Port als Argument) liest
 Bus und Zustand und **schreibt nie** — es kann die Demo nicht stören.
-Server-Sent Events, nur Standardbibliothek, kein Build. Farben nach dem
-[Corporate Design der THM](https://go.thm.de/cd).
+Server-Sent Events, nur Standardbibliothek, kein Build. Farben und Gestaltung
+nach dem [Corporate Design der THM](https://go.thm.de/cd), in derselben
+Ausprägung wie die Dashboards der Nachbarprojekte: Farbwerte als RGB-Kanäle in
+CSS-Variablen, Thema über die Klasse `dark` am `<html>`-Element, Schrift Barlow
+mit Systemschrift als Rückfall. **Die Seite hat keine Abhängigkeit außer der
+Schrift** — bleibt sie im Hörsaal aus, ändert sich nur das Schriftbild.
 
 Das Dashboard rechnet **selbst nach**, welche Zahlen prim sind, und färbt
 Fehlgriffe des Prim-Agenten rot. Dieser Fall ist der beste Moment der

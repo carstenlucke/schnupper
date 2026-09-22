@@ -204,10 +204,13 @@ without the others competing for attention. Click again to release.
 panes don't show that, and it is the actual punchline: all four share the same
 interval and still do not run in lockstep — `prime` slowest, because it thinks.
 
-Colours follow the [THM corporate design](https://go.thm.de/cd). The dark
-theme is the default because a projector is darker than any screen; the
-button in the header switches to the light theme, and the browser remembers
-the choice.
+Colours and layout follow the [THM corporate design](https://go.thm.de/cd):
+dark header bar with the logo mark, section titles with a green underline,
+cards with a coloured edge on the left. The dark theme is the default because
+a projector is darker than any screen; the button in the header switches to
+the light theme, and the browser remembers the choice. The page loads the
+Barlow typeface from Google Fonts — without a network the system font stack
+takes over and everything stays usable.
 
 **Dress rehearsal without a model.** Before the lecture you can check the
 dashboard without running agents and spending tokens:
