@@ -57,8 +57,8 @@ cd agent-party && ./start.sh
 
 Die Slidev-Präsentation zur Schnuppervorlesung „Digitalisierung und KI — Was
 Maschinen schon können". Sie liegt auf oberster Ebene, weil jede der Demos
-darin ihren Platz haben kann; derzeit führt sie auf die Live-Demo von Ship It!
-hin. Gestaltet nach dem Design-System „THM & StudiumPlus", das als lokales
+darin ihren Platz haben kann: Von einer Übersichtsfolie aus springt man in
+die Demo, die man zeigen will, und von dort wieder zurück. Gestaltet nach dem Design-System „THM & StudiumPlus", das als lokales
 Slidev-Theme unter `presentation/theme-thm/` mitgeliefert wird.
 
 ```bash

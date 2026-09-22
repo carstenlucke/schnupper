@@ -3,8 +3,9 @@
 Slidev-Präsentation für die 90-minütige Schnuppervorlesung bei StudiumPlus
 (Oberstufe). Sie liegt auf oberster Ebene des Repositorys, weil jede der Demos
 — [`ship-it/`](../ship-it/), [`the-counting-agents/`](../the-counting-agents/),
-[`agent-party/`](../agent-party/) — darin ihren Platz haben kann. Derzeit führt
-sie auf die Live-Demo von **Ship It!** hin.
+[`agent-party/`](../agent-party/) — darin ihren Platz haben kann. Welche Demo eine
+Vorlesung zeigt, entscheidet man auf der Übersichtsfolie per Klick (siehe
+[Demos auswählen](#demos-auswählen)).
 
 Gestaltet nach dem Claude-Design-System **„THM & StudiumPlus"**: helle
 Inhaltsfolien mit Rubrik, Titel und grünem Balken, dunkle Rasterflächen für
@@ -42,24 +43,50 @@ npm run build    # statische HTML-Version in dist/
 npm run export   # PDF nach schnuppervorlesung-ki.pdf
 ```
 
+## Demos auswählen
+
+Die Folie **„Welche Demo schauen wir uns an?"** am Anfang des Abschnitts
+„Agenten live erleben" ist die Übersicht: drei Karten, ein Klick springt an
+den Anfang der Demo. Die Demos sind Abzweige von dieser Folie, keine Folge:
+
+- Auf jeder Demo-Folie führt **„Demos"** unten in der Mitte der Fußzeile
+  zurück zur Übersicht.
+- Jede Demo endet mit einer Abschlussfolie: **„Noch eine Demo"** führt zur
+  Übersicht, **„Was nehmen wir mit?"** weiter zum Schluss.
+- Mit der Pfeiltaste geht es am Ende einer Demo ebenfalls zum Schluss, nicht
+  in die nächste Demo. Rückwärts aus einer Demo heraus geht es zur Übersicht.
+- Ohne Klick führt `→` von der Übersicht in die erste Demo (Ship It!).
+
+Grenzen: Folienübersicht (`O`), das Vorschaubild „nächste Folie" in der
+Moderatoransicht und der PDF-Export zeigen alle Folien in ihrer Reihenfolge.
+Die Seitenzahlen sind die durchgehenden Foliennummern.
+
+Die Demo-Blöcke liegen je als eigener Foliensatz unter [`demos/`](demos/);
+`slides.md` bindet sie per `src:` ein und kennzeichnet sie mit `demo:`.
+`hide: true` an einem Eintrag nimmt eine Demo ganz heraus.
+
+**Die Reflexion ist zweigeteilt.** Jeder Demo-Block endet mit einer eigenen
+Bewertung dessen, was man gerade gesehen hat — die Fragen unterscheiden sich
+je Demo grundlegend. Der Reality Check (Kosten, Qualitätskontrolle,
+Halluzinationen, Datenschutz) gilt für alle und kommt einmal im gemeinsamen
+Schluss; seine Sprecher-Notizen nennen für jede Demo das passende Beispiel.
+
 ## Präsentationsdurchführung
 
 ### Vor der Vorlesung
 
-1. **Ship It!-Dashboard** starten:
+1. **Die ausgewählten Demos** starten — jede nach ihrer eigenen README:
 
-   ```bash
-   cd ../ship-it
-   ./start.sh
-   ```
+   | Demo | Start | Adresse |
+   |---|---|---|
+   | Ship It! | `cd ../ship-it && ./start.sh` | <http://localhost:8000> |
+   | The Counting Agents | aus einem Herdr-Pane: `cd ../the-counting-agents && ./scripts/start.sh` | Dashboard <http://localhost:8777> |
+   | Agent Party | `cd ../agent-party && ./start.sh` | <http://localhost:8100> |
 
-   Läuft auf <http://localhost:8000> und ist für die Live-Demo-Folien nötig.
+2. **Slidev** in einem weiteren Terminal starten: `npm run dev`.
 
-2. **Slidev** in einem zweiten Terminal starten: `npm run dev`.
-
-3. Browser-Tabs vorbereiten:
-   - Tab 1: Slidev-Präsentation (<http://localhost:3030>)
-   - Tab 2: Ship It!-Dashboard (<http://localhost:8000>)
+3. Browser-Tabs vorbereiten: Slidev-Präsentation (<http://localhost:3030>)
+   und je ein Tab pro Demo.
 
 4. **Vollbild** aktivieren: `F` in der Slidev-Ansicht.
 
@@ -72,17 +99,20 @@ npm run export   # PDF nach schnuppervorlesung-ki.pdf
   (`drawings.persist: false` — Zeichnungen werden beim Neuladen verworfen).
 - **Gelbe Folien** sind Fragen an das Publikum: Hände hochheben lassen, kurze
   Rufrunde.
-- **Live-Demo-Übergang**: Bei „Los geht's!" auf den Ship It!-Tab wechseln,
-  Produkt von den Schülerinnen und Schülern vorschlagen lassen, die fünf
-  Agenten durchlaufen.
+- **Demo wählen**: Auf der Übersichtsfolie die Karte der Demo anklicken.
+- **Live-Demo-Übergang**: Bei „Los geht's!" auf den Tab der Demo wechseln.
+  Was dort zu zeigen ist, steht in den Sprecher-Notizen dieser Folie.
 
 ## Dateien
 
 | Datei / Ordner | Inhalt |
 |---|---|
-| `slides.md` | Folieninhalte, Sprecher-Notizen als HTML-Kommentare |
+| `slides.md` | Gemeinsamer Handlungsstrang mit der Übersicht der Demos; Sprecher-Notizen als HTML-Kommentare |
+| `demos/` | Ein Foliensatz je Demo: Vorstellung, Aufbau, Mitmachfrage, Übergang, Bewertung |
+| `setup/main.ts` | Blättern an den Rändern der Demos: am Ende weiter zum Schluss, rückwärts zur Übersicht |
+| `slide-bottom.vue` | Der Link „Demos" in der Fußzeile jeder Demo-Folie |
 | `theme-thm/` | Lokales Slidev-Theme nach dem Design-System „THM & StudiumPlus": Layouts, Karten, Farben, Logos |
-| `components/` | Folienspezifische Diagramme: Agent-Kreislauf, Abhängigkeiten der Ship-It!-Agenten |
+| `components/` | Folienspezifische Bausteine: Demo-Übersicht und -Abschluss, Werkzeug-Übersicht, Agent-Kreislauf, Abhängigkeiten der Ship-It!-Agenten, Nachrichtenwege der Counting Agents |
 | `global-top.vue` | Korrektur der Position des Slidev-Goto-Dialogs |
 | `public/` | Logo von Ship It! |
 

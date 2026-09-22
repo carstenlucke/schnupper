@@ -37,7 +37,7 @@ Prof. Dr. Carsten Lucke
 <!--
 - Willkommen, kurze Vorstellung
 - Thema: KI in der Praxis, nicht nur Theorie
-- Am Ende: Live-Demo, bei der IHR das Produkt bestimmt
+- Später: Live-Demo, bei der IHR mitbestimmt
 -->
 
 ---
@@ -139,7 +139,7 @@ class: text-l
 - DAS ist der Paradigmenwechsel den LLMs gebracht haben
 - Früher: Nur wer programmieren konnte, konnte digitale Systeme steuern
 - Heute: Natürliche Sprache reicht — LLMs sind der "Dolmetscher"
-- Bezug zu Ship It!: Die Agenten verstehen deutsche Aufträge
+- Bezug zu den Demos: Die Agenten verstehen deutsche Aufträge
 - "Aber es gibt noch ein Problem..."
 -->
 
@@ -147,9 +147,9 @@ class: text-l
 layout: agenda
 punkte:
   - Vom Chatbot zum KI-Agenten
-  - Ship It! — fünf Agenten live
+  - Agenten live erleben
   - Was nehmen wir mit?
-icons: [bot, rocket, target]
+icons: [bot, circle-play, target]
 aktiv: 1
 ---
 
@@ -305,7 +305,7 @@ class: text-l
 </CardGrid>
 </div>
 
-<Callout icon="circle-play" class="mt-4"><strong>Genau das testen wir jetzt live:</strong> 5 Agenten, ein Produktlaunch — in Minuten statt Wochen.</Callout>
+<Callout icon="circle-play" class="mt-4"><strong>Genau das schauen wir uns jetzt live an:</strong> mehrere Agenten, eine gemeinsame Aufgabe — und ihr seid dabei.</Callout>
 
 <!--
 - Ausblick in die Arbeitswelt der Schüler
@@ -319,160 +319,73 @@ class: text-l
 layout: agenda
 punkte:
   - Vom Chatbot zum KI-Agenten
-  - Ship It! — fünf Agenten live
+  - Agenten live erleben
   - Was nehmen wir mit?
-icons: [bot, rocket, target]
+icons: [bot, circle-play, target]
 aktiv: 2
 ---
 
 <!--
-- Jetzt: Ship It! — fünf Agenten bringen ein Produkt auf den Markt
+- Jetzt: Agenten live — die heute ausgewählte Demo (oder zwei)
 -->
 
 ---
-rubrik: Ship It!
-titel: Fünf Agenten, ein Produktlaunch
+rubrik: Agenten live erleben
+titel: Welche Demo schauen wir uns an?
+routeAlias: demos
+hideInToc: true
 ---
 
 <div class="thm-center">
-<div class="si-lead">
-  <img src="/ship-it-logo.png" alt="Ship It!">
-  <p><strong>Ship It!</strong> ist ein Dashboard, in dem <strong>5 KI-Agenten</strong> zusammenarbeiten, um ein Produkt auf den Markt zu bringen — Zielgruppenanalyse, Marketing, Social Media, Preiskalkulation und sogar eine fertige Website.</p>
+  <DemoUebersicht />
 </div>
 
-<CardGrid :cols="5">
-  <Card icon="users" titel="Zielgruppen-Analyst">Wer kauft das Produkt? Personas erstellen</Card>
-  <Card icon="megaphone" titel="Marketing-Experte">Name, Slogan, Werbetexte entwickeln</Card>
-  <Card icon="hash" titel="Social-Media-Manager">Posts für Instagram, LinkedIn, TikTok</Card>
-  <Card icon="calculator" titel="Controller">Preiskalkulation und Preisstrategie</Card>
-  <Card icon="code" titel="Web-Entwickler">Produkt-Website mit HTML, CSS, JS</Card>
-</CardGrid>
-</div>
-
-<style>
-.si-lead {
-  display: flex;
-  align-items: center;
-  gap: 1.4rem;
-  margin-bottom: 1rem;
-}
-.si-lead img { height: 4.2rem; flex: none; }
-.si-lead p { margin: 0; line-height: var(--lh-snug); }
-</style>
+<div class="thm-note">Karte anklicken, um in die Demo zu springen. Von jeder Demo-Folie führt „Demos“ unten in der Mitte hierher zurück.</div>
 
 <!--
-- Jeden Agenten kurz vorstellen, Rolle erklären
-- "Die arbeiten wie Abteilungen in einem Unternehmen"
-- Website-Agent ist besonders: baut etwas, das man im Browser öffnen kann
+- Heute eine Demo, manchmal zwei — Karte anklicken, um hineinzuspringen
+- Am Ende jeder Demo: "Noch eine Demo" führt hierher zurück, "Was nehmen wir
+  mit?" (oder einfach →) weiter zum Schluss
+- Alternative: die Klasse abstimmen lassen, welche Demo sie sehen will
 -->
 
 ---
-rubrik: Ship It!
-titel: Wer wartet auf wen?
-untertitel: Manche Agenten brauchen die Ergebnisse anderer, bevor sie starten können.
+# Demo-Blöcke, erreichbar über die Übersicht davor. `demo:` kennzeichnet
+# alle Folien eines Blocks (Zurück-Link, Navigation in setup/main.ts);
+# `hide: true` nähme einen Block ganz heraus.
+src: ./demos/ship-it.md
+demo: ship-it
 ---
 
-<div class="abh-rahmen">
-  <AgentAbhaengigkeiten />
-</div>
+---
+src: ./demos/counting-agents.md
+demo: counting-agents
+---
 
-<Callout icon="circle-play"><strong>Zielgruppe</strong> und <strong>Kalkulation</strong> starten sofort — sie brauchen nur die Produktbeschreibung.</Callout>
+---
+src: ./demos/agent-party.md
+demo: agent-party
+---
 
-<style>
-.abh-rahmen {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  justify-content: center;
-  padding: 0.2rem 0 0.8rem;
-}
-</style>
+---
+layout: agenda
+punkte:
+  - Vom Chatbot zum KI-Agenten
+  - Agenten live erleben
+  - Was nehmen wir mit?
+icons: [bot, circle-play, target]
+aktiv: 3
+routeAlias: nach-demos
+---
 
 <!--
-- Zeigen: Abhängigkeiten wie in einem echten Projekt
-- Zielgruppe + Kalkulation starten parallel (sofort)
-- Marketing wartet auf Zielgruppe
-- Social Media wartet auf Marketing
-- Website wartet auf alle
-- "Jetzt starten wir! Dashboard öffnen..."
+- Übergang zu den Kern-Learnings
+- Erst der Reality Check, der für alle Demos gilt, dann die größere Botschaft
 -->
 
----
-rubrik: Ship It! · Live-Demo
-titel: Jetzt seid ihr dran!
-class: text-l
-hideInToc: true
----
-
-<QuestionItem>Welches Produkt sollen unsere KI-Agenten auf den Markt bringen?</QuestionItem>
-
-<div class="thm-lead mt-4">Das Einzige, was die Agenten von euch brauchen: <strong>eine Produktidee in ganz normalem Deutsch.</strong></div>
-
-<div class="thm-center">
-<CardGrid :cols="4">
-  <Card icon="camera" icon-ton="gelb" center>Drohnen-Foto-Service für Events</Card>
-  <Card icon="zap" icon-ton="gelb" center>Energy Drink für Klausurphasen</Card>
-  <Card icon="book-open" icon-ton="gelb" center>App zum Tauschen von Schulbüchern</Card>
-  <Card icon="headphones" icon-ton="gelb" center>KI-Kopfhörer, der Stimmung erkennt</Card>
-</CardGrid>
-</div>
-
-<div class="thm-note">...oder eure eigene Idee! Ruft rein — wir stimmen ab.</div>
-
-<!--
-- Die 4 Starter-Ideen als Inspiration zeigen
-- Schüler können eigene Ideen einbringen
-- 2-3 Minuten Brainstorming, dann Abstimmung per Handzeichen
-- Gewähltes Produkt in Ship It! eingeben (kurze Beschreibung tippen)
--->
 
 ---
-layout: statement
-rubrik: Ship It! · Live-Demo
-titel: Los geht's!
-zitat: false
-hideInToc: true
----
-
-Wechsel zum **Ship It! Dashboard**
-
-<span class="st-note"><a href="http://localhost:8000" target="_blank">localhost:8000</a> im Browser öffnen</span>
-
-<!--
-- Browser wechseln, Dashboard zeigen
-- Produkt eingeben
-- Agenten nacheinander starten
-- Zwischen den Ergebnissen: Vorhersage-Spiel (nächste Folien)
-- Markdown-Files von 1-2 Agenten zeigen (z.B. Zielgruppe, Marketing)
-- Hinweis: Die Agenten sind nicht programmiert, sondern in natürlicher Sprache definiert
-- "Schaut mal: Das ist kein Code — das ist einfach Deutsch. So sagt man der KI, was sie tun soll."
--->
-
----
-rubrik: Ship It! · Live-Demo
-titel: Wie gut war die KI?
-untertitel: Zeit für eine ehrliche Bewertung — Daumen hoch oder runter?
-hideInToc: true
----
-
-<div class="thm-stack">
-  <QuestionItem>Würdet ihr diesen <strong>Instagram-Post</strong> liken?</QuestionItem>
-  <QuestionItem>Ist die <strong>Preiskalkulation</strong> realistisch?</QuestionItem>
-  <QuestionItem>Spricht euch die <strong>Website</strong> an?</QuestionItem>
-  <QuestionItem>Welcher Agent hat <strong>am besten</strong> gearbeitet?</QuestionItem>
-</div>
-
-<!--
-- Übergang zur kritischen Bewertung
-- Jede Frage einzeln durchgehen, Daumen hoch/runter
-- Nachfragen: WARUM? Was genau stört euch?
-- "Was hat überrascht?"
-- "Was fehlt offensichtlich?"
-- "Würde ein echtes Unternehmen das so verwenden?"
--->
-
----
-rubrik: Ship It!
+rubrik: Was nehmen wir mit?
 titel: 'Reality Check: Worauf muss man achten?'
 class: text-l
 ---
@@ -495,27 +408,21 @@ class: text-l
 </div>
 
 <!--
-- Kein Hype ohne Reality Check
-- Kosten: GPT-4 ca. 100x teurer als kleine Modelle. Agenten verbrauchen VIELE Tokens
+- Kein Hype ohne Reality Check — gilt für jede Demo, die wir gesehen haben
+- Kosten: Agenten verbrauchen VIELE Tokens, große Modelle ca. 100x teurer als kleine
+  - Counting Agents: ~90 Anfragen pro Minute — nur fürs Zählen
+  - Ship It!: fünf Agenten, jeder mit mehreren Durchläufen
 - Qualität: Der Prüfschritt im Agent-Kreislauf ist entscheidend. Automatische Tests, Validierung
+  - Counting Agents: Das Dashboard rechnet selbst nach und färbt Fehler rot
+  - Ship It!: Wer prüft Website, Preis und Posts, bevor sie rausgehen?
 - Halluzinationen: Gerade bei Fakten, Zahlen, Quellen kritisch. Immer gegenchecken!
+  - Counting Agents: rote Kachel — falsche Primzahl, selbstbewusst eingesammelt
+  - Ship It!: Zahlen in der Preiskalkulation
+  - Agent Party: überzeugend klingende, aber erfundene Größenordnungen
 - Datenschutz: DSGVO, Betriebsgeheimnisse, personenbezogene Daten
+  - Ship It! / Counting Agents: alles geht an ein Modell in der Cloud
+  - Agent Party: Umschalten auf das lokale Modell in LM Studio zeigt die Alternative
 - "Diese Herausforderungen muss man kennen — aber sie sind lösbar."
--->
-
----
-layout: agenda
-punkte:
-  - Vom Chatbot zum KI-Agenten
-  - Ship It! — fünf Agenten live
-  - Was nehmen wir mit?
-icons: [bot, rocket, target]
-aktiv: 3
----
-
-<!--
-- Übergang zu den Kern-Learnings
-- Von der Demo zur größeren Botschaft
 -->
 
 ---
