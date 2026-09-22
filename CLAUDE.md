@@ -11,6 +11,7 @@ Thema KI und KI-Agenten.
 | `ship-it/` | Web-Dashboard, 5 KI-Agenten führen einen Produktlaunch durch. Python-stdlib-Server + SPA. | `./start.sh` |
 | `the-counting-agents/` | Terminal-Demo, 5 Agenten kommunizieren über dateibasierte Event-Logs, je ein benanntes Pane in einem Herdr-Tab. Läuft mit der pi CLI, eigenen Werkzeugen und einem Modell in der Cloud. | `./scripts/start.sh` |
 | `agent-party/` | Web-Dashboard, in dem die Teilnehmenden die Agenten selbst schreiben: Rollenprofile anlegen, Besetzung wählen, Thema geben — die Profile diskutieren reihum. Python-stdlib-Server + SPA. | `./start.sh` |
+| `presentation/` | Slidev-Foliensatz der Schnuppervorlesung, der die Demos einbettet. Kein Demo-Projekt, aber ebenso eigenständig; Design-System „THM & StudiumPlus" als lokales Theme. | `npm run dev` |
 
 **Jedes Projekt hat eine eigene `CLAUDE.md`** — sie ist für alles maßgeblich,
 was das jeweilige Projekt betrifft. Diese Datei hier regelt nur, was
@@ -44,7 +45,7 @@ Zielgruppe ist ein Publikum ohne Programmiererfahrung. Das prägt den Code:
 
 ## Gemeinsames Muster
 
-In allen drei Projekten ist ein Agent eine **Markdown-Datei mit
+In allen drei Demo-Projekten ist ein Agent eine **Markdown-Datei mit
 YAML-Frontmatter**: oben Modell und Werkzeuge, darunter die Aufgabe in normalem
 Deutsch. Wer einen Agenten anlegt oder ändert, folgt dem Muster des jeweiligen
 Projekts — Ablageort, Frontmatter-Felder und Modellwahl stehen in dessen

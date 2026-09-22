@@ -1,6 +1,6 @@
 # Ship It!
 
-Live-Demo für eine Schnuppervorlesung bei StudiumPlus (90 Min, 12. Klasse FOS). Schüler wählen ein Produkt, 5 KI-Agenten erledigen den kompletten Produktlaunch – von der Zielgruppenanalyse bis zur fertigen Landingpage. Das Projekt umfasst die App sowie eine begleitende Slidev-Präsentation.
+Live-Demo für eine Schnuppervorlesung bei StudiumPlus (90 Min, 12. Klasse FOS). Schüler wählen ein Produkt, 5 KI-Agenten erledigen den kompletten Produktlaunch – von der Zielgruppenanalyse bis zur fertigen Landingpage. Die begleitende Slidev-Präsentation liegt projektübergreifend unter [`../presentation/`](../presentation/).
 
 ## Quickstart
 
@@ -86,13 +86,8 @@ ship-it/
 │   ├── index.html             # Dashboard SPA
 │   ├── style.css              # THM-Corporate-Design
 │   └── app.js                 # Frontend-Logik
-├── presentation/
-│   ├── slides.md              # Slidev-Folien (Markdown)
-│   ├── style.css              # Präsentations-Styling (THM-CD)
-│   └── public/                # Logos, SVG-Diagramme
 ├── projekte/                  # Runtime: ein Ordner pro Produktidee
 ├── start.sh                   # Ein-Klick-Start
-├── .github/workflows/         # Release-Workflow (PDF-Export + GitHub Release)
 └── spec/                      # Spezifikation + UI-Mockup
 ```
 
@@ -130,23 +125,7 @@ Die Kosten sind Token-basiert und variieren je nach Prompt-Länge und Bildkomple
 
 ## Präsentation
 
-Die begleitende Slidev-Präsentation behandelt „Digitalisierung und KI: Was Maschinen schon können" — von Alltags-KI über LLMs bis hin zu KI-Agenten, mit Live-Demo im Ship It! Dashboard.
-
-```bash
-cd presentation
-npm install        # einmalig
-npm run dev        # Entwicklungsserver mit Hot-Reload
-npm run export     # PDF-Export (schnuppervorlesung-ki.pdf)
-```
-
-## Release-Workflow
-
-Bei einem Git-Tag-Push (`v*.*.*`) wird automatisch ein GitHub-Actions-Workflow ausgelöst, der die Präsentation als PDF exportiert und ein GitHub Release mit dem PDF erstellt.
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
+Die Slidev-Präsentation „Digitalisierung und KI: Was Maschinen schon können", in der die Live-Demo von Ship It! eingebettet ist, liegt nicht mehr hier, sondern unter [`../presentation/`](../presentation/) — sie begleitet alle Demos des Repositorys.
 
 ## Technical Debt
 

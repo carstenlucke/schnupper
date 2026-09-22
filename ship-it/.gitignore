@@ -10,7 +10,3 @@ thumbs.db
 __pycache__/
 *.pyc
 
-
-# node packages
-node_modules
-presentation/*.pdf

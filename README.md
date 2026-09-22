@@ -10,8 +10,7 @@ KI-Agenten für Schülerinnen und Schüler.
 Live-Demo für eine 90-minütige Schnuppervorlesung bei StudiumPlus. Die
 Teilnehmenden wählen ein Produkt, fünf KI-Agenten erledigen den kompletten
 Produktlaunch — von der Zielgruppenanalyse bis zur fertigen Landingpage.
-Enthält die Web-App (Python, ohne externe Dependencies) sowie eine begleitende
-Slidev-Präsentation.
+Web-App in Python, ohne externe Dependencies.
 
 ```bash
 cd ship-it && ./start.sh
@@ -52,6 +51,18 @@ jedes Mal neu als Text in den Prompt.
 
 ```bash
 cd agent-party && ./start.sh
+```
+
+### [`presentation/`](presentation/)
+
+Die Slidev-Präsentation zur Schnuppervorlesung „Digitalisierung und KI — Was
+Maschinen schon können". Sie liegt auf oberster Ebene, weil jede der Demos
+darin ihren Platz haben kann: Von einer Übersichtsfolie aus springt man in
+die Demo, die man zeigen will, und von dort wieder zurück. Gestaltet nach dem Design-System „THM & StudiumPlus", das als lokales
+Slidev-Theme unter `presentation/theme-thm/` mitgeliefert wird.
+
+```bash
+cd presentation && npm install && npm run dev
 ```
 
 ## Aufbau
