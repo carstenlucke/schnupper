@@ -9,10 +9,9 @@
 
   Sprünge über Links oder `G` bleiben unberührt — außer ihr Ziel ist
   zufällig die Nachbarfolie: Der Router sieht nur Start und Ziel, nicht,
-  wie der Wechsel ausgelöst wurde. Welche Demo eine Folie
-  gehört, steht in ihrem Frontmatter als `demo:` (gesetzt am `src:`-Eintrag
-  in slides.md). Gilt für Publikums- und Moderatoransicht, nicht für
-  Übersicht und Export.
+  wie der Wechsel ausgelöst wurde. Zu welcher Demo eine Folie gehört, steht
+  in ihrem Frontmatter als `demo:` (gesetzt am `src:`-Eintrag in slides.md).
+  Gilt für Publikums- und Moderatoransicht, nicht für Übersicht und Export.
 */
 import { defineAppSetup } from '@slidev/types'
 import { slides } from '#slidev/slides'
