@@ -208,9 +208,13 @@ hinterherhinkt. In den Panes ist das nicht zu sehen, und es ist die eigentliche
 Pointe: Alle vier haben denselben Takt und laufen trotzdem nicht im
 Gleichschritt — `prime` am langsamsten, weil er nachdenkt.
 
-Die Farben folgen dem [Corporate Design der THM](https://go.thm.de/cd). Dunkel
-ist voreingestellt, weil ein Beamer dunkler ist als jeder Bildschirm; der Knopf
-im Kopf wechselt auf das helle Thema, und der Browser merkt sich die Wahl.
+Farben und Gestaltung folgen dem
+[Corporate Design der THM](https://go.thm.de/cd): dunkle Kopfleiste mit der
+Bildmarke, Abschnittstitel mit grüner Unterkante, Karten mit farbiger Kante
+links. Dunkel ist voreingestellt, weil ein Beamer dunkler ist als jeder
+Bildschirm; der Knopf im Kopf wechselt auf das helle Thema, und der Browser
+merkt sich die Wahl. Die Schrift Barlow lädt die Seite von Google Fonts —
+ohne Netz greift der Systemschrift-Stack, und alles bleibt bedienbar.
 
 **Generalprobe ohne Modell.** Vor der Vorlesung lässt sich das Dashboard
 prüfen, ohne dass Agenten laufen und Token kosten:
