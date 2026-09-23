@@ -32,6 +32,7 @@ import json
 import os
 import sys
 import time
+import urllib.parse
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -295,7 +296,7 @@ PAGE = r"""<!doctype html>
   .agents { display: grid; gap: 10px; }
   .agent {
     display: grid; align-items: center; gap: clamp(10px, 1.4vw, 24px);
-    grid-template-columns: minmax(170px, 1.2fr) auto minmax(90px, .6fr) minmax(90px, .6fr) minmax(120px, 1fr);
+    grid-template-columns: minmax(170px, 1.2fr) auto minmax(90px, .6fr) minmax(90px, .6fr) minmax(120px, 1fr) auto;
     background: rgb(var(--surface));
     border: 1px solid rgb(var(--on-surface) / .1);
     border-left: 4px solid rgb(var(--on-surface) / .25);
@@ -339,6 +340,8 @@ PAGE = r"""<!doctype html>
   .chip.even  { border-color: rgb(var(--even));  background: rgb(var(--even) / .14); }
   .chip.prime { border-color: rgb(var(--prime)); background: rgb(var(--prime)); border-radius: 50%; }
   .chip.counter { border-color: rgb(var(--counter)); background: transparent; }
+  /* Hülle um alles außer dem Prompt-Knopf; ihre Kinder sitzen direkt im Raster. */
+  .agent .teile { display: contents; }
   .agent .status { color: rgb(var(--on-surface-variant)); white-space: nowrap; }
   .agent.paused  .status { color: rgb(var(--on-surface)); }
   .agent.stopped .status { color: rgb(var(--error-color)); }
@@ -361,11 +364,104 @@ PAGE = r"""<!doctype html>
     border-radius: 6px; padding: clamp(12px, 1.4vw, 18px);
   }
   .karte .abschnitt-titel { margin-bottom: 10px; }
+  .karte-kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
   #ticker { list-style: none; margin: 0; padding: 0; }
   #ticker li { padding: 3px 0; font-size: clamp(12px, 1.1vw, 18px);
                color: rgb(var(--on-surface-variant)); }
   #ticker time { color: rgb(var(--on-surface-variant) / .9); margin-right: 12px; }
   #ticker b { color: rgb(var(--on-surface)); font-weight: 600; }
+
+  /* --- Prompt-Knopf und Prompt-Fenster -----------------------------------
+     Ein Agent ist eine Markdown-Datei. Das Fenster zeigt sie im Wortlaut, in
+     zwei Teilen: oben das Frontmatter, aus dem run-agent.sh die Flags für pi
+     baut, darunter der Text, den das Modell als Systemprompt bekommt. */
+  .knopf-prompt {
+    font: inherit; font-size: clamp(11px, .8vw, 14px); font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+    color: rgb(var(--on-surface-variant)); background: transparent;
+    border: 1px solid rgb(var(--on-surface) / .25); border-radius: 4px;
+    padding: 5px 10px; cursor: pointer;
+    transition: border-color 140ms ease, color 140ms ease;
+  }
+  .knopf-prompt:hover { border-color: rgb(var(--accent)); color: rgb(var(--on-surface)); }
+  .knopf-prompt:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; }
+
+  #prompt-fenster {
+    width: min(1040px, calc(100vw - 32px)); max-height: calc(100vh - 48px);
+    padding: 0; border: none; border-radius: 6px;
+    background: rgb(var(--surface)); color: rgb(var(--on-surface));
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .35);
+  }
+  #prompt-fenster[open] { display: flex; flex-direction: column; }
+  #prompt-fenster::backdrop { background: rgb(16 24 29 / .6); }
+  .fenster-kopf {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 10px clamp(12px, 1.6vw, 22px);
+    background: rgb(var(--header)); color: rgb(var(--on-header));
+  }
+  .reiter { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+  .reiter button {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Barlow Condensed', 'Barlow', sans-serif;
+    font-size: clamp(14px, 1.2vw, 19px); font-weight: 600;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: rgb(var(--on-header-variant)); background: transparent;
+    border: none; border-bottom: 2px solid transparent; padding: 6px 10px; cursor: pointer;
+  }
+  .reiter button:hover { color: rgb(var(--on-header)); }
+  .reiter button[aria-selected="true"] { color: rgb(var(--on-header)); border-bottom-color: rgb(var(--accent)); }
+  .reiter button:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; }
+  /* Die Sammler und der Zähler behalten ihre Chip-Farben; nur die Steuerung hat
+     keine eigene und braucht auf der dunklen Kopfleiste eine helle Kante. */
+  .reiter .chip.control { border-color: rgb(var(--on-header) / .3); background: transparent; }
+  #prompt-zu {
+    width: 32px; height: 32px; flex: none; border-radius: 9999px; border: none;
+    font-size: 20px; line-height: 1; cursor: pointer;
+    color: rgb(var(--on-header)); background: rgb(var(--on-header) / .1);
+  }
+  #prompt-zu:hover { background: rgb(var(--on-header) / .2); }
+  #prompt-zu:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; }
+
+  .fenster-inhalt { overflow: auto; padding: clamp(14px, 1.8vw, 26px); }
+  .datei-name {
+    margin: 0 0 14px; font-size: clamp(12px, .95vw, 15px); letter-spacing: .04em;
+    color: rgb(var(--on-surface-variant));
+  }
+  .datei-name code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; color: rgb(var(--on-surface)); }
+  .teil + .teil { margin-top: clamp(14px, 1.6vw, 22px); }
+  .teil-titel {
+    margin: 0 0 6px; font-size: clamp(11px, .85vw, 14px); font-weight: 600;
+    letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--on-surface-variant));
+  }
+  .teil-titel span { font-weight: 400; letter-spacing: .04em; text-transform: none; }
+
+  /* Markdown im Quelltext, nur eingefärbt, nicht umgesetzt: Die Zuschauer
+     sollen sehen, was wirklich in der Datei steht — Rauten und Sternchen
+     inklusive. Die Satzzeichen des Markdowns sind grün und treten zurück,
+     der Text selbst bleibt vorn. Die Farben der Sammler kommen hier bewusst
+     nicht vor; sie bedeuten im Dashboard überall „dieser Agent". */
+  .md {
+    margin: 0; white-space: pre-wrap; overflow-wrap: anywhere;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: clamp(13px, 1.15vw, 19px); line-height: 1.55;
+    color: rgb(var(--on-surface-variant));
+    background: rgb(var(--base)); border: 1px solid rgb(var(--on-surface) / .1);
+    border-left: 4px solid rgb(var(--accent)); border-radius: 0 6px 6px 0;
+    padding: clamp(10px, 1.2vw, 18px) clamp(12px, 1.4vw, 22px);
+  }
+  .md.frontmatter { border-left-color: rgb(var(--on-surface) / .3); }
+  .md .zeichen  { color: rgb(var(--accent-text)); opacity: .85; }
+  .md .schluessel { color: rgb(var(--accent-text)); font-weight: 600; }
+  .md .wert     { color: rgb(var(--on-surface)); }
+  .md .werkzeug { color: rgb(var(--on-surface)); font-weight: 600;
+                  background: rgb(var(--on-surface) / .08); border-radius: 3px; padding: 0 3px; }
+  .md .titel    { color: rgb(var(--on-surface)); font-weight: 700; }
+  .md strong    { color: rgb(var(--on-surface)); font-weight: 700; }
+  .md .inline-code { color: rgb(var(--on-surface)); background: rgb(var(--on-surface) / .08);
+                     border-radius: 3px; padding: 0 3px; }
+  .md .block-code { color: rgb(var(--on-surface)); }
+  .md .fehlt    { color: rgb(var(--error-color)); }
+  .md .hinweis  { color: rgb(var(--on-surface-variant)); font-style: italic; }
 
   footer { margin-top: clamp(18px, 2vw, 30px); color: rgb(var(--on-surface-variant));
            font-size: clamp(11px, .9vw, 15px); }
@@ -436,7 +532,10 @@ PAGE = r"""<!doctype html>
       </section>
 
       <section class="karte">
-        <h2 class="abschnitt-titel">Steuerung</h2>
+        <div class="karte-kopf">
+          <h2 class="abschnitt-titel">Steuerung</h2>
+          <button type="button" class="knopf-prompt" data-prompt="control">Prompt</button>
+        </div>
         <ul id="ticker"><li>keine Befehle</li></ul>
       </section>
 
@@ -444,12 +543,22 @@ PAGE = r"""<!doctype html>
     </div>
   </main>
 
+  <!-- Das Prompt-Fenster: ein Reiter je Agent, darunter seine Datei. -->
+  <dialog id="prompt-fenster" aria-label="Agentendatei">
+    <div class="fenster-kopf">
+      <div class="reiter" id="prompt-reiter" role="tablist" aria-label="Agentendateien"></div>
+      <button type="button" id="prompt-zu" aria-label="Schließen" title="Schließen (Esc)">&times;</button>
+    </div>
+    <div class="fenster-inhalt" id="prompt-inhalt" role="tabpanel"></div>
+  </dialog>
+
 <script>
 const LABEL = {
   counter: ["counter", "Zähler"],
   odd:     ["odd", "Ungerade"],
   even:    ["even", "Gerade"],
   prime:   ["prime", "Primzahlen"],
+  control: ["control", "Steuerung"],   // nur für das Prompt-Fenster, keine Zeile
 };
 // Das Zeichen vor dem Wort trägt den Zustand mit — auf dem Beamer erkennt man
 // eine Form aus der letzten Reihe zuverlässiger als einen Farbton.
@@ -493,18 +602,40 @@ function setzeFokus(name) {
   }
 }
 
+// Die Zeilen entstehen einmal und bleiben stehen; neu gesetzt wird nur ihr
+// Inhalt. Der Prompt-Knopf überlebt so jede Aktualisierung — sonst würde er
+// mehrmals pro Sekunde ausgetauscht, und ein Klick, der gerade in einen
+// Austausch fällt, käme nie an.
+const agentZeilen = new Map();   // Name -> {zeile, teile}
+
+function agentZeile(name) {
+  let z = agentZeilen.get(name);
+  if (z) return z;
+  const zeile = document.createElement("div");
+  zeile.dataset.agent = name;
+  zeile.innerHTML = `<span class="teile"></span>
+    <button type="button" class="knopf-prompt" data-prompt="${name}">Prompt</button>`;
+  if (SAMMLER.includes(name)) {
+    // Der Prompt-Knopf liegt in der Zeile, soll aber nicht zugleich den Fokus umschalten.
+    zeile.addEventListener("click", (e) => {
+      if (!e.target.closest("[data-prompt]")) setzeFokus(name);
+    });
+  }
+  document.getElementById("agents").appendChild(zeile);
+  z = { zeile, teile: zeile.firstElementChild };
+  agentZeilen.set(name, z);
+  return z;
+}
+
 function zeichneAgenten(data) {
-  const ziel = document.getElementById("agents");
   const latest = data.bus.latest_seq || 1;
-  ziel.innerHTML = "";
   for (const name of ["counter", "odd", "even", "prime"]) {
     const a = data.agents[name];
     const [kurz, lang] = LABEL[name];
-    const zeile = document.createElement("div");
+    const { zeile, teile } = agentZeile(name);
     zeile.className = "agent a-" + name + " " + a.status
       + (SAMMLER.includes(name) ? " klickbar" : "")
       + (fokus === name ? " fokus" : "");
-    zeile.dataset.agent = name;
 
     const mitte = name === "counter"
       ? `<span class="zahl">Wert ${a.last_value}</span><span></span><span></span>`
@@ -512,14 +643,10 @@ function zeichneAgenten(data) {
          <span class="lag ${a.lag ? "zurueck" : "aktuell"}">${a.lag ? a.lag + " zurück" : "aktuell"}</span>
          <span class="balken"><i style="width:${Math.min(100, 100 * a.last_seq / latest)}%"></i></span>`;
 
-    zeile.innerHTML = `
+    teile.innerHTML = `
       <span class="name"><i class="chip ${name}"></i>${kurz}<small>${lang}</small></span>
       <span class="status">${STATUS[a.status] || a.status}${a.still ? ` <span class="still">· seit ${Math.round(a.idle_seconds)}s still</span>` : ""}</span>
       ${mitte}`;
-    if (SAMMLER.includes(name)) {
-      zeile.addEventListener("click", () => setzeFokus(name));
-    }
-    ziel.appendChild(zeile);
   }
 }
 
@@ -543,6 +670,151 @@ function zeichne(data) {
   zeichneAgenten(data);
   zeichneTicker(data.control);
 }
+
+// --- Prompt-Fenster --------------------------------------------------------
+// Ein Agent ist eine Markdown-Datei: oben das Frontmatter mit den Einstellungen,
+// darunter die Aufgabe in normalem Deutsch. Das Fenster zeigt die Datei im
+// Wortlaut und färbt das Markdown ein, ohne es umzusetzen — eine
+// Hervorhebungs-Bibliothek wäre eine Abhängigkeit mehr, und für die Handvoll
+// Auszeichnungen in den Agentendateien reicht ein Zeilen-Durchgang.
+const PROMPT_AGENTEN = Object.keys(LABEL);
+const fenster = document.getElementById("prompt-fenster");
+const reiter = document.getElementById("prompt-reiter");
+const inhalt = document.getElementById("prompt-inhalt");
+let offenerPrompt = null;
+let promptAnfrage = 0;   // nur die jüngste Antwort zählt, falls schnell umgeschaltet wird
+
+function esc(text) {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+const zeichen = (text) => `<span class="zeichen">${esc(text)}</span>`;
+
+// Innerhalb einer Zeile: `Code` und **fett**. Zuerst an den Backticks trennen,
+// damit Sternchen in einem Code-Stück Code bleiben.
+function mdInline(text) {
+  return text.split(/(`[^`]+`)/).map((teil, i) => i % 2
+    ? `<span class="inline-code">${zeichen("`")}${esc(teil.slice(1, -1))}${zeichen("`")}</span>`
+    : esc(teil).replace(/\*\*(.+?)\*\*/g, `${zeichen("**")}<strong>$1</strong>${zeichen("**")}`)
+  ).join("");
+}
+
+function mdZeile(zeile) {
+  let m;
+  if ((m = zeile.match(/^(#{1,6} )(.*)$/))) {
+    return zeichen(m[1]) + `<span class="titel">${mdInline(m[2])}</span>`;
+  }
+  if ((m = zeile.match(/^(\s*)([-*]|\d+\.)( .*)$/))) {
+    return m[1] + zeichen(m[2]) + mdInline(m[3]);
+  }
+  return mdInline(zeile);
+}
+
+function mdRumpf(zeilen) {
+  let imCode = false;
+  return zeilen.map(zeile => {
+    if (/^\s*```/.test(zeile)) { imCode = !imCode; return zeichen(zeile); }
+    if (imCode) return `<span class="block-code">${esc(zeile)}</span>`;
+    return mdZeile(zeile);
+  }).join("\n");
+}
+
+// Frontmatter: Schlüssel, Doppelpunkt, Wert. Bei `tools` wird jedes Werkzeug
+// einzeln hervorgehoben — das ist die Zeile, an der man im Vortrag dreht.
+// `modell` ist COUNTING_AGENTS_MODEL aus der .env: Es schlägt die Zeile
+// `model:`, und das Fenster sagt dazu, womit der Agent wirklich läuft.
+function mdFrontmatter(zeilen, modell) {
+  return zeilen.map(zeile => {
+    if (zeile === "---") return zeichen(zeile);
+    const m = zeile.match(/^([\w-]+)(:\s*)(.*)$/);
+    if (!m) return esc(zeile);
+    const wert = m[1] === "tools"
+      ? m[3].split(/(,\s*)/).map((w, i) => i % 2 ? zeichen(w) : `<span class="werkzeug">${esc(w)}</span>`).join("")
+      : `<span class="wert">${esc(m[3])}</span>`;
+    const hinweis = m[1] === "model" && modell && modell !== m[3].trim()
+      ? `<span class="hinweis">  ← läuft mit ${esc(modell)} (COUNTING_AGENTS_MODEL in .env)</span>`
+      : "";
+    return `<span class="schluessel">${esc(m[1])}</span>${zeichen(m[2])}${wert}${hinweis}`;
+  }).join("\n");
+}
+
+// Aufgeteilt wie in agents-lib.sh: bis zum zweiten `---` das Frontmatter,
+// danach der Systemprompt. Eine Abweichung ist gewollt: agent_prompt lässt
+// jede Zeile `---` weg, auch eine im Rumpf — hier bleibt die Datei im Wortlaut.
+function zeigeDatei(name, text, modell) {
+  const zeilen = text.replace(/\r\n/g, "\n").split("\n");
+  let kopf = [], rumpf = zeilen;
+  if (zeilen[0] === "---") {
+    const ende = zeilen.indexOf("---", 1);
+    if (ende > 0) { kopf = zeilen.slice(0, ende + 1); rumpf = zeilen.slice(ende + 1); }
+  }
+  while (rumpf.length && !rumpf[0].trim()) rumpf.shift();
+  while (rumpf.length && !rumpf[rumpf.length - 1].trim()) rumpf.pop();
+
+  inhalt.innerHTML =
+    `<p class="datei-name">Datei <code>agents/${name}.md</code></p>` +
+    (kopf.length ? `<div class="teil">
+      <p class="teil-titel">Frontmatter <span>— daraus werden die Einstellungen für pi: Modell, Werkzeuge, Nachdenken</span></p>
+      <pre class="md frontmatter">${mdFrontmatter(kopf, modell)}</pre></div>` : "") +
+    `<div class="teil">
+      <p class="teil-titel">Systemprompt <span>— dieser Text geht als Auftrag an das Modell</span></p>
+      <pre class="md">${mdRumpf(rumpf)}</pre></div>`;
+  inhalt.scrollTop = 0;
+}
+
+async function zeigePrompt(name) {
+  offenerPrompt = name;
+  for (const knopf of reiter.children) {
+    knopf.setAttribute("aria-selected", knopf.dataset.reiter === name ? "true" : "false");
+  }
+  if (!fenster.open) fenster.showModal();
+  const nummer = ++promptAnfrage;
+  let text = null, modell = null;
+  let fehler = "Keine Verbindung — läuft dashboard.py noch?";
+  try {
+    const antwort = await fetch("/agent/" + name, { cache: "no-store" });
+    if (antwort.ok) {
+      text = await antwort.text();
+      const kopf = antwort.headers.get("X-Modell-Env");
+      if (kopf) modell = decodeURIComponent(kopf);
+    } else {
+      fehler = "Datei nicht gefunden.";
+    }
+  } catch (e) {}
+  if (nummer !== promptAnfrage) return;
+  if (text === null) {
+    inhalt.innerHTML = `<p class="datei-name">Datei <code>agents/${name}.md</code></p>
+      <pre class="md"><span class="fehlt">${fehler}</span></pre>`;
+    return;
+  }
+  zeigeDatei(name, text, modell);
+}
+
+reiter.innerHTML = PROMPT_AGENTEN.map(name =>
+  `<button type="button" role="tab" data-reiter="${name}" aria-selected="false" title="${LABEL[name][1]}"><i class="chip ${name}"></i>${name}</button>`
+).join("");
+reiter.addEventListener("click", (e) => {
+  const knopf = e.target.closest("[data-reiter]");
+  if (knopf) zeigePrompt(knopf.dataset.reiter);
+});
+// Ein Zuhörer für alle Prompt-Knöpfe: die in den Agentenzeilen und den in
+// der Steuerungs-Karte.
+document.addEventListener("click", (e) => {
+  const knopf = e.target.closest("[data-prompt]");
+  if (knopf) zeigePrompt(knopf.dataset.prompt);
+});
+document.getElementById("prompt-zu").addEventListener("click", () => fenster.close());
+// Klick neben das Fenster schließt es; Esc erledigt der Browser selbst.
+fenster.addEventListener("click", (e) => { if (e.target === fenster) fenster.close(); });
+// Mit den Pfeiltasten von Agent zu Agent — praktisch mit dem Presenter.
+fenster.addEventListener("keydown", (e) => {
+  if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+  const namen = PROMPT_AGENTEN;
+  const schritt = e.key === "ArrowRight" ? 1 : -1;
+  const i = (namen.indexOf(offenerPrompt) + schritt + namen.length) % namen.length;
+  e.preventDefault();
+  zeigePrompt(namen[i]);
+  reiter.children[i].focus();
+});
 
 // Farbthema: Dunkel ist die Voreinstellung, die Wahl überlebt das Neuladen.
 // Welches Symbol der Knopf zeigt, regelt das CSS über die Klasse "dark"; hier
@@ -586,8 +858,31 @@ class Handler(BaseHTTPRequestHandler):
             self._send_page()
         elif self.path == "/events":
             self._send_events()
+        elif self.path.startswith("/agent/"):
+            self._send_agent_file(self.path[len("/agent/"):])
         else:
             self.send_error(404)
+
+    def _send_agent_file(self, agent):
+        """Die Agentendatei als Klartext. Jedes Mal frisch von der Platte —
+        nimmt man einem Agenten im Vortrag ein Werkzeug weg, zeigt das
+        Dashboard beim nächsten Öffnen schon die geänderte Datei."""
+        text = dashboard_data.agent_file(agent)
+        if text is None:
+            self.send_error(404)
+            return
+        body = text.encode("utf8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        # Das Modell aus der .env schlägt die Zeile `model:` der Datei; das
+        # Fenster soll zeigen, womit der Agent tatsächlich läuft.
+        modell = dashboard_data.model_override()
+        if modell:
+            self.send_header("X-Modell-Env", urllib.parse.quote(modell, safe="/:@"))
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
     def _send_page(self):
         body = PAGE.encode("utf8")

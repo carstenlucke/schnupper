@@ -1,9 +1,10 @@
-"""dashboard_data.py — Liest Bus und Zustand der Zähl-Agenten.
+"""dashboard_data.py — Liest Bus, Zustand und Agentendateien der Zähl-Agenten.
 
 Die Auswertung hinter `dashboard.py`: Aus den beiden Logdateien und den
 Zustandsdateien wird ein einziger Schnappschuss, den die Oberfläche nur noch
-anzeigen muss. Getrennt gehalten, damit die Darstellung sich ändern kann, ohne
-dass jemand an der Auswertung dreht.
+anzeigen muss. Dazu kommen die Agentendateien selbst, damit das Dashboard
+zeigen kann, was jeder Agent als Auftrag bekommt. Getrennt gehalten, damit die
+Darstellung sich ändern kann, ohne dass jemand an der Auswertung dreht.
 
 Nur Standardbibliothek: keine Installation, kein Build, kein `pip`.
 
@@ -21,8 +22,14 @@ NUMBERS_LOG = os.path.join(PROJECT_DIR, "_bus", "numbers.log")
 CONTROL_LOG = os.path.join(PROJECT_DIR, "_bus", "control.log")
 STATE_DIR = os.path.join(PROJECT_DIR, "_state")
 
+AGENTS_DIR = os.path.join(PROJECT_DIR, "agents")
+ENV_FILE = os.path.join(PROJECT_DIR, ".env")
+
 COLLECTORS = ("odd", "even", "prime")
 AGENTS = ("counter",) + COLLECTORS
+# Die Steuerung hat keinen Zustand und keine Zeile im Dashboard, aber eine
+# Agentendatei wie die anderen — und die soll man zeigen können.
+AGENT_FILES = AGENTS + ("control",)
 
 # Sobald ein Agent so lange nichts mehr geschrieben hat, gilt er als stumm.
 # Ein Durchlauf dauert wenige Sekunden; 25 s sind also ein echter Hänger und
@@ -135,6 +142,42 @@ def _seconds_per_number(numbers):
         return None
     span = stamps[-1] - stamps[0]
     return span / (len(stamps) - 1) if span > 0 else None
+
+
+def agent_file(agent):
+    """Die Agentendatei im Wortlaut: Frontmatter und Systemprompt.
+
+    Nur für die bekannten Agenten — der Name kommt aus der URL, und ohne diese
+    Prüfung ließe sich mit `../` jede Datei auf der Platte abrufen. Gibt None
+    zurück, wenn der Name unbekannt ist oder die Datei fehlt."""
+    if agent not in AGENT_FILES:
+        return None
+    try:
+        with open(os.path.join(AGENTS_DIR, "%s.md" % agent), "r", encoding="utf8") as handle:
+            return handle.read()
+    except OSError:
+        return None
+
+
+def model_override():
+    """Das Modell aus `COUNTING_AGENTS_MODEL`, oder None.
+
+    Es schlägt den `model:`-Eintrag aller Agentendateien (siehe `agent_model`
+    in agents-lib.sh). Maßgeblich ist wie dort die `.env`, die das Startskript
+    per `source` einliest; ohne Eintrag dort gilt die Umgebung. Aus der `.env`
+    wird nur diese eine Zeile gelesen — die Schlüssel darin bleiben unberührt."""
+    try:
+        with open(ENV_FILE, "r", encoding="utf8") as handle:
+            for line in handle:
+                line = line.strip()
+                if line.startswith("export "):
+                    line = line[len("export "):].lstrip()
+                if line.startswith("COUNTING_AGENTS_MODEL="):
+                    value = line.split("=", 1)[1].strip().strip("'\"")
+                    return value or None
+    except OSError:
+        pass
+    return os.environ.get("COUNTING_AGENTS_MODEL") or None
 
 
 def snapshot():
