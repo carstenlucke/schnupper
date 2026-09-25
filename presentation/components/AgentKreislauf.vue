@@ -71,7 +71,7 @@ const schritte = [
   transform: translateY(50%);
   background: var(--surface-page);
   padding: 0 0.8rem;
-  font-size: 0.85rem;
+  font-size: 0.85em;
   font-weight: var(--fw-semibold);
   color: var(--thm-grey-500);
 }

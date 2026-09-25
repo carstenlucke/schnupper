@@ -214,21 +214,21 @@ class: text-xl
 
 <div class="thm-center thm-gruppe">
 <CardGrid :cols="2">
-  <Card icon="folder-open" icon-ton="rot" titel="Arbeitet in seiner eigenen Box" kompakt>
-    Dateien erzeugt es bei sich, ihr ladet sie herunter. In eure Ordner und Programme kommt es nicht.
+  <Card icon="folder-open" icon-ton="rot" titel="Bleibt in seinem Fenster" kompakt>
+    Es kommt nicht an eure Dateien und Programme.
   </Card>
   <Card icon="timer" icon-ton="rot" titel="Wartet auf euch" kompakt>
-    Eine Frage, eine Antwort — dann ist Schluss. Den nächsten Schritt stoßt ihr an.
+    Nach jeder Antwort ist Schluss — bis ihr weiterfragt.
   </Card>
-  <Card icon="plug" icon-ton="rot" titel="Nur eingebaute Werkzeuge" kompakt>
-    Websuche, Rechnen, Bilder: das, was der Anbieter einbaut. Eure eigenen Systeme kennt es nicht.
+  <Card icon="plug" icon-ton="rot" titel="Hat nur, was eingebaut ist" kompakt>
+    Eure eigenen Systeme kann es nicht bedienen.
   </Card>
-  <Card icon="refresh-cw" icon-ton="rot" titel="Sieht nicht, was daraus wird" kompakt>
-    Ob der Text ankommt oder der Plan aufgeht, erfährt es nur, wenn ihr es ihm sagt.
+  <Card icon="refresh-cw" icon-ton="rot" titel="Sieht das Ergebnis nicht" kompakt>
+    Ob es geklappt hat, erfährt es nur von euch.
   </Card>
 </CardGrid>
 
-<Callout icon="info" ton="hell"><strong>Die Grenze verschwimmt:</strong> ChatGPT &amp; Co. bekommen laufend neue Werkzeuge — und werden selbst Schritt für Schritt zu Agenten.</Callout>
+<Callout icon="info" ton="hell"><strong>Aber:</strong> Die Grenze verschwimmt. ChatGPT &amp; Co. bekommen laufend neue Werkzeuge.</Callout>
 </div>
 
 <!--
@@ -279,13 +279,12 @@ class: text-xl
 rubrik: Vom Chatbot zum KI-Agenten
 titel: Wie arbeitet ein KI-Agent?
 untertitel: 'Der Agent-Kreislauf: Denken, Handeln, Prüfen'
+class: text-l
 ---
 
 <div class="thm-center">
   <AgentKreislauf />
 </div>
-
-<Callout><strong>Wie ein guter Praktikant:</strong> Aufgabe lesen, Plan machen, umsetzen, prüfen, ob alles stimmt — und nachbessern, wenn nötig.</Callout>
 
 <!--
 - DAS ist der zentrale Unterschied: die Feedback-Schleife
