@@ -7,6 +7,7 @@
 */
 import type { Component } from 'vue'
 
+import ArrowLeft from '~icons/lucide/arrow-left'
 import ArrowRight from '~icons/lucide/arrow-right'
 import BookOpen from '~icons/lucide/book-open'
 import Bot from '~icons/lucide/bot'
@@ -18,11 +19,13 @@ import Check from '~icons/lucide/check'
 import CircleHelp from '~icons/lucide/circle-help'
 import CirclePlay from '~icons/lucide/circle-play'
 import ClipboardCheck from '~icons/lucide/clipboard-check'
+import ClipboardPaste from '~icons/lucide/clipboard-paste'
 import Code from '~icons/lucide/code'
 import Cog from '~icons/lucide/cog'
 import Coins from '~icons/lucide/coins'
 import Copy from '~icons/lucide/copy'
 import Database from '~icons/lucide/database'
+import Eye from '~icons/lucide/eye'
 import FileText from '~icons/lucide/file-text'
 import Filter from '~icons/lucide/filter'
 import FolderOpen from '~icons/lucide/folder-open'
@@ -45,6 +48,7 @@ import MessageCircle from '~icons/lucide/message-circle'
 import MessageSquare from '~icons/lucide/message-square'
 import MessagesSquare from '~icons/lucide/messages-square'
 import Music from '~icons/lucide/music'
+import NotebookPen from '~icons/lucide/notebook-pen'
 import PenLine from '~icons/lucide/pen-line'
 import Phone from '~icons/lucide/phone'
 import Plug from '~icons/lucide/plug'
@@ -60,11 +64,13 @@ import ShieldCheck from '~icons/lucide/shield-check'
 import SlidersHorizontal from '~icons/lucide/sliders-horizontal'
 import Smartphone from '~icons/lucide/smartphone'
 import Smile from '~icons/lucide/smile'
+import SquareTerminal from '~icons/lucide/square-terminal'
 import Swords from '~icons/lucide/swords'
 import Target from '~icons/lucide/target'
 import ThumbsUp from '~icons/lucide/thumbs-up'
 import Timer from '~icons/lucide/timer'
 import TrendingUp from '~icons/lucide/trending-up'
+import User from '~icons/lucide/user'
 import UserCog from '~icons/lucide/user-cog'
 import UserPen from '~icons/lucide/user-pen'
 import Users from '~icons/lucide/users'
@@ -74,6 +80,7 @@ import X from '~icons/lucide/x'
 import Zap from '~icons/lucide/zap'
 
 export const icons: Record<string, Component> = {
+  'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
   'book-open': BookOpen,
   'bot': Bot,
@@ -85,11 +92,13 @@ export const icons: Record<string, Component> = {
   'circle-help': CircleHelp,
   'circle-play': CirclePlay,
   'clipboard-check': ClipboardCheck,
+  'clipboard-paste': ClipboardPaste,
   'code': Code,
   'cog': Cog,
   'coins': Coins,
   'copy': Copy,
   'database': Database,
+  'eye': Eye,
   'file-text': FileText,
   'filter': Filter,
   'folder-open': FolderOpen,
@@ -112,6 +121,7 @@ export const icons: Record<string, Component> = {
   'message-square': MessageSquare,
   'messages-square': MessagesSquare,
   'music': Music,
+  'notebook-pen': NotebookPen,
   'pen-line': PenLine,
   'phone': Phone,
   'plug': Plug,
@@ -127,11 +137,13 @@ export const icons: Record<string, Component> = {
   'sliders-horizontal': SlidersHorizontal,
   'smartphone': Smartphone,
   'smile': Smile,
+  'square-terminal': SquareTerminal,
   'swords': Swords,
   'target': Target,
   'thumbs-up': ThumbsUp,
   'timer': Timer,
   'trending-up': TrendingUp,
+  'user': User,
   'user-cog': UserCog,
   'user-pen': UserPen,
   'users': Users,

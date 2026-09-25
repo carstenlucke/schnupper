@@ -244,6 +244,29 @@ class: text-xl
 
 ---
 rubrik: Vom Chatbot zum KI-Agenten
+titel: 'Der Alltag mit Chatbots: Copy & Paste'
+class: text-l
+---
+
+<div class="thm-center thm-gruppe">
+  <CopyPasteSchleife />
+
+  <Callout icon="user"><strong>Ihr seid die Brücke.</strong> Der Chatbot sieht nur den Schnipsel, den ihr ihm hineinkopiert — nicht eure ganze Arbeit.</Callout>
+</div>
+
+<!--
+- "Wer kennt's?" — Referat, Hausaufgabe, Bewerbung: Absatz rüber in
+  ChatGPT, Antwort zurück ins Dokument, nächster Absatz, wieder rüber …
+- IHR tragt die Informationen hin und her. Der Chatbot kennt nur, was ihr
+  ihm gebt — nicht das ganze Referat, nicht die Aufgabenstellung, nicht
+  eure Quellen
+- Irgendwann nervt das. Die Frage ist: Geht das auch ohne uns als
+  Zwischenhändler?
+- Überleitung: "Genau da kommen Agenten ins Spiel."
+-->
+
+---
+rubrik: Vom Chatbot zum KI-Agenten
 titel: Der Unterschied
 class: text-xl
 ---
@@ -273,6 +296,37 @@ class: text-xl
 - Analogie ist der Schlüssel zum Verständnis
 - Chatbot = passiver Berater, Agent = aktiver Macher
 - "Und wie macht der Agent das? Dazu gibt es ein einfaches Prinzip..."
+-->
+
+---
+rubrik: Vom Chatbot zum KI-Agenten
+titel: Was macht aus einem Modell einen Agenten?
+class: text-l
+---
+
+<div class="thm-center thm-gruppe">
+  <AgentAnatomie />
+</div>
+
+<!--
+- Zwei Teile: Das MODELL (das Sprachmodell, z. B. GPT oder Claude) ist das
+  Gehirn — es denkt, plant und entscheidet
+- Das HARNESS (engl. Geschirr, wie beim Pferd: Das Pferd hat die Kraft,
+  das Geschirr macht sie nutzbar) ist alles drumherum. Zwei Seiten:
+- Links die WERKZEUGE — Hände und Augen: Dateien lesen und schreiben,
+  Programme starten, im Web suchen
+- Rechts die STEUERUNG — was das Harness selbst leistet:
+  - Schleife: ruft das Modell immer wieder auf, führt aus, was es sich
+    wünscht, und gibt ihm das Ergebnis zurück — bis die Aufgabe fertig ist
+  - Anweisungen: Rolle und Aufgabe, in unseren Demos eine Textdatei
+  - Gedächtnis: der Verlauf, und wenn er zu lang wird, eine Zusammenfassung
+  - Leitplanken: was der Agent ohne Nachfrage darf und was nicht
+- Entscheiden tut immer das Modell, das Harness führt aus
+- Fun Fact: Ein mittelmäßiges Modell mit gutem Harness schlägt oft ein
+  besseres Modell mit schlechtem Harness
+- Rückbezug auf "Die Grenze verschwimmt": Die Anbieter bauen ihren
+  Chatbots Stück für Stück ein größeres Harness
+- Überleitung: "Die Schleife schauen wir uns jetzt genauer an."
 -->
 
 ---

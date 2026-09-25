@@ -113,6 +113,8 @@ einsetzen.
 | `class: text-xl` | Noch größer, für Folien mit wenig Text, die die Fläche füllen sollen (Einstieg) |
 | `.thm-center.thm-gruppe` | Einleitung, Karten und `<Callout>` als ein Block in der Folienmitte, statt den Merksatz an den Folienfuß zu schieben |
 | `<AgentKreislauf>` | Verstehen → Planen → Handeln → Prüfen mit Rückweg |
+| `<CopyPasteSchleife>` | Alltag mit Chatbots: Chatfenster, ihr, Dokument; Texte wandern per Copy & Paste hin und her |
+| `<AgentAnatomie>` | KI-Agent = Modell + Harness: Gleichung, darunter das Modell im Rahmen des Harness — links die Werkzeuge, rechts die Steuerung (Schleife, Anweisungen, Gedächtnis, Leitplanken) |
 | `<AgentAbhaengigkeiten>` | Wer wartet auf wen bei Ship It!; Kanten nach `AGENT_PATHS` in `ship-it/server.py` |
 | `<DemoUebersicht>` | Karten der Übersichtsfolie, springen auf `demo-<id>` |
 | `<DemoEnde>` | Abschlussfolie eines Demo-Blocks: zur Übersicht oder weiter |
