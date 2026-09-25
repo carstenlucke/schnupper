@@ -34,8 +34,10 @@ Daraus folgen Regeln:
   welche Demo gezeigt wurde — auch bei zweien. Was nur zu einer Demo passt, gehört in
   deren Datei.
 - **Jeder Demo-Block ist gleich gebaut:** Vorstellung, Aufbau, Mitmachfrage,
-  „Los geht's!" mit Adresse, Bewertung, Abschlussfolie. Rubriken `<Demo>`, `<Demo> · Live-Demo`,
-  `<Demo> · Bewertung`.
+  „Los geht's!" mit Adresse, Bewertung, Abschlussfolie. Im Aufbau darf eine
+  Motivationsfolie mit einem Fundstück stehen (Agent Party: ein
+  LinkedIn-Beitrag, nach „Ein Agent ist eine Textdatei"). Rubriken `<Demo>`,
+  `<Demo> · Live-Demo`, `<Demo> · Bewertung`.
 - **Reflexion ist zweigeteilt.** Die Bewertung („was haben wir gesehen?") ist
   demo-spezifisch und steht im Block. Der Reality Check ist gemeinsam; neue
   Demos tragen ihre Beispiele in dessen Sprecher-Notizen ein, nicht als
@@ -108,7 +110,9 @@ einsetzen.
 | `<AgentAbhaengigkeiten>` | Wer wartet auf wen bei Ship It!; Kanten nach `AGENT_PATHS` in `ship-it/server.py` |
 | `<DemoUebersicht>` | Karten der Übersichtsfolie, springen auf `demo-<id>` |
 | `<DemoEnde>` | Abschlussfolie eines Demo-Blocks: zur Übersicht oder weiter |
-| `<WerkzeugMatrix>` | Wer darf was bei den Counting Agents; Zeilen nach den `tools:`-Zeilen in `the-counting-agents/agents/*.md` |
+| `<WerkzeugMatrix>` | Wer darf was bei den Counting Agents; Zeilen nach den `tools:`-Zeilen in `the-counting-agents/agents/*.md`; der Merksatz zu „Alles andere“ erscheint nur als Tooltip bei Hover |
+| `<AgentRunde>` | Agent Party als Bild: vier Agenten im Kreis um ein Thema, reihum verbunden, je eine Sprechblase; Rollen nach `agent-party/profile/` |
+| `<SocialPost>` | Beitrag oder (`kommentar`) Kommentar aus einem beruflichen Netzwerk als Karte; Profilbild per `foto`, sonst Initialen; kein Logo, Quelle als `.thm-note` darunter |
 | `<CountingBus>` | Nachrichtenwege der Counting Agents: Zähler → Zahlen-Datei → Sammler, Steuerung → Befehls-Datei |
 
 Icons kommen aus Lucide (`@iconify-json/lucide`) und müssen in

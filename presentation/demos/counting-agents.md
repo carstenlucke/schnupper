@@ -73,14 +73,14 @@ titel: Was ein Agent kann, bestimmt sein Werkzeugkasten
   <WerkzeugMatrix />
 </div>
 
-<Callout icon="info" ton="hell">„Alles andere“ ist <strong>nicht verboten</strong> — die Werkzeuge sind <strong>gar nicht da</strong>. Das wirkt stärker als jedes Verbot im Text.</Callout>
-
 <style>
 .gleichung {
   display: flex;
   align-items: center;
   gap: 0.7rem;
   margin: 0 0 0.6rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--border-default);
   font-size: 1.2rem;
   font-weight: var(--fw-bold);
   color: var(--text-strong);
@@ -107,6 +107,9 @@ titel: Was ein Agent kann, bestimmt sein Werkzeugkasten
   ist, sondern weil das Werkzeug fehlt
 - Letzte Zeile: Die allgemeinen Werkzeuge (Shell, Dateien lesen/schreiben)
   hat keiner — sie werden beim Start weggenommen
+- Maus auf "Alles andere" zeigt den Merksatz: nicht verboten, sondern gar
+  nicht da — erst fragen "Warum nicht einfach im Text verbieten?", dann
+  aufdecken
 - Die Aufgabe selbst steht wieder in normalem Deutsch in einer Textdatei
   (ggf. agents/prime.md zeigen)
 -->

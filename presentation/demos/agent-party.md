@@ -1,52 +1,52 @@
 ---
 routeAlias: demo-agent-party
 rubrik: Agent Party
-titel: Ihr baut die Agenten selbst
+titel: Wenn KI-Agenten miteinander reden
+untertitel: Eine Gesprächsrunde, in der an jedem Platz eine KI sitzt
 ---
 
-<div class="thm-center">
-<div class="thm-lead">Eine Diskussionsrunde aus KI-Agenten. <strong>Wer mitdiskutiert und wie</strong>, bestimmt ihr — mit einer Rollenbeschreibung in ganz normalem Deutsch.</div>
-
-<CardGrid :cols="5" class="mt-4">
-  <Card icon="coins" titel="Skeptische Ökonomin">Rechnet jede Idee auf Kosten und Nutzen herunter</Card>
-  <Card icon="rocket" titel="Technik-Optimist">Sieht zuerst die Möglichkeiten</Card>
-  <Card icon="scale" titel="Ethikerin">Fragt, wer profitiert und wer die Rechnung zahlt</Card>
-  <Card icon="wrench" titel="Praktiker">Will wissen, wer es am Montag macht</Card>
-  <Card icon="swords" titel="Advocatus Diaboli">Widerspricht grundsätzlich der Mehrheit</Card>
-</CardGrid>
-</div>
+<AgentRunde />
 
 <!--
-- Fünf Profile sind mitgeliefert — gleich schreiben wir eigene
-- "Ein KI-Agent ist nichts Magisches: eine Rollenbeschreibung plus ein
-  Sprachmodell."
-- Wer die Beschreibung ändert, sieht das Verhalten sofort kippen
+- Worum es geht: Nicht wir reden mit der KI — die KIs reden miteinander
+- Jeder Agent ist ein Sprachmodell mit einer Rolle; alle bekommen dasselbe
+  Thema und sprechen reihum, einer nach dem anderen
+- Jeder hört, was vorher gesagt wurde, und reagiert darauf — so entsteht
+  ein Gespräch, das niemand vorher geschrieben hat
+- Überleitung: "Und wer an diesem Tisch sitzt, bestimmt ihr."
 -->
 
 ---
 rubrik: Agent Party
-titel: Ein Agent ist eine Textdatei
+titel: Wer am Tisch sitzt, bestimmt ihr
 class: text-l
 ---
 
-<div class="thm-center"><div class="thm-flow">
-  <Card icon="cog" icon-ton="grau" titel="Oben: die Technik">
-    Welches Modell, wie viel Nachdenken, welche Farbe.
-    <div class="thm-sample">model: gpt-5.6-luna<br>thinking: low<br>farbe: hellblau</div>
-  </Card>
-  <FlowArrow />
-  <Card icon="pen-line" titel="Darunter: die Rolle" tone="tint">
-    In ganz normalem Deutsch.
-    <div class="thm-sample sprache">„Du bist Wirtschaftswissenschaftlerin und sitzt in dieser Runde als die Stimme, die nach Zahlen fragt …“</div>
-  </Card>
-</div></div>
+<div class="thm-center">
+<div class="thm-eyebrow">Eine Diskussionsrunde …</div>
+<CardGrid :cols="5">
+  <Card icon="coins" titel="Skeptische Ökonomin">Rechnet alles auf Kosten und Nutzen herunter</Card>
+  <Card icon="rocket" titel="Technik-Optimist">Sieht zuerst die Möglichkeiten</Card>
+  <Card icon="scale" titel="Ethikerin">Fragt, wer profitiert und wer zahlt</Card>
+  <Card icon="wrench" titel="Praktiker">Will wissen, wer es am Montag macht</Card>
+  <Card icon="swords" titel="Advocatus Diaboli">Widerspricht grundsätzlich der Mehrheit</Card>
+</CardGrid>
 
-<Callout icon="info" class="mt-4"><strong>Dieser Text geht wörtlich an die KI</strong> — keine versteckte Zusatzanweisung, kein Code.</Callout>
+<div class="thm-eyebrow mt-6">… oder ein Vorstellungsgespräch</div>
+<CardGrid :cols="3">
+  <Card icon="handshake" titel="Personalreferentin">Führt das Gespräch: Lebenslauf, Eignung, Soft Skills</Card>
+  <Card icon="laptop" titel="Teamleiter IT">Hakt fachlich nach, was hinter einer Antwort steckt</Card>
+  <Card icon="graduation-cap" icon-ton="grau" titel="Bewerberin">Macht gerade Abitur und will den dualen Studienplatz</Card>
+</CardGrid>
+</div>
 
 <!--
-- Im Dashboard ein Profil öffnen und zeigen: Das ist der ganze Agent
-- Frontmatter = Technik, darunter = Rolle
-- Überleitung: "Und so eine Datei schreibt ihr gleich selbst."
+- Acht Profile sind mitgeliefert — gleich schreiben wir eigene
+- Derselbe Mechanismus, zwei ganz verschiedene Runden: Ob diskutiert oder
+  ein Bewerbungsgespräch geführt wird, steht allein in den Rollentexten
+- "Ein KI-Agent ist nichts Magisches: eine Rollenbeschreibung plus ein
+  Sprachmodell."
+- Wer die Beschreibung ändert, sieht das Verhalten sofort kippen
 -->
 
 ---
@@ -72,6 +72,89 @@ class: text-l
 - Zwischenruf: ist nur eine Zeile mehr im Verlauf, die beim nächsten Beitrag
   mitgeschickt wird — die KI hat kein Gedächtnis, sie bekommt jedes Mal das
   ganze Gespräch neu
+-->
+
+---
+rubrik: Agent Party
+titel: Ein Agent ist eine Textdatei
+class: text-l
+---
+
+<div class="thm-center"><div class="thm-flow">
+  <Card icon="cog" icon-ton="grau" titel="Oben: die Technik">
+    Welches Modell, wie viel Nachdenken, welche Farbe.
+    <div class="thm-sample">model: gpt-5.6-luna<br>thinking: low<br>farbe: hellblau</div>
+  </Card>
+  <FlowArrow />
+  <Card icon="pen-line" titel="Darunter: die Rolle" tone="tint">
+    In ganz normalem Deutsch.
+    <div class="thm-sample sprache">„Du bist Wirtschaftswissenschaftlerin und sitzt in dieser Runde als die Stimme, die nach Zahlen fragt …“</div>
+  </Card>
+</div></div>
+
+<Callout icon="info" class="mt-4"><strong>Dieser Text geht wörtlich an die KI</strong> — keine versteckte Zusatzanweisung, kein Code.</Callout>
+
+<!--
+- Im Dashboard ein Profil öffnen und zeigen: Das ist der ganze Agent
+- Frontmatter = Technik, darunter = Rolle
+- Überleitung: "Und wofür kann man so etwas brauchen? Ein Fundstück von
+  LinkedIn …"
+-->
+
+---
+rubrik: Agent Party
+titel: Vorstellungsgespräch? Erst mal mit KI proben
+---
+
+<div class="thm-cols thm-cols-2-3">
+  <div class="thm-stack motiv-post">
+    <SocialPost autor="Alex Wang" foto="/linkedin-alex-wang.jpg" zeile="Learn AI Together · I explain practical AI, real workflows …"
+                datum="25.09.2026" bild="/linkedin-jobsuche-2026.jpg"
+                bild-alt="Grafik „How I’d job hunt in 2026“: Old Way gegen New Way in fünf Schritten"
+                reaktionen="1.023" kommentare="51">
+      Nice visual - I’ve actually used most of these. […] YouTube is still one of my favorite ways to understand a role I’m unfamiliar with. … mehr
+    </SocialPost>
+    <div class="thm-note">Alex Wang auf LinkedIn, 25.09.2026 · Grafik: GenAI.works</div>
+  </div>
+  <div class="thm-stack">
+    <div>
+      <div class="thm-eyebrow">Schritt 04 der Grafik: üben</div>
+      <img class="motiv-schritt" src="/linkedin-jobsuche-2026-practice.jpg" alt="Old Way: YouTube-Videos zu typischen Interviewfragen. New Way: Probeinterview mit einer KI, die nachfragt" />
+    </div>
+    <div class="thm-lead">Ein Probeinterview mit einer KI, die nachhakt — das bauen wir nach. Nur sitzt bei uns <strong>an allen drei Plätzen</strong> eine KI:</div>
+    <CardGrid :cols="3">
+      <Card icon="handshake" titel="Personalreferentin">Lebenslauf, Eignung, Soft Skills</Card>
+      <Card icon="laptop" titel="Teamleiter IT">Hakt fachlich nach</Card>
+      <Card icon="graduation-cap" icon-ton="grau" titel="Bewerberin">Macht Abitur, will dual studieren</Card>
+    </CardGrid>
+    <Callout icon="target"><strong>Die Stelle:</strong> duales Studium Wirtschaftsinformatik bei der Lahnblick Optronik GmbH in Wetzlar — ausgedacht.</Callout>
+  </div>
+</div>
+
+<style>
+.motiv-post { gap: 0; }
+.motiv-post :deep(.sp) { flex: 1; }
+.motiv-schritt {
+  width: 100%;
+  border: 1px solid var(--border-default);
+}
+</style>
+
+<!--
+- Fundstück von LinkedIn: Alex Wang, gut 1,1 Mio. Follower, teilt eine
+  Grafik von GenAI.works — Jobsuche 2026, fünf Schritte, links der alte Weg,
+  rechts der mit KI
+- Frage in die Runde: "Wer hat schon mal ein Vorstellungsgespräch geführt?
+  Wie habt ihr euch vorbereitet?"
+- Schritt 04: Früher YouTube-Videos mit typischen Fragen, heute ein
+  Probeinterview mit einer KI, die nachfragt (Yoodli)
+- Genau das bauen wir mit Agent Party selbst, ohne fertige App: drei
+  Rollenbeschreibungen in normalem Deutsch
+- Die Stelle ist erfunden, aber realistisch: duales Studium mit StudiumPlus —
+  also genau das, worauf ihr euch in ein, zwei Jahren bewerben könntet
+- Alex Wang schreibt im Post auch: "Die letzten Anpassungen mache ich
+  selbst — damit es noch nach mir klingt"
+- Überleitung: "Und jetzt seid ihr dran."
 -->
 
 ---
@@ -124,6 +207,14 @@ Wechsel zur **Agent Party**
 - Höhepunkt: einen Satz in einem Profil ändern, dieselbe Party neu starten —
   die Diskussion dreht sich
 - Ggf. zum Schluss "Fazit erstellen"
+- Variante Vorstellungsgespräch (knüpft an die Einstiegsfolie an): Besetzung
+  Personalreferentin, Teamleiter IT, Bewerberin — genau in dieser
+  Reihenfolge; Thema "Vorstellungsgespräch: Duales Studium
+  Wirtschaftsinformatik bei der Lahnblick Optronik GmbH"; Einstiegsfrage
+  "Erzählen Sie doch mal: Warum ein duales Studium – und warum bei uns?";
+  2 Runden
+- Hebel dafür: im Profil der Bewerberin "sagst du das ehrlich" durch "Du
+  übertreibst gern, um gut dazustehen" ersetzen — der Teamleiter bohrt nach
 -->
 
 ---
@@ -169,6 +260,55 @@ Die KI hat keine Meinung — sie hat eine **Rolle**.
 - Übertragen: Chatbots in Apps, Kundenservice, Social Media — auch dort hat
   jemand eine Rolle geschrieben, die ihr nicht seht
 - Deshalb: Bei KI-Antworten immer fragen, wer sie so eingestellt hat
+-->
+
+---
+rubrik: Agent Party · Bewertung
+titel: KI gegen KI?
+hideInToc: true
+---
+
+<div class="thm-lead">In unserem Vorstellungsgespräch saß <strong>an allen drei Plätzen</strong> eine KI. Bei echten Bewerbungen passiert gerade etwas Ähnliches:</div>
+
+<div class="thm-cols thm-cols-3-2">
+  <div class="thm-center"><div class="thm-flow">
+    <Card icon="pen-line" icon-ton="grau" titel="Bewerbende">KI schreibt die Bewerbung, für jede Stelle passend gemacht</Card>
+    <FlowArrow />
+    <Card icon="file-text" icon-ton="grau" titel="Die Flut">Hunderte glatt polierte Lebensläufe, die alle ähnlich klingen</Card>
+    <FlowArrow />
+    <Card icon="filter" icon-ton="rot" titel="Arbeitgeber">KI sortiert aus, was KI geschrieben hat</Card>
+  </div></div>
+  <div class="thm-stack reflex-kommentar">
+    <SocialPost kommentar autor="Kal Makwana" zeile="CEO @ ApplyPal & ReferPool" datum="25.09.2026" reaktionen="9">
+      Using AI on one side to beat the AI on the other side is a fools errand. Tools like these is exactly why recruitment is broken. […] more companies are now using their existing employees network instead of sifting through 800+ AI polished CVs.
+    </SocialPost>
+    <div class="thm-note">Kommentar zum Beitrag von Alex Wang, LinkedIn, 25.09.2026</div>
+  </div>
+</div>
+
+<Callout icon="messages-square" class="mt-4"><strong>Zum Üben ja, als Ersatz nein.</strong> Die KI darf euch Fragen stellen — antworten müsst ihr im echten Gespräch selbst.</Callout>
+
+<style>
+.reflex-kommentar { gap: 0; justify-content: center; }
+</style>
+
+<!--
+- Rückbezug auf den Einstieg: Die Grafik zeigt fünf Schritte, in denen KI
+  hilft. Zu Ende gedacht heißt das: KI schreibt, KI liest — und kein Mensch
+  lernt den anderen kennen
+- In unserer Demo war das sogar wörtlich so: Auch die Bewerberin war eine KI.
+  Frage in die Runde: "Hat sich da eigentlich noch jemand beworben?"
+- Kal Makwana: "Mit KI auf der einen Seite die KI auf der anderen Seite
+  schlagen zu wollen, ist ein aussichtsloses Unterfangen." Firmen weichen
+  deshalb auf Empfehlungen aus dem eigenen Team aus. Einordnen: Kal Makwana
+  leitet selbst eine Plattform für solche Empfehlungen — auch ein Kommentar hat
+  eine Rolle, wie unsere Profile
+- Die Personalabteilung ist nicht der Gegner: Wer 800 Bewerbungen auf eine
+  Stelle bekommt, greift zur Maschine. Das Wettrüsten hat zwei Seiten
+- Der Unterschied: Üben macht euch besser, im echten Gespräch sitzt ihr
+  selbst. Ein generiertes Anschreiben ersetzt euch — und klingt wie alle
+  anderen. Alex Wang schreibt es im Post selbst: "Die letzten Anpassungen
+  mache ich von Hand — damit es noch nach mir klingt"
 -->
 
 ---

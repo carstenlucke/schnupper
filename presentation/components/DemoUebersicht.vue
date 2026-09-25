@@ -6,7 +6,7 @@
 const demos = [
   { id: 'ship-it', titel: 'Ship It!', icon: 'rocket', text: 'Fünf Agenten bringen euer Produkt auf den Markt — bis zur fertigen Website.' },
   { id: 'counting-agents', titel: 'The Counting Agents', icon: 'list-ordered', text: 'Fünf Agenten zählen gemeinsam — und wir sehen ihnen bei der Arbeit zu.' },
-  { id: 'agent-party', titel: 'Agent Party', icon: 'messages-square', text: 'Ihr schreibt die Agenten selbst — und sie diskutieren miteinander.' },
+  { id: 'agent-party', titel: 'Agent Party', icon: 'messages-square', text: 'Eine Gesprächsrunde, in der an jedem Platz eine KI sitzt.' },
 ]
 </script>
 

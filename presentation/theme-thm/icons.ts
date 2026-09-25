@@ -27,7 +27,9 @@ import FileText from '~icons/lucide/file-text'
 import Filter from '~icons/lucide/filter'
 import FolderOpen from '~icons/lucide/folder-open'
 import Ghost from '~icons/lucide/ghost'
+import Globe from '~icons/lucide/globe'
 import GraduationCap from '~icons/lucide/graduation-cap'
+import Handshake from '~icons/lucide/handshake'
 import Hash from '~icons/lucide/hash'
 import Headphones from '~icons/lucide/headphones'
 import Info from '~icons/lucide/info'
@@ -39,6 +41,7 @@ import ListChecks from '~icons/lucide/list-checks'
 import ListOrdered from '~icons/lucide/list-ordered'
 import Mail from '~icons/lucide/mail'
 import Megaphone from '~icons/lucide/megaphone'
+import MessageCircle from '~icons/lucide/message-circle'
 import MessageSquare from '~icons/lucide/message-square'
 import MessagesSquare from '~icons/lucide/messages-square'
 import Music from '~icons/lucide/music'
@@ -47,16 +50,19 @@ import Phone from '~icons/lucide/phone'
 import Plug from '~icons/lucide/plug'
 import Quote from '~icons/lucide/quote'
 import RefreshCw from '~icons/lucide/refresh-cw'
+import Repeat2 from '~icons/lucide/repeat-2'
 import Rocket from '~icons/lucide/rocket'
 import Scale from '~icons/lucide/scale'
 import ScanSearch from '~icons/lucide/scan-search'
 import SearchCheck from '~icons/lucide/search-check'
+import Send from '~icons/lucide/send'
 import ShieldCheck from '~icons/lucide/shield-check'
 import SlidersHorizontal from '~icons/lucide/sliders-horizontal'
 import Smartphone from '~icons/lucide/smartphone'
 import Smile from '~icons/lucide/smile'
 import Swords from '~icons/lucide/swords'
 import Target from '~icons/lucide/target'
+import ThumbsUp from '~icons/lucide/thumbs-up'
 import Timer from '~icons/lucide/timer'
 import TrendingUp from '~icons/lucide/trending-up'
 import UserCog from '~icons/lucide/user-cog'
@@ -88,7 +94,9 @@ export const icons: Record<string, Component> = {
   'filter': Filter,
   'folder-open': FolderOpen,
   'ghost': Ghost,
+  'globe': Globe,
   'graduation-cap': GraduationCap,
+  'handshake': Handshake,
   'hash': Hash,
   'headphones': Headphones,
   'info': Info,
@@ -100,6 +108,7 @@ export const icons: Record<string, Component> = {
   'list-ordered': ListOrdered,
   'mail': Mail,
   'megaphone': Megaphone,
+  'message-circle': MessageCircle,
   'message-square': MessageSquare,
   'messages-square': MessagesSquare,
   'music': Music,
@@ -108,16 +117,19 @@ export const icons: Record<string, Component> = {
   'plug': Plug,
   'quote': Quote,
   'refresh-cw': RefreshCw,
+  'repeat-2': Repeat2,
   'rocket': Rocket,
   'scale': Scale,
   'scan-search': ScanSearch,
   'search-check': SearchCheck,
+  'send': Send,
   'shield-check': ShieldCheck,
   'sliders-horizontal': SlidersHorizontal,
   'smartphone': Smartphone,
   'smile': Smile,
   'swords': Swords,
   'target': Target,
+  'thumbs-up': ThumbsUp,
   'timer': Timer,
   'trending-up': TrendingUp,
   'user-cog': UserCog,
