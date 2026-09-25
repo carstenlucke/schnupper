@@ -15,8 +15,9 @@ Beschreibung ändert, sieht das Verhalten sofort kippen.
 ./start.sh
 ```
 
-Öffnet das Dashboard unter [http://localhost:8100](http://localhost:8100). Fünf
-Profile sind mitgeliefert, es lässt sich also sofort losdiskutieren.
+Öffnet das Dashboard unter [http://localhost:8100](http://localhost:8100). Acht
+Profile sind mitgeliefert, es lässt sich also sofort losdiskutieren — oder ein
+Vorstellungsgespräch führen.
 
 ### Voraussetzungen
 
@@ -64,6 +65,35 @@ steht. Wer ihn einwirft, sieht dem Gespräch beim Abbiegen zu.
 | **Ethikerin** | Fragt, wer profitiert und wer die Rechnung zahlt |
 | **Praktiker** | Will wissen, wer es am Montag tatsächlich macht |
 | **Advocatus Diaboli** | Widerspricht grundsätzlich der Mehrheitsmeinung |
+
+Drei weitere Profile spielen ein Vorstellungsgespräch statt einer Diskussion:
+
+| Profil | Rolle im Gespräch |
+|---|---|
+| **Personalreferentin** | Petra Brandt, führt das Gespräch: Lebenslauf, Motivation, Eignung, Soft Skills, Sozialverhalten |
+| **Teamleiter IT** | Jonas Keller, hakt fachlich nach, was hinter einer Antwort steckt |
+| **Bewerberin** | Lena Hofmann, macht gerade Abitur und will den dualen Studienplatz |
+
+Die Stelle ist ausgedacht: duales Studium Wirtschaftsinformatik mit
+StudiumPlus bei der Lahnblick Optronik GmbH in Wetzlar. Die Personalreferentin
+kennt sie nicht — ihr Profil beschreibt nur, wie sie Vorstellungsgespräche
+führt, und taugt damit für jede Stelle; was gesucht wird, entnimmt sie dem
+Thema. Teamleiter und Bewerberin dagegen gehören zu dieser einen Stelle. Weil
+die Profile keine Werkzeuge haben und nichts nachlesen können, steht die
+Stellenanzeige in beiden Rollentexten — wer sie ändert, ändert sie in beiden.
+So wird die Party eingerichtet:
+
+| Feld | Wert |
+|---|---|
+| Besetzung | Personalreferentin, Teamleiter IT, Bewerberin — in dieser Reihenfolge |
+| Thema | Vorstellungsgespräch: Duales Studium Wirtschaftsinformatik bei der Lahnblick Optronik GmbH |
+| Einstiegsfrage | Erzählen Sie doch mal: Warum ein duales Studium – und warum bei uns? |
+| Runden | 2 bis 3 |
+
+Die Bewerberin spricht als Letzte, damit sie in jeder Runde auf beide Fragen
+antworten kann. Ein guter Hebel für Schritt 11: aus „Wenn du etwas nicht
+weißt, sagst du das ehrlich" wird „Du übertreibst gern, um gut dazustehen" —
+und der Teamleiter fängt an nachzubohren.
 
 Neu angelegte Profile landen daneben unter `profile/` und bleiben untracked.
 
