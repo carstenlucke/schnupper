@@ -1,4 +1,4 @@
-# Präsentation — Schnuppervorlesung „Digitalisierung und KI"
+# Präsentation — Schnuppervorlesung „Vom Chatbot zum KI-Agenten"
 
 Slidev-Präsentation für die 90-minütige Schnuppervorlesung bei StudiumPlus
 (Oberstufe). Sie liegt auf oberster Ebene des Repositorys, weil jede der Demos

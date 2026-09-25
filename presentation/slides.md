@@ -1,6 +1,6 @@
 ---
 theme: ./theme-thm
-title: 'Digitalisierung und KI'
+title: 'Vom Chatbot zum KI-Agenten'
 titleTemplate: '%s — Schnuppervorlesung'
 author: 'Prof. Dr. Carsten Lucke'
 veranstaltung: Schnuppervorlesung · StudiumPlus
@@ -13,26 +13,17 @@ colorSchema: light
 drawings:
   persist: false
 layout: cover
+bild: /studiumplus-campus.jpg
 rubrik: Schnuppervorlesung · Duales Studium
 ---
 
-# Digitalisierung und KI
-
-<div class="cover-sub">Was Maschinen schon können</div>
+# Vom Chatbot<br>zum KI-Agenten
 
 <div class="cover-meta">
 
 Prof. Dr. Carsten Lucke
 
 </div>
-
-<style>
-.cover-sub {
-  margin-top: 0.9rem;
-  font-size: 1.35rem;
-  color: var(--thm-grey-100);
-}
-</style>
 
 <!--
 - Willkommen, kurze Vorstellung
@@ -58,10 +49,11 @@ Wer von euch hat schon mal **ChatGPT, Gemini oder Copilot** benutzt?
 ---
 rubrik: Einstieg
 titel: Digitalisierung und KI — wie hängt das zusammen?
-class: text-l
+class: text-xl
 ---
 
-<div class="thm-center"><div class="thm-flow">
+<div class="thm-center thm-gruppe">
+<div class="thm-flow">
   <Card icon="database" icon-ton="grau" titel="Digitalisierung">
     <p><strong>Sammeln und Speichern</strong></p>
     <p>Aus Aktenordnern wurden Datenbanken, aus Briefen wurden E&#8209;Mails, aus Papier wurden PDFs.</p>
@@ -69,11 +61,12 @@ class: text-l
   <FlowArrow />
   <Card icon="brain" titel="Künstliche Intelligenz" tone="tint">
     <p><strong>Verstehen und Nutzen</strong></p>
-    <p>KI zieht Schlüsse aus den digitalisierten Daten — und handelt eigenständig.</p>
+    <p>KI zieht Schlüsse aus den digitalisierten Daten&nbsp;— und handelt eigenständig.</p>
   </Card>
-</div></div>
+</div>
 
-<Callout class="mt-4"><strong>Ohne Digitalisierung hätte KI kein Futter.</strong> Die Digitalisierung hat die Welt für Maschinen lesbar gemacht — KI ist die Intelligenzschicht, die jetzt darauf aufsetzt.</Callout>
+<Callout><strong>Ohne Digitalisierung hätte KI kein Futter.</strong> Die Digitalisierung hat die Welt für Maschinen lesbar gemacht — KI ist die Intelligenzschicht, die jetzt darauf aufsetzt.</Callout>
+</div>
 
 <!--
 - Digitalisierung ist die Infrastruktur, KI die Intelligenz
@@ -86,21 +79,20 @@ class: text-l
 ---
 rubrik: Einstieg
 titel: KI ist schon überall
-class: text-l
+class: text-xl
 ---
 
+<div class="thm-center thm-gruppe">
 <div class="thm-lead">Ihr nutzt täglich KI — oft ohne es zu merken:</div>
-
-<div class="thm-center">
 <CardGrid :cols="2">
   <Card icon="music" titel="Spotify & YouTube" kompakt>
-    Empfehlungen basierend auf eurem Verhalten — das ist KI
+    Empfehlungen basierend auf eurem Verhalten&nbsp;—&nbsp;das&nbsp;ist&nbsp;KI
   </Card>
   <Card icon="smartphone" titel="TikTok & Instagram" kompakt>
-    Der Algorithmus entscheidet, was ihr seht — das ist KI
+    Der Algorithmus entscheidet, was ihr seht&nbsp;—&nbsp;das&nbsp;ist&nbsp;KI
   </Card>
   <Card icon="languages" titel="DeepL & Google Translate" kompakt>
-    Übersetzungen in Echtzeit — das ist KI
+    Übersetzungen in Echtzeit&nbsp;—&nbsp;das&nbsp;ist&nbsp;KI
   </Card>
   <Card icon="message-square" titel="ChatGPT & Co." kompakt>
     Texte schreiben, Fragen beantworten — und jetzt: auch <strong>handeln</strong>
@@ -118,28 +110,36 @@ class: text-l
 ---
 rubrik: Einstieg
 titel: 'Die große Veränderung: Vom Code zur Sprache'
-class: text-l
+class: text-xl
 ---
 
-<div class="thm-center"><div class="thm-flow">
+<div class="thm-center thm-gruppe">
+<div class="thm-flow">
   <Card icon="code" icon-ton="grau" titel="Früher">
     Um mit digitalen Daten zu arbeiten, brauchte man <strong>Programmiersprachen</strong>.
     <div class="thm-sample">SELECT * FROM kunden<br>WHERE alter &gt; 18</div>
+    <CodeKlappe />
   </Card>
   <FlowArrow />
   <Card icon="message-square" titel="Heute" tone="tint">
     LLMs erlauben es, mit Daten und Systemen in <strong>natürlicher Sprache</strong> zu arbeiten.
     <div class="thm-sample sprache">„Zeig mir alle Kunden über 18 Jahre“</div>
   </Card>
-</div></div>
+</div>
 
-<Callout icon="rocket" class="mt-4"><strong>Genau das werden wir gleich sehen:</strong> Unsere KI-Agenten bekommen ihre Aufträge in ganz normalem Deutsch — kein Code, keine Programmierung.</Callout>
+<Callout icon="rocket"><strong>Genau das werden wir gleich sehen:</strong> Unsere KI-Agenten bekommen ihre Aufträge in ganz normalem Deutsch — kein Code, keine Programmierung.</Callout>
+</div>
 
 <!--
 - DAS ist der Paradigmenwechsel den LLMs gebracht haben
 - Früher: Nur wer programmieren konnte, konnte digitale Systeme steuern
 - Heute: Natürliche Sprache reicht — LLMs sind der "Dolmetscher"
 - Bezug zu den Demos: Die Agenten verstehen deutsche Aufträge
+- Knopf "Und wenn es komplizierter wird?": zeigt 25 Zeilen TypeScript, die
+  Primzahlen aus einem Zahlenstrom sammeln — gegen zwei Sätze an einen
+  Agenten. Nicht vorlesen, nur wirken lassen. Schließen mit Klick daneben
+  oder Esc. (Genau diese Aufgabe hat bei den Counting Agents der
+  Primzahl-Agent.)
 - "Aber es gibt noch ein Problem..."
 -->
 

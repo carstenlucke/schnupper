@@ -101,7 +101,8 @@
 
 /* ---- Beispiel in einer Karte: Code oder ein Satz in Alltagssprache ---- */
 .thm-sample {
-  margin-top: 0.6rem;
+  /* in em, damit der Abstand zum Text mit text-l / text-xl mitwächst */
+  margin-top: 0.9em;
   padding: 0.5rem 0.7rem;
   background: var(--white);
   border-left: 0.2rem solid var(--thm-grey-300);
@@ -125,6 +126,11 @@
   flex: 1;
   min-height: 0;
 }
+
+/* Inhalt und Merksatz als ein Block in der Folienmitte, statt den
+   Merksatz an den Folienfuß zu schieben */
+.thm-center.thm-gruppe { gap: 1.6rem; }
+.thm-center.thm-gruppe > .thm-lead { margin-bottom: 0; }
 
 /* ---- Abbildung mit Bildunterschrift ---- */
 .thm-figure {
@@ -278,4 +284,24 @@
   top: 1.35rem;
   left: var(--slide-pad-x);
 }
+
+/* THM-Logo und StudiumPlus-Marke nebeneinander (Titelfolie) */
+.thm-lockup.mit-marke {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.thm-lockup.mit-marke img {
+  height: 100%;
+  width: auto;
+}
+
+.thm-lockup.mit-marke .lk-strich {
+  align-self: stretch;
+  width: 1px;
+  background: var(--thm-grey-400);
+}
+
+.thm-lockup.mit-marke.hell .lk-strich { background: rgba(255, 255, 255, 0.45); }
 

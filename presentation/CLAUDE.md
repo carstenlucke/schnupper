@@ -1,6 +1,6 @@
 # CLAUDE.md — Präsentation
 
-Slidev-Foliensatz der Schnuppervorlesung „Digitalisierung und KI". Liegt auf
+Slidev-Foliensatz der Schnuppervorlesung „Vom Chatbot zum KI-Agenten". Liegt auf
 oberster Ebene, weil er die Demos des Repositorys einbettet — Folien zu einer
 Demo gehören hierher, nicht in das Demo-Projekt.
 
@@ -60,9 +60,13 @@ für StudiumPlus angepasst:
 
 - **Logos**: THM-Logo oben rechts (`ThmLockup.vue`), StudiumPlus-Marke unten
   rechts in der Fußzeile (`SlideFooter.vue`) — wie in den StudiumPlus-Folien
-  des Design-Systems. Keine Campus-/Fachbereichs-Lockup.
-- **Titel- und Schlussfolie** kommen ohne Foto aus: `cover` zeigt ohne `bild`
-  ein kleines neuronales Netz, `end` gibt dem Text die volle Breite.
+  des Design-Systems. Ausnahme Titelfolie: dort steht die Marke oben links
+  neben dem THM-Logo (`<ThmLockup marke>`), die Fußzeile lässt sie weg
+  (`<SlideFooter ohne-marke>`). Keine Campus-/Fachbereichs-Lockup.
+- **Titelfolie** mit Foto wie im Ursprungsprojekt: `bild:
+  /studiumplus-campus.jpg` (StudiumPlus-Gebäude mit Stele). Ohne `bild` zeigt
+  `cover` stattdessen ein kleines neuronales Netz. Die Schlussfolie (`end`)
+  kommt ohne Foto aus und gibt dem Text die volle Breite.
 - **Fragefolien** tragen per Voreinstellung die Rubrik „Frage an euch".
 - **Neu**: `<FlowArrow>` und die Klassen `.thm-flow` / `.thm-sample`.
 - Übernommen sind die allgemeinen Layouts und Komponenten (auch derzeit
@@ -106,6 +110,8 @@ einsetzen.
 | `.thm-sample` (`.sprache`) | Beispiel in einer Karte: Code bzw. Satz in Alltagssprache |
 | `.thm-center` | Inhalt vertikal mittig statt gestreckt — für Folien mit wenig Text |
 | `class: text-l` | Folienweit größere Schrift, für dünn besetzte Folien |
+| `class: text-xl` | Noch größer, für Folien mit wenig Text, die die Fläche füllen sollen (Einstieg) |
+| `.thm-center.thm-gruppe` | Einleitung, Karten und `<Callout>` als ein Block in der Folienmitte, statt den Merksatz an den Folienfuß zu schieben |
 | `<AgentKreislauf>` | Verstehen → Planen → Handeln → Prüfen mit Rückweg |
 | `<AgentAbhaengigkeiten>` | Wer wartet auf wen bei Ship It!; Kanten nach `AGENT_PATHS` in `ship-it/server.py` |
 | `<DemoUebersicht>` | Karten der Übersichtsfolie, springen auf `demo-<id>` |
@@ -113,6 +119,7 @@ einsetzen.
 | `<WerkzeugMatrix>` | Wer darf was bei den Counting Agents; Zeilen nach den `tools:`-Zeilen in `the-counting-agents/agents/*.md`; der Merksatz zu „Alles andere“ erscheint nur als Tooltip bei Hover |
 | `<AgentRunde>` | Agent Party als Bild: vier Agenten im Kreis um ein Thema, reihum verbunden, je eine Sprechblase; Rollen nach `agent-party/profile/` |
 | `<SocialPost>` | Beitrag oder (`kommentar`) Kommentar aus einem beruflichen Netzwerk als Karte; Profilbild per `foto`, sonst Initialen; kein Logo, Quelle als `.thm-note` darunter |
+| `<CodeKlappe>` | Knopf unter dem SQL-Beispiel auf „Vom Code zur Sprache“; öffnet 25 Zeilen TypeScript (Primzahlen sammeln) neben zwei Sätzen an einen Agenten. Satz nach `the-counting-agents/agents/prime.md`, die Demo selbst bleibt ungenannt |
 | `<CountingBus>` | Nachrichtenwege der Counting Agents: Zähler → Zahlen-Datei → Sammler, Steuerung → Befehls-Datei |
 
 Icons kommen aus Lucide (`@iconify-json/lucide`) und müssen in
