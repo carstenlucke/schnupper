@@ -110,6 +110,141 @@ class: text-xl
 
 ---
 rubrik: Einstieg
+titel: Was steckt hinter ChatGPT & Co.?
+untertitel: Ein Large Language Model, kurz LLM
+class: text-l
+---
+
+<div class="thm-center thm-gruppe">
+<div class="thm-cols thm-cols-2 llm-oben">
+  <div class="llm-begriffe">
+    <div class="llm-begriff"><span class="llm-buchstabe">L</span><div><strong>Large</strong> <em>groß</em><br>hat riesige Mengen Text gelesen: Bücher, Websites, Chats</div></div>
+    <div class="llm-begriff"><span class="llm-buchstabe">L</span><div><strong>Language</strong> <em>Sprache</em><br>hat dabei gelernt, wie Sprache funktioniert</div></div>
+    <div class="llm-begriff"><span class="llm-buchstabe">M</span><div><strong>Model</strong> <em>Modell</em><br>sagt vorher, welches Wort als Nächstes kommt</div></div>
+  </div>
+  <NaechstesWort />
+</div>
+
+<div class="llm-modelle">
+  <span class="llm-label">Modelle</span>
+  <div class="llm-reihe">
+    <span class="llm-familie"><strong>GPT-5.6</strong> Sol · Terra · Luna</span>
+    <span class="llm-familie"><strong>Claude</strong> Opus · Fable · Mythos</span>
+    <span class="llm-familie"><strong>Gemini</strong></span>
+    <span class="llm-familie"><strong>Mistral</strong></span>
+    <span class="llm-familie"><strong>Llama</strong></span>
+    <span class="llm-familie"><strong>DeepSeek</strong></span>
+  </div>
+  <span class="llm-label">Apps</span>
+  <div class="llm-reihe">
+    <span class="llm-familie app">ChatGPT</span>
+    <span class="llm-familie app">Claude</span>
+    <span class="llm-familie app">Gemini</span>
+    <span class="llm-familie app">Copilot</span>
+    <span class="llm-familie app">Le Chat</span>
+  </div>
+</div>
+</div>
+
+<style>
+.llm-oben { flex: none; align-items: center; gap: 2.4rem; }
+
+.llm-begriffe {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.llm-begriff {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  line-height: 1.35;
+  color: var(--thm-grey-600);
+}
+
+.llm-begriff strong { color: var(--text-strong); font-size: 1.1em; }
+.llm-begriff em { font-style: normal; color: var(--thm-green-700); margin-left: 0.3rem; }
+
+.llm-buchstabe {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  background: var(--thm-green-500);
+  color: var(--white);
+  font-size: 1.4rem;
+  font-weight: var(--fw-bold);
+}
+
+.llm-modelle {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.5rem 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-default);
+}
+
+.llm-reihe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.llm-label {
+  font-size: 0.72em;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--thm-green-700);
+}
+
+.llm-familie {
+  padding: 0.3rem 0.8rem;
+  background: var(--thm-grey-50);
+  font-size: 0.9em;
+  color: var(--thm-grey-600);
+}
+
+.llm-familie strong { color: var(--text-strong); margin-right: 0.2rem; }
+
+/* Apps: nur der Rahmen, damit sie sich sichtbar von den Modellen abheben */
+.llm-familie.app {
+  background: none;
+  border: 1px solid var(--thm-grey-200);
+}
+</style>
+
+<!--
+- "Wir haben jetzt schon ein paarmal ChatGPT gesagt. Was steckt da
+  eigentlich drin?" — ein Large Language Model, ein großes Sprachmodell
+- Large: Es hat mehr Text gelesen, als ein Mensch in tausend Leben lesen
+  könnte
+- Language: Dabei hat es gelernt, wie Sprache funktioniert — Grammatik,
+  Fakten, Stil, sogar Programmiersprachen
+- Model: Im Kern macht es etwas erstaunlich Einfaches: Es sagt vorher,
+  welches Wort als Nächstes kommt. Dann hängt es das Wort an und macht
+  weiter — Wort für Wort
+- Rechts ausprobieren lassen: "Wie geht der Satz weiter?" Die meisten
+  sagen Bäcker oder Training — genau wie das Modell. Mond ist möglich,
+  aber sehr unwahrscheinlich (Zahlen sind ausgedacht)
+- Unten zwei Reihen: MODELLE sind das Gehirn, APPS das Fenster, in dem
+  ihr mit ihnen redet. ChatGPT ist die App, das Modell darin heißt z. B.
+  GPT-5.6. Copilot von Microsoft ist auch eine App — darin arbeiten vor
+  allem GPT-Modelle. Le Chat ist die App von Mistral, einem Anbieter aus
+  Frankreich. Claude und Gemini heißen als App und als Modell gleich
+- Die Namen hinter dem Punkt sind Varianten: größer und klüger oder
+  kleiner und schneller
+- Llama (Meta), Mistral und DeepSeek gibt es auch zum Herunterladen — die
+  laufen dann sogar auf dem eigenen Rechner
+- Dieses Wort "Modell" kommt ab jetzt immer wieder vor
+-->
+
+---
+rubrik: Einstieg
 titel: 'Die große Veränderung: Vom Code zur Sprache'
 class: text-xl
 ---
