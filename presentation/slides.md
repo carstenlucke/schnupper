@@ -34,10 +34,11 @@ Prof. Dr. Carsten Lucke
 ---
 layout: question
 titel: Kurze Umfrage
+class: text-xl
 hideInToc: true
 ---
 
-Wer von euch hat schon mal **ChatGPT, Gemini oder Copilot** benutzt?
+Wer von euch hat schon mal <br>**Claude, ChatGPT, Gemini <br>oder Copilot** benutzt?
 
 <!--
 - Hände hoch! (Erwartung: fast alle)
@@ -161,6 +162,7 @@ aktiv: 1
 ---
 layout: question
 titel: Reden vs. Handeln
+class: text-xl
 hideInToc: true
 ---
 
@@ -178,7 +180,7 @@ Aber kann es auch **handeln**?
 ---
 rubrik: Vom Chatbot zum KI-Agenten
 titel: Was kann ChatGPT?
-class: text-l
+class: text-xl
 ---
 
 <div class="thm-center">
@@ -206,37 +208,44 @@ class: text-l
 
 ---
 rubrik: Vom Chatbot zum KI-Agenten
-titel: Was kann ChatGPT nicht?
-class: text-l
+titel: Wo stößt ChatGPT an Grenzen?
+class: text-xl
 ---
 
-<div class="thm-center">
+<div class="thm-center thm-gruppe">
 <CardGrid :cols="2">
-  <Card icon="folder-open" icon-ton="rot" titel="Dateien erstellen" kompakt>
-    Kann keine Dokumente, Tabellen oder Websites auf eurem Rechner anlegen
+  <Card icon="folder-open" icon-ton="rot" titel="Arbeitet in seiner eigenen Box" kompakt>
+    Dateien erzeugt es bei sich, ihr ladet sie herunter. In eure Ordner und Programme kommt es nicht.
   </Card>
-  <Card icon="cog" icon-ton="rot" titel="Aufgaben ausführen" kompakt>
-    Kann nichts eigenständig erledigen — nur antworten, wenn ihr fragt
+  <Card icon="timer" icon-ton="rot" titel="Wartet auf euch" kompakt>
+    Eine Frage, eine Antwort — dann ist Schluss. Den nächsten Schritt stoßt ihr an.
   </Card>
-  <Card icon="plug" icon-ton="rot" titel="Mit Systemen arbeiten" kompakt>
-    Kann nicht auf Datenbanken, APIs oder andere Programme zugreifen
+  <Card icon="plug" icon-ton="rot" titel="Nur eingebaute Werkzeuge" kompakt>
+    Websuche, Rechnen, Bilder: das, was der Anbieter einbaut. Eure eigenen Systeme kennt es nicht.
   </Card>
-  <Card icon="refresh-cw" icon-ton="rot" titel="Sich selbst prüfen" kompakt>
-    Kann nicht testen, ob seine Antwort wirklich stimmt oder funktioniert
+  <Card icon="refresh-cw" icon-ton="rot" titel="Sieht nicht, was daraus wird" kompakt>
+    Ob der Text ankommt oder der Plan aufgeht, erfährt es nur, wenn ihr es ihm sagt.
   </Card>
 </CardGrid>
+
+<Callout icon="info" ton="hell"><strong>Die Grenze verschwimmt:</strong> ChatGPT &amp; Co. bekommen laufend neue Werkzeuge — und werden selbst Schritt für Schritt zu Agenten.</Callout>
 </div>
 
 <!--
-- Kernpunkt: ChatGPT ist "nur" ein Gesprächspartner
-- Es WEISS viel, aber es KANN nichts tun
+- Kernpunkt: Nicht "ChatGPT kann nichts", sondern: Es arbeitet in seinem
+  eigenen Fenster, Frage für Frage, und ihr seid die Brücke zur echten Welt
+- Wer einwirft "ChatGPT kann doch Dateien machen / im Web suchen / Code
+  ausführen": stimmt! Genau das ist der Merksatz unten — die Anbieter bauen
+  Werkzeuge ein, die Chatbots wachsen in Richtung Agent
+- Der Unterschied liegt nicht im Wissen, sondern darin, wer den nächsten
+  Schritt macht und wie weit die Hände reichen
 - "Stellt euch vor, ihr ruft einen Experten an..."
 -->
 
 ---
 rubrik: Vom Chatbot zum KI-Agenten
 titel: Der Unterschied
-class: text-l
+class: text-xl
 ---
 
 <div class="thm-center"><div class="thm-flow">
@@ -253,7 +262,7 @@ class: text-l
 
 <style>
 .vs-kern {
-  font-size: 1.3rem;
+  font-size: 1.2em;
   line-height: 1.3;
   color: var(--text-strong);
   margin: 0.2rem 0 0.8rem;

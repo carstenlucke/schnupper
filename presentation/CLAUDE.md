@@ -58,11 +58,11 @@ Das Theme ist aus dem Vorlesungsprojekt
 `~/Development/thm-lectures/WK_1208-Softwaretechnik/theme-thm/` übernommen und
 für StudiumPlus angepasst:
 
-- **Logos**: THM-Logo oben rechts (`ThmLockup.vue`), StudiumPlus-Marke unten
-  rechts in der Fußzeile (`SlideFooter.vue`) — wie in den StudiumPlus-Folien
-  des Design-Systems. Ausnahme Titelfolie: dort steht die Marke oben links
-  neben dem THM-Logo (`<ThmLockup marke>`), die Fußzeile lässt sie weg
-  (`<SlideFooter ohne-marke>`). Keine Campus-/Fachbereichs-Lockup.
+- **Logos**: THM-Logo und StudiumPlus-Marke stehen auf jeder Folie
+  nebeneinander oben rechts, getrennt durch einen feinen Strich
+  (`ThmLockup.vue`); auf Titel- und Schlussfolie oben links. Abweichend vom
+  Design-System trägt die Fußzeile keine Marke — allein unten rechts wirkte
+  sie verloren. Keine Campus-/Fachbereichs-Lockup.
 - **Titelfolie** mit Foto wie im Ursprungsprojekt: `bild:
   /studiumplus-campus.jpg` (StudiumPlus-Gebäude mit Stele). Ohne `bild` zeigt
   `cover` stattdessen ein kleines neuronales Netz. Die Schlussfolie (`end`)
@@ -100,7 +100,7 @@ einsetzen.
 | `layout: cover` | Titelfolie, dunkle Rasterfläche |
 | `layout: agenda` + `aktiv: n` | Abschnittstrenner; `punkte` und `icons` auf allen Trennern gleich halten |
 | `layout: default` | Folienkopf (`rubrik`, `titel`, `untertitel`) plus freier Inhalt |
-| `layout: question` | Eine Frage, vollflächig Gelb |
+| `layout: question` | Eine Frage, vollflächig Gelb; `class: text-xl` für kurze Fragen |
 | `layout: statement` | Große Aussage; `zitat: false` ohne Kasten |
 | `layout: end` | Schlussfolie |
 | `<Card>` / `<CardGrid>` | Inhaltskarten mit Icon im grünen Quadrat; `kompakt`, `band`, `tone`, `icon-ton` |

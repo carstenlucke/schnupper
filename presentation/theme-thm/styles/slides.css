@@ -255,24 +255,14 @@
   color: rgba(255, 255, 255, 0.62);
 }
 
-/* StudiumPlus-Marke rechts in der Fußzeile, die Seitenzahl davor */
-.thm-footer .ft-rechts {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.thm-footer .ft-marke {
-  height: 1.55rem;
-  width: auto;
-}
-
-/* ---- THM-Logo ---- */
+/* ---- Logos: THM und StudiumPlus nebeneinander ---- */
 .thm-lockup {
   position: absolute;
   z-index: 20;
   height: 2.1rem;
-  width: auto;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
 }
 
 .thm-lockup.top-right {
@@ -285,23 +275,16 @@
   left: var(--slide-pad-x);
 }
 
-/* THM-Logo und StudiumPlus-Marke nebeneinander (Titelfolie) */
-.thm-lockup.mit-marke {
-  display: flex;
-  align-items: center;
-  gap: 1.1rem;
-}
-
-.thm-lockup.mit-marke img {
+.thm-lockup img {
   height: 100%;
   width: auto;
 }
 
-.thm-lockup.mit-marke .lk-strich {
+.thm-lockup .lk-strich {
   align-self: stretch;
   width: 1px;
-  background: var(--thm-grey-400);
+  background: var(--thm-grey-300);
 }
 
-.thm-lockup.mit-marke.hell .lk-strich { background: rgba(255, 255, 255, 0.45); }
+.thm-lockup.hell .lk-strich { background: rgba(255, 255, 255, 0.45); }
 

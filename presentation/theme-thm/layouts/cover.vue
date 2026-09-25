@@ -39,7 +39,7 @@ const veranstaltung = computed(() => ($slidev?.configs as Record<string, unknown
 
 <template>
   <div class="slidev-layout thm-cover thm-dark">
-    <ThmLockup place="top-left" hell marke />
+    <ThmLockup place="top-left" hell />
     <div class="cv-text">
       <div class="thm-eyebrow">{{ rubrik ?? veranstaltung }}</div>
       <slot />
@@ -62,7 +62,7 @@ const veranstaltung = computed(() => ($slidev?.configs as Record<string, unknown
       </template>
     </svg>
     <div class="cv-strich" aria-hidden="true" />
-    <SlideFooter dunkel ohne-marke />
+    <SlideFooter dunkel />
   </div>
 </template>
 
