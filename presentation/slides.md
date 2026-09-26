@@ -427,6 +427,25 @@ class: text-xl
 
 ---
 rubrik: Vom Chatbot zum KI-Agenten
+titel: Wie arbeitet ein KI-Agent?
+untertitel: 'Der Agent-Kreislauf: Denken, Handeln, Prüfen'
+class: text-l
+---
+
+<div class="thm-center">
+  <AgentKreislauf />
+</div>
+
+<!--
+- DAS ist der zentrale Unterschied: die Feedback-Schleife
+- Ein Chatbot gibt EINE Antwort. Ein Agent arbeitet ITERATIV.
+- Analogie Praktikant: Ihr gebt ihm eine Aufgabe, er arbeitet eigenständig
+- Überleitung: "Aber wie wird aus einem Sprachmodell so ein Agent? Was steckt
+  da drin?"
+-->
+
+---
+rubrik: Vom Chatbot zum KI-Agenten
 titel: Was macht aus einem Modell einen Agenten?
 class: text-l
 ---
@@ -443,8 +462,9 @@ class: text-l
 - Links die WERKZEUGE — Hände und Augen: Dateien lesen und schreiben,
   Programme starten, im Web suchen
 - Rechts die STEUERUNG — was das Harness selbst leistet:
-  - Schleife: ruft das Modell immer wieder auf, führt aus, was es sich
-    wünscht, und gibt ihm das Ergebnis zurück — bis die Aufgabe fertig ist
+  - Schleife: der Kreislauf von eben. Ruft das Modell immer wieder auf,
+    führt aus, was es sich wünscht, und gibt ihm das Ergebnis zurück — bis
+    die Aufgabe fertig ist
   - Anweisungen: Rolle und Aufgabe, in unseren Demos eine Textdatei
   - Gedächtnis: der Verlauf, und wenn er zu lang wird, eine Zusammenfassung
   - Leitplanken: was der Agent ohne Nachfrage darf und was nicht
@@ -453,25 +473,7 @@ class: text-l
   besseres Modell mit schlechtem Harness
 - Rückbezug auf "Die Grenze verschwimmt": Die Anbieter bauen ihren
   Chatbots Stück für Stück ein größeres Harness
-- Überleitung: "Die Schleife schauen wir uns jetzt genauer an."
--->
-
----
-rubrik: Vom Chatbot zum KI-Agenten
-titel: Wie arbeitet ein KI-Agent?
-untertitel: 'Der Agent-Kreislauf: Denken, Handeln, Prüfen'
-class: text-l
----
-
-<div class="thm-center">
-  <AgentKreislauf />
-</div>
-
-<!--
-- DAS ist der zentrale Unterschied: die Feedback-Schleife
-- Ein Chatbot gibt EINE Antwort. Ein Agent arbeitet ITERATIV.
-- Analogie Praktikant: Ihr gebt ihm eine Aufgabe, er arbeitet eigenständig
-- "Und jetzt wird's richtig spannend: Was wenn MEHRERE Agenten zusammenarbeiten?"
+- Überleitung: "Und warum reden gerade alle über Agenten?"
 -->
 
 ---
