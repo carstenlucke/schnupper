@@ -672,20 +672,20 @@ titel: Euer nächster Schritt?
 class: text-l
 ---
 
-<div class="thm-center">
+<div class="thm-center thm-gruppe">
 <CardGrid :cols="2">
   <Card band="gruen" icon="chart-line" titel="BWL — Wirtschaftsinformatik">
     <p>Betriebswirtschaft trifft IT — duales Studium mit Praxis von Anfang an.</p>
     <p><a href="https://studiumplus.de/studiengaenge/betriebswirtschaft/betriebswirtschaft-wirtschaftsinformatik/" target="_blank">Bachelor of Arts (B.A.)</a></p>
   </Card>
   <Card band="grau" icon="laptop" titel="Softwaretechnologie">
-    <p>Softwareentwicklung, Data Science oder IT-Security — dual studieren.</p>
+    <p>Softwareentwicklung, Data Science oder IT&#8209;Security — dual studieren.</p>
     <p><a href="https://studiumplus.de/studiengaenge/softwaretechnologie/" target="_blank">Bachelor of Science (B.Sc.)</a></p>
   </Card>
 </CardGrid>
-</div>
 
-<Callout ton="hell" icon="graduation-cap" class="mt-4">Wenn euch das heute gefallen hat — studiert doch bei uns dual. :)</Callout>
+<Callout ton="hell" icon="graduation-cap">Wenn euch das heute gefallen hat — studiert doch bei uns dual. :)</Callout>
+</div>
 
 <!--
 - Kurzer Studien-Teaser, nicht zu werblich
