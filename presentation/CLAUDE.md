@@ -114,7 +114,7 @@ einsetzen.
 | `.thm-center.thm-gruppe` | Einleitung, Karten und `<Callout>` als ein Block in der Folienmitte, statt den Merksatz an den Folienfuß zu schieben |
 | `<AgentKreislauf>` | Verstehen → Planen → Handeln → Prüfen mit Rückweg |
 | `<NaechstesWort>` | Wie ein LLM schreibt: angefangener Satz, darunter die möglichen nächsten Wörter mit (ausgedachter) Wahrscheinlichkeit |
-| `<CopyPasteSchleife>` | Alltag mit Chatbots: Chatfenster, ihr, Dokument; Texte wandern per Copy & Paste hin und her |
+| `<CopyPasteSchleife>` | Alltag mit Chatbots: Chatfenster, ihr, Dokument; Texte wandern per Copy & Paste hin und her. Auf Klick 1 (fest in der Komponente) gleitet das Bild nach rechts und links erscheint das Modell hinter der App; weitere Klicks auf der Folie ab 2 zählen |
 | `<AgentAnatomie>` | KI-Agent = Modell + Harness: Gleichung, darunter das Modell im Rahmen des Harness — links die Werkzeuge, rechts die Steuerung (Schleife, Anweisungen, Gedächtnis, Leitplanken) |
 | `<AgentAbhaengigkeiten>` | Wer wartet auf wen bei Ship It!; Kanten nach `AGENT_PATHS` in `ship-it/server.py` |
 | `<DemoUebersicht>` | Karten der Übersichtsfolie, springen auf `demo-<id>` |

@@ -8,11 +8,44 @@
   Code und Editor; hier mit einem Referat, damit es ohne
   Programmiererfahrung trägt. Fenster und Pfeile sind HTML, damit Schrift
   und Farben im CD bleiben.
+
+  Auf den ersten Klick erscheint links das Modell hinter dem Chatfenster:
+  ChatGPT ist nur die App, die eure Eingabe an das Modell schickt und
+  dessen Antwort anzeigt — bei jedem Absatz aufs Neue. Der Platz dafür
+  ist von Anfang an reserviert; vor dem Klick ist das Bild um die Hälfte
+  davon nach links verschoben, damit es mittig steht, und gleitet beim
+  Klick an seinen Platz.
 -->
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useSlideContext } from '@slidev/client'
+
+const { $clicks } = useSlideContext()
+const offen = computed(() => $clicks.value >= 1)
+</script>
+
 <template>
-  <div class="cp">
+  <div class="cp" :class="{ offen }">
+    <div v-click="1" class="cp-modell">
+      <ThmIcon name="brain" box :size="2.4" />
+      <div class="cp-modell-titel">Modell</div>
+      <div class="cp-modell-text">das LLM, <span class="nw">z.&nbsp;B. GPT-5.6</span></div>
+    </div>
+
+    <div v-click="1" class="cp-mitte">
+      <div class="cp-weg">
+        <span class="cp-schritt">Eingabe</span>
+        <span class="cp-pfeil"><ThmIcon name="arrow-left" ton="grau" :size="1.5" /></span>
+      </div>
+      <div class="cp-auto">automatisch</div>
+      <div class="cp-weg">
+        <span class="cp-pfeil"><ThmIcon name="arrow-right" ton="grau" :size="1.5" /></span>
+        <span class="cp-schritt">Antwort</span>
+      </div>
+    </div>
+
     <div class="cp-fenster">
-      <div class="cp-leiste"><span /><span /><span /><b>ChatGPT</b></div>
+      <div class="cp-leiste"><span /><span /><span /><b>ChatGPT</b><i v-click="1">App</i></div>
       <div class="cp-chat">
         <div class="cp-blase ich">Mach diesen Absatz besser: <em>„Der Klimawandel ist …“</em></div>
         <div class="cp-blase ki">Gern! Hier ist eine verbesserte Fassung:&nbsp;…</div>
@@ -59,9 +92,12 @@
 <style scoped>
 .cp {
   display: grid;
-  grid-template-columns: 1fr 13rem 1fr;
+  grid-template-columns: 7.5rem 5.5rem 1fr 10.5rem 1fr;
   grid-template-rows: auto auto;
   column-gap: 1.2rem;
+  /* Halbe Breite der beiden Modell-Spalten samt Abständen */
+  transform: translateX(calc(-0.5 * (7.5rem + 5.5rem + 2 * 1.2rem)));
+  transition: transform 0.5s ease;
   row-gap: 0.9rem;
   align-items: center;
 }
@@ -70,7 +106,7 @@
   background: var(--white);
   border: 1px solid var(--thm-grey-200);
   box-shadow: 0 0.4rem 1.2rem rgba(34, 44, 49, 0.08);
-  height: 12.5rem;
+  height: 14rem;
   display: flex;
   flex-direction: column;
 }
@@ -96,6 +132,18 @@
   margin-left: 0.5rem;
   font-weight: var(--fw-semibold);
   color: var(--thm-grey-600);
+}
+
+.cp-leiste i {
+  margin-left: auto;
+  padding: 0 0.35rem;
+  border: 1px solid var(--thm-grey-300);
+  font-style: normal;
+  font-size: 0.62rem;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--thm-grey-500);
 }
 
 .cp-chat {
@@ -188,8 +236,45 @@
   color: var(--text-strong);
 }
 
+.cp-modell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.9rem 0.6rem;
+  background: var(--white);
+  border: 1px solid var(--thm-grey-200);
+  box-shadow: 0 0.4rem 1.2rem rgba(34, 44, 49, 0.08);
+  text-align: center;
+}
+
+.cp-modell-titel {
+  font-weight: var(--fw-bold);
+  color: var(--text-strong);
+}
+
+.cp-modell-text {
+  font-size: 0.72rem;
+  line-height: 1.3;
+  color: var(--thm-grey-500);
+}
+
+.cp-modell-text .nw { white-space: nowrap; }
+
+/* Den Weg zwischen App und Modell geht niemand von Hand: graue Pfeile,
+   graues Etikett */
+.cp-auto {
+  font-size: 0.7rem;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--thm-grey-400);
+}
+
+.cp.offen { transform: none; }
+
 .cp-wieder {
-  grid-column: 1 / -1;
+  grid-column: 3 / -1;
   justify-self: center;
   display: inline-flex;
   align-items: center;

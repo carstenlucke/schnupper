@@ -378,15 +378,27 @@ class: text-l
 <div class="thm-center thm-gruppe">
   <CopyPasteSchleife />
 
-  <Callout icon="user"><strong>Ihr seid die Brücke.</strong> Der Chatbot sieht nur den Schnipsel, den ihr ihm hineinkopiert — nicht eure ganze Arbeit.</Callout>
+  <Callout v-click="2" icon="user"><strong>Ihr seid die Brücke.</strong> Das Modell sieht nur den Schnipsel, den ihr hineinkopiert — nicht eure ganze Arbeit.</Callout>
 </div>
 
 <!--
 - "Wer kennt's?" — Referat, Hausaufgabe, Bewerbung: Absatz rüber in
   ChatGPT, Antwort zurück ins Dokument, nächster Absatz, wieder rüber …
-- IHR tragt die Informationen hin und her. Der Chatbot kennt nur, was ihr
-  ihm gebt — nicht das ganze Referat, nicht die Aufgabenstellung, nicht
-  eure Quellen
+- IHR tragt die Informationen zwischen Dokument und Chat hin und her
+
+[click] Modell einblenden:
+
+- Dahinter steckt eigentlich ein Modell — das LLM von vorhin
+- ChatGPT selbst ist nur die App: Sie nimmt eure Eingabe, schickt sie an
+  das Modell und zeigt dessen Antwort an. Das passiert automatisch, bei
+  jedem Absatz aufs Neue
+- Merken für später: Die App ist schon ein kleiner Rahmen um das Modell.
+  Ein Agent bekommt einen größeren
+
+[click] Merksatz einblenden:
+
+- Das Modell kennt nur, was ihr ihm gebt — nicht das ganze Referat, nicht
+  die Aufgabenstellung, nicht eure Quellen
 - Irgendwann nervt das. Die Frage ist: Geht das auch ohne uns als
   Zwischenhändler?
 - Überleitung: "Genau da kommen Agenten ins Spiel."
