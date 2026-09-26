@@ -105,4 +105,8 @@ withDefaults(
 }
 
 .st-wrap.no-glyph .st-body :deep(.st-note) { font-size: 1.05rem; }
+
+/* Kurze Aussage, die die Fläche füllen soll */
+.thm-statement.text-xl .st-wrap.no-glyph .st-body { font-size: 2.7rem; }
+.thm-statement.text-xl .st-wrap.no-glyph .st-body :deep(.st-note) { font-size: 1.4rem; }
 </style>

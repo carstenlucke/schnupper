@@ -160,25 +160,25 @@ titel: Vorstellungsgespräch? Erst mal mit KI proben
 ---
 rubrik: Agent Party · Live-Demo
 titel: Jetzt seid ihr dran!
-class: text-l
+class: text-xl
 hideInToc: true
 ---
 
+<div class="thm-center thm-gruppe">
 <div class="thm-stack">
   <QuestionItem>Welche <strong>Rolle</strong> fehlt noch am Tisch? Beschreibt sie in einem Satz.</QuestionItem>
   <QuestionItem>Worüber soll die Runde <strong>streiten</strong>?</QuestionItem>
 </div>
 
-<div class="thm-center">
 <CardGrid :cols="4">
   <Card icon="bot" icon-ton="gelb" center>Sollen Schulen KI verbieten?</Card>
   <Card icon="smartphone" icon-ton="gelb" center>Handys im Unterricht erlauben?</Card>
   <Card icon="book-open" icon-ton="gelb" center>Hausaufgaben abschaffen?</Card>
   <Card icon="vote" icon-ton="gelb" center>Wahlrecht ab 16?</Card>
 </CardGrid>
-</div>
 
 <div class="thm-note">...oder euer eigenes Thema! Ruft rein — wir stimmen ab.</div>
+</div>
 
 <!--
 - Erst die Rolle: Vorschläge sammeln, einen auswählen, Satz eintippen,
@@ -192,6 +192,7 @@ layout: statement
 rubrik: Agent Party · Live-Demo
 titel: Los geht's!
 zitat: false
+class: text-xl
 hideInToc: true
 ---
 

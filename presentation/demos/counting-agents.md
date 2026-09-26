@@ -2,16 +2,17 @@
 routeAlias: demo-counting-agents
 rubrik: The Counting Agents
 titel: Fünf Agenten zählen gemeinsam
+class: text-xl
 ---
 
-<div class="thm-center">
+<div class="thm-center thm-gruppe">
 <div class="thm-lead">Eine <strong>absichtlich einfache Aufgabe</strong> — damit wir nicht auf das Ergebnis schauen, sondern darauf, <strong>wie Agenten zusammenarbeiten</strong>.</div>
 
-<CardGrid :cols="5" class="mt-4">
+<CardGrid :cols="5">
   <Card icon="list-ordered" titel="Zähler">Erzeugt fortlaufend Zahlen: 1, 2, 3 …</Card>
   <Card icon="filter" titel="Ungerade">Sammelt die ungeraden Zahlen ein</Card>
   <Card icon="filter" titel="Gerade">Sammelt die geraden Zahlen ein</Card>
-  <Card icon="brain" titel="Primzahlen">Prüft jede Zahl — und denkt dabei nach</Card>
+  <Card icon="brain" titel="Primzahlen">Prüft jede Zahl&nbsp;— und denkt dabei nach</Card>
   <Card icon="sliders-horizontal" titel="Steuerung">Pausiert, setzt fort, startet neu</Card>
 </CardGrid>
 </div>
@@ -118,10 +119,11 @@ titel: Was ein Agent kann, bestimmt sein Werkzeugkasten
 rubrik: The Counting Agents · Live-Demo
 titel: Eure Vorhersage
 untertitel: Bevor es losgeht — was glaubt ihr?
+class: text-xl
 hideInToc: true
 ---
 
-<div class="thm-stack">
+<div class="thm-center thm-stack">
   <QuestionItem>Alle Agenten haben <strong>denselben Takt</strong>. Laufen sie im Gleichschritt?</QuestionItem>
   <QuestionItem>Wer wird am weitesten <strong>hinterherhinken</strong> — und warum?</QuestionItem>
   <QuestionItem>Macht die KI beim <strong>Primzahlen-Prüfen</strong> Fehler?</QuestionItem>
@@ -137,6 +139,7 @@ layout: statement
 rubrik: The Counting Agents · Live-Demo
 titel: Los geht's!
 zitat: false
+class: text-xl
 hideInToc: true
 ---
 

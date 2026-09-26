@@ -6,7 +6,7 @@
 <template>
   <div class="ende">
     <Link to="demos" class="knopf zurueck">
-      <ThmIcon name="layout-grid" ton="gruen" :size="1.6" />
+      <ThmIcon name="layout-grid" ton="gruen" :size="2.2" />
       <span>
         <span class="k-titel">Noch eine Demo</span>
         <span class="k-text">zurück zur Übersicht</span>
@@ -17,7 +17,7 @@
         <span class="k-titel">Was nehmen wir mit?</span>
         <span class="k-text">weiter zum Schluss der Vorlesung</span>
       </span>
-      <ThmIcon name="arrow-right" ton="weiss" :size="1.6" />
+      <ThmIcon name="arrow-right" ton="weiss" :size="2.2" />
     </Link>
   </div>
 </template>
@@ -32,8 +32,8 @@
 .knopf {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.3rem 1.6rem;
+  gap: 1.3rem;
+  padding: 1.8rem 2.1rem;
   border: none !important;
   text-decoration: none;
   transition: transform 0.15s ease;
@@ -54,13 +54,13 @@
 
 .k-titel {
   display: block;
-  font-size: 1.3rem;
+  font-size: 1.85rem;
   font-weight: var(--fw-bold);
 }
 
 .k-text {
   display: block;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   opacity: 0.8;
 }
 </style>

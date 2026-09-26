@@ -109,8 +109,8 @@ einsetzen.
 | `.thm-flow` + `<FlowArrow>` | Karten nebeneinander mit Pfeil oder `text="vs."` dazwischen |
 | `.thm-sample` (`.sprache`) | Beispiel in einer Karte: Code bzw. Satz in Alltagssprache |
 | `.thm-center` | Inhalt vertikal mittig statt gestreckt — für Folien mit wenig Text |
-| `class: text-l` | Folienweit größere Schrift, für dünn besetzte Folien |
-| `class: text-xl` | Noch größer, für Folien mit wenig Text, die die Fläche füllen sollen (Einstieg) |
+| `class: text-l` | Folienweit größere Schrift, für dünn besetzte Folien; zieht auch `.thm-note` und `<QuestionItem>` mit |
+| `class: text-xl` | Noch größer, für Folien mit wenig Text, die die Fläche füllen sollen (Einstieg); zieht auch `.thm-lead`, `.thm-note`, `<QuestionItem>` und den Text von `layout: statement` mit `zitat: false` mit |
 | `.thm-center.thm-gruppe` | Einleitung, Karten und `<Callout>` als ein Block in der Folienmitte, statt den Merksatz an den Folienfuß zu schieben |
 | `<AgentKreislauf>` | Verstehen → Planen → Handeln → Prüfen mit Rückweg |
 | `<NaechstesWort>` | Wie ein LLM schreibt: angefangener Satz, darunter die möglichen nächsten Wörter mit (ausgedachter) Wahrscheinlichkeit |

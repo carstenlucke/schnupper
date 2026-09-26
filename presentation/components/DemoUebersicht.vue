@@ -40,13 +40,22 @@ const demos = [
 }
 
 .ziel > :deep(.thm-card) { flex: 1; }
+
+/* „Demo starten“ steht in allen Karten auf einer Höhe, auch wenn der
+   Text unterschiedlich lang ist */
+.ziel :deep(.card-text) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 .ziel:hover { transform: translateY(-3px); }
 
 .los {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  margin-top: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
   font-weight: var(--fw-bold);
   color: var(--thm-green-600);
 }

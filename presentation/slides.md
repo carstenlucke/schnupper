@@ -491,24 +491,24 @@ class: text-l
 ---
 rubrik: Vom Chatbot zum KI-Agenten
 titel: Warum Agenten gerade so gefragt sind
-class: text-l
+class: text-xl
 ---
 
-<div class="thm-center">
+<div class="thm-center thm-gruppe">
 <CardGrid :cols="3">
-  <Card icon="trending-up" titel="Von Assistenz zu Autonomie">
+  <Card icon="trending-up" titel="Von Assistenz zu Autonomie" kompakt>
     Heute: „KI hilft mir beim Schreiben.“<br>Morgen: <strong>„KI erledigt den Prozess.“</strong>
   </Card>
-  <Card icon="copy" titel="Skalierbarkeit">
+  <Card icon="copy" titel="Skalierbarkeit" kompakt>
     Ein Unternehmen kann <strong>100 digitale Agenten</strong> gleichzeitig arbeiten lassen — rund um die Uhr.
   </Card>
-  <Card icon="refresh-cw" titel="Selbstkorrektur">
+  <Card icon="refresh-cw" titel="Selbstkorrektur" kompakt>
     Agenten <strong>prüfen ihre Ergebnisse</strong> und verbessern sich selbst — ohne dass jemand eingreifen muss.
   </Card>
 </CardGrid>
-</div>
 
-<Callout icon="circle-play" class="mt-4"><strong>Genau das schauen wir uns jetzt live an:</strong> mehrere Agenten, eine gemeinsame Aufgabe — und ihr seid dabei.</Callout>
+<Callout icon="circle-play"><strong>Genau das schauen wir uns jetzt live an:</strong> mehrere Agenten, eine gemeinsame Aufgabe — und ihr seid dabei.</Callout>
+</div>
 
 <!--
 - Ausblick in die Arbeitswelt der Schüler
@@ -536,6 +536,7 @@ aktiv: 2
 rubrik: Agenten live erleben
 titel: Welche Demo schauen wir uns an?
 routeAlias: demos
+class: text-xl
 hideInToc: true
 ---
 
