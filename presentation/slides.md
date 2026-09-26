@@ -49,36 +49,6 @@ Wer von euch hat schon mal <br>**Claude, ChatGPT, Gemini <br>oder Copilot** benu
 
 ---
 rubrik: Einstieg
-titel: Digitalisierung und KI — wie hängt das zusammen?
-class: text-xl
----
-
-<div class="thm-center thm-gruppe">
-<div class="thm-flow">
-  <Card icon="database" icon-ton="grau" titel="Digitalisierung">
-    <p><strong>Sammeln und Speichern</strong></p>
-    <p>Aus Aktenordnern wurden Datenbanken, aus Briefen wurden E&#8209;Mails, aus Papier wurden PDFs.</p>
-  </Card>
-  <FlowArrow />
-  <Card icon="brain" titel="Künstliche Intelligenz" tone="tint">
-    <p><strong>Verstehen und Nutzen</strong></p>
-    <p>KI zieht Schlüsse aus den digitalisierten Daten&nbsp;— und handelt eigenständig.</p>
-  </Card>
-</div>
-
-<Callout><strong>Ohne Digitalisierung hätte KI kein Futter.</strong> Die Digitalisierung hat die Welt für Maschinen lesbar gemacht — KI ist die Intelligenzschicht, die jetzt darauf aufsetzt.</Callout>
-</div>
-
-<!--
-- Digitalisierung ist die Infrastruktur, KI die Intelligenz
-- Passive Digitalisierung: Daten liegen nur herum (Excel, PDFs)
-- Aktive Digitalisierung: Daten ARBEITEN für uns
-- "KI ohne Digitalisierung wäre ein Gehirn ohne Augen und Ohren"
-- "Und ihr nutzt das längst, ohne darüber nachzudenken..."
--->
-
----
-rubrik: Einstieg
 titel: KI ist schon überall
 class: text-xl
 ---
@@ -628,11 +598,11 @@ titel: Der rote Faden
 ---
 
 <div class="thm-flow">
-  <Card icon="database" icon-ton="grau" titel="Digitalisierung" kompakt />
+  <Card icon="brain" icon-ton="grau" titel="LLM" kompakt>das Modell: sagt Wörter vorher</Card>
   <FlowArrow />
-  <Card icon="message-square" titel="LLMs" kompakt />
+  <Card icon="message-square" titel="Chatbot" kompakt>Modell + Chatfenster: antwortet</Card>
   <FlowArrow />
-  <Card icon="bot" titel="KI-Agenten" tone="tint" kompakt />
+  <Card icon="bot" titel="KI-Agent" tone="tint" kompakt>Modell + Harness: handelt</Card>
 </div>
 
 <CardGrid :cols="2" fill class="mt-4">
@@ -648,7 +618,9 @@ titel: Der rote Faden
 
 <!--
 - Den roten Faden der Vorlesung zusammenfassen
-- Digitalisierung -> LLMs -> Agenten: drei aufeinander aufbauende Schritte
+- LLM -> Chatbot -> Agent: drei aufeinander aufbauende Schritte. Das
+  Modell ist immer dasselbe Gehirn — was sich ändert, ist, was drumherum
+  gebaut ist: erst ein Chatfenster, dann ein ganzes Harness
 - Intent spezifizieren: Das ist der nächste Schritt nach Prompt Engineering
   - Nicht nur "Schreib mir einen Text" sondern "Du bist Marketing-Experte, erstelle ein Konzept mit Slogan, Zielgruppe, Tonalität..."
   - Genau das haben wir in der Demo gesehen: Die Agent-Definitionen sind präzise Spezifikationen
