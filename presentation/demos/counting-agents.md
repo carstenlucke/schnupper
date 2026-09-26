@@ -35,7 +35,7 @@ untertitel: Gar nicht direkt — sie legen Nachrichten in gemeinsame Dateien.
   <CountingBus />
 </div>
 
-<Callout icon="info"><strong>Wie ein schwarzes Brett:</strong> Einer hängt etwas aus, die anderen lesen nach, was sie betrifft — jeder in seinem eigenen Takt.</Callout>
+<Callout icon="info"><strong>Jede Datei ist wie ein schwarzes Brett:</strong> Einer hängt etwas aus, die anderen lesen nach — jeder in seinem eigenen Takt.</Callout>
 
 <style>
 .bus-rahmen {
@@ -43,7 +43,7 @@ untertitel: Gar nicht direkt — sie legen Nachrichten in gemeinsame Dateien.
   min-height: 0;
   display: flex;
   justify-content: center;
-  padding: 0.2rem 0 0.8rem;
+  padding: 0 0 2.4rem;
 }
 </style>
 
