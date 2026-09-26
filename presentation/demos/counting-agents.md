@@ -58,50 +58,19 @@ untertitel: Gar nicht direkt — sie legen Nachrichten in gemeinsame Dateien.
 ---
 rubrik: The Counting Agents
 titel: Was ein Agent kann, bestimmt sein Werkzeugkasten
+untertitel: Jeder bekommt genau die Werkzeuge, die seine Aufgabe braucht — nicht mehr.
 ---
-
-<div class="gleichung">
-  <span class="g-teil g-agent"><ThmIcon name="bot" ton="weiss" :size="1.25" /> KI-Agent</span>
-  <span class="g-op">=</span>
-  <span class="g-teil"><ThmIcon name="brain" :size="1.25" /> Modell</span>
-  <span class="g-op">+</span>
-  <span class="g-teil"><ThmIcon name="pen-line" :size="1.25" /> Aufgabe</span>
-  <span class="g-op">+</span>
-  <span class="g-teil g-kasten"><ThmIcon name="wrench" ton="weiss" :size="1.25" /> Werkzeugkasten</span>
-</div>
 
 <div class="thm-center">
   <WerkzeugMatrix />
 </div>
 
-<style>
-.gleichung {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  margin: 0 0 0.6rem;
-  padding-bottom: 0.9rem;
-  border-bottom: 1px solid var(--border-default);
-  font-size: 1.2rem;
-  font-weight: var(--fw-bold);
-  color: var(--text-strong);
-}
-.g-teil {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.3rem 0.85rem;
-  background: var(--thm-grey-50);
-}
-.g-agent { background: var(--thm-grey-600); color: var(--white); }
-.g-kasten { background: var(--thm-green-500); color: var(--white); }
-.g-op { font-size: 1.5rem; color: var(--thm-green-600); }
-</style>
-
 <!--
-- Rückbezug auf "Der Unterschied": Agenten handeln — mit Werkzeugen
-- Die Gleichung oben: Modell und Aufgabe haben alle gleich, der
-  Werkzeugkasten macht den Unterschied
+- Rückbezug auf "Was macht aus einem Modell einen Agenten?": Im Harness
+  links die Werkzeuge — hier sieht man, dass jeder Agent andere bekommt
+- Alle fünf nutzen dasselbe Modell. Verschieden sind Aufgabe und
+  Werkzeugkasten — und die Aufgabe entscheidet, welche Werkzeuge ein Agent
+  braucht
 - Tabelle zeilenweise lesen: Nur der Zähler darf veröffentlichen, nur die
   Steuerung Befehle schicken
 - Ein Sammler KANN nicht in den Bus schreiben — nicht, weil es ihm verboten
