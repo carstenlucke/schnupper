@@ -142,16 +142,33 @@ hideInToc: true
 
 <!--
 - Vorhersagen von vorhin auflösen
-- Rückstand: prime prüft eine Zahl pro Durchlauf und denkt nach — Nachdenken
-  kostet Zeit
-- Rote Kachel: Das Modell hat eine Zahl für prim gehalten, die es nicht ist.
-  Das Dashboard rechnet selbst nach — eine automatische Prüfung, kein Mensch
-  muss jede Zahl kontrollieren
-- Anfragen: Ein Durchlauf sind ~5 Anfragen (eine pro Werkzeug plus Antwort).
-  Man sieht eine Zahl — dahinter stecken fünf Gespräche mit einem Modell
+- Rückstand: Der Takt (3 s) ist nur die Pause zwischen zwei Durchläufen —
+  wie lange ein Durchlauf dauert, hängt davon ab, was das Modell zu tun hat
+  - odd und even nehmen alles Neue auf einmal und holen jeden Rückstand auf
+  - prime darf nur eine Zahl pro Durchlauf prüfen und denkt dabei nach —
+    jeder Durchlauf etwas länger als beim Zähler, der Abstand wächst
+  - Merksatz: Gleicher Takt heißt nicht gleiches Tempo. Nachdenken kostet Zeit
+- Rote Kachel: Das Modell hat eine Zahl für prim gehalten, die es nicht ist
+  - Typisch sind Zahlen, die prim aussehen: 51 = 3·17, 57 = 3·19, 91 = 7·13
+  - Das Modell rechnet nicht, es schätzt, was plausibel klingt (Rückbezug auf
+    "Was steckt hinter ChatGPT & Co.?": das wahrscheinlichste nächste Wort)
+  - Keine rote Kachel? Diesmal gut gegangen — aber ohne Garantie
+  - Das Dashboard rechnet selbst nach — eine automatische Prüfung, kein Mensch
+    muss jede Zahl kontrollieren
+- Anfragen: Ein Durchlauf sind ~5 Anfragen (eine pro Werkzeug plus Antwort)
+  - Ein Durchlauf ~10 s plus 3 s Takt → gut 4 Durchläufe pro Minute
+  - 4 Agenten × 5 Anfragen × ~4,5 Durchläufe ≈ 90 Anfragen pro Minute
+  - Jede Anfrage kostet Geld, Strom und Zeit; manche Anbieter erlauben nur
+    60 pro Minute — dann bricht die Demo am Limit ab
+  - Man sieht eine Zahl — dahinter stecken fünf Gespräche mit einem Modell
 - Die Pointe: Nein! Aufgaben mit genau einer richtigen Antwort erledigt ein
-  normales Programm fehlerfrei und kostenlos. KI lohnt sich dort, wo Sprache,
-  Urteil und Unschärfe ins Spiel kommen
+  normales Programm fehlerfrei und kostenlos — Millionen Zahlen pro Sekunde
+  - Die Aufgabe ist absichtlich banal: So schaut man aufs Zusammenspiel,
+    nicht aufs Ergebnis
+  - Weiterdenken: gleicher Aufbau, aber statt Zahlen kommen E-Mails, und die
+    Agenten sortieren nach Beschwerde, Bestellung, Frage — da gibt es nicht
+    die eine richtige Antwort
+  - KI lohnt sich dort, wo Sprache, Urteil und Unschärfe ins Spiel kommen
 - Beispiele für den Reality Check merken: Anfragen = Kosten, rote Kachel =
   Halluzination, Dashboard rechnet nach = Qualitätskontrolle
 -->
