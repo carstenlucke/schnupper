@@ -7,6 +7,11 @@
   - Rückwärts aus einer Demo heraus — oder von `nach-demos` zurück in eine
     Demo — geht es zur Übersicht.
 
+  Zusatzfolien (Frontmatter `zusatz: <routeAlias der Herkunftsfolie>`)
+  liegen außerhalb des Verlaufs: Beim Blättern werden sie übersprungen,
+  erreichbar sind sie nur per Link (<Abstecher>). Von einer Zusatzfolie
+  aus führt ← zurück zur Herkunftsfolie und → zu deren Nachfolgerin.
+
   Sprünge über Links oder `G` bleiben unberührt — außer ihr Ziel ist
   zufällig die Nachbarfolie: Der Router sieht nur Start und Ziel, nicht,
   wie der Wechsel ausgelöst wurde. Zu welcher Demo eine Folie gehört, steht
@@ -16,8 +21,12 @@
 import { defineAppSetup } from '@slidev/types'
 import { slides } from '#slidev/slides'
 
+function frontmatter(no: number): Record<string, any> | undefined {
+  return slides.value.find(s => s.no === no)?.meta.slide?.frontmatter
+}
+
 function demoVon(no: number): string | undefined {
-  return slides.value.find(s => s.no === no)?.meta.slide?.frontmatter.demo
+  return frontmatter(no)?.demo
 }
 
 function folieMitAlias(alias: string): number | undefined {
@@ -36,23 +45,35 @@ export default defineAppSetup(({ router }) => {
     if (to.name !== 'play' && to.name !== 'presenter')
       return true
 
-    const nach = nummer(to.params.no)
+    const angefragt = nummer(to.params.no)
     const von = nummer(from.params.no)
-    if (nach === undefined || von === undefined || Math.abs(nach - von) !== 1)
+    if (angefragt === undefined || von === undefined || Math.abs(angefragt - von) !== 1)
       return true
-
-    const demoVorher = demoVon(von)
-    const demoNachher = demoVon(nach)
-    if (demoVorher === demoNachher)
-      return true
+    const schritt = angefragt - von
 
     let ziel: number | undefined
-    if (nach > von && demoVorher)
-      ziel = folieMitAlias('nach-demos')
-    else if (nach < von && demoNachher)
-      ziel = folieMitAlias('demos')
+    const herkunft = frontmatter(von)?.zusatz
+    if (herkunft) {
+      const h = folieMitAlias(herkunft)
+      ziel = h === undefined ? undefined : schritt < 0 ? h : h + 1
+    }
+    else {
+      let nach = angefragt
+      while (frontmatter(nach)?.zusatz)
+        nach += schritt
+      ziel = nach
 
-    if (ziel === undefined || ziel === nach)
+      const demoVorher = demoVon(von)
+      const demoNachher = demoVon(nach)
+      if (demoVorher !== demoNachher) {
+        if (schritt > 0 && demoVorher)
+          ziel = folieMitAlias('nach-demos') ?? nach
+        else if (schritt < 0 && demoNachher)
+          ziel = folieMitAlias('demos') ?? nach
+      }
+    }
+
+    if (ziel === undefined || ziel === angefragt)
       return true
 
     return {

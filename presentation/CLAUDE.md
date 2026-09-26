@@ -23,6 +23,12 @@ Die Demos sind Abzweige von der Übersicht, keine Folge:
   Folie greift: vorwärts aus einer Demo heraus nach `nach-demos`, rückwärts
   in eine andere Demo hinein zur Übersicht. Links und `G` bleiben
   unberührt; Übersicht und Export zeigen alles.
+- **Zusatzfolien** für Fragen, die vielleicht kommen, liegen außerhalb des
+  Verlaufs: Frontmatter `zusatz: <routeAlias der Herkunftsfolie>`, dazu ein
+  eigener `routeAlias`. Beim Blättern überspringt der Guard sie; erreichbar
+  sind sie per `<Abstecher>` auf der Herkunftsfolie. Von der Zusatzfolie
+  führt ← zurück zur Herkunftsfolie, → zu deren Nachfolgerin. Im Block
+  stehen sie hinter der Abschlussfolie (Agent Party: „KI gegen KI?“).
 
 Eine neue Demo braucht: einen Block in `demos/` mit `routeAlias: demo-<id>`
 auf der ersten Folie und einer Abschlussfolie, einen `src:`-Eintrag mit
@@ -36,7 +42,7 @@ Daraus folgen Regeln:
 - **Jeder Demo-Block ist gleich gebaut:** Vorstellung, Aufbau, Mitmachfrage,
   „Los geht's!" mit Adresse, Bewertung, Abschlussfolie. Im Aufbau darf eine
   Motivationsfolie mit einem Fundstück stehen (Agent Party: ein
-  LinkedIn-Beitrag, nach „Ein Agent ist eine Textdatei"). Rubriken `<Demo>`,
+  LinkedIn-Beitrag, direkt nach der Vorstellung). Rubriken `<Demo>`,
   `<Demo> · Live-Demo`, `<Demo> · Bewertung`.
 - **Reflexion ist zweigeteilt.** Die Bewertung („was haben wir gesehen?") ist
   demo-spezifisch und steht im Block. Der Reality Check ist gemeinsam; neue
@@ -119,6 +125,7 @@ einsetzen.
 | `<AgentAbhaengigkeiten>` | Wer wartet auf wen bei Ship It!; Kanten nach `AGENT_PATHS` in `ship-it/server.py` |
 | `<DemoUebersicht>` | Karten der Übersichtsfolie, springen auf `demo-<id>` |
 | `<DemoEnde>` | Abschlussfolie eines Demo-Blocks: zur Übersicht oder weiter |
+| `<Abstecher>` | Kleiner Knopf auf eine Zusatzfolie (`to` = deren routeAlias); mit `zurueck` der Rückweg auf der Zusatzfolie |
 | `<WerkzeugMatrix>` | Wer darf was bei den Counting Agents; Zeilen nach den `tools:`-Zeilen in `the-counting-agents/agents/*.md`; der Merksatz zu „Alles andere“ erscheint nur als Tooltip bei Hover |
 | `<AgentRunde>` | Agent Party als Bild: vier Agenten im Kreis um ein Thema, reihum verbunden, je eine Sprechblase; Rollen nach `agent-party/profile/` |
 | `<SocialPost>` | Beitrag oder (`kommentar`) Kommentar aus einem beruflichen Netzwerk als Karte; Profilbild per `foto`, sonst Initialen; kein Logo, Quelle als `.thm-note` darunter |

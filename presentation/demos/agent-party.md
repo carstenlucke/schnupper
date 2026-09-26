@@ -13,97 +13,14 @@ untertitel: Eine Gesprächsrunde, in der an jedem Platz eine KI sitzt
   Thema und sprechen reihum, einer nach dem anderen
 - Jeder hört, was vorher gesagt wurde, und reagiert darauf — so entsteht
   ein Gespräch, das niemand vorher geschrieben hat
-- Überleitung: "Und wer an diesem Tisch sitzt, bestimmt ihr."
+- Überleitung: "Klingt nach Spielerei? Wofür man so eine Runde wirklich
+  brauchen kann, zeigt ein Fundstück von LinkedIn …"
 -->
 
 ---
 rubrik: Agent Party
-titel: Wer am Tisch sitzt, bestimmt ihr
-class: text-l
----
-
-<div class="thm-center">
-<div class="thm-eyebrow">Eine Diskussionsrunde …</div>
-<CardGrid :cols="5">
-  <Card icon="coins" titel="Skeptische Ökonomin">Rechnet alles auf Kosten und Nutzen herunter</Card>
-  <Card icon="rocket" titel="Technik-Optimist">Sieht zuerst die Möglichkeiten</Card>
-  <Card icon="scale" titel="Ethikerin">Fragt, wer profitiert und wer zahlt</Card>
-  <Card icon="wrench" titel="Praktiker">Will wissen, wer es am Montag macht</Card>
-  <Card icon="swords" titel="Advocatus Diaboli">Widerspricht grundsätzlich der Mehrheit</Card>
-</CardGrid>
-
-<div class="thm-eyebrow mt-6">… oder ein Vorstellungsgespräch</div>
-<CardGrid :cols="3">
-  <Card icon="handshake" titel="Personalreferentin">Führt das Gespräch: Lebenslauf, Eignung, Soft Skills</Card>
-  <Card icon="laptop" titel="Teamleiter IT">Hakt fachlich nach, was hinter einer Antwort steckt</Card>
-  <Card icon="graduation-cap" icon-ton="grau" titel="Bewerberin">Macht gerade Abitur und will den dualen Studienplatz</Card>
-</CardGrid>
-</div>
-
-<!--
-- Acht Profile sind mitgeliefert — gleich schreiben wir eigene
-- Derselbe Mechanismus, zwei ganz verschiedene Runden: Ob diskutiert oder
-  ein Bewerbungsgespräch geführt wird, steht allein in den Rollentexten
-- "Ein KI-Agent ist nichts Magisches: eine Rollenbeschreibung plus ein
-  Sprachmodell."
-- Wer die Beschreibung ändert, sieht das Verhalten sofort kippen
--->
-
----
-rubrik: Agent Party
-titel: So läuft die Party
-class: text-l
----
-
-<div class="thm-center"><div class="thm-flow">
-  <Card icon="user-pen" titel="Rolle beschreiben">Ein Satz genügt — die KI arbeitet das Profil aus</Card>
-  <FlowArrow />
-  <Card icon="users" titel="Besetzung wählen">Drei Profile, Reihenfolge festlegen</Card>
-  <FlowArrow />
-  <Card icon="message-square" titel="Thema geben">Eine Frage, über die man streiten kann</Card>
-  <FlowArrow />
-  <Card icon="messages-square" titel="Reihum diskutieren" tone="tint">Beitrag für Beitrag, live</Card>
-</div></div>
-
-<Callout icon="megaphone" class="mt-4"><strong>Ihr könnt jederzeit eingreifen:</strong> ein Zwischenruf, eine weitere Runde, ein Fazit zum Schluss.</Callout>
-
-<!--
-- Den Ablauf einmal durchgehen, bevor die Klasse mitmacht
-- Zwischenruf: ist nur eine Zeile mehr im Verlauf, die beim nächsten Beitrag
-  mitgeschickt wird — die KI hat kein Gedächtnis, sie bekommt jedes Mal das
-  ganze Gespräch neu
--->
-
----
-rubrik: Agent Party
-titel: Ein Agent ist eine Textdatei
-class: text-l
----
-
-<div class="thm-center"><div class="thm-flow">
-  <Card icon="cog" icon-ton="grau" titel="Oben: die Technik">
-    Welches Modell, wie viel Nachdenken, welche Farbe.
-    <div class="thm-sample">model: gpt-5.6-luna<br>thinking: low<br>farbe: hellblau</div>
-  </Card>
-  <FlowArrow />
-  <Card icon="pen-line" titel="Darunter: die Rolle" tone="tint">
-    In ganz normalem Deutsch.
-    <div class="thm-sample sprache">„Du bist Wirtschaftswissenschaftlerin und sitzt in dieser Runde als die Stimme, die nach Zahlen fragt …“</div>
-  </Card>
-</div></div>
-
-<Callout icon="info" class="mt-4"><strong>Dieser Text geht wörtlich an die KI</strong> — keine versteckte Zusatzanweisung, kein Code.</Callout>
-
-<!--
-- Im Dashboard ein Profil öffnen und zeigen: Das ist der ganze Agent
-- Frontmatter = Technik, darunter = Rolle
-- Überleitung: "Und wofür kann man so etwas brauchen? Ein Fundstück von
-  LinkedIn …"
--->
-
----
-rubrik: Agent Party
-titel: Vorstellungsgespräch? Erst mal mit KI proben
+titel: 'Wofür das gut ist: ein Vorstellungsgespräch proben'
+routeAlias: agent-party-fundstueck
 ---
 
 <div class="thm-cols thm-cols-2-3">
@@ -118,7 +35,10 @@ titel: Vorstellungsgespräch? Erst mal mit KI proben
   </div>
   <div class="thm-stack">
     <div>
-      <div class="thm-eyebrow">Schritt 04 der Grafik: üben</div>
+      <div class="motiv-kopf">
+        <div class="thm-eyebrow">Jobsuche mit KI, Schritt 04: üben</div>
+        <Abstecher to="agent-party-ki-gegen-ki">KI gegen KI?</Abstecher>
+      </div>
       <img class="motiv-schritt" src="/linkedin-jobsuche-2026-practice.jpg" alt="Old Way: YouTube-Videos zu typischen Interviewfragen. New Way: Probeinterview mit einer KI, die nachfragt" />
     </div>
     <div class="thm-lead">Ein Probeinterview mit einer KI, die nachhakt — das bauen wir nach. Nur sitzt bei uns <strong>an allen drei Plätzen</strong> eine KI:</div>
@@ -134,6 +54,12 @@ titel: Vorstellungsgespräch? Erst mal mit KI proben
 <style>
 .motiv-post { gap: 0; }
 .motiv-post :deep(.sp) { flex: 1; }
+.motiv-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+}
 .motiv-schritt {
   width: 100%;
   border: 1px solid var(--border-default);
@@ -141,6 +67,7 @@ titel: Vorstellungsgespräch? Erst mal mit KI proben
 </style>
 
 <!--
+- Kein Gedankenspiel: Leute nutzen genau so etwas schon — hier der Beleg
 - Fundstück von LinkedIn: Alex Wang, gut 1,1 Mio. Follower, teilt eine
   Grafik von GenAI.works — Jobsuche 2026, fünf Schritte, links der alte Weg,
   rechts der mit KI
@@ -154,6 +81,72 @@ titel: Vorstellungsgespräch? Erst mal mit KI proben
   also genau das, worauf ihr euch in ein, zwei Jahren bewerben könntet
 - Alex Wang schreibt im Post auch: "Die letzten Anpassungen mache ich
   selbst — damit es noch nach mir klingt"
+- Falls jemand fragt, ob KI bei Bewerbungen nicht fragwürdig ist: "KI gegen
+  KI?" oben rechts springt auf die Zusatzfolie dazu
+- Überleitung: "Wie so eine Runde entsteht, zeige ich euch jetzt."
+-->
+
+---
+rubrik: Agent Party
+titel: So läuft die Party
+class: text-xl
+---
+
+<div class="thm-center thm-gruppe">
+<div class="thm-flow">
+  <Card icon="user-pen" titel="Rolle beschreiben" kompakt>Ein Satz genügt — die KI arbeitet das Profil aus</Card>
+  <FlowArrow />
+  <Card icon="users" titel="Besetzung wählen" kompakt>Drei Profile, Reihenfolge festlegen</Card>
+  <FlowArrow />
+  <Card icon="message-square" titel="Thema geben" kompakt>Eine Frage, über die man streiten kann</Card>
+  <FlowArrow />
+  <Card icon="messages-square" titel="Reihum diskutieren" tone="tint" kompakt>Beitrag für Beitrag, live</Card>
+</div>
+
+<Callout icon="megaphone"><strong>Ihr könnt jederzeit eingreifen:</strong> ein Zwischenruf, eine weitere Runde, ein Fazit zum Schluss.</Callout>
+</div>
+
+<style>
+/* vier Karten nebeneinander: etwas kleiner als der Rest der Folie */
+.thm-flow { font-size: 0.85em; }
+</style>
+
+<!--
+- Den Ablauf einmal durchgehen, bevor die Klasse mitmacht
+- Acht Profile sind mitgeliefert — eine Diskussionsrunde (Ökonomin,
+  Technik-Optimist, Ethikerin, Praktiker, Advocatus Diaboli) und das
+  Vorstellungsgespräch von eben; gleich schreiben wir eigene
+- Zwischenruf: ist nur eine Zeile mehr im Verlauf, die beim nächsten Beitrag
+  mitgeschickt wird — die KI hat kein Gedächtnis, sie bekommt jedes Mal das
+  ganze Gespräch neu
+-->
+
+---
+rubrik: Agent Party
+titel: Ein Agent ist eine Textdatei
+class: text-xl
+---
+
+<div class="thm-center thm-gruppe">
+<div class="thm-flow">
+  <Card icon="cog" icon-ton="grau" titel="Oben: die Technik" kompakt>
+    Welches Modell, wie viel Nachdenken, welche Farbe.
+    <div class="thm-sample">model: gpt-5.6-luna<br>thinking: low<br>farbe: hellblau</div>
+  </Card>
+  <FlowArrow />
+  <Card icon="pen-line" titel="Darunter: die Rolle" tone="tint" kompakt>
+    In ganz normalem Deutsch.
+    <div class="thm-sample sprache">„Du bist Wirtschaftswissenschaftlerin und sitzt in dieser Runde als die Stimme, die nach Zahlen fragt …“</div>
+  </Card>
+</div>
+
+<Callout icon="info"><strong>Dieser Text geht wörtlich an die KI</strong> — keine versteckte Zusatzanweisung, kein Code.</Callout>
+</div>
+
+<!--
+- Im Dashboard ein Profil öffnen und zeigen: Das ist der ganze Agent
+- Frontmatter = Technik, darunter = Rolle
+- Wer die Beschreibung ändert, sieht das Verhalten sofort kippen
 - Überleitung: "Und jetzt seid ihr dran."
 -->
 
@@ -208,7 +201,7 @@ Wechsel zur **Agent Party**
 - Höhepunkt: einen Satz in einem Profil ändern, dieselbe Party neu starten —
   die Diskussion dreht sich
 - Ggf. zum Schluss "Fazit erstellen"
-- Variante Vorstellungsgespräch (knüpft an die Einstiegsfolie an): Besetzung
+- Variante Vorstellungsgespräch (knüpft an „Wofür das gut ist“ an): Besetzung
   Personalreferentin, Teamleiter IT, Bewerberin — genau in dieser
   Reihenfolge; Thema "Vorstellungsgespräch: Duales Studium
   Wirtschaftsinformatik bei der Lahnblick Optronik GmbH"; Einstiegsfrage
@@ -236,6 +229,8 @@ hideInToc: true
 - Profiländerung: gleiche Frage, gleiche Besetzung, ein Satz anders — und
   die Runde kommt woanders an
 - Wer bestimmt die Meinung? Wer die Rolle schreibt. Die KI hat keine eigene
+  — sie hat eine Rolle. Übertragen: Chatbots in Apps, Kundenservice, Social
+  Media — auch dort hat jemand eine Rolle geschrieben, die ihr nicht seht
 - Waren das Agenten? Eher nicht: Die Profile haben bewusst KEINE Werkzeuge —
   sie können nur reden, nicht handeln. Rückbezug auf "Wofür ihr ChatGPT
   nutzt": Auch hier wurde nur geantwortet, getan hat niemand etwas. Das
@@ -247,30 +242,29 @@ hideInToc: true
 -->
 
 ---
-layout: statement
-rubrik: Agent Party · Bewertung
-zitat: false
+rubrik: Agent Party
+titel: Das war Agent Party
 hideInToc: true
 ---
 
-Die KI hat keine Meinung — sie hat eine **Rolle**.
-
-<span class="st-note">Und die schreibt jemand. Wer die Rolle schreibt, lenkt die Diskussion.</span>
+<div class="thm-center">
+  <DemoEnde />
+</div>
 
 <!--
-- Kurz wirken lassen
-- Übertragen: Chatbots in Apps, Kundenservice, Social Media — auch dort hat
-  jemand eine Rolle geschrieben, die ihr nicht seht
-- Deshalb: Bei KI-Antworten immer fragen, wer sie so eingestellt hat
+- Noch Zeit? "Noch eine Demo" führt zur Übersicht
+- Sonst weiter (→) zu "Was nehmen wir mit?"
 -->
 
 ---
-rubrik: Agent Party · Bewertung
+rubrik: Agent Party · Zusatzfolie
 titel: KI gegen KI?
+routeAlias: agent-party-ki-gegen-ki
+zusatz: agent-party-fundstueck
 hideInToc: true
 ---
 
-<div class="thm-lead">In unserem Vorstellungsgespräch saß <strong>an allen drei Plätzen</strong> eine KI. Bei echten Bewerbungen passiert gerade etwas Ähnliches:</div>
+<div class="thm-lead">In unserem Vorstellungsgespräch sitzt <strong>an allen drei Plätzen</strong> eine KI. Bei echten Bewerbungen passiert gerade etwas Ähnliches:</div>
 
 <div class="thm-cols thm-cols-3-2">
   <div class="thm-center"><div class="thm-flow">
@@ -290,15 +284,21 @@ hideInToc: true
 
 <Callout icon="messages-square" class="mt-4"><strong>Zum Üben ja, als Ersatz nein.</strong> Die KI darf euch Fragen stellen — antworten müsst ihr im echten Gespräch selbst.</Callout>
 
+<div class="reflex-zurueck"><Abstecher to="agent-party-fundstueck" zurueck>Zurück zum Fundstück</Abstecher></div>
+
 <style>
 .reflex-kommentar { gap: 0; justify-content: center; }
+.reflex-zurueck { margin-top: 0.8rem; }
 </style>
 
 <!--
-- Rückbezug auf den Einstieg: Die Grafik zeigt fünf Schritte, in denen KI
-  hilft. Zu Ende gedacht heißt das: KI schreibt, KI liest — und kein Mensch
-  lernt den anderen kennen
-- In unserer Demo war das sogar wörtlich so: Auch die Bewerberin war eine KI.
+- Zusatzfolie, nicht im Folienverlauf: erreichbar über "KI gegen KI?" auf
+  "Wofür das gut ist", für die Frage, ob KI bei Bewerbungen nicht
+  gesellschaftlich fragwürdig ist. Pfeiltasten oder "Zurück zum Fundstück"
+  führen wieder in den Verlauf
+- Die Grafik zeigt fünf Schritte, in denen KI hilft. Zu Ende gedacht heißt
+  das: KI schreibt, KI liest — und kein Mensch lernt den anderen kennen
+- In unserer Demo ist das sogar wörtlich so: Auch die Bewerberin ist eine KI.
   Frage in die Runde: "Hat sich da eigentlich noch jemand beworben?"
 - Kal Makwana: "Mit KI auf der einen Seite die KI auf der anderen Seite
   schlagen zu wollen, ist ein aussichtsloses Unterfangen." Firmen weichen
@@ -311,19 +311,4 @@ hideInToc: true
   selbst. Ein generiertes Anschreiben ersetzt euch — und klingt wie alle
   anderen. Alex Wang schreibt es im Post selbst: "Die letzten Anpassungen
   mache ich von Hand — damit es noch nach mir klingt"
--->
-
----
-rubrik: Agent Party
-titel: Das war Agent Party
-hideInToc: true
----
-
-<div class="thm-center">
-  <DemoEnde />
-</div>
-
-<!--
-- Noch Zeit? "Noch eine Demo" führt zur Übersicht
-- Sonst weiter (→) zu "Was nehmen wir mit?"
 -->
