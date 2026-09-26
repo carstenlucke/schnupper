@@ -236,8 +236,9 @@ hideInToc: true
   die Runde kommt woanders an
 - Wer bestimmt die Meinung? Wer die Rolle schreibt. Die KI hat keine eigene
 - Waren das Agenten? Eher nicht: Die Profile haben bewusst KEINE Werkzeuge —
-  sie können nur reden, nicht handeln. Rückbezug auf "Reden vs. Handeln":
-  Das waren Chatbots mit einer Rolle. Ein Agent würde z. B. Quellen
+  sie können nur reden, nicht handeln. Rückbezug auf "Wofür ihr ChatGPT
+  nutzt": Auch hier wurde nur geantwortet, getan hat niemand etwas. Das
+  waren Chatbots mit einer Rolle. Ein Agent würde z. B. Quellen
   nachschlagen oder ein Protokoll schreiben
 - Beispiele für den Reality Check merken: überzeugend klingende, aber
   erfundene Zahlen (Halluzination); lokales Modell in LM Studio statt Cloud

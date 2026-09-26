@@ -33,18 +33,18 @@ Prof. Dr. Carsten Lucke
 
 ---
 layout: question
-titel: Kurze Umfrage
 class: text-xl
 hideInToc: true
 ---
 
-Wer von euch hat schon mal <br>**Claude, ChatGPT, Gemini <br>oder Copilot** benutzt?
+Wo seid ihr **heute** <br>schon KI begegnet?
 
 <!--
-- Hände hoch! (Erwartung: fast alle)
-- Kurze Rufrunde: Wofür nutzt ihr das?
-- Typische Antworten: Hausaufgaben, Texte schreiben, Fragen beantworten, Übersetzen
-- "Spannend. Und genau da setzen wir heute an."
+- Offene Frage, Antworten zurufen lassen und sammeln
+- "Heute" betonen: Es geht um den Alltag, nicht nur um Chatbots
+- Nennt jemand ChatGPT: parken — "Dazu gleich mehr"
+- Nachhaken, falls es stockt: Wecker, Handy entsperren, Feed, Navi, Musik
+- Überleitung: "Und was ist mit …?" — nächste Folie löst auf
 -->
 
 ---
@@ -73,9 +73,27 @@ class: text-xl
 
 <!--
 - Bezug zur Lebenswelt der Schüler
+- Mit den Zurufen abgleichen: Was wurde genannt, was nicht?
 - KI ist kein Zukunftsthema — es ist Gegenwart
 - Die Frage ist nicht OB KI kommt, sondern wie wir damit umgehen
-- Überleitung: "Und genau beim letzten Punkt wird es jetzt spannend..."
+- Überleitung zur Umfrage: Beim letzten Punkt bleiben wir — wer von euch
+  hat so etwas schon benutzt?
+-->
+
+---
+layout: question
+titel: Kurze Umfrage
+class: text-xl
+hideInToc: true
+---
+
+Wer von euch hat schon mal <br>**Claude, ChatGPT, Gemini <br>oder Copilot** benutzt?
+
+<!--
+- Hände hoch! (Erwartung: fast alle)
+- Nur Handzeichen — wofür ihr das nutzt, fragen wir später
+- "Fast alle also. Dann schauen wir uns jetzt an, womit ihr da eigentlich
+  redet."
 -->
 
 ---
@@ -266,29 +284,27 @@ aktiv: 1
 
 ---
 layout: question
-titel: Reden vs. Handeln
+titel: Kurze Rufrunde
 class: text-xl
 hideInToc: true
 ---
 
-ChatGPT kann mit euch **reden**.
-
-Aber kann es auch **handeln**?
+Wofür nutzt **ihr** <br>ChatGPT & Co.?
 
 <!--
-- Provokante Frage
-- ChatGPT schreibt Texte, beantwortet Fragen — aber TUT es etwas?
-- Es ist wie ein Gehirn im Glas: Es kann denken und reden, aber es hat keine Hände
-- "Genau das schauen wir uns heute an."
+- Antworten zurufen lassen und sammeln, noch nicht kommentieren
+- Erwartet: Hausaufgaben, Texte schreiben, Fragen beantworten, Übersetzen,
+  Ideen sammeln
+- Nachhaken, falls es stockt: Referat, Bewerbung, Lernen für eine Klausur
 -->
 
 ---
 rubrik: Vom Chatbot zum KI-Agenten
-titel: Was kann ChatGPT?
+titel: Wofür ihr ChatGPT nutzt
 class: text-xl
 ---
 
-<div class="thm-center">
+<div class="thm-center thm-gruppe">
 <CardGrid :cols="2">
   <Card icon="pen-line" titel="Texte schreiben" kompakt>
     Aufsätze, E-Mails, Zusammenfassungen, Gedichte...
@@ -303,12 +319,18 @@ class: text-xl
     Brainstorming, kreative Vorschläge, Konzepte
   </Card>
 </CardGrid>
+
+<Callout v-click><strong>Fällt euch was auf?</strong> Bei allem davon <em>antwortet</em> ChatGPT. <em>Getan</em> wird es danach — von euch.</Callout>
 </div>
 
 <!--
-- Das kennen die Schüler bereits
-- Kurz abhaken, nicht zu lange drauf verweilen
-- Überleitung: "Super. Aber jetzt kommt das Aber..."
+- Mit den Zurufen abgleichen: Was davon wurde genannt? Was fehlt?
+- Kurz halten, das kennen alle
+- Dann fragen: "Fällt euch was auf?" — kurz warten, dann per Klick den
+  Merksatz aufdecken
+- Pointe: Bei allem, was ihr genannt habt, schreibt ChatGPT eine Antwort.
+  Abgeben, abschicken, einbauen — das macht ihr
+- Überleitung: "Warum ist das so? Schauen wir uns die Grenzen an."
 -->
 
 ---
@@ -333,7 +355,7 @@ class: text-xl
   </Card>
 </CardGrid>
 
-<Callout icon="info" ton="hell"><strong>Aber:</strong> Die Grenze verschwimmt. ChatGPT &amp; Co. bekommen laufend neue Werkzeuge.</Callout>
+<Callout icon="info" ton="hell"><strong>To be fair:</strong> Die Grenze verschwimmt. ChatGPT &amp; Co. bekommen laufend neue Werkzeuge.</Callout>
 </div>
 
 <!--
