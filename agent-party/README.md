@@ -167,7 +167,8 @@ agent-party/
   Profil, der Entwurf ist vor dem Speichern änderbar
 - **Profilgruppen** — Gruppen anlegen, umbenennen, löschen und Profile per
   Drag and Drop hineinziehen; eine gelöschte Gruppe gibt ihre Profile an
-  „Ohne Gruppe" zurück. Die Gruppe ist reine Ordnung im Dashboard und geht
+  „Ohne Gruppe" zurück. Gruppen lassen sich einzeln oder alle auf einmal
+  ein- und aufklappen. Die Gruppe ist reine Ordnung im Dashboard und geht
   nicht in den Prompt
 - **Editor auf voller Breite** — ein Klick blendet die Profilliste aus und
   gibt dem Rollentext die rechte Hälfte der Seite

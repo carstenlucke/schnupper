@@ -103,6 +103,9 @@ const $ansichtParty = document.getElementById("ansicht-party");
 const $profilGruppen = document.getElementById("profil-gruppen");
 const $profileAnzahl = document.getElementById("profile-anzahl");
 const $neueGruppeBtn = document.getElementById("neue-gruppe-btn");
+const $alleKlappenBtn = document.getElementById("alle-klappen-btn");
+const $alleKlappenIcon = document.getElementById("alle-klappen-icon");
+const $alleKlappenText = document.getElementById("alle-klappen-text");
 const $gruppenHinweis = document.getElementById("gruppen-hinweis");
 const $editorBreiteBtn = document.getElementById("editor-breite-btn");
 const $editorBreiteIcon = document.getElementById("editor-breite-icon");
@@ -423,6 +426,30 @@ function rendereProfilGruppen() {
   // „Ohne Gruppe" steht immer da, als Rest und als Ablage zum Herausnehmen.
   const rest = profile.filter((p) => !einsortiert.has(p.slug));
   $profilGruppen.appendChild(baueGruppe("Ohne Gruppe", -1, rest));
+  aktualisiereAlleKlappen();
+}
+
+/** Schlüssel aller Gruppen, wie `zugeklappt` sie führt — "" ist „Ohne Gruppe". */
+function alleGruppenSchluessel() {
+  return [...gruppen.map((g) => g.name), ""];
+}
+
+function alleZugeklappt() {
+  return alleGruppenSchluessel().every((s) => zugeklappt.has(s));
+}
+
+/** Der Knopf klappt zu, solange noch irgendeine Gruppe offen ist; erst wenn
+    alle zu sind, klappt er alle auf. */
+function aktualisiereAlleKlappen() {
+  const zu = alleZugeklappt();
+  $alleKlappenIcon.textContent = zu ? "unfold_more" : "unfold_less";
+  $alleKlappenText.textContent = zu ? "Alle aufklappen" : "Alle zuklappen";
+}
+
+function klappeAlle() {
+  if (alleZugeklappt()) zugeklappt.clear();
+  else alleGruppenSchluessel().forEach((s) => zugeklappt.add(s));
+  rendereProfilGruppen();
 }
 
 /** Eine Gruppe mit Kopf und Kachelraster. `index` zeigt in `gruppen`,
@@ -482,6 +509,7 @@ function baueGruppe(name, index, mitglieder) {
     klappe.setAttribute("aria-expanded", String(!jetztZu));
     if (jetztZu) zugeklappt.add(schluessel);
     else zugeklappt.delete(schluessel);
+    aktualisiereAlleKlappen();
   });
   if (!ohne) {
     sektion.querySelector(".gruppe-umbenennen").addEventListener("click", () => benenneGruppeUm(index));
@@ -1467,6 +1495,7 @@ function setzeListener() {
   $duplizierenBtn.addEventListener("click", dupliziereProfil);
   $entwurfBtn.addEventListener("click", entwurfStarten);
   $neueGruppeBtn.addEventListener("click", legeGruppeAn);
+  $alleKlappenBtn.addEventListener("click", klappeAlle);
   $editorBreiteBtn.addEventListener("click", () => {
     setzeEditorBreit(!$ansichtProfile.classList.contains("editor-breit"));
   });

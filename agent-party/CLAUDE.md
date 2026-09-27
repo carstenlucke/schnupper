@@ -319,6 +319,11 @@ erreichbar über die Navigation **in der Kopfleiste** (die Ids heißen weiterhin
     beim Server ankommen könnten. Im `drop`-Handler wird `gezogen` vor dem
     Neuzeichnen zurückgesetzt: Die gezogene Kachel verschwindet dabei aus dem
     DOM, und ohne sie feuert kein Browser mehr `dragend`.
+  - **Alle zuklappen / Alle aufklappen** neben „Neue Gruppe": Solange noch
+    eine Gruppe offen ist, klappt der Knopf alle zu; erst wenn alle zu sind,
+    klappt er alle auf. Der Zustand liegt in `zugeklappt` („Ohne Gruppe" hat
+    den Schlüssel `""`) und übersteht so das Neuzeichnen, wird aber nicht
+    gespeichert.
   - Das Feld **Gruppe** im Editor ist der Weg ohne Maus. Es wirkt erst beim
     Speichern, weil die Gruppe nicht in der Profildatei steht, sondern nach dem
     Speichern unter dem Slug in `gruppen.json` eingetragen wird. Zieht jemand
