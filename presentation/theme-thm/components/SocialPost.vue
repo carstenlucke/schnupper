@@ -18,6 +18,7 @@
 -->
 <script setup lang="ts">
 import { computed } from 'vue'
+import { publicPfad } from '../public-pfad'
 
 const props = defineProps<{
   autor: string
@@ -38,7 +39,7 @@ const initialen = computed(() =>
 <template>
   <article class="sp" :class="{ 'sp-kommentar': kommentar }">
     <header class="sp-kopf">
-      <img v-if="foto" class="sp-avatar" :src="foto" alt="" />
+      <img v-if="foto" class="sp-avatar" :src="publicPfad(foto)" alt="" />
       <div v-else class="sp-avatar" aria-hidden="true">{{ initialen }}</div>
       <div class="sp-wer">
         <div class="sp-autor">{{ autor }}</div>
@@ -50,7 +51,7 @@ const initialen = computed(() =>
 
     <div class="sp-text"><slot /></div>
 
-    <img v-if="bild" class="sp-bild" :src="bild" :alt="bildAlt ?? ''" />
+    <img v-if="bild" class="sp-bild" :src="publicPfad(bild)" :alt="bildAlt ?? ''" />
 
     <div v-if="reaktionen || kommentare" class="sp-zahlen">
       <span v-if="reaktionen"><span class="sp-daumen"><ThmIcon name="thumbs-up" :size="0.5" /></span> {{ reaktionen }}</span>

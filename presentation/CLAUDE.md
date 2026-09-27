@@ -151,6 +151,12 @@ Die Fallstricke aus dem Ursprungsprojekt gelten weiter, vor allem:
   Text entstehen dadurch leere Flächen — dann lieber `.thm-center`.
 - **Nackte URLs werden verlinkt.** Eine URL als Linktext in `<a>` erzeugt
   verschachtelte Links; Linktext ohne `http://` schreiben.
+- **Bildpfade in Props brauchen `publicPfad()`.** Auf GitHub Pages liegt die
+  Präsentation unter `/schnupper/`. Vite ergänzt den Basispfad nur in fest
+  notierten `<img src="/…">`, nicht in Props wie `bild` oder `foto` — eine
+  Komponente, die einen Pfad aus `public/` als Prop annimmt, reicht ihn
+  durch `publicPfad()` aus `theme-thm/public-pfad.ts`. Prüfen mit
+  `npx slidev build --base /schnupper/`.
 - **Barlow kommt von Google Fonts.** Ohne Netz (auch im sandboxed Export)
   rendern die Folien in der Ersatzschrift.
 

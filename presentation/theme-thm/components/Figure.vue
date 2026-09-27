@@ -7,6 +7,8 @@
             caption="Marktvolumen von Software im Automobilbereich …" />
 -->
 <script setup lang="ts">
+import { publicPfad } from '../public-pfad'
+
 defineProps<{
   src: string
   caption?: string
@@ -18,7 +20,7 @@ defineProps<{
 
 <template>
   <figure class="thm-figure" :class="{ boxed }">
-    <img :src="src" :alt="alt ?? caption ?? ''" />
+    <img :src="publicPfad(src)" :alt="alt ?? caption ?? ''" />
     <figcaption v-if="caption">{{ caption }}</figcaption>
   </figure>
 </template>

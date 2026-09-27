@@ -10,6 +10,8 @@
     bild: /campus-friedberg.jpg      # optional
 -->
 <script setup lang="ts">
+import { publicPfad } from '../public-pfad'
+
 defineProps<{ bild?: string; rubrik?: string }>()
 </script>
 
@@ -22,7 +24,7 @@ defineProps<{ bild?: string; rubrik?: string }>()
       <div class="thm-bar end-bar" />
     </div>
     <template v-if="bild">
-      <div class="cv-photo" :style="{ backgroundImage: `url(${bild})` }" />
+      <div class="cv-photo" :style="{ backgroundImage: `url(${publicPfad(bild)})` }" />
       <span class="cv-quad" aria-hidden="true" />
     </template>
     <SlideFooter dunkel />
