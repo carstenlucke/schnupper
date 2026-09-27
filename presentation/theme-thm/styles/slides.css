@@ -15,7 +15,8 @@
 .thm-head {
   flex: none;
   margin-bottom: 1.15rem;
-  padding-right: 7.5rem; /* Freiraum für das THM-Logo oben rechts */
+  /* Freiraum für die Logos oben rechts (THM + StudiumPlus, ca. 12.3rem) */
+  padding-right: 13rem;
 }
 
 .thm-eyebrow {
