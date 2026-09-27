@@ -15,6 +15,8 @@ const FARBEN = [
 
 // So viele Plätze hat der Tisch — dieselbe Grenze wie MAX_TEILNEHMER im Server.
 const MAX_TEILNEHMER = 8;
+// Obergrenze im Formular — MAX_RUNDEN im Server. „Weitere Runde" darf darüber.
+const MAX_RUNDEN = 5;
 
 const STATUS_TEXT = {
   neu: "Noch nicht gestartet",
@@ -38,6 +40,7 @@ let modelle = [];
 let editorSlug = null;          // null = neues Profil
 let entwurfAbbruch = null;      // AbortController; nicht-null = Entwurf läuft
 let besetzung = [];             // Slugs in Sprechreihenfolge, jeder höchstens einmal
+let bearbeitung = null;         // {slug, sitzung, status}: Party, die „Party vorbereiten" gerade ändert
 let aktuelleParty = null;       // {slug, sitzung, status, erwartet}
 let partyQuelle = null;         // EventSource
 let aktiveBlase = null;         // {wurzel, textEl, denkEl, roh}
@@ -89,6 +92,10 @@ const wirfEin = (slug, text) =>
 const haengeRundeAn = (slug) => api(`/api/partys/${slug}/runde`, { method: "POST" });
 const starteFazit = (slug) => api(`/api/partys/${slug}/fazit`, { method: "POST" });
 const entferneParty = (slug) => api(`/api/partys/${slug}`, { method: "DELETE" });
+const aendereParty = (slug, daten) =>
+  api(`/api/partys/${slug}`, { method: "PUT", body: JSON.stringify(daten) });
+const setzePartyZurueck = (slug) =>
+  api(`/api/partys/${slug}/zuruecksetzen`, { method: "POST" });
 
 // ---------------------------------------------------------------------------
 // DOM-Handles
@@ -139,6 +146,11 @@ const $feldStarter = document.getElementById("feld-starter");
 const $feldRunden = document.getElementById("feld-runden");
 const $feldPartymodell = document.getElementById("feld-partymodell");
 const $partyStartBtn = document.getElementById("party-start-btn");
+const $partyStartIcon = document.getElementById("party-start-icon");
+const $partyStartText = document.getElementById("party-start-text");
+const $bearbeitenAbbrechenBtn = document.getElementById("bearbeiten-abbrechen-btn");
+const $rundeTitel = document.getElementById("runde-titel");
+const $bearbeitenInfo = document.getElementById("bearbeiten-info");
 const $einrichtenHinweis = document.getElementById("einrichten-hinweis");
 
 const $partyTitel = document.getElementById("party-titel");
@@ -162,6 +174,9 @@ const $rundeBtn = document.getElementById("runde-btn");
 const $fazitBtn = document.getElementById("fazit-btn");
 const $partyStopBtn = document.getElementById("party-stop-btn");
 const $partyFortBtn = document.getElementById("party-fort-btn");
+const $partyFortText = document.getElementById("party-fort-text");
+const $partyBearbeitenBtn = document.getElementById("party-bearbeiten-btn");
+const $partyZurueckBtn = document.getElementById("party-zurueck-btn");
 const $neuePartyBtn = document.getElementById("neue-party-btn");
 const $steuerHinweis = document.getElementById("steuer-hinweis");
 
@@ -369,6 +384,9 @@ function zeigeAnsicht(name, arg) {
     setzeHash("#profile");
     ladeUndRendereProfile();
   } else if (name === "einrichten") {
+    // Über Navigation, Hash oder „Neue Party" heißt die Ansicht: neue Party.
+    // Nur starteBearbeitung() kommt mit "bearbeiten" hierher.
+    if (arg !== "bearbeiten" && bearbeitung) beendeBearbeitung();
     setzeHash("#einrichten");
     ladeUndRendereEinrichten();
   } else if (name === "party" && arg) {
@@ -1102,11 +1120,29 @@ function rendereParties(partys) {
           ${STATUS_TEXT[eintrag.status] || eintrag.status} · ${eintrag.beitraege} von ${eintrag.erwartet} Beiträgen
         </div>
       </button>
+      <button class="bearbeiten p-1 rounded hover:bg-on-surface/10 disabled:opacity-30" aria-label="Party bearbeiten" title="Party bearbeiten">
+        <span class="material-symbols-outlined text-[16px] text-on-surface-variant" aria-hidden="true">edit</span>
+      </button>
+      <button class="zurueck p-1 rounded hover:bg-on-surface/10 disabled:opacity-30" aria-label="Auf den Start zurücksetzen" title="Auf den Start zurücksetzen">
+        <span class="material-symbols-outlined text-[16px] text-on-surface-variant" aria-hidden="true">restart_alt</span>
+      </button>
       <button class="weg p-1 rounded hover:bg-on-surface/10" aria-label="Party löschen" title="Party löschen">
         <span class="material-symbols-outlined text-[16px] text-on-surface-variant" aria-hidden="true">delete</span>
       </button>`;
     zeile.querySelector(".oeffnen").addEventListener("click", () => {
       zeigeAnsicht("party", eintrag.slug);
+    });
+    // Eine laufende Party ändert niemand unter der Hand; Zurücksetzen hält
+    // sie dagegen selbst an und darf deshalb immer.
+    const bearbeiten = zeile.querySelector(".bearbeiten");
+    bearbeiten.disabled = eintrag.status === "laeuft";
+    bearbeiten.addEventListener("click", () => starteBearbeitung(eintrag.slug));
+    const zurueck = zeile.querySelector(".zurueck");
+    zurueck.disabled = eintrag.status === "neu";
+    zurueck.addEventListener("click", async () => {
+      if (await partyZuruecksetzen(eintrag.slug, eintrag.sitzung.titel, eintrag.beitraege)) {
+        ladeUndRendereEinrichten();
+      }
     });
     zeile.querySelector(".weg").addEventListener("click", async () => {
       const bestaetigt = await zeigeDialog({
@@ -1136,21 +1172,129 @@ async function ladeUndRendereEinrichten() {
   rendereParties(Array.isArray(partys) ? partys : []);
 }
 
-async function partyAnlegenUndStarten() {
-  zeigeHinweis($einrichtenHinweis, "");
-  const angelegt = await neueParty({
+function formularDaten() {
+  return {
     titel: $feldTitel.value,
     starter: $feldStarter.value,
     teilnehmer: besetzung,
     runden: parseInt($feldRunden.value, 10) || 2,
     modell: $feldPartymodell.value,
-  });
+  };
+}
+
+async function partyAnlegenUndStarten() {
+  zeigeHinweis($einrichtenHinweis, "");
+  const angelegt = await neueParty(formularDaten());
   if (angelegt.fehler) return zeigeHinweis($einrichtenHinweis, angelegt.fehler);
 
   const gestartet = await starteParty(angelegt.slug);
   if (gestartet.fehler) return zeigeHinweis($einrichtenHinweis, gestartet.fehler);
 
   zeigeAnsicht("party", angelegt.slug);
+}
+
+// ---------------------------------------------------------------------------
+// Bestehende Party bearbeiten oder zurücksetzen
+// ---------------------------------------------------------------------------
+
+/** Die Party ins Formular von „Party vorbereiten" laden. Gespeichert wird
+    erst auf Knopfdruck, gestartet gar nicht — das geht danach in der Sitzung. */
+async function starteBearbeitung(slug) {
+  const daten = await ladeParty(slug);
+  if (daten.fehler) {
+    await zeigeDialog({ titel: "Party nicht gefunden", text: daten.fehler, mitAbbrechen: false });
+    return;
+  }
+  bearbeitung = { slug, sitzung: daten.sitzung, status: daten.status };
+  besetzung = [...daten.sitzung.teilnehmer];
+  $feldTitel.value = daten.sitzung.titel;
+  $feldStarter.value = daten.sitzung.starter;
+  // Über „Weitere Runde" kann eine Sitzung länger sein als das Formular erlaubt.
+  $feldRunden.max = String(Math.max(MAX_RUNDEN, daten.sitzung.runden));
+  $feldRunden.value = String(daten.sitzung.runden);
+  rendereModellauswahl($feldPartymodell, daten.sitzung.modell || "",
+    "Modell aus dem jeweiligen Profil");
+  rendereBearbeitungsmodus();
+  zeigeAnsicht("einrichten", "bearbeiten");
+}
+
+/** Zurück zum Formular für eine neue Party, leer. */
+function beendeBearbeitung() {
+  bearbeitung = null;
+  besetzung = [];
+  $feldTitel.value = "";
+  $feldStarter.value = "";
+  $feldRunden.max = String(MAX_RUNDEN);
+  $feldRunden.value = "2";
+  $feldPartymodell.value = "";
+  zeigeHinweis($einrichtenHinweis, "");
+  rendereBearbeitungsmodus();
+}
+
+function rendereBearbeitungsmodus() {
+  const aktiv = Boolean(bearbeitung);
+  $rundeTitel.textContent = aktiv ? "Party bearbeiten" : "Die Runde";
+  $partyStartIcon.textContent = aktiv ? "save" : "play_arrow";
+  $partyStartText.textContent = aktiv ? "Änderungen speichern" : "Party starten";
+  $bearbeitenAbbrechenBtn.classList.toggle("hidden", !aktiv);
+  $bearbeitenInfo.classList.toggle("hidden", !aktiv);
+  if (aktiv) {
+    $bearbeitenInfo.textContent = bearbeitung.status === "neu"
+      ? "Die Party hat noch nicht angefangen — alles lässt sich ändern."
+      : "Die Party hat schon Beiträge. Runden und Modell lassen sich einfach " +
+        "ändern; wer Thema, Einstiegsfrage oder Besetzung ändert, setzt sie " +
+        "dabei auf den Start zurück.";
+  }
+}
+
+async function speichereParty() {
+  zeigeHinweis($einrichtenHinweis, "");
+  const daten = formularDaten();
+  const alt = bearbeitung.sitzung;
+  // Dieselbe Säuberung wie im Server, sonst gälte ein Leerzeichen am Ende
+  // schon als geändertes Thema.
+  const kernGeaendert =
+    daten.titel.split(/\s+/).filter(Boolean).join(" ") !== alt.titel ||
+    daten.starter.trim() !== alt.starter ||
+    daten.teilnehmer.join("|") !== alt.teilnehmer.join("|");
+
+  if (kernGeaendert && bearbeitung.status !== "neu") {
+    const bestaetigt = await zeigeDialog({
+      titel: "Party zurücksetzen?",
+      text: "Thema, Einstiegsfrage oder Besetzung haben sich geändert. Dazu passt " +
+            "der bisherige Verlauf nicht mehr: Alle Beiträge, Zwischenrufe und " +
+            "das Fazit werden gelöscht.",
+      okText: "Speichern und zurücksetzen",
+    });
+    if (!bestaetigt) return;
+  }
+  // Auch ohne Beiträge: Zwischenrufe vor dem ersten Beitrag galten der alten Runde.
+  daten.zuruecksetzen = kernGeaendert;
+
+  const ergebnis = await aendereParty(bearbeitung.slug, daten);
+  if (ergebnis.fehler) return zeigeHinweis($einrichtenHinweis, ergebnis.fehler);
+
+  const slug = bearbeitung.slug;
+  beendeBearbeitung();
+  zeigeAnsicht("party", slug);
+}
+
+/** Fragt nach und setzt zurück. Liefert, ob zurückgesetzt wurde. */
+async function partyZuruecksetzen(slug, titel, beitraege) {
+  const bestaetigt = await zeigeDialog({
+    titel: "Party zurücksetzen?",
+    text: `„${titel}" beginnt wieder von vorn. ${beitraege} ` +
+          `${beitraege === 1 ? "Beitrag" : "Beiträge"}, alle Zwischenrufe und ` +
+          "das Fazit werden gelöscht. Thema, Besetzung und Runden bleiben.",
+    okText: "Zurücksetzen",
+  });
+  if (!bestaetigt) return false;
+  const ergebnis = await setzePartyZurueck(slug);
+  if (ergebnis.fehler) {
+    await zeigeDialog({ titel: "Zurücksetzen klappt nicht", text: ergebnis.fehler, mitAbbrechen: false });
+    return false;
+  }
+  return true;
 }
 
 // ---------------------------------------------------------------------------
@@ -1258,6 +1402,9 @@ function rendereFortschritt(status) {
   // Auch "neu": wer vor dem ersten Beitrag abbricht, landet wieder dort —
   // ohne diesen Knopf ließe sich die Party danach nur noch löschen.
   $partyFortBtn.classList.toggle("hidden", laeuft || status === "fertig");
+  $partyFortText.textContent = status === "neu" ? "Starten" : "Fortsetzen";
+  $partyBearbeitenBtn.disabled = laeuft;
+  $partyZurueckBtn.disabled = status === "neu" && fertigeBeitraege === 0 && zwischenrufe === 0;
 }
 
 function oeffneStrom(slug) {
@@ -1562,7 +1709,15 @@ function setzeListener() {
 
   $feldTitel.addEventListener("input", pruefeStartbereit);
   $feldStarter.addEventListener("input", pruefeStartbereit);
-  $partyStartBtn.addEventListener("click", partyAnlegenUndStarten);
+  $partyStartBtn.addEventListener("click", () => {
+    if (bearbeitung) speichereParty();
+    else partyAnlegenUndStarten();
+  });
+  $bearbeitenAbbrechenBtn.addEventListener("click", () => {
+    const slug = bearbeitung && bearbeitung.slug;
+    beendeBearbeitung();
+    if (slug) zeigeAnsicht("party", slug);
+  });
 
   $partyStopBtn.addEventListener("click", partyAbbrechen);
   $partyFortBtn.addEventListener("click", partyFortsetzen);
@@ -1575,6 +1730,14 @@ function setzeListener() {
   $rundeBtn.addEventListener("click", rundeAnhaengen);
   $fazitBtn.addEventListener("click", fazitAnfordern);
   $neuePartyBtn.addEventListener("click", () => zeigeAnsicht("einrichten"));
+  $partyBearbeitenBtn.addEventListener("click", () => {
+    if (aktuelleParty) starteBearbeitung(aktuelleParty.slug);
+  });
+  $partyZurueckBtn.addEventListener("click", async () => {
+    if (!aktuelleParty) return;
+    const { slug, sitzung } = aktuelleParty;
+    if (await partyZuruecksetzen(slug, sitzung.titel, fertigeBeitraege)) oeffneParty(slug);
+  });
 
   window.addEventListener("popstate", ausHash);
   window.addEventListener("beforeunload", schliesseStrom);

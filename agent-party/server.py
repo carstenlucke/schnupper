@@ -923,23 +923,132 @@ def party_liste() -> list[dict]:
     return partys
 
 
-def party_loeschen(slug: str) -> bool:
-    ordner = sicherer_pfad(slug, PARTYS_DIR)
-    if not ordner or not os.path.isdir(ordner):
-        return False
+def _anhalten_und_austragen(slug: str) -> None:
+    """Party anhalten, auf das Ende der Schleife warten, aus der Registry.
+
+    Erst wenn die Schleife durch ist, darf der Verlauf weg: sonst schreibt der
+    Thread gleich noch einen fertigen Beitrag hinterher — in einen Ordner, den
+    es nicht mehr gibt, oder in eine gerade geleerte Datei.
+    """
     with laeufe_lock:
         lauf = laeufe.get(slug)
     stoppe_party(slug)
-    # Erst wenn die Schleife durch ist, darf das Verzeichnis weg: sonst
-    # schreibt der Thread gleich noch einen fertigen Beitrag in eine Datei,
-    # deren Ordner es nicht mehr gibt, und stirbt mit Traceback.
     frist = time.monotonic() + 5
     while lauf and not lauf.beendet and time.monotonic() < frist:
         time.sleep(0.05)
     with laeufe_lock:
         laeufe.pop(slug, None)
+
+
+def party_loeschen(slug: str) -> bool:
+    ordner = sicherer_pfad(slug, PARTYS_DIR)
+    if not ordner or not os.path.isdir(ordner):
+        return False
+    _anhalten_und_austragen(slug)
     shutil.rmtree(ordner, ignore_errors=True)
     return True
+
+
+def party_zuruecksetzen(slug: str) -> bool:
+    """Zurück auf den Start: Beiträge, Zwischenrufe und Fazit weg, die
+    Sitzung selbst bleibt. Der Status ergibt sich danach von allein zu "neu"."""
+    pfad = verlauf_pfad(slug)
+    if not pfad or not sitzung_lesen(slug):
+        return False
+    _anhalten_und_austragen(slug)
+    with verlauf_lock:
+        try:
+            os.remove(pfad)
+        except FileNotFoundError:
+            pass
+    return True
+
+
+def party_pruefen(daten: dict, max_runden: int = MAX_RUNDEN) -> tuple[dict, str | None]:
+    """Die Einstellungen einer Party prüfen — beim Anlegen und beim Ändern.
+
+    Liefert die bereinigten Felder oder eine Fehlermeldung. `max_runden` ist
+    beim Ändern höher, wenn die Sitzung über „Weitere Runde" schon länger ist.
+    """
+    titel = " ".join(str(daten.get("titel", "")).split())
+    starter = str(daten.get("starter", "")).strip()
+    teilnehmer = [str(t) for t in daten.get("teilnehmer", [])]
+    try:
+        runden = int(daten.get("runden", 2))
+    except (TypeError, ValueError):
+        runden = 2
+
+    if not titel:
+        return {}, "Die Party braucht ein Thema."
+    if not starter:
+        return {}, "Die Party braucht eine Einstiegsfrage."
+    if not MIN_TEILNEHMER <= len(teilnehmer) <= MAX_TEILNEHMER:
+        return {}, f"Es müssen {MIN_TEILNEHMER} bis {MAX_TEILNEHMER} Profile am Tisch sitzen."
+    for slug in teilnehmer:
+        if not profil_lesen(slug):
+            return {}, f"Das Profil „{slug}“ gibt es nicht."
+    # Der Name ist die Identität des Agenten — im Teilnehmerblock, im
+    # Verlauf und in der Anweisung, die Person beim Namen zu nennen.
+    # Zweimal dasselbe Profil hieße zweimal derselbe Name.
+    if len(set(teilnehmer)) != len(teilnehmer):
+        return {}, ("Jedes Profil sitzt nur einmal am Tisch. Für zwei "
+                    "ähnliche Stimmen im Profil-Editor „Duplizieren“ "
+                    "und der Kopie einen eigenen Namen geben.")
+
+    return {
+        "titel": titel,
+        "starter": starter,
+        "teilnehmer": teilnehmer,
+        "runden": max(1, min(max_runden, runden)),
+        # Leer heißt: das Modell aus dem jeweiligen Profil, sonst der
+        # Serverstandard. Hier STANDARD_MODELL einzusetzen würde das Feld
+        # in der Profildatei stillschweigend entwerten.
+        "modell": str(daten.get("modell", "")).strip(),
+    }, None
+
+
+# Was den Verlauf trägt: Wer das ändert, nachdem schon jemand gesprochen hat,
+# bekommt einen Verlauf, der nicht mehr zur Runde passt — Beiträge auf eine
+# andere Frage, Plätze, die es nicht mehr gibt, eine verrutschte Rundenzählung.
+PARTY_KERN = ("titel", "starter", "teilnehmer")
+
+
+def party_aendern(slug: str, daten: dict) -> tuple[dict, int]:
+    """Die Einstellungen einer Party ändern.
+
+    Runden und Modell gehen immer. Thema, Einstiegsfrage und Besetzung nur vor
+    dem ersten Eintrag — oder zusammen mit `zuruecksetzen`. Der Slug bleibt,
+    auch wenn sich das Thema ändert: Er steht in Adressen und Lesezeichen.
+    """
+    # Unter derselben Sperre wie „Weitere Runde": beide lesen, ändern und
+    # schreiben die sitzung.json.
+    with runden_lock:
+        sitzung = sitzung_lesen(slug)
+        if not sitzung:
+            return {"fehler": "Party nicht gefunden"}, 404
+
+        with laeufe_lock:
+            lauf = laeufe.get(slug)
+        if lauf and not lauf.beendet:
+            return {"fehler": "Die Party läuft gerade. Erst anhalten, dann ändern."}, 409
+
+        neu, fehler = party_pruefen(
+            daten, max(MAX_RUNDEN, int(sitzung.get("runden", 1))))
+        if fehler:
+            return {"fehler": fehler}, 400
+
+        zuruecksetzen = bool(daten.get("zuruecksetzen"))
+        kern_geaendert = any(neu[k] != sitzung.get(k) for k in PARTY_KERN)
+        if kern_geaendert and verlauf_lesen(slug) and not zuruecksetzen:
+            return {"fehler": "Thema, Einstiegsfrage und Besetzung lassen sich "
+                              "nur ändern, wenn die Party dabei auf den Start "
+                              "zurückgesetzt wird."}, 409
+
+        if zuruecksetzen:
+            party_zuruecksetzen(slug)
+        sitzung.update(neu)
+        sitzung_schreiben(slug, sitzung)
+        return {"slug": slug, "sitzung": sitzung}, 200
 
 
 # ============================================================================
@@ -1303,7 +1412,8 @@ def wirf_ein(slug: str, text: str) -> tuple[dict, int]:
 # Ohne diese Sperre erhöhen zwei schnelle Klicks beide von 2 auf 3, der
 # zweite scheitert am schon laufenden Thread und nimmt beim Rollback die
 # Runde des ersten wieder zurück: die Schleife redet dann drei Runden lang,
-# während die sitzung.json zwei behauptet.
+# während die sitzung.json zwei behauptet. party_aendern() nimmt dieselbe
+# Sperre, weil es dieselbe Datei liest und schreibt.
 runden_lock = threading.Lock()
 
 
@@ -1447,6 +1557,8 @@ class PartyHandler(SimpleHTTPRequestHandler):
             self._party_runde(teile[3])
         elif pfad.startswith("/api/partys/") and pfad.endswith("/fazit"):
             self._party_fazit(teile[3])
+        elif pfad.startswith("/api/partys/") and pfad.endswith("/zuruecksetzen"):
+            self._party_zuruecksetzen(teile[3])
         else:
             self.send_error(404)
 
@@ -1457,6 +1569,8 @@ class PartyHandler(SimpleHTTPRequestHandler):
             self._profil_aendern(teile[3])
         elif pfad == "/api/gruppen":
             self._gruppen_setzen()
+        elif len(teile) == 4 and pfad.startswith("/api/partys/"):
+            self._party_aendern(teile[3])
         else:
             self.send_error(404)
 
@@ -1586,61 +1700,35 @@ class PartyHandler(SimpleHTTPRequestHandler):
         if daten is None:
             return
 
-        titel = " ".join(str(daten.get("titel", "")).split())
-        starter = str(daten.get("starter", "")).strip()
-        teilnehmer = [str(t) for t in daten.get("teilnehmer", [])]
-        try:
-            runden = int(daten.get("runden", 2))
-        except (TypeError, ValueError):
-            runden = 2
+        felder, fehler = party_pruefen(daten)
+        if fehler:
+            self._send_json({"fehler": fehler}, 400)
+            return
 
-        if not titel:
-            self._send_json({"fehler": "Die Party braucht ein Thema."}, 400)
-            return
-        if not starter:
-            self._send_json({"fehler": "Die Party braucht eine Einstiegsfrage."}, 400)
-            return
-        if not MIN_TEILNEHMER <= len(teilnehmer) <= MAX_TEILNEHMER:
-            self._send_json({
-                "fehler": f"Es müssen {MIN_TEILNEHMER} bis {MAX_TEILNEHMER} "
-                          "Profile am Tisch sitzen."}, 400)
-            return
-        for slug in teilnehmer:
-            if not profil_lesen(slug):
-                self._send_json({"fehler": f"Das Profil „{slug}“ gibt es nicht."}, 400)
-                return
-        # Der Name ist die Identität des Agenten — im Teilnehmerblock, im
-        # Verlauf und in der Anweisung, die Person beim Namen zu nennen.
-        # Zweimal dasselbe Profil hieße zweimal derselbe Name.
-        if len(set(teilnehmer)) != len(teilnehmer):
-            self._send_json({
-                "fehler": "Jedes Profil sitzt nur einmal am Tisch. Für zwei "
-                          "ähnliche Stimmen im Profil-Editor „Duplizieren“ "
-                          "und der Kopie einen eigenen Namen geben."}, 400)
-            return
-        runden = max(1, min(MAX_RUNDEN, runden))
-
-        slug = slugify(titel)
+        slug = slugify(felder["titel"])
         basis, zaehler = slug, 2
         while os.path.isdir(os.path.join(PARTYS_DIR, slug)):
             slug = f"{basis}-{zaehler}"
             zaehler += 1
 
-        sitzung = {
-            "titel": titel,
-            "starter": starter,
-            "teilnehmer": teilnehmer,
-            "runden": runden,
-            # Leer heißt: das Modell aus dem jeweiligen Profil, sonst der
-            # Serverstandard. Hier STANDARD_MODELL einzusetzen würde das Feld
-            # in der Profildatei stillschweigend entwerten.
-            "modell": str(daten.get("modell", "")).strip(),
-            "erstellt": jetzt_iso(),
-        }
+        sitzung = {**felder, "erstellt": jetzt_iso()}
         if not sitzung_schreiben(slug, sitzung):
             self._send_json({"fehler": "Ungültiges Thema"}, 400)
             return
         self._send_json({"slug": slug, "sitzung": sitzung}, 201)
+
+    def _party_aendern(self, slug):
+        daten = self._read_body()
+        if daten is None:
+            return
+        antwort, status = party_aendern(slug, daten)
+        self._send_json(antwort, status)
+
+    def _party_zuruecksetzen(self, slug):
+        if not party_zuruecksetzen(slug):
+            self._send_json({"fehler": "Party nicht gefunden"}, 404)
+            return
+        self._send_json({"status": "zurueckgesetzt"})
 
     def _party_lesen(self, slug):
         sitzung = sitzung_lesen(slug)

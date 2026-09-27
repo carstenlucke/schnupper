@@ -175,6 +175,9 @@ agent-party/
   gibt dem Rollentext die rechte Hälfte der Seite
 - **Besetzung mit Reihenfolge** — jedes Profil sitzt einmal am Tisch; für zwei
   ähnliche Stimmen legt „Duplizieren" im Profil-Editor eine Kopie an
+- **Partys bearbeiten und zurücksetzen** — eine bestehende Party beginnt auf
+  Knopfdruck wieder von vorn; Runden und Modell lassen sich jederzeit ändern,
+  Thema, Einstiegsfrage und Besetzung zusammen mit dem Zurücksetzen
 - **Modellwechsel im UI** — zwischen ChatGPT-Abo, TensorX und LM Studio, ohne
   Neustart
 - **Sprechblasen** in der Profilfarbe, live per Server-Sent Events, mit
