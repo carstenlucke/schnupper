@@ -337,6 +337,12 @@ erreichbar über die Navigation **in der Kopfleiste** (die Ids heißen weiterhin
 - **Party vorbereiten** — Profile anklicken (der Klick schaltet um, jedes Profil
   sitzt höchstens einmal am Tisch), Reihenfolge per Hoch/Runter, Thema,
   Einstiegsfrage, Runden 1–5, Modell.
+  - Die Profile stehen in denselben Gruppen wie unter „Agentenprofile"
+    (`profileNachGruppen()` liefert die Einteilung für beide), hier aber nur
+    zum Auswählen: kein Umbenennen, kein Ziehen, leere Gruppen fallen weg. Der
+    Zähler im Gruppenkopf zeigt „am Tisch / in der Gruppe", damit eine Wahl
+    auch in einer zugeklappten Gruppe sichtbar bleibt. Der Klappzustand liegt
+    in `auswahlZugeklappt`, getrennt von der Profilansicht.
 - **Sitzung** — oben ein dunkler Themenblock (Status, Fortschritt, Besetzung in
   Zahlen, Thema, Einstiegsfrage), darunter links der Verlauf, rechts die Karten
   „Teilnehmer" (mit Beitragszähler und „formuliert …" beim aktiven Sprecher) und

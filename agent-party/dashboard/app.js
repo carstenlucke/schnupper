@@ -32,6 +32,7 @@ let profile = [];               // Serverliste, Quelle der Wahrheit für Name un
 let gruppen = [];               // [{name, profile: [slug]}] wie in profile/gruppen.json
 let gruppenKette = Promise.resolve(); // Speichervorgänge der Gruppen, nacheinander
 let zugeklappt = new Set();     // eingeklappte Gruppen: Name, "" für „Ohne Gruppe"
+let auswahlZugeklappt = new Set(); // dasselbe für „Party vorbereiten", eigener Zustand
 let gezogen = null;             // Slug der Kachel, die gerade gezogen wird
 let modelle = [];
 let editorSlug = null;          // null = neues Profil
@@ -413,19 +414,29 @@ function baueKachel(profil, { auswaehlbar = false } = {}) {
   return kachel;
 }
 
+/** Die Profile nach Gruppen, wie beide Ansichten sie zeigen: erst die Gruppen
+    aus `gruppen.json` in ihrer Reihenfolge, zuletzt „Ohne Gruppe" (Index -1)
+    mit allen übrigen. */
+function profileNachGruppen() {
+  const einsortiert = new Set();
+  const liste = gruppen.map((gruppe, index) => {
+    const mitglieder = gruppe.profile.map(profilFinden).filter(Boolean);
+    mitglieder.forEach((p) => einsortiert.add(p.slug));
+    return { name: gruppe.name, index, mitglieder };
+  });
+  const rest = profile.filter((p) => !einsortiert.has(p.slug));
+  liste.push({ name: "Ohne Gruppe", index: -1, mitglieder: rest });
+  return liste;
+}
+
 function rendereProfilGruppen() {
   $profilGruppen.innerHTML = "";
   $profileAnzahl.textContent = `${profile.length} ${profile.length === 1 ? "Profil" : "Profile"}`;
 
-  const einsortiert = new Set();
-  gruppen.forEach((gruppe, index) => {
-    const mitglieder = gruppe.profile.map(profilFinden).filter(Boolean);
-    mitglieder.forEach((p) => einsortiert.add(p.slug));
-    $profilGruppen.appendChild(baueGruppe(gruppe.name, index, mitglieder));
-  });
   // „Ohne Gruppe" steht immer da, als Rest und als Ablage zum Herausnehmen.
-  const rest = profile.filter((p) => !einsortiert.has(p.slug));
-  $profilGruppen.appendChild(baueGruppe("Ohne Gruppe", -1, rest));
+  profileNachGruppen().forEach(({ name, index, mitglieder }) => {
+    $profilGruppen.appendChild(baueGruppe(name, index, mitglieder));
+  });
   aktualisiereAlleKlappen();
 }
 
@@ -951,12 +962,42 @@ function rendereAuswahl() {
   $auswahlRaster.innerHTML = "";
   if (profile.length === 0) {
     const leer = document.createElement("p");
-    leer.className = "text-sm text-on-surface-variant sm:col-span-2";
+    leer.className = "text-sm text-on-surface-variant";
     leer.textContent = "Erst Profile anlegen, dann kann die Party losgehen.";
     $auswahlRaster.appendChild(leer);
     return;
   }
-  profile.forEach((profil) => {
+  // Gruppiert wie unter „Agentenprofile", aber nur zum Auswählen: kein
+  // Umbenennen, kein Ziehen, und leere Gruppen bleiben weg.
+  profileNachGruppen()
+    .filter(({ mitglieder }) => mitglieder.length > 0)
+    .forEach(({ name, index, mitglieder }) => {
+      $auswahlRaster.appendChild(baueAuswahlGruppe(name, index < 0, mitglieder));
+    });
+}
+
+function baueAuswahlGruppe(name, ohne, mitglieder) {
+  const schluessel = ohne ? "" : name;
+  const zu = auswahlZugeklappt.has(schluessel);
+  const gewaehlt = mitglieder.filter((p) => besetzung.includes(p.slug)).length;
+
+  const sektion = document.createElement("section");
+  sektion.className = ohne ? "gruppe gruppe-ohne" : "gruppe";
+  sektion.setAttribute("aria-label", ohne ? "Profile ohne Gruppe" : `Gruppe ${name}`);
+  sektion.innerHTML = `
+    <div class="gruppe-kopf">
+      <button type="button" class="gruppe-klappe" aria-expanded="${!zu}">
+        <span class="material-symbols-outlined text-[18px] gruppe-pfeil" aria-hidden="true">expand_more</span>
+        <span class="gruppe-name">${escapeHtml(name)}</span>
+      </button>
+      <span class="gruppe-zahl" title="am Tisch / in der Gruppe">${gewaehlt} / ${mitglieder.length}</span>
+    </div>
+    <div class="gruppe-raster grid gap-3 sm:grid-cols-2 mt-3"></div>`;
+
+  // Klasse statt hidden-Attribut: Tailwinds `grid` schlägt das Attribut.
+  const raster = sektion.querySelector(".gruppe-raster");
+  raster.classList.toggle("hidden", zu);
+  mitglieder.forEach((profil) => {
     const kachel = baueKachel(profil, { auswaehlbar: true });
     if (besetzung.includes(profil.slug)) kachel.classList.add("kachel-gewaehlt");
     kachel.addEventListener("click", () => {
@@ -969,8 +1010,17 @@ function rendereAuswahl() {
       rendereAuswahl();
       rendereBesetzung();
     });
-    $auswahlRaster.appendChild(kachel);
+    raster.appendChild(kachel);
   });
+
+  const klappe = sektion.querySelector(".gruppe-klappe");
+  klappe.addEventListener("click", () => {
+    const jetztZu = raster.classList.toggle("hidden");
+    klappe.setAttribute("aria-expanded", String(!jetztZu));
+    if (jetztZu) auswahlZugeklappt.add(schluessel);
+    else auswahlZugeklappt.delete(schluessel);
+  });
+  return sektion;
 }
 
 function rendereBesetzung() {
@@ -1073,7 +1123,7 @@ function rendereParties(partys) {
 }
 
 async function ladeUndRendereEinrichten() {
-  profile = await ladeProfile();
+  [profile, gruppen] = await Promise.all([ladeProfile(), ladeGruppenListe()]);
   if (profile.fehler) profile = [];
   // Profile, die inzwischen gelöscht wurden, fliegen vom Tisch.
   besetzung = besetzung.filter((slug) => profilFinden(slug));
