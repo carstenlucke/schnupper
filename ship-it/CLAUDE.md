@@ -124,7 +124,9 @@ Systemprompts definieren Rolle und Output-Format, aber **keine konkreten Dateipf
 - Modell je Agent im Frontmatter; `SHIP_IT_MODEL` in `.env` schlägt alle
   zugleich – der Weg, im Hörsaal den Anbieter zu wechseln. Die Anmeldung beim
   Anbieter erledigt pi selbst (`pi` → `/login`); in `.env` steht nur der
-  `OPENAI_API_KEY` für die Bildgenerierung
+  `OPENAI_API_KEY` für die Bildgenerierung. Das Bildmodell
+  ist `gpt-image-2.5-sunburst`, änderbar über `SHIP_IT_IMAGE_MODEL`
+  (`image_model()` in `server.py`)
 - `.pi/extensions/webfetch.ts`: Werkzeug `webfetch` – pi bringt keins fürs
   Internet mit. Alle `.ts` dort bekommt jeder Agent per `-e`, freigeschaltet
   ist aber nur, was in seinem `tools:` steht

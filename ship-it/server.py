@@ -681,8 +681,15 @@ def start_agent(
 
 
 # ---------------------------------------------------------------------------
-# Bildgenerierung (OpenAI gpt-image-2.5-sunburst)
+# Bildgenerierung (OpenAI, Modell per SHIP_IT_IMAGE_MODEL)
 # ---------------------------------------------------------------------------
+
+IMAGE_MODEL_DEFAULT = "gpt-image-2.5-sunburst"
+
+
+def image_model() -> str:
+    """Das Bildmodell: SHIP_IT_IMAGE_MODEL aus der .env, sonst die Voreinstellung."""
+    return os.environ.get("SHIP_IT_IMAGE_MODEL") or IMAGE_MODEL_DEFAULT
 
 
 def _extract_prompt(content: str, keyword: str) -> str | None:
@@ -705,11 +712,11 @@ def _extract_prompt(content: str, keyword: str) -> str | None:
 def _call_image_api(
     api_key: str, prompt: str, quality: str = "low", size: str = "1024x1024"
 ) -> bytes:
-    """Text-to-Image mit gpt-image-2.5-sunburst."""
+    """Text-to-Image mit dem Bildmodell aus image_model()."""
     url = "https://api.openai.com/v1/images/generations"
     payload = json.dumps(
         {
-            "model": "gpt-image-2.5-sunburst",
+            "model": image_model(),
             "prompt": prompt,
             "n": 1,
             "size": size,
@@ -734,7 +741,7 @@ def _call_image_edit_api(
     """Bild mit Referenzbild (z.B. Logo) – der Edit-Endpunkt übernimmt es ins Motiv."""
     url = "https://api.openai.com/v1/images/edits"
     felder = {
-        "model": "gpt-image-2.5-sunburst",
+        "model": image_model(),
         "prompt": prompt,
         "n": "1",
         "size": size,
@@ -1293,7 +1300,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
     # --- API: Bildgenerierung ---
 
     def _handle_generate_image(self, slug, agent):
-        """Generiere ein Bild mit OpenAI gpt-image-2.5-sunburst."""
+        """Generiere ein Bild über die OpenAI API."""
         import sys
 
         api_key = os.environ.get("OPENAI_API_KEY")
