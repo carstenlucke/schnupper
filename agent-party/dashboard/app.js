@@ -623,6 +623,13 @@ function gruppenKopie() {
   return gruppen.map((g) => ({ name: g.name, profile: [...g.profile] }));
 }
 
+/** Wie `_einzeilig()` im Server: Leerraum zusammenziehen, drei Bindestriche
+    zum Gedankenstrich. Sonst speicherte der Server einen anderen Namen, als
+    das Dashboard prüft und im Gruppenfeld des Editors vermerkt. */
+function saeubereGruppenname(name) {
+  return name.split(/\s+/).filter(Boolean).join(" ").replace(/-{3,}/g, "–").slice(0, 60).trim();
+}
+
 function pruefeGruppenname(name, bisher) {
   if (!name) return "Die Gruppe braucht einen Namen.";
   const klein = name.toLowerCase();
@@ -634,13 +641,14 @@ function pruefeGruppenname(name, bisher) {
 }
 
 async function legeGruppeAn() {
-  const name = await zeigeDialog({
+  let name = await zeigeDialog({
     titel: "Neue Gruppe",
     text: "Wie soll die Gruppe heißen? Die Profile ziehst du danach hinein.",
     okText: "Anlegen",
     eingabe: { platzhalter: "Vorstellungsgespräch" },
   });
   if (name === null) return;
+  name = saeubereGruppenname(name);
   const fehler = pruefeGruppenname(name, null);
   if (fehler) return zeigeHinweis($gruppenHinweis, fehler);
   speichereGruppen([...gruppenKopie(), { name, profile: [] }]);
@@ -648,12 +656,14 @@ async function legeGruppeAn() {
 
 async function benenneGruppeUm(index) {
   const bisher = gruppen[index].name;
-  const name = await zeigeDialog({
+  let name = await zeigeDialog({
     titel: "Gruppe umbenennen",
     okText: "Umbenennen",
     eingabe: { wert: bisher },
   });
-  if (name === null || name === bisher) return;
+  if (name === null) return;
+  name = saeubereGruppenname(name);
+  if (name === bisher) return;
   const fehler = pruefeGruppenname(name, bisher);
   if (fehler) return zeigeHinweis($gruppenHinweis, fehler);
 

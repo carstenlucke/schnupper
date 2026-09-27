@@ -309,7 +309,8 @@ def gruppen_pruefen(roh) -> list[dict]:
             continue
         namen.add(name.lower())
         mitglieder = []
-        for slug in eintrag.get("profile", []):
+        slugs = eintrag.get("profile")
+        for slug in slugs if isinstance(slugs, list) else []:
             if isinstance(slug, str) and slug in vorhanden and slug not in vergeben:
                 vergeben.add(slug)
                 mitglieder.append(slug)
@@ -317,26 +318,45 @@ def gruppen_pruefen(roh) -> list[dict]:
     return gruppen
 
 
-def gruppen_lesen() -> list[dict]:
+def _gruppen_roh():
+    """Dateiinhalt wie er ist, oder None, wenn die Datei fehlt oder kaputt ist."""
     try:
         with open(GRUPPEN_PFAD, "r", encoding="utf-8") as f:
-            roh = json.load(f)
-    except (OSError, json.JSONDecodeError):
-        return []
-    return gruppen_pruefen(roh)
+            return json.load(f)
+    except (OSError, ValueError):
+        return None
+
+
+def gruppen_lesen() -> list[dict]:
+    return gruppen_pruefen(_gruppen_roh())
+
+
+def _gruppen_ablegen(gruppen: list[dict]) -> None:
+    os.makedirs(PROFIL_DIR, exist_ok=True)
+    temp = GRUPPEN_PFAD + ".tmp"
+    with open(temp, "w", encoding="utf-8") as f:
+        json.dump(gruppen, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    os.replace(temp, GRUPPEN_PFAD)
 
 
 def gruppen_schreiben(roh) -> list[dict]:
     """Säubern und atomar schreiben; zurück kommt, was jetzt in der Datei steht."""
     with gruppen_lock:
         gruppen = gruppen_pruefen(roh)
-        os.makedirs(PROFIL_DIR, exist_ok=True)
-        temp = GRUPPEN_PFAD + ".tmp"
-        with open(temp, "w", encoding="utf-8") as f:
-            json.dump(gruppen, f, ensure_ascii=False, indent=2)
-            f.write("\n")
-        os.replace(temp, GRUPPEN_PFAD)
+        _gruppen_ablegen(gruppen)
         return gruppen
+
+
+def gruppen_austragen() -> None:
+    """Nach dem Löschen eines Profils: Datei neu säubern. Lesen und Schreiben
+    unter demselben Lock, damit kein gleichzeitiges PUT verloren geht. Fehlt
+    die Datei oder ist sie von Hand kaputt editiert, bleibt sie unangetastet."""
+    with gruppen_lock:
+        roh = _gruppen_roh()
+        if roh is None:
+            return
+        _gruppen_ablegen(gruppen_pruefen(roh))
 
 
 # ============================================================================
@@ -1498,7 +1518,7 @@ class PartyHandler(SimpleHTTPRequestHandler):
         profil_loeschen(slug)
         # Aus der Gruppe austragen. Sonst säße ein später neu angelegtes
         # Profil gleichen Namens unverhofft wieder in der alten Gruppe.
-        gruppen_schreiben(gruppen_lesen())
+        gruppen_austragen()
         self._send_json({"status": "geloescht"})
 
     # ---------------------------------------------------------------- Gruppen
