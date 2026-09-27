@@ -120,80 +120,111 @@
       <section id="ansicht-profile" role="tabpanel" aria-labelledby="tab-profile">
         <div class="grid gap-6 lg:grid-cols-5">
 
-          <!-- Kachelraster -->
-          <div class="lg:col-span-3">
-            <div class="flex items-center justify-between mb-3">
+          <!-- Profile in Gruppen -->
+          <div class="profil-spalte lg:col-span-3">
+            <div class="flex items-center justify-between gap-2 mb-3">
               <h1 class="abschnitt-titel">Rollenprofile</h1>
-              <span id="profile-anzahl" class="text-xs px-2 py-1 rounded bg-on-surface/10 text-on-surface-variant">0 Profile</span>
+              <div class="flex items-center gap-2">
+                <span id="profile-anzahl" class="text-xs px-2 py-1 rounded bg-on-surface/10 text-on-surface-variant">0 Profile</span>
+                <button id="alle-klappen-btn" type="button" class="knopf knopf-rand text-xs">
+                  <span id="alle-klappen-icon" class="material-symbols-outlined text-[16px]" aria-hidden="true">unfold_less</span>
+                  <span id="alle-klappen-text">Alle zuklappen</span>
+                </button>
+                <button id="neue-gruppe-btn" type="button" class="knopf knopf-rand text-xs">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">create_new_folder</span>
+                  Neue Gruppe
+                </button>
+              </div>
             </div>
             <p class="text-sm text-on-surface-variant mb-4">
               Ein Profil ist eine Markdown-Datei: oben Modell und Farbe, darunter die
               Rolle in normalem Deutsch. Dieser Text ist der Systemprompt — mehr steckt
-              hinter einem „KI-Agenten" nicht.
+              hinter einem „KI-Agenten" nicht. Gruppen ordnen die Profile nur hier im
+              Dashboard: Kachel in eine Gruppe ziehen. In den Prompt geht davon nichts.
             </p>
-            <div id="profil-raster" class="grid gap-3 sm:grid-cols-2"></div>
+            <p id="gruppen-hinweis" class="text-xs text-error mb-3 hidden"></p>
+            <div id="profil-gruppen" class="space-y-4"></div>
           </div>
 
           <!-- Editor -->
-          <div class="lg:col-span-2">
+          <div class="editor-spalte lg:col-span-2">
             <div class="karte lg:sticky lg:top-4">
-              <h2 id="editor-titel" class="karten-titel">Neues Profil</h2>
-
-              <!-- Ausarbeiten lassen -->
-              <div class="mb-4 pb-4 border-b border-on-surface/10">
-                <label for="entwurf-idee" class="block text-xs font-medium text-on-surface-variant mb-1">
-                  Beschreibe die Rolle in einem Satz
-                </label>
-                <textarea id="entwurf-idee" rows="2" class="feld mb-2"
-                          placeholder="ein grantiger Hausmeister, der alles für überflüssig hält"></textarea>
-                <div class="flex items-center gap-2">
-                  <button id="entwurf-btn" type="button" class="knopf knopf-rand text-xs">
-                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">auto_awesome</span>
-                    <span id="entwurf-btn-text">Ausarbeiten lassen</span>
-                  </button>
-                  <span id="entwurf-status" class="text-xs text-on-surface-variant"></span>
-                </div>
-                <details id="entwurf-denken-box" class="blase-denken mt-2 hidden">
-                  <summary class="text-xs text-on-surface-variant flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px] blase-denken-pfeil transition-transform" aria-hidden="true">expand_more</span>
-                    Was das Modell gerade denkt
-                  </summary>
-                  <div id="entwurf-denken" class="blase-denken-text mt-1"></div>
-                </details>
+              <div class="flex items-start justify-between gap-2">
+                <h2 id="editor-titel" class="karten-titel">Neues Profil</h2>
+                <!-- Nur ab lg: darunter hat der Editor ohnehin die ganze Breite -->
+                <button id="editor-breite-btn" type="button" class="symbol-knopf hidden lg:inline-flex"
+                        aria-pressed="false" aria-label="Editor auf volle Breite" title="Editor auf volle Breite">
+                  <span id="editor-breite-icon" class="material-symbols-outlined text-[18px]" aria-hidden="true">open_in_full</span>
+                </button>
               </div>
 
-              <!-- Formular -->
-              <div class="space-y-3">
-                <div>
-                  <label for="feld-name" class="block text-xs font-medium text-on-surface-variant mb-1">Name</label>
-                  <input id="feld-name" type="text" class="feld" placeholder="Skeptische Ökonomin"/>
-                </div>
-                <div>
-                  <label for="feld-beschreibung" class="block text-xs font-medium text-on-surface-variant mb-1">Kurzbeschreibung</label>
-                  <input id="feld-beschreibung" type="text" class="feld" placeholder="Rechnet jede Idee auf Kosten und Nutzen herunter"/>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label for="feld-model" class="block text-xs font-medium text-on-surface-variant mb-1">Modell</label>
-                    <select id="feld-model" class="feld"></select>
+              <div class="editor-koerper">
+                <div class="editor-felder">
+                  <!-- Ausarbeiten lassen -->
+                  <div class="mb-4 pb-4 border-b border-on-surface/10">
+                    <label for="entwurf-idee" class="block text-xs font-medium text-on-surface-variant mb-1">
+                      Beschreibe die Rolle in einem Satz
+                    </label>
+                    <textarea id="entwurf-idee" rows="2" class="feld mb-2"
+                              placeholder="ein grantiger Hausmeister, der alles für überflüssig hält"></textarea>
+                    <div class="flex items-center gap-2">
+                      <button id="entwurf-btn" type="button" class="knopf knopf-rand text-xs">
+                        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">auto_awesome</span>
+                        <span id="entwurf-btn-text">Ausarbeiten lassen</span>
+                      </button>
+                      <span id="entwurf-status" class="text-xs text-on-surface-variant"></span>
+                    </div>
+                    <details id="entwurf-denken-box" class="blase-denken mt-2 hidden">
+                      <summary class="text-xs text-on-surface-variant flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px] blase-denken-pfeil transition-transform" aria-hidden="true">expand_more</span>
+                        Was das Modell gerade denkt
+                      </summary>
+                      <div id="entwurf-denken" class="blase-denken-text mt-1"></div>
+                    </details>
                   </div>
-                  <div>
-                    <label for="feld-thinking" class="block text-xs font-medium text-on-surface-variant mb-1">Denken</label>
-                    <select id="feld-thinking" class="feld">
-                      <option value="off">aus</option>
-                      <option value="minimal">minimal</option>
-                      <option value="low">wenig</option>
-                      <option value="medium" selected>mittel</option>
-                      <option value="high">viel</option>
-                      <option value="xhigh">sehr viel</option>
-                    </select>
+
+                  <!-- Formular -->
+                  <div class="space-y-3">
+                    <div>
+                      <label for="feld-name" class="block text-xs font-medium text-on-surface-variant mb-1">Name</label>
+                      <input id="feld-name" type="text" class="feld" placeholder="Skeptische Ökonomin"/>
+                    </div>
+                    <div>
+                      <label for="feld-beschreibung" class="block text-xs font-medium text-on-surface-variant mb-1">Kurzbeschreibung</label>
+                      <input id="feld-beschreibung" type="text" class="feld" placeholder="Rechnet jede Idee auf Kosten und Nutzen herunter"/>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                      <div>
+                        <label for="feld-model" class="block text-xs font-medium text-on-surface-variant mb-1">Modell</label>
+                        <select id="feld-model" class="feld"></select>
+                      </div>
+                      <div>
+                        <label for="feld-thinking" class="block text-xs font-medium text-on-surface-variant mb-1">Denken</label>
+                        <select id="feld-thinking" class="feld">
+                          <option value="off">aus</option>
+                          <option value="minimal">minimal</option>
+                          <option value="low">wenig</option>
+                          <option value="medium" selected>mittel</option>
+                          <option value="high">viel</option>
+                          <option value="xhigh">sehr viel</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                      <div>
+                        <span class="block text-xs font-medium text-on-surface-variant mb-1">Farbe</span>
+                        <div id="farbwahl" class="flex gap-2"></div>
+                      </div>
+                      <div class="flex-1 min-w-[10rem]">
+                        <label for="feld-gruppe" class="block text-xs font-medium text-on-surface-variant mb-1">Gruppe</label>
+                        <select id="feld-gruppe" class="feld"></select>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <span class="block text-xs font-medium text-on-surface-variant mb-1">Farbe</span>
-                  <div id="farbwahl" class="flex gap-2"></div>
-                </div>
-                <div>
+
+                <!-- Der Rollentext: auf voller Breite bekommt er die rechte Spalte -->
+                <div class="editor-rolle">
                   <label for="feld-text" class="block text-xs font-medium text-on-surface-variant mb-1">Die Rolle</label>
                   <textarea id="feld-text" rows="9" class="feld" placeholder="Du bist …"></textarea>
                 </div>
@@ -412,6 +443,8 @@
     <div class="bg-surface-high border border-on-surface/10 rounded-md shadow-2xl max-w-md w-full p-5">
       <h3 id="dialog-titel" class="font-headline text-lg font-semibold mb-2"></h3>
       <p id="dialog-text" class="text-sm text-on-surface-variant mb-4"></p>
+      <input id="dialog-eingabe" type="text" class="feld mb-4 hidden" maxlength="60"
+             aria-labelledby="dialog-titel"/>
       <div class="flex justify-end gap-2">
         <button id="dialog-abbrechen" type="button" class="knopf knopf-rand">Abbrechen</button>
         <button id="dialog-ok" type="button" class="knopf knopf-primaer">OK</button>

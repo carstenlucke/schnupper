@@ -44,6 +44,7 @@ Python-Server (server.py, nur stdlib)
 pi CLI (pi --mode json -nt --no-session --system-prompt <Rollentext> -- <Prompt>)
     ↕ Datei-I/O
 profile/<slug>.md   (versioniert)
+profile/gruppen.json (versioniert, nur fürs Dashboard)
 partys/<slug>/      (runtime, gitignored)
 ```
 
@@ -77,8 +78,10 @@ Port **8100** — 8000 gehört `ship-it/`, 8777 dem Dashboard von
 | GET | `/api/profile` | Alle Profile (Frontmatter + Rollentext) |
 | POST | `/api/profile` | Profil anlegen |
 | PUT | `/api/profile/<slug>` | Profil ändern |
-| DELETE | `/api/profile/<slug>` | Profil löschen (`?force=1` trotz offener Party) |
+| DELETE | `/api/profile/<slug>` | Profil löschen (`?force=1` trotz offener Party), trägt es auch aus seiner Gruppe aus |
 | POST | `/api/profile/entwurf` | Profil ausarbeiten lassen, SSE |
+| GET | `/api/gruppen` | Profilgruppen aus `profile/gruppen.json` |
+| PUT | `/api/gruppen` | Ganze Gruppenliste ersetzen (gesäubert, nicht abgelehnt) |
 | GET | `/api/modelle` | Modelle je Anbieter, einmal pro Serverlauf gecacht |
 | GET | `/api/partys` | Sitzungsliste mit Status |
 | POST | `/api/partys` | Sitzung anlegen |
@@ -233,6 +236,38 @@ rechnen damit (die Personalreferentin eröffnet, die Bewerberin antwortet auf
 zwei Fragen). In der Vorlesung neu angelegte Profile landen daneben und bleiben
 untracked.
 
+### Gruppen: profile/gruppen.json
+
+Gruppen ordnen die Profile **nur im Dashboard** — in den Prompt geht davon
+nichts, und das Profil selbst weiß nicht, in welcher Gruppe es steht. Darum
+eine eigene Datei statt eines Frontmatter-Felds: Eine leere Gruppe muss
+irgendwo stehen, und die Profildatei bleibt, was sie ist.
+
+```json
+[
+  { "name": "Vorstellungsgespräch",
+    "profile": ["personalreferentin", "teamleiter-it", "bewerberin"] }
+]
+```
+
+- **„Ohne Gruppe" steht nicht in der Datei.** Wer in keiner Gruppe steht,
+  landet dort; das Löschen einer Gruppe gibt ihre Profile also von selbst
+  dorthin zurück.
+- **`PUT /api/gruppen` ersetzt die ganze Liste.** Anlegen, Umbenennen,
+  Löschen und Verschieben sind im Frontend nur eine neue Fassung davon.
+  `gruppen_pruefen()` säubert wie beim Profil statt abzulehnen: leere und
+  doppelte Namen fallen weg (Groß-/Kleinschreibung egal), unbekannte Slugs
+  ebenso, ein Profil steht höchstens in einer Gruppe — die erste Nennung
+  gewinnt.
+- **Die Reihenfolge in einer Gruppe zählt** (Ablegen vor der Kachel unter dem
+  Zeiger), „Ohne Gruppe" ist nach Namen sortiert.
+- **Profil löschen trägt es aus.** Sonst säße ein später gleichnamig neu
+  angelegtes Profil unverhofft wieder in der alten Gruppe.
+
+Die mitgelieferte Datei kennt „Diskussion" und „Vorstellungsgespräch". Wer in
+der Vorlesung umsortiert, ändert sie — wie beim Bearbeiten eines
+mitgelieferten Profils.
+
 ## Der pi-Aufruf
 
 ```python
@@ -272,10 +307,33 @@ SPA ohne Build, ein klassisches Skript im globalen Scope. Drei Ansichten,
 erreichbar über die Navigation **in der Kopfleiste** (die Ids heißen weiterhin
 `tab-*`), verlinkbar über `#profile`, `#einrichten`, `#party/<slug>`.
 
-- **Agentenprofile** — Kachelraster links, Editor rechts. Zweiter Weg zum Profil:
-  „Rolle in einem Satz beschreiben" → „Ausarbeiten lassen" → der Entwurf läuft
-  live in die Textarea und ist vor dem Speichern änderbar. „Duplizieren" legt eine
-  Kopie mit freiem Namen in den Editor; gespeichert wird erst auf Knopfdruck.
+- **Agentenprofile** — links die Profile in Gruppen, rechts der Editor. Zweiter
+  Weg zum Profil: „Rolle in einem Satz beschreiben" → „Ausarbeiten lassen" →
+  der Entwurf läuft live in die Textarea und ist vor dem Speichern änderbar.
+  „Duplizieren" legt eine Kopie mit freiem Namen in den Editor; gespeichert wird
+  erst auf Knopfdruck.
+  - **Gruppen**: Kacheln per HTML5-Drag-and-Drop in eine Gruppe ziehen, „Ohne
+    Gruppe" steht immer unten und nimmt heraus. Die Anzeige wechselt sofort,
+    gespeichert wird danach über `gruppenKette` — **nacheinander**, weil jede
+    Fassung die ganze Liste ersetzt und zwei schnelle Züge sonst vertauscht
+    beim Server ankommen könnten. Im `drop`-Handler wird `gezogen` vor dem
+    Neuzeichnen zurückgesetzt: Die gezogene Kachel verschwindet dabei aus dem
+    DOM, und ohne sie feuert kein Browser mehr `dragend`.
+  - **Alle zuklappen / Alle aufklappen** neben „Neue Gruppe": Solange noch
+    eine Gruppe offen ist, klappt der Knopf alle zu; erst wenn alle zu sind,
+    klappt er alle auf. Der Zustand liegt in `zugeklappt` („Ohne Gruppe" hat
+    den Schlüssel `""`) und übersteht so das Neuzeichnen, wird aber nicht
+    gespeichert.
+  - Das Feld **Gruppe** im Editor ist der Weg ohne Maus. Es wirkt erst beim
+    Speichern, weil die Gruppe nicht in der Profildatei steht, sondern nach dem
+    Speichern unter dem Slug in `gruppen.json` eingetragen wird. Zieht jemand
+    das gerade geöffnete Profil in eine andere Gruppe, zieht das Feld mit —
+    sonst holte „Speichern" es zurück.
+  - **Volle Breite** (Knopf oben rechts im Editor, nur ab `lg`): Die
+    Profilliste tritt zurück, links stehen die Felder, rechts der Rollentext.
+    Die Klasse `editor-breit` sitzt an der Ansicht und wirkt nur ab `lg` — wer
+    das Fenster danach schmaler zieht, bekommt die Liste zurück, statt vor
+    einem Editor ohne Umschalter zu stehen.
 - **Party vorbereiten** — Profile anklicken (der Klick schaltet um, jedes Profil
   sitzt höchstens einmal am Tisch), Reihenfolge per Hoch/Runter, Thema,
   Einstiegsfrage, Runden 1–5, Modell.

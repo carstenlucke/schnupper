@@ -96,6 +96,8 @@ weißt, sagst du das ehrlich" wird „Du übertreibst gern, um gut dazustehen" �
 und der Teamleiter fängt an nachzubohren.
 
 Neu angelegte Profile landen daneben unter `profile/` und bleiben untracked.
+Im Dashboard stehen die mitgelieferten Profile in zwei Gruppen, „Diskussion"
+und „Vorstellungsgespräch"; neue Profile stehen zunächst unter „Ohne Gruppe".
 
 ## Ein Profil ist eine Textdatei
 
@@ -163,6 +165,13 @@ agent-party/
   Party vorbereiten, Sitzung
 - **Profil ausarbeiten lassen** — ein Satz genügt, das Modell schreibt das
   Profil, der Entwurf ist vor dem Speichern änderbar
+- **Profilgruppen** — Gruppen anlegen, umbenennen, löschen und Profile per
+  Drag and Drop hineinziehen; eine gelöschte Gruppe gibt ihre Profile an
+  „Ohne Gruppe" zurück. Gruppen lassen sich einzeln oder alle auf einmal
+  ein- und aufklappen. Die Gruppe ist reine Ordnung im Dashboard und geht
+  nicht in den Prompt
+- **Editor auf voller Breite** — ein Klick blendet die Profilliste aus und
+  gibt dem Rollentext die rechte Hälfte der Seite
 - **Besetzung mit Reihenfolge** — jedes Profil sitzt einmal am Tisch; für zwei
   ähnliche Stimmen legt „Duplizieren" im Profil-Editor eine Kopie an
 - **Modellwechsel im UI** — zwischen ChatGPT-Abo, TensorX und LM Studio, ohne

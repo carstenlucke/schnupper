@@ -300,6 +300,133 @@ textarea.feld::placeholder { color: rgb(var(--on-surface-variant) / 0.7); }
   box-shadow: 0 0 0 2px rgb(var(--accent) / 0.55);
 }
 
+/* Beim Ziehen: die Kachel bleibt als blasser Platzhalter stehen, die
+   Einfügestelle zeigt ein grüner Strich über der Kachel, vor die sie kommt. */
+.kachel[draggable="true"] { cursor: grab; }
+.kachel-zieht { opacity: 0.4; }
+.kachel-davor { box-shadow: 0 -3px 0 0 rgb(var(--accent)); }
+
+/* Kleiner Knopf nur mit Symbol — braucht immer aria-label und title */
+.symbol-knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  color: rgb(var(--on-surface-variant));
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+.symbol-knopf:hover { background-color: rgb(var(--on-surface) / 0.1); }
+
+/* ============================================================
+   Gruppen der Profilansicht – Ordnung fürs Dashboard, nicht Teil des Agenten
+   Die ganze Gruppe ist Ablagefläche. „Ohne Gruppe" hat einen gestrichelten
+   Rand: Sie steht in keiner Datei, sie ist nur der Rest.
+   ============================================================ */
+.gruppe {
+  border: 1px solid rgb(var(--on-surface) / 0.1);
+  border-radius: 6px;
+  padding: 12px;
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+
+.gruppe-ohne { border-style: dashed; }
+
+.gruppe-ziel {
+  border-color: rgb(var(--accent));
+  background-color: rgb(var(--accent) / 0.08);
+}
+
+.gruppe-kopf {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gruppe-klappe {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 2px 4px 2px 0;
+  color: rgb(var(--on-surface));
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.gruppe-pfeil {
+  color: rgb(var(--on-surface-variant));
+  transition: transform 140ms ease;
+}
+
+.gruppe-klappe[aria-expanded="false"] .gruppe-pfeil { transform: rotate(-90deg); }
+
+.gruppe-name {
+  font-family: 'Barlow Condensed', 'Barlow', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gruppe-zahl {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: rgb(var(--on-surface-variant));
+  background-color: rgb(var(--on-surface) / 0.1);
+}
+
+.gruppe-leer {
+  font-size: 13px;
+  text-align: center;
+  padding: 12px;
+  color: rgb(var(--on-surface-variant));
+  border: 1px dashed rgb(var(--on-surface) / 0.15);
+  border-radius: 4px;
+}
+
+/* ============================================================
+   Editor auf voller Breite: die Profilliste tritt zurück, links die Felder,
+   rechts der Rollentext — der eigentliche Systemprompt bekommt den Platz.
+   Unter lg steht der Editor ohnehin allein in seiner Zeile.
+   ============================================================ */
+.editor-koerper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Alles nur ab lg — dort sitzt auch der Umschalter. Wer das Fenster danach
+   schmaler zieht, bekommt die Liste zurück statt eines Editors ohne Ausweg. */
+@media (min-width: 1024px) {
+  .editor-breit .profil-spalte { display: none; }
+  .editor-breit .editor-spalte { grid-column: 1 / -1; }
+
+  .editor-breit .editor-koerper {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 24px;
+  }
+
+  .editor-breit .editor-rolle {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .editor-breit .editor-rolle textarea {
+    flex: 1;
+    min-height: max(28rem, 60vh);
+  }
+}
+
 /* Farbwahl im Editor */
 .farbwahl input { position: absolute; opacity: 0; pointer-events: none; }
 
