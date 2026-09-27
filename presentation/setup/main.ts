@@ -51,16 +51,25 @@ export default defineAppSetup(({ router }) => {
       return true
     const schritt = angefragt - von
 
+    /* Zusatzfolien in Blätterrichtung überspringen; undefined, wenn dahinter
+       keine reguläre Folie mehr kommt */
+    const ueberspringen = (start: number): number | undefined => {
+      let n = start
+      while (n >= 1 && n <= slides.value.length && frontmatter(n)?.zusatz)
+        n += schritt
+      return n >= 1 && n <= slides.value.length ? n : undefined
+    }
+
     let ziel: number | undefined
     const herkunft = frontmatter(von)?.zusatz
     if (herkunft) {
       const h = folieMitAlias(herkunft)
-      ziel = h === undefined ? undefined : schritt < 0 ? h : h + 1
+      ziel = h === undefined ? undefined : schritt < 0 ? h : ueberspringen(h + 1)
     }
     else {
-      let nach = angefragt
-      while (frontmatter(nach)?.zusatz)
-        nach += schritt
+      const nach = ueberspringen(angefragt)
+      if (nach === undefined)
+        return false
       ziel = nach
 
       const demoVorher = demoVon(von)
