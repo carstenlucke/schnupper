@@ -67,9 +67,9 @@ Die Demo-Blöcke liegen je als eigener Foliensatz unter [`demos/`](demos/);
 
 **Die Reflexion ist zweigeteilt.** Jeder Demo-Block endet mit einer eigenen
 Bewertung dessen, was man gerade gesehen hat — die Fragen unterscheiden sich
-je Demo grundlegend. Der Reality Check (Kosten, Qualitätskontrolle,
-Halluzinationen, Datenschutz) gilt für alle und kommt einmal im gemeinsamen
-Schluss; seine Sprecher-Notizen nennen für jede Demo das passende Beispiel.
+je Demo grundlegend. Der Rückblick („Das haben wir heute gesehen") gilt für
+alle und kommt einmal im gemeinsamen Schluss; seine Sprecher-Notizen nennen
+für jede Demo das passende Beispiel für Fehler, Kosten und Datenschutz.
 
 ## Präsentationsdurchführung
 

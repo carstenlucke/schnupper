@@ -169,7 +169,7 @@ hideInToc: true
     Agenten sortieren nach Beschwerde, Bestellung, Frage — da gibt es nicht
     die eine richtige Antwort
   - KI lohnt sich dort, wo Sprache, Urteil und Unschärfe ins Spiel kommen
-- Beispiele für den Reality Check merken: Anfragen = Kosten, rote Kachel =
+- Beispiele für den Rückblick merken: Anfragen = Kosten, rote Kachel =
   Halluzination, Dashboard rechnet nach = Qualitätskontrolle
 -->
 

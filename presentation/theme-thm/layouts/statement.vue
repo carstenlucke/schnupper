@@ -91,6 +91,9 @@ withDefaults(
   line-height: 1.28;
 }
 
+/* Ohne Kasten steht die Hervorhebung im üblichen THM Grün */
+.st-wrap.no-glyph .st-body :deep(strong) { color: var(--thm-green-500); }
+
 .st-body :deep(p) { margin-bottom: 0.9rem; }
 .st-body :deep(p:last-child) { margin-bottom: 0; }
 

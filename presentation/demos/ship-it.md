@@ -141,7 +141,7 @@ hideInToc: true
 - "Was hat überrascht?"
 - "Was fehlt offensichtlich?"
 - "Würde ein echtes Unternehmen das so verwenden?"
-- Beispiele für den Reality Check merken: fragwürdige Zahlen in der
+- Beispiele für den Rückblick merken: fragwürdige Zahlen in der
   Kalkulation (Halluzination), eure Produktidee ging an einen Cloud-Dienst
   (Datenschutz)
 -->

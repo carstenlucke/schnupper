@@ -45,9 +45,9 @@ Daraus folgen Regeln:
   LinkedIn-Beitrag, direkt nach der Vorstellung). Rubriken `<Demo>`,
   `<Demo> · Live-Demo`, `<Demo> · Bewertung`.
 - **Reflexion ist zweigeteilt.** Die Bewertung („was haben wir gesehen?") ist
-  demo-spezifisch und steht im Block. Der Reality Check ist gemeinsam; neue
-  Demos tragen ihre Beispiele in dessen Sprecher-Notizen ein, nicht als
-  eigene Folie.
+  demo-spezifisch und steht im Block. Der Rückblick („Das haben wir heute
+  gesehen") ist gemeinsam; neue Demos tragen ihre Beispiele in dessen
+  Sprecher-Notizen ein, nicht als eigene Folie.
 - **Blöcke sind unabhängig voneinander.** Kein Block verweist auf einen
   anderen — welche gezeigt werden und in welcher Reihenfolge, wechselt.
 

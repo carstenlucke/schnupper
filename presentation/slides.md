@@ -584,87 +584,224 @@ routeAlias: nach-demos
 
 <!--
 - Übergang zu den Kern-Learnings
-- Erst der Reality Check, der für alle Demos gilt, dann die größere Botschaft
+- Erst der Rückblick, der für alle Demos gilt, dann der Blick nach vorn
 -->
-
 
 ---
 rubrik: Was nehmen wir mit?
-titel: 'Reality Check: Worauf muss man achten?'
+titel: Das haben wir heute gesehen
 class: text-l
 ---
 
-<div class="thm-center">
-<CardGrid :cols="2">
-  <Card icon="coins" titel="Kosten" kompakt>
-    KI arbeitet mit <strong>Tokens</strong> — das ist ihre Währung. Wer Agenten einsetzt, muss die Kosten im Blick behalten.
-  </Card>
-  <Card icon="clipboard-check" titel="Qualitätskontrolle" kompakt>
-    Wenn alles manuell geprüft werden muss, wird <strong>der Mensch zum Engpass</strong> — man braucht automatische Prüfmechanismen.
-  </Card>
-  <Card icon="ghost" icon-ton="rot" titel="Halluzinationen" kompakt>
-    KI (LLM) kann <strong>überzeugend falsche Dinge</strong> behaupten — erfundene Fakten, falsche Zahlen, nicht existierende Quellen.
-  </Card>
-  <Card icon="shield-check" icon-ton="grau" titel="Datenschutz" kompakt>
-    Daten, die an KI-Dienste gesendet werden, <strong>verlassen das Unternehmen</strong>. Man muss prüfen, ob eine Verarbeitung in externen KI-Diensten zulässig ist.
-  </Card>
-</CardGrid>
-</div>
-
-<!--
-- Kein Hype ohne Reality Check — gilt für jede Demo, die wir gesehen haben
-- Kosten: Agenten verbrauchen VIELE Tokens, große Modelle ca. 100x teurer als kleine
-  - Counting Agents: ~90 Anfragen pro Minute — nur fürs Zählen
-  - Ship It!: fünf Agenten, jeder mit mehreren Durchläufen
-- Qualität: Der Prüfschritt im Agent-Kreislauf ist entscheidend. Automatische Tests, Validierung
-  - Counting Agents: Das Dashboard rechnet selbst nach und färbt Fehler rot
-  - Ship It!: Wer prüft Website, Preis und Posts, bevor sie rausgehen?
-- Halluzinationen: Gerade bei Fakten, Zahlen, Quellen kritisch. Immer gegenchecken!
-  - Counting Agents: rote Kachel — falsche Primzahl, selbstbewusst eingesammelt
-  - Ship It!: Zahlen in der Preiskalkulation
-  - Agent Party: überzeugend klingende, aber erfundene Größenordnungen
-- Datenschutz: DSGVO, Betriebsgeheimnisse, personenbezogene Daten
-  - Ship It! / Counting Agents: alles geht an ein Modell in der Cloud
-  - Agent Party: Umschalten auf das lokale Modell in LM Studio zeigt die Alternative
-- "Diese Herausforderungen muss man kennen — aber sie sind lösbar."
--->
-
----
-rubrik: Was nehmen wir mit?
-titel: Der rote Faden
----
-
+<div class="thm-center thm-gruppe">
 <div class="thm-flow">
-  <Card icon="brain" icon-ton="grau" titel="LLM" kompakt>das Modell: sagt Wörter vorher</Card>
+  <Card icon="brain" icon-ton="grau" titel="LLM" kompakt>Das Modell: sagt Wörter vorher</Card>
   <FlowArrow />
   <Card icon="message-square" titel="Chatbot" kompakt>Modell + Chatfenster: antwortet</Card>
   <FlowArrow />
   <Card icon="bot" titel="KI-Agent" tone="tint" kompakt>Modell + Harness: handelt</Card>
 </div>
 
-<CardGrid :cols="2" fill class="mt-4">
-  <Card icon="target" titel="Intent spezifizieren">
-    Nach Prompting kommt der nächste Schritt: <strong>präzise spezifizieren, was man will</strong> — Rolle, Ziel, Qualität, Prüfkriterien. Nicht nur fragen, sondern <strong>beauftragen</strong>.
+<div class="gesehen-trenner"></div>
+
+<CardGrid :cols="3">
+  <Card icon="file-text" titel="Der Auftrag ist Text" kompakt>
+    Rolle und Aufgabe stehen in <strong>normalem Deutsch</strong> — kein Code.
   </Card>
-  <Card icon="search-check" titel="Kritisch prüfen">
-    Der Mensch prüft die Ergebnisse — oder <strong>spezifiziert, wie die KI sich selbst prüfen soll</strong>. Wer das beherrscht, kann massiv skalieren.
+  <Card icon="users" titel="Agenten im Team" kompakt>
+    Mehrere Agenten teilen sich <strong>eine gemeinsame Aufgabe</strong>.
+  </Card>
+  <Card icon="ghost" icon-ton="rot" titel="Fleißig, nicht fehlerfrei" kompakt>
+    Agenten arbeiten schnell — und irren sich <strong>mit voller Überzeugung</strong>.
   </Card>
 </CardGrid>
+</div>
 
-<Callout class="mt-4">Ihr werdet in einer Welt arbeiten, in der ihr nicht mehr nur lernt, wie man Aufgaben <em>selbst ausführt</em> — sondern wie man <strong>präzise spezifiziert</strong>, was Agenten <em>für euch lösen</em> sollen.</Callout>
+<style>
+/* Trennt den roten Faden oben von den Beobachtungen darunter */
+.gesehen-trenner { border-top: 1px solid var(--border-default); }
+</style>
 
 <!--
-- Den roten Faden der Vorlesung zusammenfassen
-- LLM -> Chatbot -> Agent: drei aufeinander aufbauende Schritte. Das
-  Modell ist immer dasselbe Gehirn — was sich ändert, ist, was drumherum
-  gebaut ist: erst ein Chatfenster, dann ein ganzes Harness
-- Intent spezifizieren: Das ist der nächste Schritt nach Prompt Engineering
-  - Nicht nur "Schreib mir einen Text" sondern "Du bist Marketing-Experte, erstelle ein Konzept mit Slogan, Zielgruppe, Tonalität..."
-  - Genau das haben wir in der Demo gesehen: Die Agent-Definitionen sind präzise Spezifikationen
-- Kritisch prüfen: Entweder Mensch prüft, oder man definiert Prüfkriterien für die KI
-  - Skalierungseffekt: Wenn KI sich selbst prüfen kann, braucht man keinen Menschen pro Ergebnis
-- Die zentrale Botschaft kurz wirken lassen
+- Kurz zurückschauen, egal welche Demo wir heute gesehen haben
+- Oben der rote Faden: LLM -> Chatbot -> Agent. Das Modell ist immer
+  dasselbe Gehirn — was sich ändert, ist, was drumherum gebaut ist: erst ein
+  Chatfenster, dann ein ganzes Harness mit Werkzeugen und Schleife
+- Der Auftrag ist Text: Niemand hat programmiert, was die Agenten sagen oder
+  tun. Es stand in einer Textdatei, auf Deutsch
+- Agenten im Team: In der Demo waren es mehrere, jeder mit seiner Rolle —
+  zusammen ergibt sich etwas, das keiner allein gemacht hätte
+- Fleißig, nicht fehlerfrei: Fehler sind uns begegnet, und sie klingen
+  genauso sicher wie die richtigen Antworten (Halluzination). Beispiel je
+  nach Demo:
+  - Ship It!: fragwürdige Zahlen in der Preiskalkulation
+  - Counting Agents: rote Kachel — falsche Primzahl, selbstbewusst
+    eingesammelt; das Dashboard rechnet nach und fällt darauf nicht rein
+  - Agent Party: überzeugend klingende, aber erfundene Größenordnungen
+- Falls Zeit ist, zwei weitere Haken:
+  - Kosten: Agenten verbrauchen viele Tokens, die Währung der KI (Counting
+    Agents: ~90 Anfragen pro Minute — nur fürs Zählen)
+  - Datenschutz: Was an einen KI-Dienst geht, verlässt das Haus (Ship It! /
+    Counting Agents: Modell in der Cloud; Agent Party: lokales Modell in
+    LM Studio als Alternative)
+- Überleitung: "Was heißt das jetzt für euch?"
 -->
+
+---
+rubrik: Was nehmen wir mit?
+titel: Was ihr in Zukunft können solltet
+untertitel: Keine Vorhersage — aber so viel zeichnet sich ab
+class: text-l
+---
+
+<div class="thm-center thm-gruppe">
+<div class="thm-flow">
+  <Card nummer="01" icon="scan-search" titel="Erkennen">
+    Welche Aufgabe kann ein Agent <strong>übernehmen</strong> — und welche besser nicht?
+  </Card>
+  <FlowArrow />
+  <Card nummer="02" icon="file-text" titel="Spezifizieren">
+    Ziele und Anforderungen so <strong>aufschreiben</strong>, dass ein Agent ohne Rückfrage loslegen kann.
+  </Card>
+  <FlowArrow />
+  <Card nummer="03" icon="target" titel="Prüfbar machen" tone="tint">
+    Sagen, woran man <strong>„fertig“</strong> erkennt — dann prüft sich der Agent selbst und bessert nach.
+  </Card>
+</div>
+
+<Callout icon="user-cog">Nicht mehr jeden Schritt selbst machen — sondern <strong>gut beauftragen</strong>.</Callout>
+</div>
+
+<!--
+- Niemand weiß, wie die Arbeitswelt in zehn Jahren genau aussieht. Aber
+  eins ist absehbar: Mit KI-Agenten umgehen zu können, wird so normal wie
+  heute der Umgang mit dem Smartphone
+- Drei Fähigkeiten zeichnen sich ab:
+- Erkennen: Nicht alles eignet sich. Gut: Aufgaben mit klarem Ziel, die man
+  in Schritte zerlegen und überprüfen kann. Schlecht: Entscheidungen, für
+  die jemand geradestehen muss, oder wo niemand sagen kann, was "gut" ist
+- Spezifizieren: Aus "Ich hätte gern irgendwas" wird ein Auftrag — Ziel,
+  Rahmen, Anforderungen. Wie bei einer neuen Kollegin, die euch nicht
+  fragen kann, was ihr gemeint habt
+- Prüfbar machen: Erinnert euch an den Agent-Kreislauf. Der letzte Schritt
+  war Prüfen. Prüfen kann ein Agent aber nur, wenn er weiß, WOGEGEN. Wer
+  ein klares Ziel vorgibt, bekommt einen Agenten, der so lange nachbessert,
+  bis es erreicht ist — ohne dass ein Mensch jedes Zwischenergebnis ansieht
+- Das ist der Unterschied zwischen Prompting ("Frag mal") und Beauftragen
+- Überleitung: "Klingt abstrakt? Probieren wir es aus."
+-->
+
+---
+layout: question
+hideInToc: true
+---
+
+Welche Aufgabe würdet **ihr** einem Agenten geben — und woran merkt er, dass er **fertig** ist?
+
+<!--
+- Kurz sammeln, 2–3 Antworten reichen
+- Erster Teil trainiert "Erkennen", zweiter Teil "Prüfbar machen" — der ist
+  schwerer, und genau darum geht es
+- Bei einer Antwort nachhaken: "Woran genau erkennt der Agent, dass das
+  gut ist?" Meist wird die Antwort dann erst konkret
+- Falls es stockt: Klassenfahrt planen, Lernplan für die Abiprüfungen,
+  Ferienjob finden, Geburtstagsparty organisieren
+- Überleitung: "Schauen wir uns ein Beispiel an."
+-->
+
+---
+rubrik: Was nehmen wir mit?
+titel: Vom Wunsch zum Auftrag
+class: text-xl
+---
+
+<div class="thm-center"><div class="thm-flow">
+  <Card band="grau" icon="message-square" titel="Wunsch">
+    <div class="thm-sample sprache">„Plan mal unsere Klassenfahrt.“</div>
+    <p class="auftrag-folge">Wohin? Wie teuer? Wann ist es gut genug? — Der Agent muss <strong>raten</strong>.</p>
+  </Card>
+  <FlowArrow />
+  <Card band="gruen" icon="list-checks" titel="Auftrag">
+    <dl class="auftrag">
+      <dt>Ziel</dt>
+      <dd>Schlag drei Orte für unsere Klassenfahrt vor.</dd>
+      <dt>Rahmen</dt>
+      <dd>24 Leute, fünf Tage im Mai, höchstens 300 € pro Kopf, mit der Bahn in unter fünf Stunden.</dd>
+      <dt>Fertig, wenn</dt>
+      <dd>für jeden Ort Anreise, Unterkunft und Gesamtpreis mit Link belegt sind — und alle im Budget liegen.</dd>
+    </dl>
+  </Card>
+</div></div>
+
+<style>
+.auftrag-folge { margin-top: 1em; }
+
+.auftrag {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5em 0.9em;
+  margin: 0;
+}
+
+.auftrag dt {
+  font-size: 0.72em;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--thm-green-700);
+  padding-top: 0.3em;
+}
+
+.auftrag dd {
+  margin: 0;
+  color: var(--text-strong);
+  line-height: var(--lh-snug);
+}
+
+/* Das Prüfkriterium ist der Kern der Folie */
+.auftrag dd:last-child {
+  padding-left: 0.6em;
+  border-left: 0.2rem solid var(--thm-green-500);
+}
+</style>
+
+<!--
+- Links, wie wir mit Chatbots reden: ein Satz, der Rest ist Raterei. Das
+  Ergebnis ist irgendwas — und ob es passt, merkt ihr erst hinterher
+- Rechts ein Auftrag, mit dem ein Agent arbeiten kann:
+  - Ziel: was am Ende herauskommen soll
+  - Rahmen: die Anforderungen, die nicht verhandelbar sind
+  - Fertig, wenn: das Prüfkriterium. Das kann der Agent selbst nachprüfen —
+    Links aufrufen, Preise zusammenrechnen, mit dem Budget vergleichen. Liegt
+    ein Ort drüber, sucht er einen neuen
+- Genau das ist der Agent-Kreislauf: Handeln, Prüfen, nochmal — bis das Ziel
+  erreicht ist
+- Beachten: Der Auftrag rechts ist nicht länger, weil er höflicher ist,
+  sondern weil jemand vorher nachgedacht hat, was er eigentlich will
+-->
+
+---
+layout: statement
+rubrik: Was nehmen wir mit?
+titel: Und wozu dann noch lernen?
+zitat: false
+---
+
+Beauftragen und prüfen kann nur, wer **selbst versteht**, worum es geht.
+
+<span class="st-note">Wissen und Urteilsvermögen werden wichtiger, nicht unwichtiger.</span>
+
+<!--
+- Naheliegende Frage: Wenn Agenten so viel können — wozu dann noch Mathe,
+  Deutsch, BWL, Programmieren lernen?
+- Antwort: Einen guten Auftrag schreibt nur, wer weiß, was "gut" in diesem
+  Fach heißt. Und einen Fehler bemerkt nur, wer es besser weiß — die Fehler
+  der Agenten klingen genauso überzeugend wie die richtigen Antworten
+- Die Verantwortung bleibt beim Menschen. "Das hat die KI gemacht" zählt
+  nicht als Ausrede — nicht in der Schule, nicht im Job
+- Kurz wirken lassen
+-->
+
 
 ---
 rubrik: Was nehmen wir mit?

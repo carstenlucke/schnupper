@@ -236,7 +236,7 @@ hideInToc: true
   nutzt": Auch hier wurde nur geantwortet, getan hat niemand etwas. Das
   waren Chatbots mit einer Rolle. Ein Agent würde z. B. Quellen
   nachschlagen oder ein Protokoll schreiben
-- Beispiele für den Reality Check merken: überzeugend klingende, aber
+- Beispiele für den Rückblick merken: überzeugend klingende, aber
   erfundene Zahlen (Halluzination); lokales Modell in LM Studio statt Cloud
   (Datenschutz)
 -->
