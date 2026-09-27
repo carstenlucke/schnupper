@@ -55,8 +55,8 @@ cd agent-party && ./start.sh
 
 ### [`presentation/`](presentation/)
 
-Die Slidev-Präsentation zur Schnuppervorlesung „Digitalisierung und KI — Was
-Maschinen schon können". Sie liegt auf oberster Ebene, weil jede der Demos
+Die Slidev-Präsentation zur Schnuppervorlesung „Vom Chatbot zum
+KI-Agenten". Sie liegt auf oberster Ebene, weil jede der Demos
 darin ihren Platz haben kann: Von einer Übersichtsfolie aus springt man in
 die Demo, die man zeigen will, und von dort wieder zurück. Gestaltet nach dem Design-System „THM & StudiumPlus", das als lokales
 Slidev-Theme unter `presentation/theme-thm/` mitgeliefert wird.

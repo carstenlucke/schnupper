@@ -217,8 +217,20 @@ enthalten.
 `grau`, unbekannte Denkstufe → `medium`. Pflicht sind nur Name und Rollentext.
 Im Hörsaal soll nichts an einer Kleinigkeit scheitern.
 
-Die fünf mitgelieferten Profile sind versioniert, damit die Demo ohne Vorarbeit
-startet. In der Vorlesung neu angelegte Profile landen daneben und bleiben
+Die mitgelieferten Profile sind versioniert, damit die Demo ohne Vorarbeit
+startet: fünf Stimmen für eine Diskussion und drei für ein
+Vorstellungsgespräch (`personalreferentin`, `teamleiter-it`, `bewerberin`).
+Die Personalreferentin ist bewusst **stellenunabhängig**: Ihr Profil
+beschreibt nur, wie sie Vorstellungsgespräche führt (Lebenslauf, Motivation,
+Eignung, Soft Skills, Sozialverhalten, Rahmenbedingungen); die Stelle
+entnimmt sie dem Thema. Keine Firma, keine Stellenanzeige hineinschreiben —
+sie soll in jedem Gespräch sitzen können. Teamleiter IT und Bewerberin tragen
+die ausgedachte Stellenanzeige dagegen selbst im Rollentext — ohne Werkzeuge
+gibt es keinen anderen Weg, sie ihnen mitzugeben. Beim Ändern der Stelle
+beide anpassen. Die Reihenfolge am
+Tisch ist Personalreferentin, Teamleiter IT, Bewerberin; die Rollentexte
+rechnen damit (die Personalreferentin eröffnet, die Bewerberin antwortet auf
+zwei Fragen). In der Vorlesung neu angelegte Profile landen daneben und bleiben
 untracked.
 
 ## Der pi-Aufruf

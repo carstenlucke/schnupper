@@ -2,16 +2,17 @@
 routeAlias: demo-counting-agents
 rubrik: The Counting Agents
 titel: Fünf Agenten zählen gemeinsam
+class: text-xl
 ---
 
-<div class="thm-center">
+<div class="thm-center thm-gruppe">
 <div class="thm-lead">Eine <strong>absichtlich einfache Aufgabe</strong> — damit wir nicht auf das Ergebnis schauen, sondern darauf, <strong>wie Agenten zusammenarbeiten</strong>.</div>
 
-<CardGrid :cols="5" class="mt-4">
+<CardGrid :cols="5">
   <Card icon="list-ordered" titel="Zähler">Erzeugt fortlaufend Zahlen: 1, 2, 3 …</Card>
   <Card icon="filter" titel="Ungerade">Sammelt die ungeraden Zahlen ein</Card>
   <Card icon="filter" titel="Gerade">Sammelt die geraden Zahlen ein</Card>
-  <Card icon="brain" titel="Primzahlen">Prüft jede Zahl — und denkt dabei nach</Card>
+  <Card icon="brain" titel="Primzahlen">Prüft jede Zahl&nbsp;— und denkt dabei nach</Card>
   <Card icon="sliders-horizontal" titel="Steuerung">Pausiert, setzt fort, startet neu</Card>
 </CardGrid>
 </div>
@@ -34,7 +35,7 @@ untertitel: Gar nicht direkt — sie legen Nachrichten in gemeinsame Dateien.
   <CountingBus />
 </div>
 
-<Callout icon="info"><strong>Wie ein schwarzes Brett:</strong> Einer hängt etwas aus, die anderen lesen nach, was sie betrifft — jeder in seinem eigenen Takt.</Callout>
+<Callout icon="info"><strong>Jede Datei ist wie ein schwarzes Brett:</strong> Einer hängt etwas aus, die anderen lesen nach — jeder in seinem eigenen Takt.</Callout>
 
 <style>
 .bus-rahmen {
@@ -42,7 +43,7 @@ untertitel: Gar nicht direkt — sie legen Nachrichten in gemeinsame Dateien.
   min-height: 0;
   display: flex;
   justify-content: center;
-  padding: 0.2rem 0 0.8rem;
+  padding: 0 0 2.4rem;
 }
 </style>
 
@@ -57,56 +58,28 @@ untertitel: Gar nicht direkt — sie legen Nachrichten in gemeinsame Dateien.
 ---
 rubrik: The Counting Agents
 titel: Was ein Agent kann, bestimmt sein Werkzeugkasten
+untertitel: Jeder bekommt genau die Werkzeuge, die seine Aufgabe braucht — nicht mehr.
 ---
-
-<div class="gleichung">
-  <span class="g-teil g-agent"><ThmIcon name="bot" ton="weiss" :size="1.25" /> KI-Agent</span>
-  <span class="g-op">=</span>
-  <span class="g-teil"><ThmIcon name="brain" :size="1.25" /> Modell</span>
-  <span class="g-op">+</span>
-  <span class="g-teil"><ThmIcon name="pen-line" :size="1.25" /> Aufgabe</span>
-  <span class="g-op">+</span>
-  <span class="g-teil g-kasten"><ThmIcon name="wrench" ton="weiss" :size="1.25" /> Werkzeugkasten</span>
-</div>
 
 <div class="thm-center">
   <WerkzeugMatrix />
 </div>
 
-<Callout icon="info" ton="hell">„Alles andere“ ist <strong>nicht verboten</strong> — die Werkzeuge sind <strong>gar nicht da</strong>. Das wirkt stärker als jedes Verbot im Text.</Callout>
-
-<style>
-.gleichung {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  margin: 0 0 0.6rem;
-  font-size: 1.2rem;
-  font-weight: var(--fw-bold);
-  color: var(--text-strong);
-}
-.g-teil {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.3rem 0.85rem;
-  background: var(--thm-grey-50);
-}
-.g-agent { background: var(--thm-grey-600); color: var(--white); }
-.g-kasten { background: var(--thm-green-500); color: var(--white); }
-.g-op { font-size: 1.5rem; color: var(--thm-green-600); }
-</style>
-
 <!--
-- Rückbezug auf "Der Unterschied": Agenten handeln — mit Werkzeugen
-- Die Gleichung oben: Modell und Aufgabe haben alle gleich, der
-  Werkzeugkasten macht den Unterschied
+- Rückbezug auf "Was macht aus einem Modell einen Agenten?": Im Harness
+  links die Werkzeuge — hier sieht man, dass jeder Agent andere bekommt
+- Alle fünf nutzen dasselbe Modell. Verschieden sind Aufgabe und
+  Werkzeugkasten — und die Aufgabe entscheidet, welche Werkzeuge ein Agent
+  braucht
 - Tabelle zeilenweise lesen: Nur der Zähler darf veröffentlichen, nur die
   Steuerung Befehle schicken
 - Ein Sammler KANN nicht in den Bus schreiben — nicht, weil es ihm verboten
   ist, sondern weil das Werkzeug fehlt
 - Letzte Zeile: Die allgemeinen Werkzeuge (Shell, Dateien lesen/schreiben)
   hat keiner — sie werden beim Start weggenommen
+- Maus auf "Alles andere" zeigt den Merksatz: nicht verboten, sondern gar
+  nicht da — erst fragen "Warum nicht einfach im Text verbieten?", dann
+  aufdecken
 - Die Aufgabe selbst steht wieder in normalem Deutsch in einer Textdatei
   (ggf. agents/prime.md zeigen)
 -->
@@ -115,10 +88,11 @@ titel: Was ein Agent kann, bestimmt sein Werkzeugkasten
 rubrik: The Counting Agents · Live-Demo
 titel: Eure Vorhersage
 untertitel: Bevor es losgeht — was glaubt ihr?
+class: text-xl
 hideInToc: true
 ---
 
-<div class="thm-stack">
+<div class="thm-center thm-stack">
   <QuestionItem>Alle Agenten haben <strong>denselben Takt</strong>. Laufen sie im Gleichschritt?</QuestionItem>
   <QuestionItem>Wer wird am weitesten <strong>hinterherhinken</strong> — und warum?</QuestionItem>
   <QuestionItem>Macht die KI beim <strong>Primzahlen-Prüfen</strong> Fehler?</QuestionItem>
@@ -134,6 +108,7 @@ layout: statement
 rubrik: The Counting Agents · Live-Demo
 titel: Los geht's!
 zitat: false
+class: text-xl
 hideInToc: true
 ---
 
@@ -167,17 +142,34 @@ hideInToc: true
 
 <!--
 - Vorhersagen von vorhin auflösen
-- Rückstand: prime prüft eine Zahl pro Durchlauf und denkt nach — Nachdenken
-  kostet Zeit
-- Rote Kachel: Das Modell hat eine Zahl für prim gehalten, die es nicht ist.
-  Das Dashboard rechnet selbst nach — eine automatische Prüfung, kein Mensch
-  muss jede Zahl kontrollieren
-- Anfragen: Ein Durchlauf sind ~5 Anfragen (eine pro Werkzeug plus Antwort).
-  Man sieht eine Zahl — dahinter stecken fünf Gespräche mit einem Modell
+- Rückstand: Der Takt (3 s) ist nur die Pause zwischen zwei Durchläufen —
+  wie lange ein Durchlauf dauert, hängt davon ab, was das Modell zu tun hat
+  - odd und even nehmen alles Neue auf einmal und holen jeden Rückstand auf
+  - prime darf nur eine Zahl pro Durchlauf prüfen und denkt dabei nach —
+    jeder Durchlauf etwas länger als beim Zähler, der Abstand wächst
+  - Merksatz: Gleicher Takt heißt nicht gleiches Tempo. Nachdenken kostet Zeit
+- Rote Kachel: Das Modell hat eine Zahl für prim gehalten, die es nicht ist
+  - Typisch sind Zahlen, die prim aussehen: 51 = 3·17, 57 = 3·19, 91 = 7·13
+  - Das Modell rechnet nicht, es schätzt, was plausibel klingt (Rückbezug auf
+    "Was steckt hinter ChatGPT & Co.?": das wahrscheinlichste nächste Wort)
+  - Keine rote Kachel? Diesmal gut gegangen — aber ohne Garantie
+  - Das Dashboard rechnet selbst nach — eine automatische Prüfung, kein Mensch
+    muss jede Zahl kontrollieren
+- Anfragen: Ein Durchlauf sind ~5 Anfragen (eine pro Werkzeug plus Antwort)
+  - Ein Durchlauf ~10 s plus 3 s Takt → gut 4 Durchläufe pro Minute
+  - 4 Agenten × 5 Anfragen × ~4,5 Durchläufe ≈ 90 Anfragen pro Minute
+  - Jede Anfrage kostet Geld, Strom und Zeit; manche Anbieter erlauben nur
+    60 pro Minute — dann bricht die Demo am Limit ab
+  - Man sieht eine Zahl — dahinter stecken fünf Gespräche mit einem Modell
 - Die Pointe: Nein! Aufgaben mit genau einer richtigen Antwort erledigt ein
-  normales Programm fehlerfrei und kostenlos. KI lohnt sich dort, wo Sprache,
-  Urteil und Unschärfe ins Spiel kommen
-- Beispiele für den Reality Check merken: Anfragen = Kosten, rote Kachel =
+  normales Programm fehlerfrei und kostenlos — Millionen Zahlen pro Sekunde
+  - Die Aufgabe ist absichtlich banal: So schaut man aufs Zusammenspiel,
+    nicht aufs Ergebnis
+  - Weiterdenken: gleicher Aufbau, aber statt Zahlen kommen E-Mails, und die
+    Agenten sortieren nach Beschwerde, Bestellung, Frage — da gibt es nicht
+    die eine richtige Antwort
+  - KI lohnt sich dort, wo Sprache, Urteil und Unschärfe ins Spiel kommen
+- Beispiele für den Rückblick merken: Anfragen = Kosten, rote Kachel =
   Halluzination, Dashboard rechnet nach = Qualitätskontrolle
 -->
 

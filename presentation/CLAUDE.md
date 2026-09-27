@@ -1,6 +1,6 @@
 # CLAUDE.md — Präsentation
 
-Slidev-Foliensatz der Schnuppervorlesung „Digitalisierung und KI". Liegt auf
+Slidev-Foliensatz der Schnuppervorlesung „Vom Chatbot zum KI-Agenten". Liegt auf
 oberster Ebene, weil er die Demos des Repositorys einbettet — Folien zu einer
 Demo gehören hierher, nicht in das Demo-Projekt.
 
@@ -23,6 +23,12 @@ Die Demos sind Abzweige von der Übersicht, keine Folge:
   Folie greift: vorwärts aus einer Demo heraus nach `nach-demos`, rückwärts
   in eine andere Demo hinein zur Übersicht. Links und `G` bleiben
   unberührt; Übersicht und Export zeigen alles.
+- **Zusatzfolien** für Fragen, die vielleicht kommen, liegen außerhalb des
+  Verlaufs: Frontmatter `zusatz: <routeAlias der Herkunftsfolie>`, dazu ein
+  eigener `routeAlias`. Beim Blättern überspringt der Guard sie; erreichbar
+  sind sie per `<Abstecher>` auf der Herkunftsfolie. Von der Zusatzfolie
+  führt ← zurück zur Herkunftsfolie, → zu deren Nachfolgerin. Im Block
+  stehen sie hinter der Abschlussfolie (Agent Party: „KI gegen KI?“).
 
 Eine neue Demo braucht: einen Block in `demos/` mit `routeAlias: demo-<id>`
 auf der ersten Folie und einer Abschlussfolie, einen `src:`-Eintrag mit
@@ -34,12 +40,14 @@ Daraus folgen Regeln:
   welche Demo gezeigt wurde — auch bei zweien. Was nur zu einer Demo passt, gehört in
   deren Datei.
 - **Jeder Demo-Block ist gleich gebaut:** Vorstellung, Aufbau, Mitmachfrage,
-  „Los geht's!" mit Adresse, Bewertung, Abschlussfolie. Rubriken `<Demo>`, `<Demo> · Live-Demo`,
-  `<Demo> · Bewertung`.
+  „Los geht's!" mit Adresse, Bewertung, Abschlussfolie. Im Aufbau darf eine
+  Motivationsfolie mit einem Fundstück stehen (Agent Party: ein
+  LinkedIn-Beitrag, direkt nach der Vorstellung). Rubriken `<Demo>`,
+  `<Demo> · Live-Demo`, `<Demo> · Bewertung`.
 - **Reflexion ist zweigeteilt.** Die Bewertung („was haben wir gesehen?") ist
-  demo-spezifisch und steht im Block. Der Reality Check ist gemeinsam; neue
-  Demos tragen ihre Beispiele in dessen Sprecher-Notizen ein, nicht als
-  eigene Folie.
+  demo-spezifisch und steht im Block. Der Rückblick („Das haben wir heute
+  gesehen") ist gemeinsam; neue Demos tragen ihre Beispiele in dessen
+  Sprecher-Notizen ein, nicht als eigene Folie.
 - **Blöcke sind unabhängig voneinander.** Kein Block verweist auf einen
   anderen — welche gezeigt werden und in welcher Reihenfolge, wechselt.
 
@@ -56,11 +64,15 @@ Das Theme ist aus dem Vorlesungsprojekt
 `~/Development/thm-lectures/WK_1208-Softwaretechnik/theme-thm/` übernommen und
 für StudiumPlus angepasst:
 
-- **Logos**: THM-Logo oben rechts (`ThmLockup.vue`), StudiumPlus-Marke unten
-  rechts in der Fußzeile (`SlideFooter.vue`) — wie in den StudiumPlus-Folien
-  des Design-Systems. Keine Campus-/Fachbereichs-Lockup.
-- **Titel- und Schlussfolie** kommen ohne Foto aus: `cover` zeigt ohne `bild`
-  ein kleines neuronales Netz, `end` gibt dem Text die volle Breite.
+- **Logos**: THM-Logo und StudiumPlus-Marke stehen auf jeder Folie
+  nebeneinander oben rechts, getrennt durch einen feinen Strich
+  (`ThmLockup.vue`); auf Titel- und Schlussfolie oben links. Abweichend vom
+  Design-System trägt die Fußzeile keine Marke — allein unten rechts wirkte
+  sie verloren. Keine Campus-/Fachbereichs-Lockup.
+- **Titelfolie** mit Foto wie im Ursprungsprojekt: `bild:
+  /studiumplus-campus.jpg` (StudiumPlus-Gebäude mit Stele). Ohne `bild` zeigt
+  `cover` stattdessen ein kleines neuronales Netz. Die Schlussfolie (`end`)
+  kommt ohne Foto aus und gibt dem Text die volle Breite.
 - **Fragefolien** tragen per Voreinstellung die Rubrik „Frage an euch".
 - **Neu**: `<FlowArrow>` und die Klassen `.thm-flow` / `.thm-sample`.
 - Übernommen sind die allgemeinen Layouts und Komponenten (auch derzeit
@@ -93,8 +105,8 @@ einsetzen.
 |---|---|
 | `layout: cover` | Titelfolie, dunkle Rasterfläche |
 | `layout: agenda` + `aktiv: n` | Abschnittstrenner; `punkte` und `icons` auf allen Trennern gleich halten |
-| `layout: default` | Folienkopf (`rubrik`, `titel`, `untertitel`) plus freier Inhalt |
-| `layout: question` | Eine Frage, vollflächig Gelb |
+| `layout: default` | Folienkopf (`rubrik`, `titel`, `untertitel`) plus freier Inhalt; `dunkel: true` für die dunkle Rasterfläche, wenn sich eine Folie abheben soll (Studien-Teaser) |
+| `layout: question` | Eine Frage, vollflächig Gelb; `class: text-xl` für kurze Fragen |
 | `layout: statement` | Große Aussage; `zitat: false` ohne Kasten |
 | `layout: end` | Schlussfolie |
 | `<Card>` / `<CardGrid>` | Inhaltskarten mit Icon im grünen Quadrat; `kompakt`, `band`, `tone`, `icon-ton` |
@@ -103,12 +115,23 @@ einsetzen.
 | `.thm-flow` + `<FlowArrow>` | Karten nebeneinander mit Pfeil oder `text="vs."` dazwischen |
 | `.thm-sample` (`.sprache`) | Beispiel in einer Karte: Code bzw. Satz in Alltagssprache |
 | `.thm-center` | Inhalt vertikal mittig statt gestreckt — für Folien mit wenig Text |
-| `class: text-l` | Folienweit größere Schrift, für dünn besetzte Folien |
+| `class: text-l` | Folienweit größere Schrift, für dünn besetzte Folien; zieht auch `.thm-note` und `<QuestionItem>` mit |
+| `class: text-xl` | Noch größer, für Folien mit wenig Text, die die Fläche füllen sollen (Einstieg); zieht auch `.thm-lead`, `.thm-note`, `<QuestionItem>` und den Text von `layout: statement` mit `zitat: false` mit |
+| `.thm-center.thm-gruppe` | Einleitung, Karten und `<Callout>` als ein Block in der Folienmitte, statt den Merksatz an den Folienfuß zu schieben |
 | `<AgentKreislauf>` | Verstehen → Planen → Handeln → Prüfen mit Rückweg |
+| `<NaechstesWort>` | Wie ein LLM schreibt: angefangener Satz, darunter die möglichen nächsten Wörter mit (ausgedachter) Wahrscheinlichkeit |
+| `<CopyPasteSchleife>` | Alltag mit Chatbots: Chatfenster, ihr, Dokument; Texte wandern per Copy & Paste hin und her. Auf Klick 1 (fest in der Komponente) gleitet das Bild nach rechts und links erscheint das Modell hinter der App; weitere Klicks auf der Folie ab 2 zählen |
+| `<AgentAnatomie>` | KI-Agent = Modell + Harness: Gleichung, darunter das Modell im Rahmen des Harness — links die Werkzeuge, rechts die Steuerung (Schleife, Anweisungen, Gedächtnis, Leitplanken) |
 | `<AgentAbhaengigkeiten>` | Wer wartet auf wen bei Ship It!; Kanten nach `AGENT_PATHS` in `ship-it/server.py` |
 | `<DemoUebersicht>` | Karten der Übersichtsfolie, springen auf `demo-<id>` |
 | `<DemoEnde>` | Abschlussfolie eines Demo-Blocks: zur Übersicht oder weiter |
-| `<WerkzeugMatrix>` | Wer darf was bei den Counting Agents; Zeilen nach den `tools:`-Zeilen in `the-counting-agents/agents/*.md` |
+| `<Abstecher>` | Kleiner Knopf auf eine Zusatzfolie (`to` = deren routeAlias); mit `zurueck` der Rückweg auf der Zusatzfolie |
+| `<WerkzeugMatrix>` | Wer darf was bei den Counting Agents; Zeilen nach den `tools:`-Zeilen in `the-counting-agents/agents/*.md`; der Merksatz zu „Alles andere“ erscheint nur als Tooltip bei Hover |
+| `<AgentRunde>` | Agent Party als Bild: vier Agenten im Kreis um ein Thema, reihum verbunden, je eine Sprechblase; Rollen nach `agent-party/profile/` |
+| `<SocialPost>` | Beitrag oder (`kommentar`) Kommentar aus einem beruflichen Netzwerk als Karte; Profilbild per `foto`, sonst Initialen; kein Logo, Quelle als `.thm-note` darunter |
+| `<BeispielKarussell>` | Mehrere Beispiele auf einer Folie, eins nach dem anderen, darunter Punkte und „Beispiel 2 von 3“. Geblättert wird mit den Klicks der Folie — die Folie braucht `clicks: <Anzahl − 1>`; Beispiele als Slots `#1`, `#2`, … Auf „Vom Code zur Sprache“: Daten, Skizze → 3D-Modell, Notizen → Quiz-App |
+| `<LokSkizze>` | Bleistiftskizze einer Dampflok auf Karopapier, Anhang im Skizzen-Beispiel auf „Vom Code zur Sprache“ |
+| `<CodeKlappe>` | Knopf unter dem SQL-Beispiel auf „Vom Code zur Sprache“; öffnet 25 Zeilen TypeScript (Primzahlen sammeln) neben zwei Sätzen an einen Agenten. Satz nach `the-counting-agents/agents/prime.md`, die Demo selbst bleibt ungenannt |
 | `<CountingBus>` | Nachrichtenwege der Counting Agents: Zähler → Zahlen-Datei → Sammler, Steuerung → Befehls-Datei |
 
 Icons kommen aus Lucide (`@iconify-json/lucide`) und müssen in

@@ -2,6 +2,7 @@
 routeAlias: demo-ship-it
 rubrik: Ship It!
 titel: Fünf Agenten, ein Produktlaunch
+class: text-l
 ---
 
 <div class="thm-center">
@@ -70,24 +71,24 @@ untertitel: Manche Agenten brauchen die Ergebnisse anderer, bevor sie starten k�
 ---
 rubrik: Ship It! · Live-Demo
 titel: Jetzt seid ihr dran!
-class: text-l
+class: text-xl
 hideInToc: true
 ---
 
+<div class="thm-center thm-gruppe">
 <QuestionItem>Welches Produkt sollen unsere KI-Agenten auf den Markt bringen?</QuestionItem>
 
-<div class="thm-lead mt-4">Das Einzige, was die Agenten von euch brauchen: <strong>eine Produktidee in ganz normalem Deutsch.</strong></div>
+<div class="thm-lead">Das Einzige, was die Agenten von euch brauchen: <strong>eine Produktidee in ganz normalem Deutsch.</strong></div>
 
-<div class="thm-center">
 <CardGrid :cols="4">
   <Card icon="camera" icon-ton="gelb" center>Drohnen-Foto-Service für Events</Card>
   <Card icon="zap" icon-ton="gelb" center>Energy Drink für Klausurphasen</Card>
   <Card icon="book-open" icon-ton="gelb" center>App zum Tauschen von Schulbüchern</Card>
   <Card icon="headphones" icon-ton="gelb" center>KI-Kopfhörer, der Stimmung erkennt</Card>
 </CardGrid>
-</div>
 
 <div class="thm-note">...oder eure eigene Idee! Ruft rein — wir stimmen ab.</div>
+</div>
 
 <!--
 - Die 4 Starter-Ideen als Inspiration zeigen
@@ -101,6 +102,7 @@ layout: statement
 rubrik: Ship It! · Live-Demo
 titel: Los geht's!
 zitat: false
+class: text-xl
 hideInToc: true
 ---
 
@@ -139,7 +141,7 @@ hideInToc: true
 - "Was hat überrascht?"
 - "Was fehlt offensichtlich?"
 - "Würde ein echtes Unternehmen das so verwenden?"
-- Beispiele für den Reality Check merken: fragwürdige Zahlen in der
+- Beispiele für den Rückblick merken: fragwürdige Zahlen in der
   Kalkulation (Halluzination), eure Produktidee ging an einen Cloud-Dienst
   (Datenschutz)
 -->

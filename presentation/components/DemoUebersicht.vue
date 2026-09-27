@@ -6,7 +6,7 @@
 const demos = [
   { id: 'ship-it', titel: 'Ship It!', icon: 'rocket', text: 'Fünf Agenten bringen euer Produkt auf den Markt — bis zur fertigen Website.' },
   { id: 'counting-agents', titel: 'The Counting Agents', icon: 'list-ordered', text: 'Fünf Agenten zählen gemeinsam — und wir sehen ihnen bei der Arbeit zu.' },
-  { id: 'agent-party', titel: 'Agent Party', icon: 'messages-square', text: 'Ihr schreibt die Agenten selbst — und sie diskutieren miteinander.' },
+  { id: 'agent-party', titel: 'Agent Party', icon: 'messages-square', text: 'Eine Gesprächsrunde, in der an jedem Platz eine KI sitzt.' },
 ]
 </script>
 
@@ -40,13 +40,22 @@ const demos = [
 }
 
 .ziel > :deep(.thm-card) { flex: 1; }
+
+/* „Demo starten“ steht in allen Karten auf einer Höhe, auch wenn der
+   Text unterschiedlich lang ist */
+.ziel :deep(.card-text) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 .ziel:hover { transform: translateY(-3px); }
 
 .los {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  margin-top: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
   font-weight: var(--fw-bold);
   color: var(--thm-green-600);
 }

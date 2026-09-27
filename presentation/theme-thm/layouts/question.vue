@@ -7,6 +7,7 @@
   Frontmatter:
     layout: question
     titel: Bedeutung von Software     # optional, als Rubrik über der Frage
+    class: text-xl                    # optional, größer für kurze Fragen
 
   Für Folien mit mehreren Fragen untereinander stattdessen `layout: default`
   mit mehreren <QuestionItem> verwenden.
@@ -76,6 +77,10 @@ defineProps<{ titel?: string }>()
   font-weight: var(--fw-bold);
   font-style: normal;
 }
+
+/* Kurze Frage, die die Fläche füllen soll */
+.thm-question.text-xl .q-inner { max-width: 50rem; }
+.thm-question.text-xl .q-text { font-size: 2.9rem; line-height: 1.2; }
 
 .q-text :deep(p) { margin-bottom: 0.9rem; }
 .q-text :deep(p:last-child) { margin-bottom: 0; }
