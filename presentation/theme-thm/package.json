@@ -25,6 +25,7 @@
     }
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.135"
+    "@iconify-json/lucide": "^1.2.135",
+    "uqr": "^0.1.3"
   }
 }

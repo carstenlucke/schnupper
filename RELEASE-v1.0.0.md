@@ -6,7 +6,7 @@ Erstes gemeinsames Release des Repositorys. Es umfasst die Präsentation „Vom 
 
 - Foliensatz für eine Schnuppervorlesung von 90 Minuten, gestaltet nach dem Design-System „THM & StudiumPlus“.
 - Eine Übersichtsfolie führt in die gewünschte Demo. Am Ende einer Demo geht es zurück zur Übersicht oder weiter zum Schluss.
-- Die Folien laufen als Web-App unter [carstenlucke.github.io/schnupper](https://carstenlucke.github.io/schnupper/); das PDF hängt an diesem Release.
+- Die Folien laufen als Web-App unter [carstenlucke.github.io/schnupper](https://carstenlucke.github.io/schnupper/). Die Schlussfolie führt per QR-Code dorthin und zum Repository; das PDF hängt an diesem Release.
 
 ## Demos
 

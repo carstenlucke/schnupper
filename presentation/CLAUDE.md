@@ -72,7 +72,9 @@ für StudiumPlus angepasst:
 - **Titelfolie** mit Foto wie im Ursprungsprojekt: `bild:
   /studiumplus-campus.jpg` (StudiumPlus-Gebäude mit Stele). Ohne `bild` zeigt
   `cover` stattdessen ein kleines neuronales Netz. Die Schlussfolie (`end`)
-  kommt ohne Foto aus und gibt dem Text die volle Breite.
+  kommt ohne Foto aus und ist zweispaltig: links Dank und Kontakt, rechts
+  per `::right::` je ein QR-Code auf die Folien bei GitHub Pages und auf das
+  Repository.
 - **Fragefolien** tragen per Voreinstellung die Rubrik „Frage an euch".
 - **Neu**: `<FlowArrow>` und die Klassen `.thm-flow` / `.thm-sample`.
 - Übernommen sind die allgemeinen Layouts und Komponenten (auch derzeit
@@ -108,7 +110,8 @@ einsetzen.
 | `layout: default` | Folienkopf (`rubrik`, `titel`, `untertitel`) plus freier Inhalt; `dunkel: true` für die dunkle Rasterfläche, wenn sich eine Folie abheben soll (Studien-Teaser) |
 | `layout: question` | Eine Frage, vollflächig Gelb; `class: text-xl` für kurze Fragen |
 | `layout: statement` | Große Aussage; `zitat: false` ohne Kasten |
-| `layout: end` | Schlussfolie |
+| `layout: end` | Schlussfolie; mit `::right::` zweispaltig, rechts z.B. ein `<QrCode>` |
+| `<QrCode>` | QR-Code zu `url`, als SVG gerechnet (`uqr`); dunkle Module auf weißer Kachel, auch auf dunklen Folien — invertierte Codes lesen nicht alle Kamera-Apps |
 | `<Card>` / `<CardGrid>` | Inhaltskarten mit Icon im grünen Quadrat; `kompakt`, `band`, `tone`, `icon-ton` |
 | `<Callout>` | Merksatz-Band am Folienfuß |
 | `<QuestionItem>` | Einzelne Frage, für Folien mit mehreren Fragen |
