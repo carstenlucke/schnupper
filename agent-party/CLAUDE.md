@@ -86,6 +86,8 @@ Port **8100** — 8000 gehört `ship-it/`, 8777 dem Dashboard von
 | GET | `/api/partys` | Sitzungsliste mit Status |
 | POST | `/api/partys` | Sitzung anlegen |
 | GET | `/api/partys/<slug>` | Sitzung + Status, **ohne** Verlauf |
+| PUT | `/api/partys/<slug>` | Einstellungen ändern (`zuruecksetzen: true` für Thema, Frage, Besetzung) |
+| POST | `/api/partys/<slug>/zuruecksetzen` | Verlauf löschen, zurück auf „neu" |
 | POST | `/api/partys/<slug>/start` | Durchlauf starten oder fortsetzen |
 | POST | `/api/partys/<slug>/stop` | Durchlauf abbrechen |
 | POST | `/api/partys/<slug>/zwischenruf` | Impuls der Gesprächsleitung (`{text}`) |
@@ -151,6 +153,29 @@ drei Griffe, alle in der Steuerleiste unter dem Verlauf:
   wie eine Party, damit währenddessen niemand eine Runde dazwischenstartet.
   Ergebnis ist ein Eintrag `art: fazit`; er zählt nicht gegen die Rundenzahl,
   und eine weitere Runde danach ist ausdrücklich möglich.
+
+### Bearbeiten und Zurücksetzen
+
+- **Zurücksetzen** (`party_zuruecksetzen`) löscht `verlauf.jsonl` — Beiträge,
+  Zwischenrufe, Fazit. `sitzung.json` bleibt, der Status ergibt sich danach von
+  selbst zu `neu`. Eine laufende Party wird vorher angehalten, und gelöscht wird
+  erst, wenn die Schleife durch ist (`_anhalten_und_austragen()`, dieselbe
+  Stelle wie beim Löschen der Party) — sonst schriebe der Thread seinen
+  fertigen Beitrag noch in die frisch geleerte Datei.
+- **Ändern** (`party_aendern`) prüft über `party_pruefen()`, dieselbe Prüfung
+  wie beim Anlegen. Runden und Modell gehen immer, nur nicht während die Party
+  läuft. **Thema, Einstiegsfrage und Besetzung** (`PARTY_KERN`) tragen den
+  Verlauf: Steht schon etwas in der Datei, lehnt der Server eine Änderung daran
+  mit 409 ab, außer sie kommt mit `zuruecksetzen: true`. Ein Verlauf mit
+  Beiträgen auf eine andere Frage oder von Plätzen, die es nicht mehr gibt,
+  vergiftete jeden weiteren Prompt.
+- Die Rundenobergrenze ist beim Ändern `max(MAX_RUNDEN, bisherige Runden)` —
+  „Weitere Runde" darf über `MAX_RUNDEN` hinaus, und das Formular soll das
+  nicht stillschweigend kappen.
+- **Der Slug bleibt**, auch bei neuem Thema: Er steht in Adressen und
+  Lesezeichen.
+- `party_aendern` liegt unter `runden_lock`, weil es wie `naechste_runde`
+  dieselbe `sitzung.json` liest und schreibt.
 
 Beitrag und Fazit teilen sich `_pi_durchlauf()` — Prozessstart, Ereignisse,
 Abbruch und Fehlerfall gibt es nur einmal.
@@ -337,6 +362,20 @@ erreichbar über die Navigation **in der Kopfleiste** (die Ids heißen weiterhin
 - **Party vorbereiten** — Profile anklicken (der Klick schaltet um, jedes Profil
   sitzt höchstens einmal am Tisch), Reihenfolge per Hoch/Runter, Thema,
   Einstiegsfrage, Runden 1–5, Modell.
+  - **Bearbeiten** einer bestehenden Party (Stift in „Bisherige Partys" oder
+    in der Steuerleiste) lädt sie in dasselbe Formular; `bearbeitung` hält
+    Slug, alte Sitzung und Status, der Knopf heißt dann „Änderungen speichern".
+    Gespeichert wird ohne Start, danach geht es in die Sitzung. Ändern sich
+    Thema, Frage oder Besetzung, schickt das Frontend immer
+    `zuruecksetzen: true` mit und fragt vorher nach, sobald schon Beiträge da
+    sind. Wer die Ansicht anders als über „Bearbeiten" betritt (Navigation,
+    „Neue Party", Hash), bekommt das leere Formular für eine neue Party.
+  - Die Profile stehen in denselben Gruppen wie unter „Agentenprofile"
+    (`profileNachGruppen()` liefert die Einteilung für beide), hier aber nur
+    zum Auswählen: kein Umbenennen, kein Ziehen, leere Gruppen fallen weg. Der
+    Zähler im Gruppenkopf zeigt „am Tisch / in der Gruppe", damit eine Wahl
+    auch in einer zugeklappten Gruppe sichtbar bleibt. Der Klappzustand liegt
+    in `auswahlZugeklappt`, getrennt von der Profilansicht.
 - **Sitzung** — oben ein dunkler Themenblock (Status, Fortschritt, Besetzung in
   Zahlen, Thema, Einstiegsfrage), darunter links der Verlauf, rechts die Karten
   „Teilnehmer" (mit Beitragszähler und „formuliert …" beim aktiven Sprecher) und
@@ -346,7 +385,8 @@ erreichbar über die Navigation **in der Kopfleiste** (die Ids heißen weiterhin
 
 Die **Steuerleiste** klebt unter dem Inhalt und ist nur in der Sitzungsansicht
 sichtbar: Zwischenruf einwerfen, weitere Runde, Fazit erstellen, anhalten oder
-fortsetzen. Steht beim Klick auf „Weitere Runde" noch Text im Zwischenruffeld,
+fortsetzen (vor dem ersten Beitrag heißt der Knopf „Starten"), bearbeiten und
+zurücksetzen. Steht beim Klick auf „Weitere Runde" noch Text im Zwischenruffeld,
 geht der Einwurf der Runde voraus — ein Griff für „so, und jetzt redet bitte
 darüber". Nach „Weitere Runde" und „Fazit erstellen" baut `oeffneParty()` die
 Ansicht neu auf, damit der Strom das Neue live zeigt.

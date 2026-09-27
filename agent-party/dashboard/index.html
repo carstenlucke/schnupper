@@ -254,7 +254,7 @@
               Stimmen dupliziere das Profil und gib ihm einen eigenen Namen. Die
               Reihenfolge rechts ist die Sprechreihenfolge.
             </p>
-            <div id="auswahl-raster" class="grid gap-3 sm:grid-cols-2"></div>
+            <div id="auswahl-raster" class="space-y-4"></div>
 
             <h2 class="abschnitt-titel mt-8 mb-3">Bisherige Partys</h2>
             <div id="party-liste" class="space-y-2"></div>
@@ -262,7 +262,8 @@
 
           <div class="lg:col-span-2">
             <div class="karte lg:sticky lg:top-4">
-              <h2 class="karten-titel">Die Runde</h2>
+              <h2 id="runde-titel" class="karten-titel">Die Runde</h2>
+              <p id="bearbeiten-info" class="text-xs text-on-surface-variant mb-3 hidden"></p>
 
               <div id="besetzung" class="space-y-2 mb-4"></div>
 
@@ -293,8 +294,11 @@
               </div>
 
               <button id="party-start-btn" type="button" class="knopf knopf-primaer w-full mt-4" disabled>
-                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">play_arrow</span>
-                Party starten
+                <span id="party-start-icon" class="material-symbols-outlined text-[18px]" aria-hidden="true">play_arrow</span>
+                <span id="party-start-text">Party starten</span>
+              </button>
+              <button id="bearbeiten-abbrechen-btn" type="button" class="knopf knopf-rand w-full mt-2 hidden">
+                Abbrechen
               </button>
               <p id="einrichten-hinweis" class="text-xs text-error mt-2 hidden"></p>
             </div>
@@ -366,7 +370,7 @@
       <div class="flex flex-wrap items-center gap-2 mt-3">
         <button id="party-fort-btn" type="button" class="knopf knopf-rand hidden">
           <span class="material-symbols-outlined text-[18px]" aria-hidden="true">play_arrow</span>
-          Fortsetzen
+          <span id="party-fort-text">Fortsetzen</span>
         </button>
         <button id="runde-btn" type="button" class="knopf knopf-rand">
           <span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
@@ -379,6 +383,14 @@
         <button id="party-stop-btn" type="button" class="knopf knopf-stop">
           <span class="material-symbols-outlined text-[18px]" aria-hidden="true">stop</span>
           Anhalten
+        </button>
+        <button id="party-bearbeiten-btn" type="button" class="knopf knopf-rand">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">edit</span>
+          Bearbeiten
+        </button>
+        <button id="party-zurueck-btn" type="button" class="knopf knopf-rand">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">restart_alt</span>
+          Zurücksetzen
         </button>
         <button id="neue-party-btn" type="button" class="verweis ml-auto">
           Neue Party
