@@ -30,13 +30,34 @@ Fehlt die Zeile, weil du eine bisherige Ausgabe überarbeitest, bleibt das Desig
 
 Du arbeitest ohne Rückfragen und ohne Browser oder Screenshots: Triff die Entscheidungen selbst und prüfe dein Ergebnis, indem du den Code liest.
 
+## Was auf die Website darf
+
+Die Website ist öffentlich – sie richtet sich an Kundinnen und Kunden. Deine Eingaben sind dagegen interne Arbeitspapiere: Kalkulation, Zielgruppenanalyse und Marketing-Konzept enthalten vieles, was ein Unternehmen nie veröffentlichen würde. Übernimm deshalb **ausschließlich** diese Inhalte:
+
+- **Produkt**: Name, Slogan, Kernbotschaft, Elevator Pitch und Werbetext aus dem Marketing-Konzept
+- **Leistung**: Funktionen, Eigenschaften, Lieferumfang und Nutzen aus der Produktbeschreibung
+- **Für wen**: Situationen und Bedürfnisse der Zielgruppen, in eigenen Worten und direkt an die Leserinnen und Leser gerichtet
+- **Preis**: nur die Zahl – der empfohlene Endkundenpreis aus der Kalkulation, dazu – falls dort empfohlen – ein Einführungsangebot, Varianten oder ein Abo mit ihrem Endkundenpreis, jeweils „inkl. MwSt.“
+- **Bilder**: Logo und Instagram-Bild
+- **Eigene Zutaten**: fiktive Testimonials und Call-to-Action
+
+Alles andere bleibt draußen, insbesondere:
+
+- Kosten jeder Art (Material, Fertigung, Stückkosten, Vollkosten, Fixkosten), Margen, Deckungsbeiträge, Break-Even-Mengen
+- Die Kalkulation selbst und jede Preisstrategie – auch die gewählte: weder ihr Name noch verworfene Preise noch Sätze, die den Preis mit Kosten, Spielraum oder Marktvergleich erklären
+- Persona-Namen und -Steckbriefe, Marktsegmente, Marktgrößen, Kaufkraft
+- Wettbewerber, deren Preise und Quellen aus der Recherche
+- Positionierung als Analyse, verworfene Namens- und Slogan-Vorschläge, Logo- und Bild-Prompts
+
+Im Zweifel gilt: Was nicht auf der Liste steht, kommt nicht auf die Seite.
+
 ## Aufgabe – 2 Schritte
 
 ### Schritt 1: Website-Prompt erstellen (`website-prompt.md`)
 
 Lies ALLE Eingabe-Dateien und erstelle eine Datei `website-prompt.md`, die einen vollständigen, in sich geschlossenen Prompt für die Website-Generierung enthält. Dieser Prompt muss:
 
-- **Alle relevanten Informationen aus den Eingabe-Dateien inline enthalten** (Produktbeschreibung, Zielgruppen-Personas, Produktname, Slogan, Kernbotschaft, Positionierung, Preise, Kostenstruktur) – NICHT als Dateiverweise, sondern als eingebetteten Text
+- **Alle Inhalte für die Website inline enthalten** – genau die aus „Was auf die Website darf“, NICHT als Dateiverweise, sondern als eingebetteten Text. Interna wie Kosten, Margen oder Persona-Namen gehören auch hier nicht hinein: Was nicht in `website-prompt.md` steht, kann nicht auf der Seite landen
 - Einen Abschnitt **Design** enthalten: die gewählte Vorlage (oder „freie Gestaltung"), die Farbpalette als 4–6 benannte Hex-Werte, die Schriften und ihre Rollen, die Layoutidee und das eine Element, das die Seite unverwechselbar macht
 - Die Sektionsstruktur der Website beschreiben
 - Technische Anforderungen definieren
@@ -44,14 +65,14 @@ Lies ALLE Eingabe-Dateien und erstelle eine Datei `website-prompt.md`, die einen
 
 ### Schritt 2: Website generieren (`index.html`)
 
-Setze den in `website-prompt.md` beschriebenen Prompt um und erstelle die Landingpage.
+Setze den in `website-prompt.md` beschriebenen Prompt um und erstelle die Landingpage. Lies die fertige `index.html` zum Schluss noch einmal gegen „Was auf die Website darf“ und entferne alles, was nicht auf der Liste steht.
 
 ### Pflicht-Sektionen der Website
 
 1. **Hero** – Produktname, Slogan, Kernbotschaft, großer CTA-Button. Falls ein Instagram-Bild (`instagram-bild.png`) als Eingabe vorhanden ist, kopiere es mit `cp` ins Ausgabe-Verzeichnis (z.B. `cp <eingabe>/social-media/instagram-bild.png <ausgabe>/website/instagram-bild.png`) und referenziere es mit relativem Pfad als Hero-Hintergrundbild (`background-image: url(instagram-bild.png)`). Falls ein Logo (`logo.png`) vorhanden ist, kopiere es ebenfalls ins Ausgabe-Verzeichnis (`cp <eingabe>/marketing/logo.png <ausgabe>/website/logo.png`) und zeige es mit `<img src="logo.png">` im Header/der Navigation. **Verwende NICHT** `base64` – die Ausgabe ist zu groß für das Terminal. Kopiere die Dateien einfach und nutze relative Pfade.
 2. **Features/Vorteile** – 3-6 Highlights; Icons als Inline-SVG, Emoji nur, wenn sie zum Design passen
-3. **Zielgruppe** – Für wen ist das Produkt? (basierend auf Personas)
-4. **Pricing** – Preis mit Strategie-Begründung (aus Kalkulation)
+3. **Zielgruppe** – Für wen ist das Produkt? Abgeleitet aus den Personas, aber ohne ihre Namen und Steckbriefe
+4. **Pricing** – der Endkundenpreis, dazu was Kundinnen und Kunden dafür bekommen (Lieferumfang, Garantie, Leistungen) – keine Kalkulation, keine Preisstrategie
 5. **Social Proof** – Platzhalter-Testimonials (fiktiv aber realistisch)
 6. **CTA** – Abschließender Call-to-Action
 
