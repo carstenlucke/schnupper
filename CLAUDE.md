@@ -30,6 +30,11 @@ jedes Projekt muss für sich allein erklärbar und startbar sein.
 
 Immer im jeweiligen Projektverzeichnis arbeiten, nicht im Repo-Root.
 
+Einzige Ausnahme im Root ist `start-all.sh`: Es startet alle Demos und die
+Präsentation für den Vortrag, ruft dafür aber nur die Startskripte der Projekte
+auf und enthält selbst keine Projektlogik. Ändert sich Start oder Port eines
+Projekts, die Übersicht im Kopf und am Ende von `start-all.sh` nachziehen.
+
 ## Didaktischer Rahmen
 
 Zielgruppe ist ein Publikum ohne Programmiererfahrung. Das prägt den Code:

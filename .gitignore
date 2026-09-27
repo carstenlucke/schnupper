@@ -8,3 +8,6 @@
 
 # macOS
 .DS_Store
+
+# Ausgaben von start-all.sh
+/logs/

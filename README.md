@@ -65,6 +65,22 @@ Slidev-Theme unter `presentation/theme-thm/` mitgeliefert wird.
 cd presentation && npm install && npm run dev
 ```
 
+## Alles auf einmal starten
+
+Für den Vortrag startet ein Skript im Hauptverzeichnis alle drei Demos und die
+Präsentation:
+
+```bash
+./start-all.sh            # --force räumt belegte Ports von ship-it und agent-party ab
+```
+
+Es ruft nur die Startskripte der Projekte auf. ship-it, agent-party und die
+Präsentation laufen im Hintergrund, öffnen ihren Browser-Tab selbst und
+schreiben ihre Ausgaben nach `logs/`. Die Counting Agents brauchen eine
+Herdr-Session — außerhalb davon werden sie übersprungen, der Rest startet
+trotzdem. Ctrl+C beendet alles wieder, ein zweites Ctrl+C sofort und ohne
+Warten.
+
 ## Aufbau
 
 Jedes Projekt ist eigenständig: eigenes README, eigene Konfiguration, eigene
