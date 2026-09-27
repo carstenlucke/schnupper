@@ -105,7 +105,7 @@ einsetzen.
 |---|---|
 | `layout: cover` | Titelfolie, dunkle Rasterfläche |
 | `layout: agenda` + `aktiv: n` | Abschnittstrenner; `punkte` und `icons` auf allen Trennern gleich halten |
-| `layout: default` | Folienkopf (`rubrik`, `titel`, `untertitel`) plus freier Inhalt |
+| `layout: default` | Folienkopf (`rubrik`, `titel`, `untertitel`) plus freier Inhalt; `dunkel: true` für die dunkle Rasterfläche, wenn sich eine Folie abheben soll (Studien-Teaser) |
 | `layout: question` | Eine Frage, vollflächig Gelb; `class: text-xl` für kurze Fragen |
 | `layout: statement` | Große Aussage; `zitat: false` ohne Kasten |
 | `layout: end` | Schlussfolie |

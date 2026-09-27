@@ -859,8 +859,9 @@ Beauftragen und prüfen kann nur, wer **selbst versteht**, worum es geht.
 
 ---
 rubrik: Was nehmen wir mit?
-titel: Werbung in eigener Sache :)
+titel: Werbung in eigener Sache
 class: text-l
+dunkel: true
 ---
 
 <div class="thm-center thm-gruppe">
