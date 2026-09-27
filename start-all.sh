@@ -195,6 +195,16 @@ echo "Beenden:  Ctrl+C"
 # Ab hier bricht Ctrl+C nur das Warten ab; aufgeräumt wird danach im normalen
 # Ablauf. Liefe das Aufräumen im Signal-Handler selbst, griffe ein zweites
 # Ctrl+C dort nicht mehr zuverlässig.
-trap : INT TERM
-wait || true
+#
+# `wait` kehrt auch zurück, wenn alle Hintergrundjobs von selbst enden — etwa
+# weil alle drei beim Start gescheitert sind. Dann darf der Herdr-Tab der
+# Counting Agents trotzdem nicht einfach zugehen: Beendet wird erst auf Ctrl+C.
+BEENDEN=0
+trap 'BEENDEN=1' INT TERM
+while [[ $BEENDEN -eq 0 ]]; do
+    # Läuft gar nichts mehr, gibt es auch nichts, worauf zu warten wäre.
+    laeuft_noch || [[ $COUNTING_GESTARTET -eq 1 ]] || break
+    sleep 1 &
+    wait $! || true
+done
 aufraeumen

@@ -1258,7 +1258,12 @@ async function speichereParty() {
     daten.starter.trim() !== alt.starter ||
     daten.teilnehmer.join("|") !== alt.teilnehmer.join("|");
 
-  if (kernGeaendert && bearbeitung.status !== "neu") {
+  // Den Status frisch holen: Seit dem Öffnen des Formulars kann die Party in
+  // einem anderen Fenster gelaufen sein — dann braucht es die Rückfrage.
+  const frisch = await ladeParty(bearbeitung.slug);
+  const status = frisch.fehler ? bearbeitung.status : frisch.status;
+
+  if (kernGeaendert && status !== "neu") {
     const bestaetigt = await zeigeDialog({
       titel: "Party zurücksetzen?",
       text: "Thema, Einstiegsfrage oder Besetzung haben sich geändert. Dazu passt " +
