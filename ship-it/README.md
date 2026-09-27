@@ -27,7 +27,7 @@ Live-Demo für eine Schnuppervorlesung bei StudiumPlus (90 Min, 12. Klasse FOS).
 5. Review
 6. [Start Social Media]         → drei Posts entstehen
 7. Review
-8. [Start Website]              → Landingpage entsteht
+8. [Start Website] → Design wählen → Landingpage entsteht
 9. Website im Browser öffnen    → Wow-Effekt
 ```
 
@@ -80,12 +80,13 @@ ship-it/
 ├── agents/                    # 5 Agenten: Frontmatter (Modell, Werkzeuge) + Systemprompt
 ├── .pi/
 │   ├── extensions/webfetch.ts # Werkzeug für die Webrecherche
-│   └── skills/                # Design-Vorlagen für den Website-Agenten
+│   └── skills/                # Webdesign-Leitfaden + Design-Vorlagen für den Website-Agenten
 ├── server.py                  # Python-Backend (stdlib only), baut die pi-Aufrufe
 ├── dashboard/
 │   ├── index.html             # Dashboard SPA
 │   ├── style.css              # THM-Corporate-Design
-│   └── app.js                 # Frontend-Logik
+│   ├── app.js                 # Frontend-Logik
+│   └── logo.png, logo-dunkel.png  # Logo; die Variante „dunkel“ für Kopfleiste und dunkles Thema
 ├── projekte/                  # Runtime: ein Ordner pro Produktidee
 ├── start.sh                   # Ein-Klick-Start
 └── spec/                      # Spezifikation + UI-Mockup
@@ -103,7 +104,7 @@ ship-it/
 
 ## KI-Bildgenerierung
 
-Marketing- und Social-Media-Agent können auf Knopfdruck Bilder generieren (Logo bzw. Instagram-Post). Die Bildgenerierung nutzt die OpenAI API (`gpt-image-2`).
+Marketing- und Social-Media-Agent können auf Knopfdruck Bilder generieren (Logo bzw. Instagram-Post). Die Bildgenerierung nutzt die OpenAI API, voreingestellt mit `gpt-image-2.5-sunburst` (änderbar über `SHIP_IT_IMAGE_MODEL` in `.env`). Liegt schon ein Logo des Marketing-Agenten vor, bekommt das Instagram-Bild es als Referenzbild mit – taucht ein Logo im Bild auf, ist es dieses und kein neu erfundenes.
 
 ### Einrichtung
 
@@ -112,7 +113,7 @@ cp .env.example .env
 # OPENAI_API_KEY in .env eintragen
 ```
 
-### Kosten pro Bild (gpt-image-2, Stand Juni 2026)
+### Kosten pro Bild (gpt-image-2.5-sunburst, Stand September 2026)
 
 | Bild | Quality | Größe | Kosten (ca.) |
 |------|---------|-------|-------------|

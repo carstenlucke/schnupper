@@ -8,6 +8,7 @@ Dashboard aus.
 
 import json
 import os
+import platform
 import signal
 import subprocess
 import sys
@@ -26,6 +27,7 @@ DASHBOARD_DIR = os.path.join(BASE_DIR, "dashboard")
 AGENTS_DIR = os.path.join(BASE_DIR, "agents")
 PI_EXTENSIONS_DIR = os.path.join(BASE_DIR, ".pi", "extensions")
 PI_SKILLS_DIR = os.path.join(BASE_DIR, ".pi", "skills")
+DESIGNS_DIR = os.path.join(PI_SKILLS_DIR, "popular-web-designs")
 
 
 def _load_dotenv():
@@ -152,8 +154,30 @@ def verify_outputs(slug: str, agent: str) -> bool:
     return True
 
 
-def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
-    """Baue den vollständigen Run-Prompt mit expliziten Pfaden."""
+def umgebung() -> str:
+    """Auf welchem System die Agenten-Shell läuft. pi verrät das dem Modell
+    nicht; ohne Hinweis nimmt es Linux an und greift unter macOS zu
+    GNU-Optionen wie `find -printf`, die es dort nicht gibt."""
+    system = platform.system()
+    if system == "Darwin":
+        return (
+            "macOS – die Shell hat BSD-Werkzeuge, keine GNU-Optionen "
+            "(z. B. kein `find -printf`, `sed -i` braucht ein leeres Argument `''`)"
+        )
+    if system == "Windows":
+        return "Windows – die Shell ist eine Bash unter Windows (Git Bash)"
+    return f"{system} – die Shell hat GNU-Werkzeuge"
+
+
+def build_run_prompt(
+    slug: str, agent: str, feedback: str = None, design: str = None
+) -> str:
+    """Baue den vollständigen Run-Prompt mit expliziten Pfaden.
+
+    `design` gibt es nur beim Website-Agenten: der Name einer Vorlage aus
+    popular-web-designs oder None für freie Gestaltung. Bei einer
+    Überarbeitung fehlt die Zeile – das Design steht dann schon in
+    website-prompt.md."""
     p = f"projekte/{slug}"
     paths = AGENT_PATHS[agent]
 
@@ -190,15 +214,93 @@ def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
     else:
         aufgabe = "Führe deine Aufgabe aus."
 
+    vorlage = ""
+    if agent == "website" and not feedback:
+        if design:
+            pfad = os.path.relpath(
+                os.path.join(DESIGNS_DIR, "templates", f"{design}.md"), BASE_DIR
+            )
+            vorlage = f"\nDESIGN-VORLAGE: {design} ({pfad})\n"
+        else:
+            vorlage = "\nDESIGN-VORLAGE: keine – freie Gestaltung\n"
+
     return f"""Projektordner: {p}
+UMGEBUNG: {umgebung()}
 
 EINGABE (lies diese Dateien):
 {eingaben_str}
 
 AUSGABE (schreibe in diese Dateien, erstelle Verzeichnisse falls nötig):
 {ausgaben_str}
-
+{vorlage}
 {aufgabe}"""
+
+
+# ---------------------------------------------------------------------------
+# Design-Vorlagen für den Website-Agenten
+# ---------------------------------------------------------------------------
+# Die Vorlagen liegen im Skill popular-web-designs. Welche es gibt, bestimmt
+# der Ordner templates/; Kategorie und Anzeigename kommen aus dem Katalog in
+# SKILL.md, die Farbfelder aus dem Abschnitt „Color Palette" jeder Vorlage.
+
+DESIGN_KATEGORIEN = {
+    "Enterprise & Consumer": "Bekannte Marken",
+    "Design & Productivity": "Design & Produktivität",
+    "Fintech & Crypto": "Finanzen",
+    "AI & Machine Learning": "Künstliche Intelligenz",
+    "Developer Tools & Platforms": "Entwicklerwerkzeuge",
+    "Infrastructure & Cloud": "Infrastruktur & Cloud",
+}
+
+
+def list_designs() -> list[dict]:
+    """Alle Design-Vorlagen: [{name, titel, kategorie, farben}], nach Kategorie sortiert."""
+    templates_dir = os.path.join(DESIGNS_DIR, "templates")
+    if not os.path.isdir(templates_dir):
+        return []
+
+    katalog = {}
+    try:
+        with open(os.path.join(DESIGNS_DIR, "SKILL.md"), encoding="utf-8") as f:
+            kategorie = None
+            for zeile in f:
+                if zeile.startswith("### "):
+                    kategorie = zeile[4:].strip()
+                m = re.match(r"\|\s*`([^`]+)\.md`\s*\|\s*([^|]+?)\s*\|", zeile)
+                if m and kategorie:
+                    katalog[m.group(1)] = (m.group(2), kategorie)
+    except OSError:
+        pass
+
+    reihenfolge = list(DESIGN_KATEGORIEN.values())
+    designs = []
+    for datei in sorted(os.listdir(templates_dir)):
+        if not datei.endswith(".md"):
+            continue
+        name = datei[:-3]
+        titel, kategorie = katalog.get(name, (name, None))
+        with open(os.path.join(templates_dir, datei), encoding="utf-8") as f:
+            text = f.read()
+        palette = re.search(r"^## 2\..*?(?=^## 3\.)", text, re.S | re.M)
+        farben = []
+        for hexwert in re.findall(r"#[0-9a-fA-F]{6}\b", palette.group(0) if palette else ""):
+            if hexwert.lower() not in farben:
+                farben.append(hexwert.lower())
+        designs.append(
+            {
+                "name": name,
+                "titel": titel,
+                "kategorie": DESIGN_KATEGORIEN.get(kategorie, "Weitere"),
+                "farben": farben[:5],
+            }
+        )
+    designs.sort(
+        key=lambda d: (
+            reihenfolge.index(d["kategorie"]) if d["kategorie"] in reihenfolge else 99,
+            d["titel"].lower(),
+        )
+    )
+    return designs
 
 
 # ---------------------------------------------------------------------------
@@ -474,7 +576,7 @@ class PiAusgabe:
         return f"{self._umbruch()}\n{ANSI_BLASS}{zeile}{ANSI_RESET}\n"
 
 
-def _kopfzeilen(meta: dict) -> str:
+def _kopfzeilen(meta: dict, design: str | None = None) -> str:
     """Was vor dem ersten Ereignis im Terminal steht: womit der Agent arbeitet."""
     zeilen = [f"Modell:    {agent_model(meta) or '(pi-Voreinstellung)'}"]
     if meta.get("thinking"):
@@ -482,10 +584,14 @@ def _kopfzeilen(meta: dict) -> str:
     zeilen.append(f"Werkzeuge: {', '.join(_liste(meta.get('tools', ''))) or '–'}")
     if meta.get("skills"):
         zeilen.append(f"Skills:    {', '.join(_liste(meta['skills']))}")
+    if design:
+        zeilen.append(f"Design:    {design}")
     return f"{ANSI_BLASS}" + "\n".join(zeilen) + f"{ANSI_RESET}\n\n"
 
 
-def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
+def start_agent(
+    slug: str, agent: str, feedback: str = None, design: str = None
+) -> dict:
     """Starte einen Agenten als pi-Subprozess."""
     key = (slug, agent)
 
@@ -501,7 +607,11 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
         return {"error": f"agents/{agent}.md nicht gefunden"}
     meta, system_prompt, _ = definition
 
-    prompt = build_run_prompt(slug, agent, feedback)
+    prompt = build_run_prompt(slug, agent, feedback, design)
+    # Beim Website-Agenten zeigt das Terminal, nach welcher Vorlage er gestaltet
+    design_anzeige = None
+    if agent == "website" and not feedback:
+        design_anzeige = design or "freie Gestaltung"
     cmd = build_pi_command(meta, system_prompt, prompt)
 
     import sys
@@ -536,7 +646,7 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
 
     proc_info = {
         "process": proc,
-        "output": [_kopfzeilen(meta)],
+        "output": [_kopfzeilen(meta, design_anzeige)],
         "exit_code": None,
     }
 
@@ -571,8 +681,15 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Bildgenerierung (OpenAI gpt-image-2)
+# Bildgenerierung (OpenAI, Modell per SHIP_IT_IMAGE_MODEL)
 # ---------------------------------------------------------------------------
+
+IMAGE_MODEL_DEFAULT = "gpt-image-2.5-sunburst"
+
+
+def image_model() -> str:
+    """Das Bildmodell: SHIP_IT_IMAGE_MODEL aus der .env, sonst die Voreinstellung."""
+    return os.environ.get("SHIP_IT_IMAGE_MODEL") or IMAGE_MODEL_DEFAULT
 
 
 def _extract_prompt(content: str, keyword: str) -> str | None:
@@ -595,11 +712,11 @@ def _extract_prompt(content: str, keyword: str) -> str | None:
 def _call_image_api(
     api_key: str, prompt: str, quality: str = "low", size: str = "1024x1024"
 ) -> bytes:
-    """Text-to-Image mit gpt-image-2."""
+    """Text-to-Image mit dem Bildmodell aus image_model()."""
     url = "https://api.openai.com/v1/images/generations"
     payload = json.dumps(
         {
-            "model": "gpt-image-2",
+            "model": image_model(),
             "prompt": prompt,
             "n": 1,
             "size": size,
@@ -611,7 +728,51 @@ def _call_image_api(
     req = urllib.request.Request(url, data=payload, method="POST")
     req.add_header("Authorization", f"Bearer {api_key}")
     req.add_header("Content-Type", "application/json")
+    return _send_image_request(req)
 
+
+def _call_image_edit_api(
+    api_key: str,
+    prompt: str,
+    reference_png: bytes,
+    quality: str = "low",
+    size: str = "1024x1024",
+) -> bytes:
+    """Bild mit Referenzbild (z.B. Logo) – der Edit-Endpunkt übernimmt es ins Motiv."""
+    url = "https://api.openai.com/v1/images/edits"
+    felder = {
+        "model": image_model(),
+        "prompt": prompt,
+        "n": "1",
+        "size": size,
+        "quality": quality,
+        "output_format": "png",
+    }
+
+    # multipart/form-data von Hand – die stdlib hat keinen Helfer dafür
+    boundary = "ship-it-" + os.urandom(8).hex()
+    teile = []
+    for name, wert in felder.items():
+        teile.append(
+            f'--{boundary}\r\nContent-Disposition: form-data; name="{name}"'
+            f"\r\n\r\n{wert}\r\n".encode("utf-8")
+        )
+    teile.append(
+        f'--{boundary}\r\nContent-Disposition: form-data; name="image"; '
+        f'filename="logo.png"\r\nContent-Type: image/png\r\n\r\n'.encode("utf-8")
+        + reference_png
+        + b"\r\n"
+    )
+    teile.append(f"--{boundary}--\r\n".encode("utf-8"))
+
+    req = urllib.request.Request(url, data=b"".join(teile), method="POST")
+    req.add_header("Authorization", f"Bearer {api_key}")
+    req.add_header("Content-Type", f"multipart/form-data; boundary={boundary}")
+    return _send_image_request(req)
+
+
+def _send_image_request(req: urllib.request.Request) -> bytes:
+    """Schickt die Anfrage an die Bild-API und liefert das PNG."""
     try:
         with urllib.request.urlopen(req, timeout=120) as resp:
             result = json.loads(resp.read().decode("utf-8"))
@@ -714,6 +875,8 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                 self._handle_get_file_content(slug, agent, datei)
             else:
                 self._send_json({"error": "Not found"}, 404)
+        elif path == "/api/designs":
+            self._send_json(list_designs())
         elif path.startswith("/api/agents/") and path.endswith("/prompt"):
             parts = path.split("/")
             agent_name = parts[3]
@@ -1002,8 +1165,16 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         except json.JSONDecodeError:
             body = {}
         feedback = body.get("feedback")
+        design = body.get("design") or None
+        if design is not None and (
+            agent != "website"
+            or not isinstance(design, str)
+            or design not in {d["name"] for d in list_designs()}
+        ):
+            self._send_json({"error": "Unbekannte Design-Vorlage"}, 400)
+            return
 
-        result = start_agent(slug, agent, feedback)
+        result = start_agent(slug, agent, feedback, design)
         if "error" in result:
             self._send_json(result, 409)
         else:
@@ -1129,7 +1300,7 @@ class ShipItHandler(SimpleHTTPRequestHandler):
     # --- API: Bildgenerierung ---
 
     def _handle_generate_image(self, slug, agent):
-        """Generiere ein Bild mit OpenAI gpt-image-2."""
+        """Generiere ein Bild über die OpenAI API."""
         import sys
 
         api_key = os.environ.get("OPENAI_API_KEY")
@@ -1158,6 +1329,9 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                 "keyword": "Bildvorschlag",
                 "output": "social-media/instagram-bild.png",
                 "error_no_prompt": "Keine Bild-Beschreibung in instagram.md gefunden",
+                # Logo des Marketing-Agenten – kein eigenes erfinden
+                "logo": "marketing/logo.png",
+                "logo_source": "marketing/konzept.md",
             },
         }
 
@@ -1195,12 +1369,48 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         if cfg.get("style_suffix"):
             prompt = f'{prompt} {cfg["style_suffix"]}'
 
+        # Logo: das fertige Bild als Referenz mitschicken; fehlt es, wenigstens
+        # die Beschreibung aus dem Marketingkonzept
+        logo_png = None
+        if cfg.get("logo"):
+            logo_path = os.path.join(PROJEKTE_DIR, slug, cfg["logo"])
+            if os.path.exists(logo_path):
+                with open(logo_path, "rb") as f:
+                    logo_png = f.read()
+                prompt = (
+                    f"{prompt} The attached image is the official brand logo. "
+                    "Whenever a logo appears in the picture, use exactly this "
+                    "logo, unchanged in shape, colors and lettering. Do NOT "
+                    "design a new or different logo. Do not reuse the logo's "
+                    "background; compose a new Instagram scene around it."
+                )
+            else:
+                logo_prompt = None
+                konzept_path = os.path.join(PROJEKTE_DIR, slug, cfg["logo_source"])
+                if os.path.exists(konzept_path):
+                    with open(konzept_path, "r", encoding="utf-8") as f:
+                        logo_prompt = _extract_prompt(f.read(), "Logo-Prompt")
+                if logo_prompt:
+                    prompt = (
+                        f"{prompt} If a logo appears in the picture, it must "
+                        f"match this brand logo description exactly: "
+                        f"{logo_prompt} Do NOT invent a different logo."
+                    )
+
         print(
             f"[image-gen] {slug}/{agent}: Prompt = {prompt[:150]}...", file=sys.stderr
         )
+        if logo_png:
+            print(
+                f"[image-gen] {slug}/{agent}: Logo als Referenzbild ({cfg['logo']})",
+                file=sys.stderr,
+            )
 
         try:
-            image_data = _call_image_api(api_key, prompt)
+            if logo_png:
+                image_data = _call_image_edit_api(api_key, prompt, logo_png)
+            else:
+                image_data = _call_image_api(api_key, prompt)
         except Exception as e:
             print(f"[image-gen] Fehler: {e}", file=sys.stderr)
             self._send_json({"error": "Bildgenerierung fehlgeschlagen"}, 500)

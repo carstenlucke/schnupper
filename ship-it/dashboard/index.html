@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>Ship It! Dashboard</title>
+  <link rel="icon" type="image/png" href="logo.png"/>
 
   <!-- Farbthema vor dem ersten Rendern setzen (kein Aufblitzen des falschen Themas):
        gespeicherte Wahl aus localStorage, sonst die Systemeinstellung des Browsers -->
@@ -85,8 +86,9 @@
   <!-- ===================== HEADER ===================== -->
   <header class="fixed top-0 w-full h-12 z-50 bg-header shadow-sm flex items-center justify-between px-4">
     <button id="home-btn" type="button" class="flex items-center gap-2 rounded px-1 py-0.5 hover:bg-on-header/10 transition-colors" aria-label="Zur Startseite" title="Zur Startseite">
-      <!-- Kopfleiste ist in beiden Themen THM Grau, daher immer die weiße Logovariante -->
-      <img src="icon2.png" alt="Ship It!" class="h-7"/>
+      <!-- Kopfleiste ist in beiden Themen THM Grau, daher immer die Logovariante für dunklen Grund
+           (heller Sockel der Glühbirne) -->
+      <img src="logo-dunkel.png" alt="Ship It!" class="h-7"/>
       <span class="text-on-header font-headline font-bold text-lg tracking-tight">Ship It! Dashboard</span>
     </button>
     <div class="flex items-center gap-4">
@@ -118,8 +120,8 @@
   <div id="welcome-screen" class="hidden flex-1 pt-12 overflow-y-auto">
     <div class="max-w-5xl w-full mx-auto px-6 py-8">
       <div class="mb-8 text-center">
-        <img src="icon2.png" alt="Ship It!" class="h-16 mx-auto mb-4 hidden dark:block"/>
-        <img src="icon1.png" alt="Ship It!" class="h-16 mx-auto mb-4 block dark:hidden"/>
+        <img src="logo-dunkel.png" alt="Ship It!" class="h-16 mx-auto mb-4 hidden dark:block"/>
+        <img src="logo.png" alt="Ship It!" class="h-16 mx-auto mb-4 block dark:hidden"/>
         <h1 class="font-headline text-3xl font-bold text-on-surface mb-2">Ship It! Übersicht</h1>
         <p class="text-on-surface/60 text-sm">Wähle ein bestehendes Produkt oder starte die Artefakte für ein neues Produkt.</p>
       </div>
@@ -246,6 +248,26 @@
         </div>
       </form>
     </div>
+  </div>
+
+  <!-- ===================== DESIGN MODAL (vor dem Start des Website-Agenten) ===================== -->
+  <div id="design-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60">
+    <form id="design-form" class="bg-surface-high border border-on-surface/10 rounded-xl shadow-2xl w-full max-w-3xl mx-4 max-h-[85vh] flex flex-col" aria-labelledby="design-modal-title">
+      <div class="px-6 pt-6 pb-4 border-b border-on-surface/10">
+        <h2 id="design-modal-title" class="font-headline text-lg font-bold text-on-surface">Design der Website</h2>
+        <p class="text-sm text-on-surface/70 mt-1">Soll sich der Website-Agent an einer bekannten Website orientieren? Er übernimmt dann deren Farben, Schriften und Formen – Texte und Logo bleiben die deines Produkts.</p>
+      </div>
+      <!-- Auswahl füllt app.js aus /api/designs -->
+      <div id="design-list" class="flex-1 overflow-y-auto px-6 py-4 space-y-5" role="radiogroup" aria-labelledby="design-modal-title"></div>
+      <div class="px-6 py-4 border-t border-on-surface/10 flex gap-2 justify-end">
+        <button type="button" id="design-cancel" class="px-4 py-2 text-xs text-on-surface/60 border border-on-surface/10 rounded-lg hover:bg-on-surface/5 transition-colors">
+          Abbrechen
+        </button>
+        <button type="submit" class="flex items-center gap-1 px-4 py-2 text-xs font-bold rounded-lg bg-accent text-on-accent hover:brightness-110 transition-all">
+          <span class="material-symbols-outlined text-[16px]">play_arrow</span>Agent starten
+        </button>
+      </div>
+    </form>
   </div>
 
   <!-- ===================== CONFIRM MODAL ===================== -->

@@ -17,8 +17,9 @@ system, shadows, responsive behavior, and practical agent prompts with exact CSS
 ## How to Use
 
 1. Pick a design from the catalog below
-2. Load it: `skill_view(name="popular-web-designs", file_path="templates/<site>.md")`
+2. Load it: read `templates/<site>.md` (relative to this skill directory) with the read tool
 3. Use the design tokens and component specs when generating HTML
+
 Each template includes a **Font Substitution Notes** block at the top with:
 - CDN font substitute and Google Fonts `<link>` tag (ready to paste)
 - CSS font-family stacks for primary and monospace
