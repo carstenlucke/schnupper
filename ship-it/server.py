@@ -611,7 +611,51 @@ def _call_image_api(
     req = urllib.request.Request(url, data=payload, method="POST")
     req.add_header("Authorization", f"Bearer {api_key}")
     req.add_header("Content-Type", "application/json")
+    return _send_image_request(req)
 
+
+def _call_image_edit_api(
+    api_key: str,
+    prompt: str,
+    reference_png: bytes,
+    quality: str = "low",
+    size: str = "1024x1024",
+) -> bytes:
+    """Bild mit Referenzbild (z.B. Logo) – der Edit-Endpunkt übernimmt es ins Motiv."""
+    url = "https://api.openai.com/v1/images/edits"
+    felder = {
+        "model": "gpt-image-2.5-sunburst",
+        "prompt": prompt,
+        "n": "1",
+        "size": size,
+        "quality": quality,
+        "output_format": "png",
+    }
+
+    # multipart/form-data von Hand – die stdlib hat keinen Helfer dafür
+    boundary = "ship-it-" + os.urandom(8).hex()
+    teile = []
+    for name, wert in felder.items():
+        teile.append(
+            f'--{boundary}\r\nContent-Disposition: form-data; name="{name}"'
+            f"\r\n\r\n{wert}\r\n".encode("utf-8")
+        )
+    teile.append(
+        f'--{boundary}\r\nContent-Disposition: form-data; name="image"; '
+        f'filename="logo.png"\r\nContent-Type: image/png\r\n\r\n'.encode("utf-8")
+        + reference_png
+        + b"\r\n"
+    )
+    teile.append(f"--{boundary}--\r\n".encode("utf-8"))
+
+    req = urllib.request.Request(url, data=b"".join(teile), method="POST")
+    req.add_header("Authorization", f"Bearer {api_key}")
+    req.add_header("Content-Type", f"multipart/form-data; boundary={boundary}")
+    return _send_image_request(req)
+
+
+def _send_image_request(req: urllib.request.Request) -> bytes:
+    """Schickt die Anfrage an die Bild-API und liefert das PNG."""
     try:
         with urllib.request.urlopen(req, timeout=120) as resp:
             result = json.loads(resp.read().decode("utf-8"))
@@ -1158,6 +1202,9 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                 "keyword": "Bildvorschlag",
                 "output": "social-media/instagram-bild.png",
                 "error_no_prompt": "Keine Bild-Beschreibung in instagram.md gefunden",
+                # Logo des Marketing-Agenten – kein eigenes erfinden
+                "logo": "marketing/logo.png",
+                "logo_source": "marketing/konzept.md",
             },
         }
 
@@ -1195,12 +1242,48 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         if cfg.get("style_suffix"):
             prompt = f'{prompt} {cfg["style_suffix"]}'
 
+        # Logo: das fertige Bild als Referenz mitschicken; fehlt es, wenigstens
+        # die Beschreibung aus dem Marketingkonzept
+        logo_png = None
+        if cfg.get("logo"):
+            logo_path = os.path.join(PROJEKTE_DIR, slug, cfg["logo"])
+            if os.path.exists(logo_path):
+                with open(logo_path, "rb") as f:
+                    logo_png = f.read()
+                prompt = (
+                    f"{prompt} The attached image is the official brand logo. "
+                    "Whenever a logo appears in the picture, use exactly this "
+                    "logo, unchanged in shape, colors and lettering. Do NOT "
+                    "design a new or different logo. Do not reuse the logo's "
+                    "background; compose a new Instagram scene around it."
+                )
+            else:
+                logo_prompt = None
+                konzept_path = os.path.join(PROJEKTE_DIR, slug, cfg["logo_source"])
+                if os.path.exists(konzept_path):
+                    with open(konzept_path, "r", encoding="utf-8") as f:
+                        logo_prompt = _extract_prompt(f.read(), "Logo-Prompt")
+                if logo_prompt:
+                    prompt = (
+                        f"{prompt} If a logo appears in the picture, it must "
+                        f"match this brand logo description exactly: "
+                        f"{logo_prompt} Do NOT invent a different logo."
+                    )
+
         print(
             f"[image-gen] {slug}/{agent}: Prompt = {prompt[:150]}...", file=sys.stderr
         )
+        if logo_png:
+            print(
+                f"[image-gen] {slug}/{agent}: Logo als Referenzbild ({cfg['logo']})",
+                file=sys.stderr,
+            )
 
         try:
-            image_data = _call_image_api(api_key, prompt)
+            if logo_png:
+                image_data = _call_image_edit_api(api_key, prompt, logo_png)
+            else:
+                image_data = _call_image_api(api_key, prompt)
         except Exception as e:
             print(f"[image-gen] Fehler: {e}", file=sys.stderr)
             self._send_json({"error": "Bildgenerierung fehlgeschlagen"}, 500)
