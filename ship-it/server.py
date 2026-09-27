@@ -1160,7 +1160,9 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         feedback = body.get("feedback")
         design = body.get("design") or None
         if design is not None and (
-            agent != "website" or design not in {d["name"] for d in list_designs()}
+            agent != "website"
+            or not isinstance(design, str)
+            or design not in {d["name"] for d in list_designs()}
         ):
             self._send_json({"error": "Unbekannte Design-Vorlage"}, 400)
             return
