@@ -50,7 +50,7 @@ projekte/<slug>/
 
 ### Prompt-Generierung
 
-`build_run_prompt(slug, agent, feedback)` erzeugt den Run-Prompt mit expliziten EINGABE/AUSGABE-Pfaden. Bei Feedback (Refinement) werden die bisherigen Outputs als zusätzliche Eingaben aufgelistet.
+`build_run_prompt(slug, agent, feedback)` erzeugt den Run-Prompt mit expliziten EINGABE/AUSGABE-Pfaden. Die Zeile `UMGEBUNG` nennt das Betriebssystem (`umgebung()`): pi verrät es dem Modell nicht, ohne Hinweis nimmt es Linux an und scheitert unter macOS an GNU-Optionen wie `find -printf`. Bei Feedback (Refinement) werden die bisherigen Outputs als zusätzliche Eingaben aufgelistet.
 
 `AGENT_PATHS` definiert pro Agent die Input-/Output-Dateien. Das Backend verifiziert nach Abschluss ob die erwarteten Outputs existieren.
 

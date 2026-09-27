@@ -8,6 +8,7 @@ Dashboard aus.
 
 import json
 import os
+import platform
 import signal
 import subprocess
 import sys
@@ -153,6 +154,21 @@ def verify_outputs(slug: str, agent: str) -> bool:
     return True
 
 
+def umgebung() -> str:
+    """Auf welchem System die Agenten-Shell läuft. pi verrät das dem Modell
+    nicht; ohne Hinweis nimmt es Linux an und greift unter macOS zu
+    GNU-Optionen wie `find -printf`, die es dort nicht gibt."""
+    system = platform.system()
+    if system == "Darwin":
+        return (
+            "macOS – die Shell hat BSD-Werkzeuge, keine GNU-Optionen "
+            "(z. B. kein `find -printf`, `sed -i` braucht ein leeres Argument `''`)"
+        )
+    if system == "Windows":
+        return "Windows – die Shell ist eine Bash unter Windows (Git Bash)"
+    return f"{system} – die Shell hat GNU-Werkzeuge"
+
+
 def build_run_prompt(
     slug: str, agent: str, feedback: str = None, design: str = None
 ) -> str:
@@ -209,6 +225,7 @@ def build_run_prompt(
             vorlage = "\nDESIGN-VORLAGE: keine – freie Gestaltung\n"
 
     return f"""Projektordner: {p}
+UMGEBUNG: {umgebung()}
 
 EINGABE (lies diese Dateien):
 {eingaben_str}
