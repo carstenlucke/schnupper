@@ -129,6 +129,8 @@ einsetzen.
 | `<WerkzeugMatrix>` | Wer darf was bei den Counting Agents; Zeilen nach den `tools:`-Zeilen in `the-counting-agents/agents/*.md`; der Merksatz zu „Alles andere“ erscheint nur als Tooltip bei Hover |
 | `<AgentRunde>` | Agent Party als Bild: vier Agenten im Kreis um ein Thema, reihum verbunden, je eine Sprechblase; Rollen nach `agent-party/profile/` |
 | `<SocialPost>` | Beitrag oder (`kommentar`) Kommentar aus einem beruflichen Netzwerk als Karte; Profilbild per `foto`, sonst Initialen; kein Logo, Quelle als `.thm-note` darunter |
+| `<BeispielKarussell>` | Mehrere Beispiele auf einer Folie, eins nach dem anderen, darunter Punkte und „Beispiel 2 von 3“. Geblättert wird mit den Klicks der Folie — die Folie braucht `clicks: <Anzahl − 1>`; Beispiele als Slots `#1`, `#2`, … Auf „Vom Code zur Sprache“: Daten, Skizze → 3D-Modell, Notizen → Quiz-App |
+| `<LokSkizze>` | Bleistiftskizze einer Dampflok auf Karopapier, Anhang im Skizzen-Beispiel auf „Vom Code zur Sprache“ |
 | `<CodeKlappe>` | Knopf unter dem SQL-Beispiel auf „Vom Code zur Sprache“; öffnet 25 Zeilen TypeScript (Primzahlen sammeln) neben zwei Sätzen an einen Agenten. Satz nach `the-counting-agents/agents/prime.md`, die Demo selbst bleibt ungenannt |
 | `<CountingBus>` | Nachrichtenwege der Counting Agents: Zähler → Zahlen-Datei → Sammler, Steuerung → Befehls-Datei |
 

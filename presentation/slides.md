@@ -235,9 +235,12 @@ class: text-l
 rubrik: Einstieg
 titel: 'Die große Veränderung: Vom Code zur Sprache'
 class: text-xl
+clicks: 2
 ---
 
 <div class="thm-center thm-gruppe">
+<BeispielKarussell :titel="['Daten abfragen', 'Skizze → 3D-Modell', 'Notizen → Quiz-App']">
+<template #1>
 <div class="thm-flow">
   <Card icon="code" icon-ton="grau" titel="Früher">
     Um mit digitalen Daten zu arbeiten, brauchte man <strong>Programmiersprachen</strong>.
@@ -250,20 +253,71 @@ class: text-xl
     <div class="thm-sample sprache">„Zeig mir alle Kunden über 18 Jahre“</div>
   </Card>
 </div>
+</template>
+<template #2>
+<div class="thm-flow">
+  <Card icon="code" icon-ton="grau" titel="Früher">
+    Für ein 3D-Modell brauchte man ein <strong class="nw">3D-Programm</strong> und viel Übung — oder Code.
+    <div class="thm-sample">cube([80, 30, 25]);<br>translate([60, 15, 25])<br>&nbsp;&nbsp;cylinder(h = 18, r = 5);</div>
+  </Card>
+  <FlowArrow />
+  <Card icon="message-square" titel="Heute" tone="tint">
+    Man zeigt dem LLM eine <strong>Skizze</strong> und sagt, was man haben will.
+    <div class="thm-sample sprache mit-bild"><LokSkizze /><span>„Mach aus meiner Skizze ein 3D-Modell, das ich ausdrucken kann.“</span></div>
+  </Card>
+</div>
+</template>
+<template #3>
+<div class="thm-flow">
+  <Card icon="code" icon-ton="grau" titel="Früher">
+    Für eine eigene App brauchte man <strong>HTML und JavaScript</strong>.
+    <div class="thm-sample">&lt;button onclick="pruefe(2)"&gt;<br>&nbsp;&nbsp;Mitochondrium<br>&lt;/button&gt;</div>
+  </Card>
+  <FlowArrow />
+  <Card icon="message-square" titel="Heute" tone="tint">
+    Man beschreibt, <strong>was die App können soll</strong>.
+    <div class="thm-sample sprache">„Mach aus meinen Bio-Notizen ein Quiz mit zehn Fragen, das ich auf dem Handy spielen kann.“</div>
+  </Card>
+</div>
+</template>
+</BeispielKarussell>
 
 <Callout icon="rocket"><strong>Genau das werden wir gleich sehen:</strong> Unsere KI-Agenten bekommen ihre Aufträge in ganz normalem Deutsch — kein Code, keine Programmierung.</Callout>
 </div>
+
+<style>
+.mit-bild {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.mit-bild .lok { flex: none; width: 9rem; }
+
+.nw { white-space: nowrap; }
+</style>
 
 <!--
 - DAS ist der Paradigmenwechsel den LLMs gebracht haben
 - Früher: Nur wer programmieren konnte, konnte digitale Systeme steuern
 - Heute: Natürliche Sprache reicht — LLMs sind der "Dolmetscher"
 - Bezug zu den Demos: Die Agenten verstehen deutsche Aufträge
-- Knopf "Und wenn es komplizierter wird?": zeigt 25 Zeilen TypeScript, die
-  Primzahlen aus einem Zahlenstrom sammeln — gegen zwei Sätze an einen
-  Agenten. Nicht vorlesen, nur wirken lassen. Schließen mit Klick daneben
-  oder Esc. (Genau diese Aufgabe hat bei den Counting Agents der
-  Primzahl-Agent.)
+- Mit → durch die drei Beispiele blättern; die Punkte unten zeigen, wo wir
+  stehen. Nach dem dritten geht es zur nächsten Folie
+- Beispiel 1, Daten: Knopf "Und wenn es komplizierter wird?" zeigt 25
+  Zeilen TypeScript, die Primzahlen aus einem Zahlenstrom sammeln — gegen
+  zwei Sätze an einen Agenten. Nicht vorlesen, nur wirken lassen.
+  Schließen mit Klick daneben oder Esc. (Genau diese Aufgabe hat bei den
+  Counting Agents der Primzahl-Agent.)
+- Beispiel 2, Skizze: Früher ein 3D-Programm wie Blender oder Code wie
+  hier (OpenSCAD: ein Quader mit einem Zylinder obendrauf — von einer
+  Lok ist das noch weit entfernt). Heute: Foto der Skizze an das LLM,
+  dazu ein Satz. Heraus kommt eine Datei für den 3D-Drucker. Die Sprache
+  ist nicht mehr nur Text — das Modell versteht auch Bilder
+- Beispiel 3, App: Früher HTML und JavaScript, hier nur ein einziger
+  Antwortknopf. Heute: Notizen abfotografieren, einen Satz dazu — fertig
+  ist ein Quiz im Browser. Frage ans Publikum: "Wer hat so was schon
+  mal gemacht?"
 - "Aber es gibt noch ein Problem..."
 -->
 

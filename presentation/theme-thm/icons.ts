@@ -16,6 +16,8 @@ import Calculator from '~icons/lucide/calculator'
 import Camera from '~icons/lucide/camera'
 import ChartLine from '~icons/lucide/chart-line'
 import Check from '~icons/lucide/check'
+import ChevronLeft from '~icons/lucide/chevron-left'
+import ChevronRight from '~icons/lucide/chevron-right'
 import CircleHelp from '~icons/lucide/circle-help'
 import CirclePlay from '~icons/lucide/circle-play'
 import ClipboardCheck from '~icons/lucide/clipboard-check'
@@ -89,6 +91,8 @@ export const icons: Record<string, Component> = {
   'camera': Camera,
   'chart-line': ChartLine,
   'check': Check,
+  'chevron-left': ChevronLeft,
+  'chevron-right': ChevronRight,
   'circle-help': CircleHelp,
   'circle-play': CirclePlay,
   'clipboard-check': ClipboardCheck,
