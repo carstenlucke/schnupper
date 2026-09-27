@@ -912,11 +912,15 @@ def party_liste() -> list[dict]:
         sitzung = sitzung_lesen(slug)
         if not sitzung:
             continue
+        verlauf = verlauf_lesen(slug)
         partys.append({
             "slug": slug,
             "sitzung": sitzung,
             "status": party_status(slug, sitzung),
-            "beitraege": len(nur_beitraege(verlauf_lesen(slug))),
+            "beitraege": len(nur_beitraege(verlauf)),
+            # Eine "neue" Party kann schon Zwischenrufe haben — die Liste
+            # braucht die Zahl, damit Zurücksetzen dort nicht gesperrt bleibt.
+            "zwischenrufe": sum(1 for e in verlauf if e.get("art") == "zwischenruf"),
             "erwartet": party_erwartet(sitzung),
         })
     partys.sort(key=lambda p: p["sitzung"].get("erstellt", ""), reverse=True)

@@ -1138,7 +1138,7 @@ function rendereParties(partys) {
     bearbeiten.disabled = eintrag.status === "laeuft";
     bearbeiten.addEventListener("click", () => starteBearbeitung(eintrag.slug));
     const zurueck = zeile.querySelector(".zurueck");
-    zurueck.disabled = eintrag.status === "neu";
+    zurueck.disabled = eintrag.status === "neu" && eintrag.zwischenrufe === 0;
     zurueck.addEventListener("click", async () => {
       if (await partyZuruecksetzen(eintrag.slug, eintrag.sitzung.titel, eintrag.beitraege)) {
         ladeUndRendereEinrichten();
