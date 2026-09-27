@@ -112,6 +112,9 @@ Abhängigkeitslogik im Frontend.
 | website | produkt.md, analyse.md, konzept.md, preiskalkulation.md | website/{website-prompt.md,index.html} |
 
 Der Website-Agent erstellt zuerst `website-prompt.md` (alle Infos inline zusammengefasst), dann `index.html`.
+Was davon auf die öffentliche Seite darf, legt eine Whitelist im Systemprompt
+fest (Abschnitt „Was auf die Website darf“) – Kosten, Margen, Break-Even oder
+Persona-Namen aus den Eingaben bleiben draußen.
 Vor dem Start fragt das Dashboard nach einer Design-Vorlage aus
 `popular-web-designs` oder freier Gestaltung; `build_run_prompt()` schreibt die
 Wahl als Zeile `DESIGN-VORLAGE` in den Run-Prompt. Bei einer Überarbeitung fehlt
