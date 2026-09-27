@@ -277,6 +277,69 @@ def profil_in_offener_party(slug: str) -> list[str]:
 
 
 # ============================================================================
+# Gruppen — Ordnung fürs Dashboard, nicht Teil des Agenten
+# ============================================================================
+#
+# Eine eigene Datei statt eines Frontmatter-Felds: eine leere Gruppe muss
+# irgendwo stehen, und das Profil bleibt, was es ist — Modell, Farbe, Rolle.
+# In den Prompt geht von hier nichts. Wer in keiner Gruppe steht, ist
+# „ohne Gruppe"; die gibt es nur im Dashboard, nicht in der Datei.
+
+GRUPPEN_PFAD = os.path.join(PROFIL_DIR, "gruppen.json")
+GRUPPEN_NAME_ZEICHEN = 60
+gruppen_lock = threading.Lock()
+
+
+def gruppen_pruefen(roh) -> list[dict]:
+    """Gruppenliste säubern statt ablehnen, wie beim Profil.
+
+    Leere Namen fallen weg, ein doppelter Name (ohne Rücksicht auf Groß- und
+    Kleinschreibung) ebenso. Ein Profil steht höchstens in einer Gruppe — die
+    erste Nennung gewinnt —, und nur Profile, die es auf der Platte gibt.
+    """
+    vorhanden = {p["slug"] for p in profil_liste()}
+    namen: set[str] = set()
+    vergeben: set[str] = set()
+    gruppen = []
+    for eintrag in roh if isinstance(roh, list) else []:
+        if not isinstance(eintrag, dict):
+            continue
+        name = _einzeilig(eintrag.get("name", ""))[:GRUPPEN_NAME_ZEICHEN].strip()
+        if not name or name.lower() in namen:
+            continue
+        namen.add(name.lower())
+        mitglieder = []
+        for slug in eintrag.get("profile", []):
+            if isinstance(slug, str) and slug in vorhanden and slug not in vergeben:
+                vergeben.add(slug)
+                mitglieder.append(slug)
+        gruppen.append({"name": name, "profile": mitglieder})
+    return gruppen
+
+
+def gruppen_lesen() -> list[dict]:
+    try:
+        with open(GRUPPEN_PFAD, "r", encoding="utf-8") as f:
+            roh = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return []
+    return gruppen_pruefen(roh)
+
+
+def gruppen_schreiben(roh) -> list[dict]:
+    """Säubern und atomar schreiben; zurück kommt, was jetzt in der Datei steht."""
+    with gruppen_lock:
+        gruppen = gruppen_pruefen(roh)
+        os.makedirs(PROFIL_DIR, exist_ok=True)
+        temp = GRUPPEN_PFAD + ".tmp"
+        with open(temp, "w", encoding="utf-8") as f:
+            json.dump(gruppen, f, ensure_ascii=False, indent=2)
+            f.write("\n")
+        os.replace(temp, GRUPPEN_PFAD)
+        return gruppen
+
+
+# ============================================================================
 # Modelle — einmal pro Serverlauf von pi erfragt
 # ============================================================================
 
@@ -1331,6 +1394,8 @@ class PartyHandler(SimpleHTTPRequestHandler):
 
         if pfad == "/api/profile":
             self._send_json(profil_liste())
+        elif pfad == "/api/gruppen":
+            self._send_json(gruppen_lesen())
         elif pfad == "/api/modelle":
             self._send_json(modelle_lesen())
         elif pfad == "/api/partys":
@@ -1370,6 +1435,8 @@ class PartyHandler(SimpleHTTPRequestHandler):
         teile = pfad.split("/")
         if len(teile) == 4 and pfad.startswith("/api/profile/"):
             self._profil_aendern(teile[3])
+        elif pfad == "/api/gruppen":
+            self._gruppen_setzen()
         else:
             self.send_error(404)
 
@@ -1429,7 +1496,23 @@ class PartyHandler(SimpleHTTPRequestHandler):
             }, 409)
             return
         profil_loeschen(slug)
+        # Aus der Gruppe austragen. Sonst säße ein später neu angelegtes
+        # Profil gleichen Namens unverhofft wieder in der alten Gruppe.
+        gruppen_schreiben(gruppen_lesen())
         self._send_json({"status": "geloescht"})
+
+    # ---------------------------------------------------------------- Gruppen
+
+    def _gruppen_setzen(self):
+        """Die ganze Liste auf einmal: anlegen, umbenennen, löschen und
+        verschieben sind im Dashboard alles nur eine neue Fassung davon."""
+        daten = self._read_body()
+        if daten is None:
+            return
+        if not isinstance(daten, list):
+            self._send_json({"fehler": "Erwartet wird eine Liste von Gruppen."}, 400)
+            return
+        self._send_json(gruppen_schreiben(daten))
 
     def _profil_entwurf(self):
         """Profil vom Sprachmodell ausarbeiten lassen — als SSE.

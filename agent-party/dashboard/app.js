@@ -29,6 +29,10 @@ const STATUS_TEXT = {
 // ---------------------------------------------------------------------------
 let ansicht = "profile";        // "profile" | "einrichten" | "party"
 let profile = [];               // Serverliste, Quelle der Wahrheit für Name und Farbe
+let gruppen = [];               // [{name, profile: [slug]}] wie in profile/gruppen.json
+let gruppenKette = Promise.resolve(); // Speichervorgänge der Gruppen, nacheinander
+let zugeklappt = new Set();     // eingeklappte Gruppen: Name, "" für „Ohne Gruppe"
+let gezogen = null;             // Slug der Kachel, die gerade gezogen wird
 let modelle = [];
 let editorSlug = null;          // null = neues Profil
 let entwurfAbbruch = null;      // AbortController; nicht-null = Entwurf läuft
@@ -71,6 +75,9 @@ const aendereProfil = (slug, daten) =>
   api(`/api/profile/${slug}`, { method: "PUT", body: JSON.stringify(daten) });
 const entferneProfil = (slug, erzwingen) =>
   api(`/api/profile/${slug}${erzwingen ? "?force=1" : ""}`, { method: "DELETE" });
+const ladeGruppen = () => api("/api/gruppen");
+const setzeGruppen = (liste) =>
+  api("/api/gruppen", { method: "PUT", body: JSON.stringify(liste) });
 
 const neueParty = (daten) =>
   api("/api/partys", { method: "POST", body: JSON.stringify(daten) });
@@ -93,14 +100,19 @@ const $ansichtProfile = document.getElementById("ansicht-profile");
 const $ansichtEinrichten = document.getElementById("ansicht-einrichten");
 const $ansichtParty = document.getElementById("ansicht-party");
 
-const $profilRaster = document.getElementById("profil-raster");
+const $profilGruppen = document.getElementById("profil-gruppen");
 const $profileAnzahl = document.getElementById("profile-anzahl");
+const $neueGruppeBtn = document.getElementById("neue-gruppe-btn");
+const $gruppenHinweis = document.getElementById("gruppen-hinweis");
+const $editorBreiteBtn = document.getElementById("editor-breite-btn");
+const $editorBreiteIcon = document.getElementById("editor-breite-icon");
 const $editorTitel = document.getElementById("editor-titel");
 const $feldName = document.getElementById("feld-name");
 const $feldBeschreibung = document.getElementById("feld-beschreibung");
 const $feldModel = document.getElementById("feld-model");
 const $feldThinking = document.getElementById("feld-thinking");
 const $farbwahl = document.getElementById("farbwahl");
+const $feldGruppe = document.getElementById("feld-gruppe");
 const $feldText = document.getElementById("feld-text");
 const $speichernBtn = document.getElementById("speichern-btn");
 const $abbrechenBtn = document.getElementById("abbrechen-btn");
@@ -152,6 +164,7 @@ const $steuerHinweis = document.getElementById("steuer-hinweis");
 const $dialogHintergrund = document.getElementById("dialog-hintergrund");
 const $dialogTitel = document.getElementById("dialog-titel");
 const $dialogText = document.getElementById("dialog-text");
+const $dialogEingabe = document.getElementById("dialog-eingabe");
 const $dialogOk = document.getElementById("dialog-ok");
 const $dialogAbbrechen = document.getElementById("dialog-abbrechen");
 
@@ -289,25 +302,46 @@ function wechsleTheme() {
 // ---------------------------------------------------------------------------
 // Dialog
 // ---------------------------------------------------------------------------
-function zeigeDialog({ titel, text, okText = "OK", mitAbbrechen = true }) {
+/** Mit `eingabe` ({wert, platzhalter}) fragt der Dialog nach einem Text und
+    liefert ihn getrimmt zurück — oder null bei Abbruch. Sonst true/false. */
+function zeigeDialog({ titel, text, okText = "OK", mitAbbrechen = true, eingabe = null }) {
   return new Promise((aufloesen) => {
     $dialogTitel.textContent = titel;
-    $dialogText.textContent = text;
+    $dialogText.textContent = text || "";
+    $dialogText.classList.toggle("hidden", !text);
+    $dialogEingabe.classList.toggle("hidden", !eingabe);
     $dialogOk.textContent = okText;
     $dialogAbbrechen.classList.toggle("hidden", !mitAbbrechen);
     $dialogHintergrund.classList.remove("hidden");
 
-    const schliessen = (ergebnis) => {
+    const schliessen = (ok) => {
       $dialogHintergrund.classList.add("hidden");
       $dialogOk.removeEventListener("click", aufOk);
       $dialogAbbrechen.removeEventListener("click", aufAbbruch);
-      aufloesen(ergebnis);
+      $dialogEingabe.removeEventListener("keydown", aufTaste);
+      if (!eingabe) return aufloesen(ok);
+      aufloesen(ok ? $dialogEingabe.value.trim() : null);
     };
     const aufOk = () => schliessen(true);
     const aufAbbruch = () => schliessen(false);
+    const aufTaste = (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        schliessen(true);
+      } else if (e.key === "Escape") {
+        schliessen(false);
+      }
+    };
 
     $dialogOk.addEventListener("click", aufOk);
     $dialogAbbrechen.addEventListener("click", aufAbbruch);
+    if (eingabe) {
+      $dialogEingabe.value = eingabe.wert || "";
+      $dialogEingabe.placeholder = eingabe.platzhalter || "";
+      $dialogEingabe.addEventListener("keydown", aufTaste);
+      $dialogEingabe.focus();
+      $dialogEingabe.select();
+    }
   });
 }
 
@@ -376,26 +410,264 @@ function baueKachel(profil, { auswaehlbar = false } = {}) {
   return kachel;
 }
 
-function rendereProfilRaster() {
-  $profilRaster.innerHTML = "";
+function rendereProfilGruppen() {
+  $profilGruppen.innerHTML = "";
   $profileAnzahl.textContent = `${profile.length} ${profile.length === 1 ? "Profil" : "Profile"}`;
 
-  if (profile.length === 0) {
-    const leer = document.createElement("p");
-    leer.className = "text-sm text-on-surface-variant sm:col-span-2";
-    leer.textContent = "Noch kein Profil da. Rechts eins anlegen — von Hand oder ausarbeiten lassen.";
-    $profilRaster.appendChild(leer);
-    return;
-  }
+  const einsortiert = new Set();
+  gruppen.forEach((gruppe, index) => {
+    const mitglieder = gruppe.profile.map(profilFinden).filter(Boolean);
+    mitglieder.forEach((p) => einsortiert.add(p.slug));
+    $profilGruppen.appendChild(baueGruppe(gruppe.name, index, mitglieder));
+  });
+  // „Ohne Gruppe" steht immer da, als Rest und als Ablage zum Herausnehmen.
+  const rest = profile.filter((p) => !einsortiert.has(p.slug));
+  $profilGruppen.appendChild(baueGruppe("Ohne Gruppe", -1, rest));
+}
 
-  profile.forEach((profil) => {
+/** Eine Gruppe mit Kopf und Kachelraster. `index` zeigt in `gruppen`,
+    -1 ist „Ohne Gruppe" — die steht in keiner Datei und lässt sich weder
+    umbenennen noch löschen. */
+function baueGruppe(name, index, mitglieder) {
+  const ohne = index < 0;
+  const schluessel = ohne ? "" : name;
+  const zu = zugeklappt.has(schluessel);
+
+  const sektion = document.createElement("section");
+  sektion.className = ohne ? "gruppe gruppe-ohne" : "gruppe";
+  sektion.setAttribute("aria-label", ohne ? "Profile ohne Gruppe" : `Gruppe ${name}`);
+  sektion.innerHTML = `
+    <div class="gruppe-kopf">
+      <button type="button" class="gruppe-klappe" aria-expanded="${!zu}">
+        <span class="material-symbols-outlined text-[18px] gruppe-pfeil" aria-hidden="true">expand_more</span>
+        <span class="gruppe-name">${escapeHtml(name)}</span>
+      </button>
+      <span class="gruppe-zahl">${mitglieder.length}</span>
+      ${ohne ? "" : `
+      <button type="button" class="gruppe-umbenennen symbol-knopf ml-auto"
+              aria-label="Gruppe umbenennen" title="Gruppe umbenennen">
+        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">edit</span>
+      </button>
+      <button type="button" class="gruppe-loeschen symbol-knopf"
+              aria-label="Gruppe löschen" title="Gruppe löschen">
+        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">delete</span>
+      </button>`}
+    </div>
+    <div class="gruppe-raster grid gap-3 sm:grid-cols-2 mt-3"></div>`;
+
+  // Klasse statt hidden-Attribut: Tailwinds `grid` schlägt das Attribut.
+  const raster = sektion.querySelector(".gruppe-raster");
+  raster.classList.toggle("hidden", zu);
+  mitglieder.forEach((profil) => {
     const kachel = baueKachel(profil);
     if (editorSlug === profil.slug) kachel.classList.add("kachel-gewaehlt");
     kachel.querySelector(".kachel-bearbeiten").addEventListener("click", () => {
       oeffneEditor(profil.slug);
     });
-    $profilRaster.appendChild(kachel);
+    macheZiehbar(kachel, profil.slug);
+    raster.appendChild(kachel);
   });
+  if (mitglieder.length === 0) {
+    const leer = document.createElement("p");
+    leer.className = "gruppe-leer sm:col-span-2";
+    if (!ohne) leer.textContent = "Noch leer. Profile hierher ziehen.";
+    else if (profile.length === 0) leer.textContent = "Noch kein Profil da. Rechts eins anlegen — von Hand oder ausarbeiten lassen.";
+    else leer.textContent = "Alle Profile sind einsortiert. Hierher ziehen nimmt eins aus seiner Gruppe.";
+    raster.appendChild(leer);
+  }
+
+  const klappe = sektion.querySelector(".gruppe-klappe");
+  klappe.addEventListener("click", () => {
+    const jetztZu = raster.classList.toggle("hidden");
+    klappe.setAttribute("aria-expanded", String(!jetztZu));
+    if (jetztZu) zugeklappt.add(schluessel);
+    else zugeklappt.delete(schluessel);
+  });
+  if (!ohne) {
+    sektion.querySelector(".gruppe-umbenennen").addEventListener("click", () => benenneGruppeUm(index));
+    sektion.querySelector(".gruppe-loeschen").addEventListener("click", () => loescheGruppe(index));
+  }
+
+  // Die ganze Gruppe nimmt Kacheln an, auch eingeklappt. Innerhalb einer
+  // benannten Gruppe zählt die Stelle: abgelegt wird vor der Kachel unter
+  // dem Zeiger. „Ohne Gruppe" ist nach Namen sortiert, dort gibt es keine.
+  sektion.addEventListener("dragover", (e) => {
+    if (!gezogen) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    sektion.classList.add("gruppe-ziel");
+    markiereEinfuegestelle(ohne ? null : e.target.closest(".kachel"));
+  });
+  sektion.addEventListener("dragleave", (e) => {
+    if (sektion.contains(e.relatedTarget)) return;
+    sektion.classList.remove("gruppe-ziel");
+    markiereEinfuegestelle(null);
+  });
+  sektion.addEventListener("drop", (e) => {
+    if (!gezogen) return;
+    e.preventDefault();
+    // Vor dem Neuzeichnen zurücksetzen: Die gezogene Kachel verschwindet
+    // dabei aus dem DOM, und ohne sie feuert kein Browser mehr "dragend".
+    const slug = gezogen;
+    gezogen = null;
+    const vor = ohne ? null : e.target.closest(".kachel");
+    verschiebeProfil(slug, index, vor ? vor.dataset.slug : null);
+  });
+  return sektion;
+}
+
+function macheZiehbar(kachel, slug) {
+  kachel.draggable = true;
+  kachel.dataset.slug = slug;
+  kachel.addEventListener("dragstart", (e) => {
+    gezogen = slug;
+    e.dataTransfer.effectAllowed = "move";
+    // Firefox beginnt das Ziehen nur, wenn Daten dranhängen.
+    e.dataTransfer.setData("text/plain", slug);
+    kachel.classList.add("kachel-zieht");
+  });
+  kachel.addEventListener("dragend", () => {
+    gezogen = null;
+    kachel.classList.remove("kachel-zieht");
+    document.querySelectorAll(".gruppe-ziel").forEach((el) => el.classList.remove("gruppe-ziel"));
+    markiereEinfuegestelle(null);
+  });
+}
+
+function markiereEinfuegestelle(kachel) {
+  document.querySelectorAll(".kachel-davor").forEach((el) => el.classList.remove("kachel-davor"));
+  if (kachel && kachel.dataset.slug !== gezogen) kachel.classList.add("kachel-davor");
+}
+
+function gruppeVon(slug) {
+  const gruppe = gruppen.find((g) => g.profile.includes(slug));
+  return gruppe ? gruppe.name : "";
+}
+
+/** Profil in die Gruppe `index` legen (-1 = ohne Gruppe), vor `vorSlug`
+    oder ans Ende. Jedes Profil steht höchstens in einer Gruppe. */
+function verschiebeProfil(slug, index, vorSlug) {
+  if (vorSlug === slug) return Promise.resolve();
+  const neu = gruppen.map((g) => ({ name: g.name, profile: g.profile.filter((s) => s !== slug) }));
+  if (index >= 0) {
+    const liste = neu[index].profile;
+    const platz = vorSlug ? liste.indexOf(vorSlug) : -1;
+    if (platz >= 0) liste.splice(platz, 0, slug);
+    else liste.push(slug);
+  }
+  // Steht das Profil gerade im Editor, zieht die Auswahl dort mit — sonst
+  // holte „Speichern" es in die alte Gruppe zurück.
+  const wahl = slug === editorSlug ? (index >= 0 ? neu[index].name : "") : $feldGruppe.value;
+  return speichereGruppen(neu, wahl);
+}
+
+/** Neue Fassung sofort zeigen, dann speichern. Jede Fassung ersetzt die
+    ganze Liste; deshalb gehen sie nacheinander raus, damit zwei schnelle
+    Züge beim Server nicht vertauscht ankommen. */
+function speichereGruppen(neu, wahl = $feldGruppe.value) {
+  gruppen = neu;
+  rendereProfilGruppen();
+  rendereGruppenwahl(wahl);
+  gruppenKette = gruppenKette.then(async () => {
+    const ergebnis = await setzeGruppen(neu);
+    if (ergebnis.fehler) {
+      zeigeHinweis($gruppenHinweis, ergebnis.fehler);
+      gruppen = await ladeGruppenListe();
+    } else {
+      zeigeHinweis($gruppenHinweis, "");
+      // Kam inzwischen eine neuere Fassung, gilt die; sonst die des Servers,
+      // falls er etwas bereinigt hat.
+      if (gruppen !== neu || JSON.stringify(ergebnis) === JSON.stringify(neu)) return;
+      gruppen = ergebnis;
+    }
+    rendereProfilGruppen();
+    rendereGruppenwahl($feldGruppe.value);
+  });
+  return gruppenKette;
+}
+
+async function ladeGruppenListe() {
+  const geladen = await ladeGruppen();
+  return Array.isArray(geladen) ? geladen : [];
+}
+
+function gruppenKopie() {
+  return gruppen.map((g) => ({ name: g.name, profile: [...g.profile] }));
+}
+
+function pruefeGruppenname(name, bisher) {
+  if (!name) return "Die Gruppe braucht einen Namen.";
+  const klein = name.toLowerCase();
+  if (klein === "ohne gruppe") return `„Ohne Gruppe" gibt es schon — dort landen alle Profile ohne Gruppe.`;
+  if (gruppen.some((g) => g.name !== bisher && g.name.toLowerCase() === klein)) {
+    return "Eine Gruppe mit diesem Namen gibt es schon.";
+  }
+  return null;
+}
+
+async function legeGruppeAn() {
+  const name = await zeigeDialog({
+    titel: "Neue Gruppe",
+    text: "Wie soll die Gruppe heißen? Die Profile ziehst du danach hinein.",
+    okText: "Anlegen",
+    eingabe: { platzhalter: "Vorstellungsgespräch" },
+  });
+  if (name === null) return;
+  const fehler = pruefeGruppenname(name, null);
+  if (fehler) return zeigeHinweis($gruppenHinweis, fehler);
+  speichereGruppen([...gruppenKopie(), { name, profile: [] }]);
+}
+
+async function benenneGruppeUm(index) {
+  const bisher = gruppen[index].name;
+  const name = await zeigeDialog({
+    titel: "Gruppe umbenennen",
+    okText: "Umbenennen",
+    eingabe: { wert: bisher },
+  });
+  if (name === null || name === bisher) return;
+  const fehler = pruefeGruppenname(name, bisher);
+  if (fehler) return zeigeHinweis($gruppenHinweis, fehler);
+
+  if (zugeklappt.delete(bisher)) zugeklappt.add(name);
+  const neu = gruppenKopie();
+  neu[index].name = name;
+  speichereGruppen(neu, $feldGruppe.value === bisher ? name : $feldGruppe.value);
+}
+
+async function loescheGruppe(index) {
+  const gruppe = gruppen[index];
+  const anzahl = gruppe.profile.length;
+  // Eine leere Gruppe geht ohne Rückfrage: Es geht nichts verloren.
+  if (anzahl > 0) {
+    const bestaetigt = await zeigeDialog({
+      titel: "Gruppe löschen?",
+      text: anzahl === 1
+        ? `„${gruppe.name}" wird aufgelöst. Das Profil darin bleibt erhalten und steht danach unter „Ohne Gruppe".`
+        : `„${gruppe.name}" wird aufgelöst. Die ${anzahl} Profile darin bleiben erhalten und stehen danach unter „Ohne Gruppe".`,
+      okText: "Gruppe löschen",
+    });
+    if (!bestaetigt) return;
+  }
+  zugeklappt.delete(gruppe.name);
+  speichereGruppen(gruppenKopie().filter((_, i) => i !== index));
+}
+
+function rendereGruppenwahl(wert) {
+  $feldGruppe.innerHTML = "";
+  $feldGruppe.add(new Option("Ohne Gruppe", ""));
+  gruppen.forEach((g) => $feldGruppe.add(new Option(g.name, g.name)));
+  // Eine Gruppe, die es nicht mehr gibt, heißt: ohne Gruppe.
+  $feldGruppe.value = gruppen.some((g) => g.name === wert) ? wert : "";
+}
+
+function setzeEditorBreit(breit) {
+  $ansichtProfile.classList.toggle("editor-breit", breit);
+  $editorBreiteIcon.textContent = breit ? "close_fullscreen" : "open_in_full";
+  const label = breit ? "Profilliste wieder einblenden" : "Editor auf volle Breite";
+  $editorBreiteBtn.setAttribute("aria-label", label);
+  $editorBreiteBtn.setAttribute("aria-pressed", String(breit));
+  $editorBreiteBtn.title = label;
 }
 
 function rendereFarbwahl(gewaehlt) {
@@ -461,10 +733,11 @@ function oeffneEditor(slug) {
   $feldText.value = profil ? profil.text : "";
   rendereFarbwahl(profil ? profil.farbe : "gruen");
   rendereModellauswahl($feldModel, profil ? profil.model : "");
+  rendereGruppenwahl(profil ? gruppeVon(profil.slug) : "");
   $loeschenBtn.classList.toggle("hidden", !profil);
   $duplizierenBtn.classList.toggle("hidden", !profil);
   zeigeHinweis($editorHinweis, "");
-  rendereProfilRaster();
+  rendereProfilGruppen();
 }
 
 function dupliziereProfil() {
@@ -478,7 +751,7 @@ function dupliziereProfil() {
   $loeschenBtn.classList.add("hidden");
   $duplizierenBtn.classList.add("hidden");
   zeigeHinweis($editorHinweis, "");
-  rendereProfilRaster();
+  rendereProfilGruppen();
   $feldName.focus();
   $feldName.select();
 }
@@ -512,7 +785,13 @@ async function speichereProfil() {
     : await neuesProfil(daten);
   if (ergebnis.fehler) return zeigeHinweis($editorHinweis, ergebnis.fehler);
 
+  const wunschgruppe = $feldGruppe.value;
   profile = await ladeProfile();
+  // Die Gruppe steht nicht in der Profildatei, sondern in gruppen.json —
+  // erst jetzt gibt es den Slug, unter dem das Profil dort eingetragen wird.
+  if (gruppeVon(ergebnis.slug) !== wunschgruppe) {
+    await verschiebeProfil(ergebnis.slug, gruppen.findIndex((g) => g.name === wunschgruppe), null);
+  }
   oeffneEditor(ergebnis.slug);
 }
 
@@ -538,7 +817,8 @@ async function loescheProfil() {
   }
   if (ergebnis.fehler) return zeigeHinweis($editorHinweis, ergebnis.fehler);
 
-  profile = await ladeProfile();
+  // Der Server hat das Profil auch aus seiner Gruppe ausgetragen.
+  [profile, gruppen] = await Promise.all([ladeProfile(), ladeGruppenListe()]);
   oeffneEditor(null);
 }
 
@@ -615,13 +895,14 @@ function entwurfUebernehmen(text) {
   editorSlug = null;
   $editorTitel.textContent = "Neues Profil";
   $loeschenBtn.classList.add("hidden");
-  rendereProfilRaster();
+  rendereProfilGruppen();
 }
 
 async function ladeUndRendereProfile() {
-  profile = await ladeProfile();
+  [profile, gruppen] = await Promise.all([ladeProfile(), ladeGruppenListe()]);
   if (profile.fehler) profile = [];
-  rendereProfilRaster();
+  rendereProfilGruppen();
+  rendereGruppenwahl($feldGruppe.value);
   if (!$feldModel.options.length) rendereModellauswahl($feldModel, "");
 }
 
@@ -1185,6 +1466,10 @@ function setzeListener() {
   $loeschenBtn.addEventListener("click", loescheProfil);
   $duplizierenBtn.addEventListener("click", dupliziereProfil);
   $entwurfBtn.addEventListener("click", entwurfStarten);
+  $neueGruppeBtn.addEventListener("click", legeGruppeAn);
+  $editorBreiteBtn.addEventListener("click", () => {
+    setzeEditorBreit(!$ansichtProfile.classList.contains("editor-breit"));
+  });
 
   $feldTitel.addEventListener("input", pruefeStartbereit);
   $feldStarter.addEventListener("input", pruefeStartbereit);
