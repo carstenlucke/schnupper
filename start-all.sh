@@ -143,7 +143,11 @@ starte agent-party agent-party ./start.sh ${FORCE_ARG[@]+"${FORCE_ARG[@]}"}
 # --- Präsentation: zuletzt, damit ihr Browser-Tab vorne liegt ---
 if [[ ! -d "$ROOT_DIR/presentation/node_modules" ]]; then
     echo "▶ presentation: Abhängigkeiten fehlen, npm install läuft …"
-    (cd "$ROOT_DIR/presentation" && npm install)
+    # Scheitert das, beendete set -e das Skript, und ship-it und agent-party
+    # liefen verwaist weiter. Die Präsentation meldet sich unten als nicht
+    # gestartet.
+    (cd "$ROOT_DIR/presentation" && npm install) \
+        || echo "⚠ presentation: npm install fehlgeschlagen."
 fi
 starte presentation presentation npm run dev
 

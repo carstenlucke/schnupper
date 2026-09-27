@@ -934,7 +934,9 @@ def _anhalten_und_austragen(slug: str) -> None:
         lauf = laeufe.get(slug)
     stoppe_party(slug)
     frist = time.monotonic() + 5
-    while lauf and not lauf.beendet and time.monotonic() < frist:
+    # Auf `ausgelaufen`, nicht auf `beendet`: dazwischen schreibt die Schleife
+    # noch wartende Zwischenrufe in die Datei.
+    while lauf and not lauf.ausgelaufen and time.monotonic() < frist:
         time.sleep(0.05)
     with laeufe_lock:
         laeufe.pop(slug, None)
@@ -1068,6 +1070,9 @@ class Lauf:
         self.sitzung = sitzung
         self.ereignisse: list[dict] = []
         self.beendet = False
+        # Erst nach den letzten Zwischenrufen gesetzt: `beendet` kommt davor
+        # (siehe _party_schleife), wer den Verlauf danach löscht, wartet hierauf.
+        self.ausgelaufen = False
         self.fehler: str | None = None
         self.abbruch = threading.Event()
         self.prozess: subprocess.Popen | None = None
@@ -1285,6 +1290,7 @@ def _party_schleife(lauf: Lauf, profile: list[dict]) -> None:
         # fiele ein Zwischenruf genau dazwischen unter den Tisch.
         lauf.beendet = True
         schreibe_einwuerfe(lauf)
+        lauf.ausgelaufen = True
 
 
 def _fazit_schleife(lauf: Lauf, profile: list[dict]) -> None:
@@ -1339,6 +1345,7 @@ def _fazit_schleife(lauf: Lauf, profile: list[dict]) -> None:
         # Reihenfolge wie in _party_schleife — siehe dort.
         lauf.beendet = True
         schreibe_einwuerfe(lauf)
+        lauf.ausgelaufen = True
 
 
 def starte_fazit(slug: str) -> tuple[dict, int]:

@@ -1556,7 +1556,8 @@ function zwischenrufAnzeigen(ereignis) {
     ereignis.runde ? `Runde ${ereignis.runde}` : "";
   $verlauf.appendChild(wurzel);
   zwischenrufe += 1;
-  rendereKennzahlen();
+  // Fortschritt statt nur Kennzahlen: „Zurücksetzen" hängt an den Zwischenrufen.
+  if (aktuelleParty) rendereFortschritt(aktuelleParty.status);
   scrolleWennAmEnde();
 }
 
