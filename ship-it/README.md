@@ -85,7 +85,8 @@ ship-it/
 ├── dashboard/
 │   ├── index.html             # Dashboard SPA
 │   ├── style.css              # THM-Corporate-Design
-│   └── app.js                 # Frontend-Logik
+│   ├── app.js                 # Frontend-Logik
+│   └── logo.png, logo-dunkel.png  # Logo; die Variante „dunkel“ für Kopfleiste und dunkles Thema
 ├── projekte/                  # Runtime: ein Ordner pro Produktidee
 ├── start.sh                   # Ein-Klick-Start
 └── spec/                      # Spezifikation + UI-Mockup
