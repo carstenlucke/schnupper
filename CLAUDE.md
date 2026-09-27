@@ -30,7 +30,8 @@ jedes Projekt muss für sich allein erklärbar und startbar sein.
 
 Immer im jeweiligen Projektverzeichnis arbeiten, nicht im Repo-Root.
 
-Einzige Ausnahme im Root ist `start-all.sh`: Es startet alle Demos und die
+Ausnahmen im Root sind der Release-Workflow (siehe [Git](#git)) und
+`start-all.sh`: Es startet alle Demos und die
 Präsentation für den Vortrag, ruft dafür aber nur die Startskripte der Projekte
 auf und enthält selbst keine Projektlogik. Ändert sich Start oder Port eines
 Projekts, die Übersicht im Kopf und am Ende von `start-all.sh` nachziehen.
@@ -70,10 +71,17 @@ Werkzeugzeile — die Profile dort haben bewusst keine Werkzeuge.
 
 ## Git
 
-- **Tags sind namespaced** nach Projektverzeichnis, z. B. `ship-it/v1.0.1`.
-  Ein Release betrifft immer nur ein Projekt.
-- Zu jedem Tag gehört ein Release Letter `RELEASE-vX.Y.Z.md` im jeweiligen
-  Projektverzeichnis.
+- **Ein Release gilt für das ganze Repo**, nicht für ein einzelnes Projekt:
+  Tag `vX.Y.Z` auf `main`, dazu ein Release Letter `RELEASE-vX.Y.Z.md` im
+  Root, der alle Projekte zusammen betrachtet.
+- Der Tag löst `.github/workflows/release.yml` aus: GitHub Release mit dem
+  Release Letter als Beschreibung und der Präsentation als PDF, dazu die
+  Folien auf GitHub Pages (<https://carstenlucke.github.io/schnupper/>). Der
+  Workflow bricht ab, wenn der Release Letter fehlt oder der Commit nicht auf
+  `main` liegt.
+- Die älteren Tags `ship-it/v1.0.x` und `the-counting-agents/v0.1.x` samt
+  den Release Lettern in den Projektverzeichnissen stammen aus der Zeit vor
+  dem gemeinsamen Release und bleiben als Historie stehen.
 - Die Historie von `ship-it/` wurde bei der Migration auf die neuen Pfade
   umgeschrieben — `git log -- ship-it/` und `git blame` funktionieren über den
   gesamten Verlauf.
@@ -84,4 +92,4 @@ Werkzeugzeile — die Profile dort haben bewusst keine Werkzeuge.
   - `git log -- the-counting-agents/` mischt beide Fassungen. Den Verlauf der
     pi-Fassung liefert `git log --follow` auf eine einzelne Datei.
   - Die Tags `the-counting-agents/v0.1.0` und `v0.1.1` gehören zur
-    OpenCode-Fassung. Releases der pi-Fassung brauchen eine höhere Nummer.
+    OpenCode-Fassung.

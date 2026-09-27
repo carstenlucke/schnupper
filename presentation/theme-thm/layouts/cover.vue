@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useSlideContext } from '@slidev/client'
+import { publicPfad } from '../public-pfad'
 
 defineProps<{ bild?: string; rubrik?: string }>()
 
@@ -45,7 +46,7 @@ const veranstaltung = computed(() => ($slidev?.configs as Record<string, unknown
       <slot />
     </div>
     <template v-if="bild">
-      <div class="cv-photo" :style="{ backgroundImage: `url(${bild})` }" />
+      <div class="cv-photo" :style="{ backgroundImage: `url(${publicPfad(bild)})` }" />
       <span class="cv-quad gross" aria-hidden="true" />
       <span class="cv-quad klein" aria-hidden="true" />
     </template>

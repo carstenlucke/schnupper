@@ -43,6 +43,21 @@ npm run build    # statische HTML-Version in dist/
 npm run export   # PDF nach schnuppervorlesung-ki.pdf
 ```
 
+## Veröffentlichen
+
+Ein Release gilt für das ganze Repo: Ein Tag `vX.Y.Z` auf `main` löst den
+Workflow [`release.yml`](../.github/workflows/release.yml) aus. Er legt ein
+GitHub Release mit dem Release Letter `RELEASE-vX.Y.Z.md` aus dem Root und
+dem PDF an und stellt die Folien als Web-App auf GitHub Pages bereit:
+<https://carstenlucke.github.io/schnupper/>.
+
+Pages liefert die Seite unter `/schnupper/` aus, der Build bekommt deshalb
+`--base /schnupper/`. Lokal nachstellen:
+
+```bash
+npx slidev build --base /schnupper/
+```
+
 ## Demos auswählen
 
 Die Folie **„Welche Demo schauen wir uns an?"** am Anfang des Abschnitts

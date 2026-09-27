@@ -918,11 +918,40 @@ rubrik: Noch Fragen?
   gap: 0.5rem;
   margin-top: 0.6rem;
 }
-.end-kontakt a {
+.end-kontakt a,
+.end-qr a {
   color: var(--white);
   border-bottom-color: var(--thm-green-400);
 }
+.end-qr {
+  display: flex;
+  gap: 2.4rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+.end-qr .eq-titel {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  font-weight: var(--fw-bold);
+  color: var(--white);
+}
 </style>
+
+::right::
+
+<div class="end-qr">
+  <div>
+    <QrCode url="https://carstenlucke.github.io/schnupper/" :size="10" />
+    <div class="eq-titel">Die Folien</div>
+    <a href="https://carstenlucke.github.io/schnupper/">carstenlucke.github.io/<wbr>schnupper</a>
+  </div>
+  <div>
+    <QrCode url="https://github.com/carstenlucke/schnupper" :size="10" />
+    <div class="eq-titel">Der Quellcode</div>
+    <a href="https://github.com/carstenlucke/schnupper">github.com/carstenlucke/<wbr>schnupper</a>
+  </div>
+</div>
 
 <!--
 - Offene Fragerunde

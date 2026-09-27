@@ -1,0 +1,90 @@
+# Release zu einem Tag vX.Y.Z auf main — ein Release für das ganze Repo.
+#
+# GitHub Release mit dem Release Letter RELEASE-vX.Y.Z.md als Beschreibung
+# und der Präsentation als PDF. Dazu die Folien als Web-App auf GitHub
+# Pages (https://<owner>.github.io/<repo>/).
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Tag prüfen
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Der Tag $TAG zeigt auf einen Commit, der nicht auf main liegt."
+            exit 1
+          fi
+          if [ ! -f "RELEASE-$TAG.md" ]; then
+            echo "::error::Release Letter nicht gefunden: RELEASE-$TAG.md"
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: presentation/package-lock.json
+
+      - name: Abhängigkeiten der Präsentation installieren
+        working-directory: presentation
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      # Basispfad = Repo-Name, weil Pages die Seite unter /<repo>/ ausliefert.
+      - name: Folien als Web-App bauen
+        working-directory: presentation
+        run: npx slidev build --base "/${{ github.event.repository.name }}/"
+
+      - name: PDF exportieren
+        working-directory: presentation
+        run: npm run export
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: presentation/dist
+
+      - name: Release anlegen
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$TAG" presentation/schnuppervorlesung-ki.pdf \
+            --verify-tag \
+            --title "Schnupper $TAG" \
+            --notes-file "RELEASE-$TAG.md"
+
+  pages:
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    # Neuere Tags überholen ältere nicht mittendrin, sie warten.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v5
+        id: deployment
