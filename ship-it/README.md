@@ -27,7 +27,7 @@ Live-Demo für eine Schnuppervorlesung bei StudiumPlus (90 Min, 12. Klasse FOS).
 5. Review
 6. [Start Social Media]         → drei Posts entstehen
 7. Review
-8. [Start Website]              → Landingpage entsteht
+8. [Start Website] → Design wählen → Landingpage entsteht
 9. Website im Browser öffnen    → Wow-Effekt
 ```
 
@@ -80,7 +80,7 @@ ship-it/
 ├── agents/                    # 5 Agenten: Frontmatter (Modell, Werkzeuge) + Systemprompt
 ├── .pi/
 │   ├── extensions/webfetch.ts # Werkzeug für die Webrecherche
-│   └── skills/                # Design-Vorlagen für den Website-Agenten
+│   └── skills/                # Webdesign-Leitfaden + Design-Vorlagen für den Website-Agenten
 ├── server.py                  # Python-Backend (stdlib only), baut die pi-Aufrufe
 ├── dashboard/
 │   ├── index.html             # Dashboard SPA

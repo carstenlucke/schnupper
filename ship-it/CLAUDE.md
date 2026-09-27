@@ -40,7 +40,8 @@ projekte/<slug>/
 | GET | `/api/projekte` | Projektliste mit Gesamtstatus |
 | POST | `/api/projekte` | Neues Projekt (`{name, beschreibung}`) |
 | GET | `/api/projekte/<slug>/agents` | Agenten + Status |
-| POST | `/api/projekte/<slug>/agents/<name>/run` | Agent starten (opt. `{feedback}`) |
+| POST | `/api/projekte/<slug>/agents/<name>/run` | Agent starten (opt. `{feedback}`, beim Website-Agenten opt. `{design}`) |
+| GET | `/api/designs` | Design-Vorlagen für den Website-Agenten |
 | GET | `/api/projekte/<slug>/agents/<name>/stream` | SSE-Stream |
 | GET | `/api/projekte/<slug>/files/<agent>` | Dateiliste |
 | GET | `/api/projekte/<slug>/files/<agent>/<datei>` | Dateiinhalt |
@@ -111,6 +112,10 @@ Abhängigkeitslogik im Frontend.
 | website | produkt.md, analyse.md, konzept.md, preiskalkulation.md | website/{website-prompt.md,index.html} |
 
 Der Website-Agent erstellt zuerst `website-prompt.md` (alle Infos inline zusammengefasst), dann `index.html`.
+Vor dem Start fragt das Dashboard nach einer Design-Vorlage aus
+`popular-web-designs` oder freier Gestaltung; `build_run_prompt()` schreibt die
+Wahl als Zeile `DESIGN-VORLAGE` in den Run-Prompt. Bei einer Überarbeitung fehlt
+die Zeile – das Design steht dann schon in `website-prompt.md`.
 
 Systemprompts definieren Rolle und Output-Format, aber **keine konkreten Dateipfade** – die kommen vom Backend im Run-Prompt.
 
@@ -123,8 +128,10 @@ Systemprompts definieren Rolle und Output-Format, aber **keine konkreten Dateipf
 - `.pi/extensions/webfetch.ts`: Werkzeug `webfetch` – pi bringt keins fürs
   Internet mit. Alle `.ts` dort bekommt jeder Agent per `-e`, freigeschaltet
   ist aber nur, was in seinem `tools:` steht
-- `.pi/skills/popular-web-designs`: Design-Vorlagen, per `skills:` nur beim
-  Website-Agenten
+- `.pi/skills/frontend-design`: Webdesign-Leitfaden von Anthropic (Apache 2.0),
+  gegen generische, einander ähnelnde Entwürfe. `.pi/skills/popular-web-designs`:
+  54 Design-Vorlagen bekannter Websites; `list_designs()` liest daraus die
+  Auswahl fürs Dashboard. Beide per `skills:` nur beim Website-Agenten
 - Globale pi-Extensions, -Skills und CLAUDE.md erreichen die Agenten **nicht**
   (`-ne -ns -nc`) – die Demo läuft auf jedem Rechner gleich
 - Projekte unter `projekte/<slug>/` (gitignored, runtime-only)

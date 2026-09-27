@@ -13,6 +13,8 @@ let pollInterval = null;
 let isProduktSelected = false;
 let isProduktEditing = false;
 let produktRawContent = "";  // Zwischenspeicher für Edit-Modus
+let designs = null;          // Design-Vorlagen für den Website-Agenten, einmal geladen
+let lastDesign = "";         // zuletzt gewählte Vorlage ("" = freie Gestaltung)
 
 // Agent-Abhängigkeiten: welche Agenten müssen "done" sein, bevor dieser starten kann
 const AGENT_DEPS = {
@@ -59,8 +61,10 @@ async function fetchAgents(slug) {
   return api(`/api/projekte/${slug}/agents`);
 }
 
-async function runAgent(slug, agent, feedback = null) {
-  const body = feedback ? { feedback } : {};
+async function runAgent(slug, agent, feedback = null, design = null) {
+  const body = {};
+  if (feedback) body.feedback = feedback;
+  if (design) body.design = design;
   return api(`/api/projekte/${slug}/agents/${agent}/run`, {
     method: "POST",
     body: JSON.stringify(body),
@@ -95,6 +99,10 @@ async function generateImage(slug, agent) {
   return api(`/api/projekte/${slug}/generate-image/${agent}`, { method: "POST" });
 }
 
+async function fetchDesigns() {
+  return api("/api/designs");
+}
+
 async function fetchAgentPrompt(agentName) {
   return api(`/api/agents/${agentName}/prompt`);
 }
@@ -125,6 +133,10 @@ const $confirmModalTitle = document.getElementById("confirm-modal-title");
 const $confirmModalMessage = document.getElementById("confirm-modal-message");
 const $confirmModalCancel = document.getElementById("confirm-modal-cancel");
 const $confirmModalConfirm = document.getElementById("confirm-modal-confirm");
+const $designModal = document.getElementById("design-modal");
+const $designForm = document.getElementById("design-form");
+const $designList = document.getElementById("design-list");
+const $designCancel = document.getElementById("design-cancel");
 const $welcomeForm = document.getElementById("welcome-form");
 const $overviewProjektCount = document.getElementById("overview-projekt-count");
 const $overviewProjektList = document.getElementById("overview-projekt-list");
@@ -601,9 +613,16 @@ function renderAgentList() {
     // Click auf Start-Button
     const startBtn = div.querySelector(".start-btn");
     if (startBtn) {
-      startBtn.addEventListener("click", (e) => {
+      startBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
-        handleStartAgent(agent.name);
+        if (agent.name !== "website") {
+          handleStartAgent(agent.name);
+          return;
+        }
+        // Website-Agent: erst das Design festlegen
+        const design = await showDesignDialog();
+        if (design === null) return;
+        handleStartAgent(agent.name, null, design);
       });
     }
 
@@ -897,7 +916,7 @@ function streamAgent(slug, agentName) {
 // ---------------------------------------------------------------------------
 // Agent starten
 // ---------------------------------------------------------------------------
-async function handleStartAgent(agentName, feedback = null) {
+async function handleStartAgent(agentName, feedback = null, design = null) {
   const agent = agents.find(a => a.name === agentName);
   if (!agent) return;
 
@@ -913,7 +932,7 @@ async function handleStartAgent(agentName, feedback = null) {
     term.write(`\x1b[36m--- ${agent.label} wird gestartet ---\x1b[0m\r\n\r\n`);
   }
 
-  const result = await runAgent(currentSlug, agentName, feedback);
+  const result = await runAgent(currentSlug, agentName, feedback, design);
   if (result.error) {
     term.write(`\r\n\x1b[31mFehler: ${result.error}\x1b[0m\r\n`);
     return;
@@ -924,6 +943,119 @@ async function handleStartAgent(agentName, feedback = null) {
 
   // Status sofort aktualisieren
   await refreshAgents();
+}
+
+// ---------------------------------------------------------------------------
+// Design-Auswahl (vor dem Start des Website-Agenten)
+// ---------------------------------------------------------------------------
+const DESIGN_OPTION_CLASSES = "rounded-lg border border-on-surface/10 cursor-pointer transition-colors hover:bg-on-surface/5 has-[:checked]:border-accent has-[:checked]:bg-accent/10 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent";
+
+function designOption(value, inhalt, klassen) {
+  const label = document.createElement("label");
+  label.className = `${DESIGN_OPTION_CLASSES} ${klassen}`;
+  label.innerHTML = `<input type="radio" name="design" value="${escapeHtml(value)}" class="sr-only"/>${inhalt}`;
+  label.querySelector("input").checked = value === lastDesign;
+  return label;
+}
+
+function renderDesignList() {
+  $designList.innerHTML = "";
+
+  $designList.appendChild(designOption("", `
+    <span class="material-symbols-outlined text-accent-text text-[22px]" aria-hidden="true">auto_awesome</span>
+    <span>
+      <span class="block text-sm font-medium text-on-surface">Freie Gestaltung</span>
+      <span class="block text-xs text-on-surface/60">Der Agent entwirft ein eigenes Design, passend zu Produkt und Marketing-Konzept.</span>
+    </span>
+  `, "flex items-center gap-3 p-3"));
+
+  // Vorlagen nach Kategorie gruppieren – der Server liefert sie schon sortiert
+  const gruppen = new Map();
+  for (const d of designs || []) {
+    if (!gruppen.has(d.kategorie)) gruppen.set(d.kategorie, []);
+    gruppen.get(d.kategorie).push(d);
+  }
+
+  for (const [kategorie, eintraege] of gruppen) {
+    const section = document.createElement("section");
+    section.innerHTML = `
+      <h3 class="text-[11px] font-bold text-on-surface/50 uppercase tracking-[0.2em] mb-2">${escapeHtml(kategorie)}</h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2"></div>
+    `;
+    const grid = section.querySelector("div");
+    for (const d of eintraege) {
+      const option = designOption(d.name, `
+        <span class="text-xs font-medium text-on-surface truncate">${escapeHtml(d.titel)}</span>
+        <span class="design-swatches flex h-3 rounded-sm overflow-hidden ring-1 ring-on-surface/10" aria-hidden="true"></span>
+      `, "flex flex-col gap-2 p-2.5");
+      // Farbfelder der Vorlage – Werte kommen aus den Daten, daher per JS statt Klasse
+      const swatches = option.querySelector(".design-swatches");
+      for (const farbe of d.farben) {
+        const feld = document.createElement("span");
+        feld.className = "flex-1";
+        feld.style.backgroundColor = farbe;
+        swatches.appendChild(feld);
+      }
+      grid.appendChild(option);
+    }
+    $designList.appendChild(section);
+  }
+
+  // Gibt es die zuletzt gewählte Vorlage nicht mehr, gilt die freie Gestaltung
+  if (!$designList.querySelector("input:checked")) {
+    $designList.querySelector("input").checked = true;
+  }
+}
+
+/** Zeigt die Design-Auswahl. Liefert den Namen der Vorlage, "" für freie
+ *  Gestaltung oder null, wenn abgebrochen wurde. */
+async function showDesignDialog() {
+  if (!designs) {
+    const result = await fetchDesigns();
+    // Schlägt das Laden fehl, bleibt immerhin die freie Gestaltung
+    if (Array.isArray(result)) designs = result;
+  }
+  renderDesignList();
+  $designModal.classList.remove("hidden");
+  $designList.scrollTop = 0;
+
+  return new Promise((resolve) => {
+    const close = (result) => {
+      $designModal.classList.add("hidden");
+      $designForm.removeEventListener("submit", onSubmit);
+      $designCancel.removeEventListener("click", onCancel);
+      $designModal.removeEventListener("click", onBackdropClick);
+      document.removeEventListener("keydown", onKeyDown);
+      resolve(result);
+    };
+
+    const onSubmit = (e) => {
+      e.preventDefault();
+      lastDesign = new FormData($designForm).get("design") ?? "";
+      close(lastDesign);
+    };
+    const onCancel = () => close(null);
+    const onBackdropClick = (e) => {
+      if (e.target === $designModal) close(null);
+    };
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        close(null);
+      }
+    };
+
+    $designForm.addEventListener("submit", onSubmit);
+    $designCancel.addEventListener("click", onCancel);
+    $designModal.addEventListener("click", onBackdropClick);
+    document.addEventListener("keydown", onKeyDown);
+
+    requestAnimationFrame(() => {
+      const gewaehlt = $designForm.querySelector('input[name="design"]:checked');
+      gewaehlt?.focus();
+      gewaehlt?.closest("label").scrollIntoView({ block: "nearest" });
+    });
+  });
 }
 
 // ---------------------------------------------------------------------------

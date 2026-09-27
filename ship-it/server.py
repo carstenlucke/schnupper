@@ -26,6 +26,7 @@ DASHBOARD_DIR = os.path.join(BASE_DIR, "dashboard")
 AGENTS_DIR = os.path.join(BASE_DIR, "agents")
 PI_EXTENSIONS_DIR = os.path.join(BASE_DIR, ".pi", "extensions")
 PI_SKILLS_DIR = os.path.join(BASE_DIR, ".pi", "skills")
+DESIGNS_DIR = os.path.join(PI_SKILLS_DIR, "popular-web-designs")
 
 
 def _load_dotenv():
@@ -152,8 +153,15 @@ def verify_outputs(slug: str, agent: str) -> bool:
     return True
 
 
-def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
-    """Baue den vollständigen Run-Prompt mit expliziten Pfaden."""
+def build_run_prompt(
+    slug: str, agent: str, feedback: str = None, design: str = None
+) -> str:
+    """Baue den vollständigen Run-Prompt mit expliziten Pfaden.
+
+    `design` gibt es nur beim Website-Agenten: der Name einer Vorlage aus
+    popular-web-designs oder None für freie Gestaltung. Bei einer
+    Überarbeitung fehlt die Zeile – das Design steht dann schon in
+    website-prompt.md."""
     p = f"projekte/{slug}"
     paths = AGENT_PATHS[agent]
 
@@ -190,6 +198,16 @@ def build_run_prompt(slug: str, agent: str, feedback: str = None) -> str:
     else:
         aufgabe = "Führe deine Aufgabe aus."
 
+    vorlage = ""
+    if agent == "website" and not feedback:
+        if design:
+            pfad = os.path.relpath(
+                os.path.join(DESIGNS_DIR, "templates", f"{design}.md"), BASE_DIR
+            )
+            vorlage = f"\nDESIGN-VORLAGE: {design} ({pfad})\n"
+        else:
+            vorlage = "\nDESIGN-VORLAGE: keine – freie Gestaltung\n"
+
     return f"""Projektordner: {p}
 
 EINGABE (lies diese Dateien):
@@ -197,8 +215,75 @@ EINGABE (lies diese Dateien):
 
 AUSGABE (schreibe in diese Dateien, erstelle Verzeichnisse falls nötig):
 {ausgaben_str}
-
+{vorlage}
 {aufgabe}"""
+
+
+# ---------------------------------------------------------------------------
+# Design-Vorlagen für den Website-Agenten
+# ---------------------------------------------------------------------------
+# Die Vorlagen liegen im Skill popular-web-designs. Welche es gibt, bestimmt
+# der Ordner templates/; Kategorie und Anzeigename kommen aus dem Katalog in
+# SKILL.md, die Farbfelder aus dem Abschnitt „Color Palette" jeder Vorlage.
+
+DESIGN_KATEGORIEN = {
+    "Enterprise & Consumer": "Bekannte Marken",
+    "Design & Productivity": "Design & Produktivität",
+    "Fintech & Crypto": "Finanzen",
+    "AI & Machine Learning": "Künstliche Intelligenz",
+    "Developer Tools & Platforms": "Entwicklerwerkzeuge",
+    "Infrastructure & Cloud": "Infrastruktur & Cloud",
+}
+
+
+def list_designs() -> list[dict]:
+    """Alle Design-Vorlagen: [{name, titel, kategorie, farben}], nach Kategorie sortiert."""
+    templates_dir = os.path.join(DESIGNS_DIR, "templates")
+    if not os.path.isdir(templates_dir):
+        return []
+
+    katalog = {}
+    try:
+        with open(os.path.join(DESIGNS_DIR, "SKILL.md"), encoding="utf-8") as f:
+            kategorie = None
+            for zeile in f:
+                if zeile.startswith("### "):
+                    kategorie = zeile[4:].strip()
+                m = re.match(r"\|\s*`([^`]+)\.md`\s*\|\s*([^|]+?)\s*\|", zeile)
+                if m and kategorie:
+                    katalog[m.group(1)] = (m.group(2), kategorie)
+    except OSError:
+        pass
+
+    reihenfolge = list(DESIGN_KATEGORIEN.values())
+    designs = []
+    for datei in sorted(os.listdir(templates_dir)):
+        if not datei.endswith(".md"):
+            continue
+        name = datei[:-3]
+        titel, kategorie = katalog.get(name, (name, None))
+        with open(os.path.join(templates_dir, datei), encoding="utf-8") as f:
+            text = f.read()
+        palette = re.search(r"^## 2\..*?(?=^## 3\.)", text, re.S | re.M)
+        farben = []
+        for hexwert in re.findall(r"#[0-9a-fA-F]{6}\b", palette.group(0) if palette else ""):
+            if hexwert.lower() not in farben:
+                farben.append(hexwert.lower())
+        designs.append(
+            {
+                "name": name,
+                "titel": titel,
+                "kategorie": DESIGN_KATEGORIEN.get(kategorie, "Weitere"),
+                "farben": farben[:5],
+            }
+        )
+    designs.sort(
+        key=lambda d: (
+            reihenfolge.index(d["kategorie"]) if d["kategorie"] in reihenfolge else 99,
+            d["titel"].lower(),
+        )
+    )
+    return designs
 
 
 # ---------------------------------------------------------------------------
@@ -474,7 +559,7 @@ class PiAusgabe:
         return f"{self._umbruch()}\n{ANSI_BLASS}{zeile}{ANSI_RESET}\n"
 
 
-def _kopfzeilen(meta: dict) -> str:
+def _kopfzeilen(meta: dict, design: str | None = None) -> str:
     """Was vor dem ersten Ereignis im Terminal steht: womit der Agent arbeitet."""
     zeilen = [f"Modell:    {agent_model(meta) or '(pi-Voreinstellung)'}"]
     if meta.get("thinking"):
@@ -482,10 +567,14 @@ def _kopfzeilen(meta: dict) -> str:
     zeilen.append(f"Werkzeuge: {', '.join(_liste(meta.get('tools', ''))) or '–'}")
     if meta.get("skills"):
         zeilen.append(f"Skills:    {', '.join(_liste(meta['skills']))}")
+    if design:
+        zeilen.append(f"Design:    {design}")
     return f"{ANSI_BLASS}" + "\n".join(zeilen) + f"{ANSI_RESET}\n\n"
 
 
-def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
+def start_agent(
+    slug: str, agent: str, feedback: str = None, design: str = None
+) -> dict:
     """Starte einen Agenten als pi-Subprozess."""
     key = (slug, agent)
 
@@ -501,7 +590,11 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
         return {"error": f"agents/{agent}.md nicht gefunden"}
     meta, system_prompt, _ = definition
 
-    prompt = build_run_prompt(slug, agent, feedback)
+    prompt = build_run_prompt(slug, agent, feedback, design)
+    # Beim Website-Agenten zeigt das Terminal, nach welcher Vorlage er gestaltet
+    design_anzeige = None
+    if agent == "website" and not feedback:
+        design_anzeige = design or "freie Gestaltung"
     cmd = build_pi_command(meta, system_prompt, prompt)
 
     import sys
@@ -536,7 +629,7 @@ def start_agent(slug: str, agent: str, feedback: str = None) -> dict:
 
     proc_info = {
         "process": proc,
-        "output": [_kopfzeilen(meta)],
+        "output": [_kopfzeilen(meta, design_anzeige)],
         "exit_code": None,
     }
 
@@ -758,6 +851,8 @@ class ShipItHandler(SimpleHTTPRequestHandler):
                 self._handle_get_file_content(slug, agent, datei)
             else:
                 self._send_json({"error": "Not found"}, 404)
+        elif path == "/api/designs":
+            self._send_json(list_designs())
         elif path.startswith("/api/agents/") and path.endswith("/prompt"):
             parts = path.split("/")
             agent_name = parts[3]
@@ -1046,8 +1141,14 @@ class ShipItHandler(SimpleHTTPRequestHandler):
         except json.JSONDecodeError:
             body = {}
         feedback = body.get("feedback")
+        design = body.get("design") or None
+        if design is not None and (
+            agent != "website" or design not in {d["name"] for d in list_designs()}
+        ):
+            self._send_json({"error": "Unbekannte Design-Vorlage"}, 400)
+            return
 
-        result = start_agent(slug, agent, feedback)
+        result = start_agent(slug, agent, feedback, design)
         if "error" in result:
             self._send_json(result, 409)
         else:
