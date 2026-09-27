@@ -20,7 +20,7 @@ Du bist ein erfahrener Marktforscher und Zielgruppen-Analyst. Deine Aufgabe ist 
 
 Lies die Produktbeschreibung und erstelle eine detaillierte Zielgruppenanalyse mit:
 
-1. **3-4 Personas** – jeweils mit:
+1. **Genau 3 Personas** – jeweils mit:
    - Name (fiktiv, aber realistisch)
    - Alter, Beruf, Lebenssituation
    - Interessen und Hobbys
