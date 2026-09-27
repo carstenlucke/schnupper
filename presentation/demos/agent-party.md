@@ -31,7 +31,7 @@ routeAlias: agent-party-fundstueck
                 reaktionen="1.023" kommentare="51">
       Nice visual - I’ve actually used most of these. […] YouTube is still one of my favorite ways to understand a role I’m unfamiliar with. … mehr
     </SocialPost>
-    <div class="thm-note">Alex Wang auf LinkedIn, 25.09.2026 · Grafik: GenAI.works</div>
+    <div class="thm-note"><a href="https://www.linkedin.com/posts/alexwang2911_nice-visual-ive-actually-used-most-of-share-7509108760267800577-tFci/" target="_blank">Alex Wang auf LinkedIn, 25.09.2026</a> · Grafik: GenAI.works</div>
   </div>
   <div class="thm-stack">
     <div>
