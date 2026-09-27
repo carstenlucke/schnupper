@@ -805,7 +805,7 @@ Beauftragen und prüfen kann nur, wer **selbst versteht**, worum es geht.
 
 ---
 rubrik: Was nehmen wir mit?
-titel: Euer nächster Schritt?
+titel: Werbung in eigener Sache :)
 class: text-l
 ---
 
