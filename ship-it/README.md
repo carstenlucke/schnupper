@@ -103,7 +103,7 @@ ship-it/
 
 ## KI-Bildgenerierung
 
-Marketing- und Social-Media-Agent können auf Knopfdruck Bilder generieren (Logo bzw. Instagram-Post). Die Bildgenerierung nutzt die OpenAI API (`gpt-image-2`).
+Marketing- und Social-Media-Agent können auf Knopfdruck Bilder generieren (Logo bzw. Instagram-Post). Die Bildgenerierung nutzt die OpenAI API (`gpt-image-2.5-sunburst`).
 
 ### Einrichtung
 
@@ -112,7 +112,7 @@ cp .env.example .env
 # OPENAI_API_KEY in .env eintragen
 ```
 
-### Kosten pro Bild (gpt-image-2, Stand Juni 2026)
+### Kosten pro Bild (gpt-image-2.5-sunburst, Stand September 2026)
 
 | Bild | Quality | Größe | Kosten (ca.) |
 |------|---------|-------|-------------|
