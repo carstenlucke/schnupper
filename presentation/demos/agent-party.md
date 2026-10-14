@@ -8,13 +8,12 @@ untertitel: Eine Gesprächsrunde, in der an jedem Platz eine KI sitzt
 <AgentRunde />
 
 <!--
-- Worum es geht: Nicht wir reden mit der KI — die KIs reden miteinander
-- Jeder Agent ist ein Sprachmodell mit einer Rolle; alle bekommen dasselbe
-  Thema und sprechen reihum, einer nach dem anderen
-- Jeder hört, was vorher gesagt wurde, und reagiert darauf — so entsteht
-  ein Gespräch, das niemand vorher geschrieben hat
-- Überleitung: "Klingt nach Spielerei? Wofür man so eine Runde wirklich
-  brauchen kann, zeigt ein Fundstück von LinkedIn …"
+In dieser Demo redet nicht ihr mit der KI, sondern die KIs reden
+miteinander. Jeder Agent ist ein Sprachmodell mit einer eigenen Rolle. Alle
+bekommen dasselbe Thema und sprechen reihum, einer nach dem anderen.
+
+Jeder hört, was vorher gesagt wurde, und reagiert darauf. So entsteht ein
+Gespräch, das niemand vorher geschrieben hat.
 -->
 
 ---
@@ -67,23 +66,26 @@ routeAlias: agent-party-fundstueck
 </style>
 
 <!--
-- Kein Gedankenspiel: Leute nutzen genau so etwas schon — hier der Beleg
-- Fundstück von LinkedIn: Alex Wang, gut 1,1 Mio. Follower, teilt eine
-  Grafik von GenAI.works — Jobsuche 2026, fünf Schritte, links der alte Weg,
-  rechts der mit KI
-- Frage in die Runde: "Wer hat schon mal ein Vorstellungsgespräch geführt?
-  Wie habt ihr euch vorbereitet?"
-- Schritt 04: Früher YouTube-Videos mit typischen Fragen, heute ein
-  Probeinterview mit einer KI, die nachfragt (Yoodli)
-- Genau das bauen wir mit Agent Party selbst, ohne fertige App: drei
-  Rollenbeschreibungen in normalem Deutsch
-- Die Stelle ist erfunden, aber realistisch: duales Studium mit StudiumPlus —
-  also genau das, worauf ihr euch in ein, zwei Jahren bewerben könntet
-- Alex Wang schreibt im Post auch: "Die letzten Anpassungen mache ich
-  selbst — damit es noch nach mir klingt"
-- Falls jemand fragt, ob KI bei Bewerbungen nicht fragwürdig ist: "KI gegen
-  KI?" oben rechts springt auf die Zusatzfolie dazu
-- Überleitung: "Wie so eine Runde entsteht, zeige ich euch jetzt."
+Eine Runde aus KIs ist kein Gedankenspiel, so etwas nutzen Leute schon
+heute. Das Fundstück stammt von LinkedIn: Alex Wang, der dort gut 1,1
+Millionen Follower hat, teilt eine Grafik von GenAI.works zur Jobsuche 2026.
+Sie zeigt fünf Schritte, links jeweils den alten Weg, rechts den mit KI.
+
+In Schritt 04 geht es ums Üben. Früher hat man sich YouTube-Videos mit
+typischen Interviewfragen angesehen, heute führt man ein Probeinterview mit
+einer KI, die nachfragt (etwa mit Yoodli). Genau das bauen wir mit Agent
+Party nach, nur ohne fertige App: Es sind drei Rollenbeschreibungen in
+normalem Deutsch.
+
+Die Stelle ist erfunden, aber realistisch. Ein duales Studium mit
+StudiumPlus ist genau das, worauf ihr euch in ein, zwei Jahren bewerben
+könntet.
+
+Alex Wang schreibt im Post übrigens auch, dass er die letzten Anpassungen
+selbst macht, damit es noch nach ihm klingt.
+
+Ob KI bei Bewerbungen nicht fragwürdig ist, behandelt eine Zusatzfolie. Ihr
+erreicht sie über „KI gegen KI?“ oben rechts.
 -->
 
 ---
@@ -112,13 +114,14 @@ class: text-xl
 </style>
 
 <!--
-- Den Ablauf einmal durchgehen, bevor die Klasse mitmacht
-- Acht Profile sind mitgeliefert — eine Diskussionsrunde (Ökonomin,
-  Technik-Optimist, Ethikerin, Praktiker, Advocatus Diaboli) und das
-  Vorstellungsgespräch von eben; gleich schreiben wir eigene
-- Zwischenruf: ist nur eine Zeile mehr im Verlauf, die beim nächsten Beitrag
-  mitgeschickt wird — die KI hat kein Gedächtnis, sie bekommt jedes Mal das
-  ganze Gespräch neu
+Acht Profile sind schon mitgeliefert. Fünf davon bilden eine
+Diskussionsrunde: Ökonomin, Technik-Optimist, Ethikerin, Praktiker und
+Advocatus Diaboli. Die übrigen drei spielen das Vorstellungsgespräch von
+eben. Dazu kommen eigene Profile, die ihr selbst schreibt.
+
+Ein Zwischenruf ist technisch nur eine Zeile mehr im Verlauf, die beim
+nächsten Beitrag mitgeschickt wird. Die KI hat nämlich kein Gedächtnis: Sie
+bekommt jedes Mal das ganze Gespräch neu.
 -->
 
 ---
@@ -144,10 +147,10 @@ class: text-xl
 </div>
 
 <!--
-- Im Dashboard ein Profil öffnen und zeigen: Das ist der ganze Agent
-- Frontmatter = Technik, darunter = Rolle
-- Wer die Beschreibung ändert, sieht das Verhalten sofort kippen
-- Überleitung: "Und jetzt seid ihr dran."
+Ein Profil ist eine einzige Textdatei, und mehr ist der ganze Agent nicht.
+Der Kopf der Datei (das sogenannte Frontmatter) legt die Technik fest,
+darunter steht die Rolle. Wer die Beschreibung ändert, sieht das Verhalten
+sofort kippen.
 -->
 
 ---
@@ -174,10 +177,9 @@ hideInToc: true
 </div>
 
 <!--
-- Erst die Rolle: Vorschläge sammeln, einen auswählen, Satz eintippen,
-  "Ausarbeiten lassen"
-- Dann das Thema: Starter zeigen, eigene Ideen zulassen, Handzeichen
-- Besetzung: das neue Profil plus zwei mitgelieferte
+Eine neue Rolle beginnt mit einem einzigen Satz, den Rest des Profils
+arbeitet die KI aus. Die Runde besteht dann aus dem neuen Profil und zwei
+mitgelieferten.
 -->
 
 ---
@@ -194,21 +196,15 @@ Wechsel zur **Agent Party**
 <span class="st-note"><a href="http://localhost:8100" target="_blank">localhost:8100</a> im Browser öffnen</span>
 
 <!--
-- Neues Profil ausarbeiten lassen, Entwurf zeigen, ein Wort ändern, speichern
-- Besetzung wählen, Thema eintragen, Party starten
-- Denkbereich aufklappen: "Was das Modell gedacht hat"
-- Zwischenruf einwerfen, z. B. "Bleibt konkret: Nennt Zahlen."
-- Höhepunkt: einen Satz in einem Profil ändern, dieselbe Party neu starten —
-  die Diskussion dreht sich
-- Ggf. zum Schluss "Fazit erstellen"
-- Variante Vorstellungsgespräch (knüpft an „Wofür das gut ist“ an): Besetzung
-  Personalreferentin, Teamleiter IT, Bewerberin — genau in dieser
-  Reihenfolge; Thema "Vorstellungsgespräch: Duales Studium
-  Wirtschaftsinformatik bei der Lahnblick Optronik GmbH"; Einstiegsfrage
-  "Erzählen Sie doch mal: Warum ein duales Studium – und warum bei uns?";
-  2 Runden
-- Hebel dafür: im Profil der Bewerberin "sagst du das ehrlich" durch "Du
-  übertreibst gern, um gut dazustehen" ersetzen — der Teamleiter bohrt nach
+Zu jedem Beitrag lässt sich aufklappen, was das Modell vorher gedacht hat.
+Ein Zwischenruf wie „Bleibt konkret: Nennt Zahlen.“ lenkt die Runde
+spürbar um.
+
+Am deutlichsten wird es, wenn man einen einzigen Satz in einem Profil ändert
+und dieselbe Party neu startet: Die Diskussion dreht sich. Im
+Vorstellungsgespräch genügt es, im Profil der Bewerberin „sagst du das
+ehrlich“ durch „Du übertreibst gern, um gut dazustehen“ zu ersetzen. Dann
+bohrt der Teamleiter nach.
 -->
 
 ---
@@ -225,20 +221,25 @@ hideInToc: true
 </div>
 
 <!--
-- Überzeugung: Die KI klingt souverän, egal ob das Argument trägt
-- Profiländerung: gleiche Frage, gleiche Besetzung, ein Satz anders — und
-  die Runde kommt woanders an
-- Wer bestimmt die Meinung? Wer die Rolle schreibt. Die KI hat keine eigene
-  — sie hat eine Rolle. Übertragen: Chatbots in Apps, Kundenservice, Social
-  Media — auch dort hat jemand eine Rolle geschrieben, die ihr nicht seht
-- Waren das Agenten? Eher nicht: Die Profile haben bewusst KEINE Werkzeuge —
-  sie können nur reden, nicht handeln. Rückbezug auf "Wofür ihr ChatGPT
-  nutzt": Auch hier wurde nur geantwortet, getan hat niemand etwas. Das
-  waren Chatbots mit einer Rolle. Ein Agent würde z. B. Quellen
-  nachschlagen oder ein Protokoll schreiben
-- Beispiele für den Rückblick merken: überzeugend klingende, aber
-  erfundene Zahlen (Halluzination); lokales Modell in LM Studio statt Cloud
-  (Datenschutz)
+Die KI klingt souverän, ganz egal, ob das Argument trägt. Wie überzeugend
+ein Beitrag wirkt, sagt also wenig darüber, ob er stimmt.
+
+Gleiche Frage, gleiche Besetzung, nur ein Satz im Profil anders, und die
+Runde kommt woanders an. Die Meinung bestimmt, wer die Rolle schreibt. Die
+KI hat keine eigene Meinung, sie hat eine Rolle. Das gilt auch außerhalb der
+Demo: Bei Chatbots in Apps, im Kundenservice oder in sozialen Medien hat
+ebenfalls jemand eine Rolle geschrieben, die ihr nicht seht.
+
+Waren das überhaupt Agenten? Eher nicht. Die Profile haben bewusst keine
+Werkzeuge, sie können nur reden, nicht handeln. Wie bei „Wofür ihr ChatGPT
+nutzt“ wurde auch hier nur geantwortet, getan hat niemand etwas. Es waren
+Chatbots mit einer Rolle. Ein Agent würde zum Beispiel Quellen nachschlagen
+oder ein Protokoll schreiben.
+
+Zwei Beobachtungen tauchen im Rückblick am Ende wieder auf: Zahlen, die
+überzeugend klingen, aber erfunden sind (Halluzination), und die
+Möglichkeit, ein Modell lokal in LM Studio laufen zu lassen statt in der
+Cloud (Datenschutz).
 -->
 
 ---
@@ -250,11 +251,6 @@ hideInToc: true
 <div class="thm-center">
   <DemoEnde />
 </div>
-
-<!--
-- Noch Zeit? "Noch eine Demo" führt zur Übersicht
-- Sonst weiter (→) zu "Was nehmen wir mit?"
--->
 
 ---
 rubrik: Agent Party · Zusatzfolie
@@ -292,23 +288,26 @@ hideInToc: true
 </style>
 
 <!--
-- Zusatzfolie, nicht im Folienverlauf: erreichbar über "KI gegen KI?" auf
-  "Wofür das gut ist", für die Frage, ob KI bei Bewerbungen nicht
-  gesellschaftlich fragwürdig ist. Pfeiltasten oder "Zurück zum Fundstück"
-  führen wieder in den Verlauf
-- Die Grafik zeigt fünf Schritte, in denen KI hilft. Zu Ende gedacht heißt
-  das: KI schreibt, KI liest — und kein Mensch lernt den anderen kennen
-- In unserer Demo ist das sogar wörtlich so: Auch die Bewerberin ist eine KI.
-  Frage in die Runde: "Hat sich da eigentlich noch jemand beworben?"
-- Kal Makwana: "Mit KI auf der einen Seite die KI auf der anderen Seite
-  schlagen zu wollen, ist ein aussichtsloses Unterfangen." Firmen weichen
-  deshalb auf Empfehlungen aus dem eigenen Team aus. Einordnen: Kal Makwana
-  leitet selbst eine Plattform für solche Empfehlungen — auch ein Kommentar hat
-  eine Rolle, wie unsere Profile
-- Die Personalabteilung ist nicht der Gegner: Wer 800 Bewerbungen auf eine
-  Stelle bekommt, greift zur Maschine. Das Wettrüsten hat zwei Seiten
-- Der Unterschied: Üben macht euch besser, im echten Gespräch sitzt ihr
-  selbst. Ein generiertes Anschreiben ersetzt euch — und klingt wie alle
-  anderen. Alex Wang schreibt es im Post selbst: "Die letzten Anpassungen
-  mache ich von Hand — damit es noch nach mir klingt"
+Diese Zusatzfolie liegt außerhalb des Folienverlaufs. Sie geht der Frage
+nach, ob KI bei Bewerbungen nicht gesellschaftlich fragwürdig ist. Mit den
+Pfeiltasten oder über „Zurück zum Fundstück“ geht es wieder in den Verlauf.
+
+Die Grafik zeigt fünf Schritte, in denen KI bei der Jobsuche hilft. Zu Ende
+gedacht heißt das: KI schreibt, KI liest, und kein Mensch lernt den anderen
+kennen. In unserer Demo ist das sogar wörtlich so, denn auch die Bewerberin
+ist eine KI. Hat sich da eigentlich noch jemand beworben?
+
+Kal Makwana schreibt dazu sinngemäß: „Mit KI auf der einen Seite die KI auf
+der anderen Seite schlagen zu wollen, ist ein aussichtsloses Unterfangen.“
+Firmen weichen deshalb auf Empfehlungen aus dem eigenen Team aus. Allerdings
+leitet Kal Makwana selbst eine Plattform für solche Empfehlungen. Auch ein
+Kommentar hat also eine Rolle, genau wie unsere Profile.
+
+Die Personalabteilung ist dabei nicht der Gegner. Wer 800 Bewerbungen auf
+eine Stelle bekommt, greift zur Maschine. Das Wettrüsten hat zwei Seiten.
+
+Der Unterschied liegt woanders: Üben macht euch besser, und im echten
+Gespräch sitzt ihr selbst. Ein generiertes Anschreiben dagegen ersetzt euch
+und klingt wie alle anderen. Alex Wang schreibt es im Post selbst: Die
+letzten Anpassungen macht er von Hand, damit es noch nach ihm klingt.
 -->

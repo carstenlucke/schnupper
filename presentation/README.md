@@ -83,7 +83,7 @@ Die Demo-Blöcke liegen je als eigener Foliensatz unter [`demos/`](demos/);
 **Die Reflexion ist zweigeteilt.** Jeder Demo-Block endet mit einer eigenen
 Bewertung dessen, was man gerade gesehen hat — die Fragen unterscheiden sich
 je Demo grundlegend. Der Rückblick („Das haben wir heute gesehen") gilt für
-alle und kommt einmal im gemeinsamen Schluss; seine Sprecher-Notizen nennen
+alle und kommt einmal im gemeinsamen Schluss; seine Notizen nennen
 für jede Demo das passende Beispiel für Fehler, Kosten und Datenschutz.
 
 ## Präsentationsdurchführung
@@ -108,21 +108,21 @@ für jede Demo das passende Beispiel für Fehler, Kosten und Datenschutz.
 ### Während der Vorlesung
 
 - **Navigation**: `→` / `Space` weiter, `←` zurück, `O` Folienübersicht.
-- **Presenter-Modus**: `P` öffnet die Moderatoransicht mit Sprecher-Notizen
-  (Notizen stehen als HTML-Kommentare in `slides.md`).
+- **Presenter-Modus**: `P` öffnet die Moderatoransicht mit den Notizen.
+  Sie stehen als HTML-Kommentare unter den Folien und sind für Lesende
+  geschrieben, die die Präsentation später allein durchgehen.
 - **Zeichnen**: `D` aktiviert das Whiteboard-Overlay
   (`drawings.persist: false` — Zeichnungen werden beim Neuladen verworfen).
 - **Gelbe Folien** sind Fragen an das Publikum: Hände hochheben lassen, kurze
   Rufrunde.
 - **Demo wählen**: Auf der Übersichtsfolie die Karte der Demo anklicken.
 - **Live-Demo-Übergang**: Bei „Los geht's!" auf den Tab der Demo wechseln.
-  Was dort zu zeigen ist, steht in den Sprecher-Notizen dieser Folie.
 
 ## Dateien
 
 | Datei / Ordner | Inhalt |
 |---|---|
-| `slides.md` | Gemeinsamer Handlungsstrang mit der Übersicht der Demos; Sprecher-Notizen als HTML-Kommentare |
+| `slides.md` | Gemeinsamer Handlungsstrang mit der Übersicht der Demos; Notizen als HTML-Kommentare |
 | `demos/` | Ein Foliensatz je Demo: Vorstellung, Aufbau, Mitmachfrage, Übergang, Bewertung |
 | `setup/main.ts` | Blättern an den Rändern der Demos: am Ende weiter zum Schluss, rückwärts zur Übersicht |
 | `slide-bottom.vue` | Der Link „Demos" in der Fußzeile jeder Demo-Folie |
