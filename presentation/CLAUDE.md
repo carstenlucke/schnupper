@@ -117,6 +117,7 @@ einsetzen.
 | `<QuestionItem>` | Einzelne Frage, für Folien mit mehreren Fragen |
 | `.thm-flow` + `<FlowArrow>` | Karten nebeneinander mit Pfeil oder `text="vs."` dazwischen |
 | `.thm-sample` (`.sprache`) | Beispiel in einer Karte: Code bzw. Satz in Alltagssprache |
+| `<Fenster>` + `.thm-dok` | Programmfenster als Skizze: Leiste mit drei Punkten und `titel`, Slot `leiste` rechts daneben; `kompakt` für enge Diagramme. Ein Dokument darin als `.thm-dok` mit `.thm-zeile` (`titel`, `kurz`), Hervorhebungen setzt die Folie selbst. In `<CopyPasteSchleife>` und `<AgentDurchlauf>` |
 | `.thm-center` | Inhalt vertikal mittig statt gestreckt — für Folien mit wenig Text |
 | `class: text-l` | Folienweit größere Schrift, für dünn besetzte Folien; zieht auch `.thm-note` und `<QuestionItem>` mit |
 | `class: text-xl` | Noch größer, für Folien mit wenig Text, die die Fläche füllen sollen (Einstieg); zieht auch `.thm-lead`, `.thm-note`, `<QuestionItem>` und den Text von `layout: statement` mit `zitat: false` mit |

@@ -119,6 +119,28 @@
   border-left-color: var(--thm-green-500);
 }
 
+/* ---- Dokument als Skizze in einem <Fenster>: graue Zeilen statt Text ---- */
+.thm-dok {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.9rem 1rem;
+}
+
+.thm-zeile {
+  height: 0.45rem;
+  background: var(--thm-grey-200);
+  transition: background 0.4s ease;
+}
+
+.thm-zeile.kurz { width: 65%; }
+.thm-zeile.titel { width: 45%; height: 0.7rem; background: var(--thm-grey-400); margin-bottom: 0.2rem; }
+
+.thm-dok.kompakt { flex: none; gap: 0.35rem; padding: 0.55rem 0.65rem; }
+.thm-dok.kompakt .thm-zeile { height: 0.32rem; }
+.thm-dok.kompakt .thm-zeile.titel { height: 0.5rem; margin-bottom: 0; }
+
 /* ---- Zentrierte Aussage ---- */
 .thm-center {
   display: flex;

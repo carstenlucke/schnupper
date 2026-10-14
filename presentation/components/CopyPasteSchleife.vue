@@ -44,14 +44,14 @@ const offen = computed(() => $clicks.value >= 1)
       </div>
     </div>
 
-    <div class="cp-fenster">
-      <div class="cp-leiste"><span /><span /><span /><b>ChatGPT</b><i v-click="1">App</i></div>
+    <Fenster titel="ChatGPT" class="cp-fenster">
+      <template #leiste><i v-click="1" class="cp-app">App</i></template>
       <div class="cp-chat">
         <div class="cp-blase ich">Mach diesen Absatz besser: <em>„Der Klimawandel ist …“</em></div>
         <div class="cp-blase ki">Gern! Hier ist eine verbesserte Fassung:&nbsp;…</div>
         <div class="cp-eingabe" />
       </div>
-    </div>
+    </Fenster>
 
     <div class="cp-mitte">
       <div class="cp-weg">
@@ -68,19 +68,18 @@ const offen = computed(() => $clicks.value >= 1)
       </div>
     </div>
 
-    <div class="cp-fenster">
-      <div class="cp-leiste"><span /><span /><span /><b>Referat.docx</b></div>
-      <div class="cp-dok">
-        <div class="cp-zeile titel" />
-        <div class="cp-zeile" />
-        <div class="cp-zeile kurz" />
-        <div class="cp-zeile markiert" />
-        <div class="cp-zeile markiert kurz" />
-        <div class="cp-zeile" />
-        <div class="cp-zeile" />
-        <div class="cp-zeile kurz" />
+    <Fenster titel="Referat.docx" class="cp-fenster">
+      <div class="thm-dok">
+        <div class="thm-zeile titel" />
+        <div class="thm-zeile" />
+        <div class="thm-zeile kurz" />
+        <div class="thm-zeile markiert" />
+        <div class="thm-zeile markiert kurz" />
+        <div class="thm-zeile" />
+        <div class="thm-zeile" />
+        <div class="thm-zeile kurz" />
       </div>
-    </div>
+    </Fenster>
 
     <div class="cp-wieder">
       <ThmIcon name="refresh-cw" :size="1" />
@@ -102,39 +101,9 @@ const offen = computed(() => $clicks.value >= 1)
   align-items: center;
 }
 
-.cp-fenster {
-  background: var(--white);
-  border: 1px solid var(--thm-grey-200);
-  box-shadow: 0 0.4rem 1.2rem rgba(34, 44, 49, 0.08);
-  height: 14rem;
-  display: flex;
-  flex-direction: column;
-}
+.cp-fenster { height: 14rem; }
 
-.cp-leiste {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.45rem 0.7rem;
-  background: var(--thm-grey-50);
-  border-bottom: 1px solid var(--thm-grey-200);
-  font-size: 0.72rem;
-}
-
-.cp-leiste span {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: var(--thm-grey-200);
-}
-
-.cp-leiste b {
-  margin-left: 0.5rem;
-  font-weight: var(--fw-semibold);
-  color: var(--thm-grey-600);
-}
-
-.cp-leiste i {
+.cp-app {
   margin-left: auto;
   padding: 0 0.35rem;
   border: 1px solid var(--thm-grey-300);
@@ -179,22 +148,7 @@ const offen = computed(() => $clicks.value >= 1)
   border: 1px solid var(--thm-grey-200);
 }
 
-.cp-dok {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  padding: 0.9rem 1rem;
-}
-
-.cp-zeile {
-  height: 0.45rem;
-  background: var(--thm-grey-200);
-}
-
-.cp-zeile.kurz { width: 65%; }
-.cp-zeile.titel { width: 45%; height: 0.7rem; background: var(--thm-grey-400); margin-bottom: 0.2rem; }
-.cp-zeile.markiert { background: var(--thm-green-300); }
+.thm-zeile.markiert { background: var(--thm-green-300); }
 
 .cp-mitte {
   display: flex;

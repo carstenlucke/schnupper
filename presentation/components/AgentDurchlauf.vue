@@ -248,17 +248,16 @@ const fertig = computed(() => n.value === schritte.length - 1)
       >
         <ThmIcon :name="w.icon" :size="0.9" /> {{ w.text }}
       </div>
-      <div class="ad-dok" :class="{ liest, geschrieben }">
-        <div class="ad-leiste"><span /><span /><span /><b>Referat.docx</b></div>
-        <div class="ad-zeilen">
-          <div class="ad-zeile titel" />
-          <div class="ad-zeile" />
-          <div class="ad-zeile kurz" />
-          <div class="ad-zeile absatz3" />
-          <div class="ad-zeile absatz3 kurz" />
-          <div class="ad-zeile" />
+      <Fenster titel="Referat.docx" kompakt class="ad-dok" :class="{ liest, geschrieben }">
+        <div class="thm-dok kompakt">
+          <div class="thm-zeile titel" />
+          <div class="thm-zeile" />
+          <div class="thm-zeile kurz" />
+          <div class="thm-zeile absatz3" />
+          <div class="thm-zeile absatz3 kurz" />
+          <div class="thm-zeile" />
         </div>
-      </div>
+      </Fenster>
     </div>
 
     <!-- Unten: was gerade passiert -->
@@ -629,58 +628,14 @@ const fertig = computed(() => n.value === schritte.length - 1)
 
 .ad-werkzeug.an :deep(.thm-icon) { color: var(--white); }
 
-.ad-dok {
-  margin-top: 0.35rem;
-  background: var(--white);
-  border: 1px solid var(--thm-grey-200);
-  box-shadow: 0 0.4rem 1.2rem rgba(34, 44, 49, 0.08);
-}
-
-.ad-leiste {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.3rem 0.5rem;
-  background: var(--thm-grey-50);
-  border-bottom: 1px solid var(--thm-grey-200);
-  font-size: 0.72em;
-}
-
-.ad-leiste span {
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 50%;
-  background: var(--thm-grey-200);
-}
-
-.ad-leiste b {
-  margin-left: 0.35rem;
-  font-weight: var(--fw-semibold);
-  color: var(--thm-grey-600);
-}
-
-.ad-zeilen {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 0.55rem 0.65rem;
-}
-
-.ad-zeile {
-  height: 0.32rem;
-  background: var(--thm-grey-200);
-  transition: background 0.4s ease;
-}
-
-.ad-zeile.kurz { width: 65%; }
-.ad-zeile.titel { width: 45%; height: 0.5rem; background: var(--thm-grey-400); }
+.ad-dok { margin-top: 0.35rem; }
 
 /* Beim Lesen läuft eine Markierung über die Zeilen */
-.ad-dok.liest .ad-zeile:not(.titel) { animation: ad-lesen 1.6s ease-in-out infinite; }
-.ad-dok.liest .ad-zeile:nth-child(3) { animation-delay: 0.15s; }
-.ad-dok.liest .ad-zeile:nth-child(4) { animation-delay: 0.3s; }
-.ad-dok.liest .ad-zeile:nth-child(5) { animation-delay: 0.45s; }
-.ad-dok.liest .ad-zeile:nth-child(6) { animation-delay: 0.6s; }
+.ad-dok.liest .thm-zeile:not(.titel) { animation: ad-lesen 1.6s ease-in-out infinite; }
+.ad-dok.liest .thm-zeile:nth-child(3) { animation-delay: 0.15s; }
+.ad-dok.liest .thm-zeile:nth-child(4) { animation-delay: 0.3s; }
+.ad-dok.liest .thm-zeile:nth-child(5) { animation-delay: 0.45s; }
+.ad-dok.liest .thm-zeile:nth-child(6) { animation-delay: 0.6s; }
 
 @keyframes ad-lesen {
   0%, 100% { background: var(--thm-grey-200); }
@@ -688,7 +643,7 @@ const fertig = computed(() => n.value === schritte.length - 1)
 }
 
 /* Nach dem Schreiben: Absatz 3 ist neu */
-.ad-dok.geschrieben .ad-zeile.absatz3 { background: var(--thm-green-400); }
+.ad-dok.geschrieben .thm-zeile.absatz3 { background: var(--thm-green-400); }
 
 /* ---- Erklärzeile, am Ende Merksatz ---- */
 
