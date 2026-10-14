@@ -26,6 +26,8 @@ interface Schritt {
   text: string
   pfeile?: Partial<Record<Pfeil, string>>
   werkzeug?: 'lesen' | 'schreiben'
+  /* die Anweisungen gehen mit ans Modell und leuchten auf */
+  anweisungen?: boolean
 }
 
 const schritte: Schritt[] = [
@@ -37,6 +39,7 @@ const schritte: Schritt[] = [
   {
     text: 'Das Harness schickt den Auftrag ans Modell, dazu seine Anweisungen und die Liste der Werkzeuge.',
     pfeile: { zumModell: 'Auftrag + Anweisungen + Werkzeuge' },
+    anweisungen: true,
   },
   {
     text: 'Das Modell kann nichts anfassen. Es antwortet mit einem Wunsch: dieses Werkzeug, bitte.',
@@ -48,8 +51,9 @@ const schritte: Schritt[] = [
     werkzeug: 'lesen',
   },
   {
-    text: 'Das Ergebnis geht zurück ans Modell, zusammen mit allem, was bisher geschah. Nächste Runde.',
-    pfeile: { vomWerkzeug: 'Text des Referats', zumModell: 'Ergebnis + Verlauf' },
+    text: 'Das Ergebnis geht ans Modell — und alles andere noch einmal mit. Das Modell merkt sich nichts.',
+    pfeile: { vomWerkzeug: 'Text des Referats', zumModell: 'Anweisungen + Werkzeuge + Verlauf' },
+    anweisungen: true,
   },
   {
     text: 'Jetzt kennt das Modell das Referat und schreibt einen besseren Absatz 3.',
@@ -62,7 +66,8 @@ const schritte: Schritt[] = [
   },
   {
     text: 'Dritte Runde: Das Modell erfährt, dass es geklappt hat.',
-    pfeile: { vomWerkzeug: 'gespeichert ✓', zumModell: 'Ergebnis + Verlauf' },
+    pfeile: { vomWerkzeug: 'gespeichert ✓', zumModell: 'Anweisungen + Werkzeuge + Verlauf' },
+    anweisungen: true,
   },
   {
     text: 'Kein Werkzeug mehr nötig — das Modell meldet: fertig.',
@@ -95,13 +100,16 @@ const s = computed(() => schritte[n.value])
 const aktiv = (p: Pfeil) => s.value.pfeile?.[p] !== undefined
 const text = (p: Pfeil) => s.value.pfeile?.[p] ?? ruhe[p]
 
+/* Runden zählen die Anfragen ans Modell, Einträge alles, was im Gedächtnis landet */
+const zaehleRunden = (liste: Schritt[]) => liste.filter(x => x.pfeile?.zumModell).length
+const zaehleEintraege = (liste: Schritt[]) =>
+  liste.reduce((summe, x) => summe + merkt.filter(p => x.pfeile?.[p]).length, 0)
+
 const bisher = computed(() => schritte.slice(0, n.value + 1))
-const runde = computed(() => bisher.value.filter(x => x.pfeile?.zumModell).length)
-const eintraege = computed(() =>
-  bisher.value.reduce((summe, x) => summe + merkt.filter(p => x.pfeile?.[p]).length, 0),
-)
-const maxEintraege = schritte.reduce((summe, x) => summe + merkt.filter(p => x.pfeile?.[p]).length, 0)
-const maxRunden = schritte.filter(x => x.pfeile?.zumModell).length
+const runde = computed(() => zaehleRunden(bisher.value))
+const eintraege = computed(() => zaehleEintraege(bisher.value))
+const maxRunden = zaehleRunden(schritte)
+const maxEintraege = zaehleEintraege(schritte)
 
 const steuerung = computed(() => [
   {
@@ -113,8 +121,8 @@ const steuerung = computed(() => [
   {
     icon: 'file-text',
     name: 'Anweisungen',
-    an: n.value === 2,
-    info: n.value === 2 ? 'gehen mit ans Modell' : 'Rolle und Aufgabe',
+    an: !!s.value.anweisungen,
+    info: s.value.anweisungen ? 'gehen mit ans Modell' : 'Rolle und Aufgabe',
   },
   {
     icon: 'notebook-pen',
@@ -139,7 +147,7 @@ const werkzeuge = [
 
 const modellAktiv = computed(() => aktiv('zumModell') || aktiv('vomModell'))
 const liest = computed(() => s.value.werkzeug === 'lesen')
-const geschrieben = computed(() => n.value >= 7)
+const geschrieben = computed(() => bisher.value.some(x => x.werkzeug === 'schreiben'))
 const fertig = computed(() => n.value === schritte.length - 1)
 </script>
 

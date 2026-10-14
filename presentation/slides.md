@@ -524,16 +524,17 @@ Gedächtnis
 [click] Das Harness prüft an den Leitplanken: Darf der Agent das? Ja — dann
 führt es das Werkzeug aus und liest das Referat
 
-[click] Das Ergebnis geht zurück ans Modell, mit dem ganzen bisherigen
-Verlauf. Das Modell selbst merkt sich nichts — es bekommt jedes Mal alles
-neu. Runde 2
+[click] Das Ergebnis geht zurück ans Modell — und alles andere noch einmal:
+Anweisungen, Werkzeuge, der ganze bisherige Verlauf. Das Modell selbst
+merkt sich nichts, es bekommt jedes Mal alles neu. Deshalb leuchten die
+Anweisungen wieder auf. Runde 2
 
 [click] Jetzt kennt es den Text und schreibt den neuen Absatz — wieder als
 Wunsch an ein Werkzeug
 
 [click] Leitplanken: Schreiben ist erlaubt. Absatz 3 im Referat wird grün
 
-[click] Runde 3: "Hat geklappt"
+[click] Runde 3: "Hat geklappt" — und wieder geht alles mit ans Modell
 
 [click] Das Modell braucht kein Werkzeug mehr und meldet: fertig. Daran
 erkennt das Harness, dass die Schleife zu Ende ist
