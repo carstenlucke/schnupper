@@ -32,9 +32,13 @@ class: text-l
 </style>
 
 <!--
-- Jeden Agenten kurz vorstellen, Rolle erklären
-- "Die arbeiten wie Abteilungen in einem Unternehmen"
-- Website-Agent ist besonders: baut etwas, das man im Browser öffnen kann
+Die fünf Agenten arbeiten wie Abteilungen in einem Unternehmen: Jeder hat
+eine eigene Rolle und liefert seinen Teil zum Produktlaunch, von der
+Zielgruppe über Werbetexte und Posts bis zum Preis.
+
+Der Web-Entwickler fällt aus der Reihe. Er schreibt nicht nur Texte,
+sondern baut etwas, das man im Browser öffnen kann: eine fertige Website
+für das Produkt.
 -->
 
 ---
@@ -60,12 +64,14 @@ untertitel: Manche Agenten brauchen die Ergebnisse anderer, bevor sie starten k�
 </style>
 
 <!--
-- Zeigen: Abhängigkeiten wie in einem echten Projekt
-- Zielgruppe + Kalkulation starten parallel (sofort)
-- Marketing wartet auf Zielgruppe
-- Social Media wartet auf Marketing
-- Website wartet auf alle
-- "Jetzt starten wir! Dashboard öffnen..."
+Wie in einem echten Projekt hängen die Aufgaben voneinander ab. Zielgruppe
+und Kalkulation brauchen nur die Produktbeschreibung und können sofort und
+gleichzeitig loslegen.
+
+Alle anderen warten auf Ergebnisse: Das Marketing braucht die Zielgruppe,
+Social Media braucht das Marketing. Die Website kommt erst, wenn
+Zielgruppe, Marketing und Kalkulation fertig sind, denn sie setzt deren
+Ergebnisse zusammen.
 -->
 
 ---
@@ -91,10 +97,10 @@ hideInToc: true
 </div>
 
 <!--
-- Die 4 Starter-Ideen als Inspiration zeigen
-- Schüler können eigene Ideen einbringen
-- 2-3 Minuten Brainstorming, dann Abstimmung per Handzeichen
-- Gewähltes Produkt in Ship It! eingeben (kurze Beschreibung tippen)
+Die vier Ideen sind nur Anregungen, jede andere Produktidee funktioniert
+genauso. Mehr als eine kurze Beschreibung in ganz normalem Deutsch
+brauchen die Agenten nicht: Alles Weitere, von der Zielgruppe bis zur
+Website, erarbeiten sie selbst.
 -->
 
 ---
@@ -111,13 +117,14 @@ Wechsel zum **Ship It! Dashboard**
 <span class="st-note"><a href="http://localhost:8000" target="_blank">localhost:8000</a> im Browser öffnen</span>
 
 <!--
-- Browser wechseln, Dashboard zeigen
-- Produkt eingeben
-- Agenten nacheinander starten
-- Zwischen den Ergebnissen: Vorhersage-Spiel (nächste Folien)
-- Markdown-Files von 1-2 Agenten zeigen (z.B. Zielgruppe, Marketing)
-- Hinweis: Die Agenten sind nicht programmiert, sondern in natürlicher Sprache definiert
-- "Schaut mal: Das ist kein Code — das ist einfach Deutsch. So sagt man der KI, was sie tun soll."
+Im Dashboard laufen die Agenten nacheinander los, und ihre Ergebnisse
+erscheinen nach und nach.
+
+Bemerkenswert ist, wie die Agenten selbst aussehen: Sie sind nicht
+programmiert, sondern in natürlicher Sprache beschrieben. Jeder Agent ist
+eine Markdown-Datei. Oben stehen das Modell und die Werkzeuge, darunter
+die Aufgabe in ganz normalem Deutsch. Das ist kein Code, so sagt man der
+KI, was sie tun soll.
 -->
 
 ---
@@ -135,15 +142,17 @@ hideInToc: true
 </div>
 
 <!--
-- Übergang zur kritischen Bewertung
-- Jede Frage einzeln durchgehen, Daumen hoch/runter
-- Nachfragen: WARUM? Was genau stört euch?
-- "Was hat überrascht?"
-- "Was fehlt offensichtlich?"
-- "Würde ein echtes Unternehmen das so verwenden?"
-- Beispiele für den Rückblick merken: fragwürdige Zahlen in der
-  Kalkulation (Halluzination), eure Produktidee ging an einen Cloud-Dienst
-  (Datenschutz)
+Die Ergebnisse sehen auf den ersten Blick beeindruckend aus. Ein
+kritischer Blick lohnt sich trotzdem, und das Daumen hoch oder runter ist
+erst der Anfang. Spannender ist das Warum: Was genau überzeugt, was stört?
+Was hat überrascht, was fehlt offensichtlich? Und würde ein echtes
+Unternehmen das so verwenden?
+
+Zwei Dinge fallen dabei oft auf. Die Zahlen in der Kalkulation klingen
+plausibel, sind aber teils fragwürdig, denn die KI hat sie sich
+ausgedacht. Das nennt man Halluzination. Außerdem ging eure Produktidee
+an einen Cloud-Dienst, und damit stellt sich die Frage nach dem
+Datenschutz.
 -->
 
 ---
@@ -156,7 +165,3 @@ hideInToc: true
   <DemoEnde />
 </div>
 
-<!--
-- Noch Zeit? "Noch eine Demo" führt zur Übersicht
-- Sonst weiter (→) zu "Was nehmen wir mit?"
--->

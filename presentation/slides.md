@@ -26,9 +26,11 @@ Prof. Dr. Carsten Lucke
 </div>
 
 <!--
-- Willkommen, kurze Vorstellung
-- Thema: KI in der Praxis, nicht nur Theorie
-- Später: Live-Demo, bei der IHR mitbestimmt
+Willkommen zur Schnuppervorlesung „Vom Chatbot zum KI-Agenten“. Es geht um
+KI in der Praxis, nicht nur um Theorie: was hinter ChatGPT & Co. steckt, was
+einen KI-Agenten davon unterscheidet und was Agenten heute schon können.
+
+Im Mittelteil steht eine Live-Demo, bei der das Publikum mitbestimmt.
 -->
 
 ---
@@ -40,11 +42,10 @@ hideInToc: true
 Wo seid ihr **heute** <br>schon KI begegnet?
 
 <!--
-- Offene Frage, Antworten zurufen lassen und sammeln
-- "Heute" betonen: Es geht um den Alltag, nicht nur um Chatbots
-- Nennt jemand ChatGPT: parken — "Dazu gleich mehr"
-- Nachhaken, falls es stockt: Wecker, Handy entsperren, Feed, Navi, Musik
-- Überleitung: "Und was ist mit …?" — nächste Folie löst auf
+Die Frage zielt auf den Alltag, nicht nur auf Chatbots. KI steckt in vielen
+Dingen, die man kaum noch bemerkt: im Wecker, beim Entsperren des Handys, im
+Feed, im Navi, bei der Musik. ChatGPT ist nur das bekannteste Beispiel, dazu
+gleich mehr.
 -->
 
 ---
@@ -72,12 +73,16 @@ class: text-xl
 </div>
 
 <!--
-- Bezug zur Lebenswelt der Schüler
-- Mit den Zurufen abgleichen: Was wurde genannt, was nicht?
-- KI ist kein Zukunftsthema — es ist Gegenwart
-- Die Frage ist nicht OB KI kommt, sondern wie wir damit umgehen
-- Überleitung zur Umfrage: Beim letzten Punkt bleiben wir — wer von euch
-  hat so etwas schon benutzt?
+Die vier Beispiele stammen aus eurem Alltag. Empfehlungen, Feeds und
+Übersetzungen laufen so selbstverständlich, dass man kaum merkt, dass KI
+dahintersteckt.
+
+KI ist also kein Zukunftsthema, sondern Gegenwart. Die Frage ist nicht, ob
+KI kommt, sondern wie wir damit umgehen.
+
+Für den Rest der Vorlesung ist die letzte Karte die wichtigste: ChatGPT &
+Co. schreiben Texte und beantworten Fragen — und fangen gerade an, auch zu
+handeln.
 -->
 
 ---
@@ -90,10 +95,8 @@ hideInToc: true
 Wer von euch hat schon mal <br>**Claude, ChatGPT, Gemini <br>oder Copilot** benutzt?
 
 <!--
-- Hände hoch! (Erwartung: fast alle)
-- Nur Handzeichen — wofür ihr das nutzt, fragen wir später
-- "Fast alle also. Dann schauen wir uns jetzt an, womit ihr da eigentlich
-  redet."
+Fast alle haben einen dieser Chatbots schon benutzt. Wofür, kommt etwas
+später. Zuerst geht es darum, womit man da eigentlich redet.
 -->
 
 ---
@@ -207,28 +210,35 @@ class: text-l
 </style>
 
 <!--
-- "Wir haben jetzt schon ein paarmal ChatGPT gesagt. Was steckt da
-  eigentlich drin?" — ein Large Language Model, ein großes Sprachmodell
-- Large: Es hat mehr Text gelesen, als ein Mensch in tausend Leben lesen
-  könnte
-- Language: Dabei hat es gelernt, wie Sprache funktioniert — Grammatik,
-  Fakten, Stil, sogar Programmiersprachen
-- Model: Im Kern macht es etwas erstaunlich Einfaches: Es sagt vorher,
-  welches Wort als Nächstes kommt. Dann hängt es das Wort an und macht
-  weiter — Wort für Wort
-- Rechts ausprobieren lassen: "Wie geht der Satz weiter?" Die meisten
-  sagen Bäcker oder Training — genau wie das Modell. Mond ist möglich,
-  aber sehr unwahrscheinlich (Zahlen sind ausgedacht)
-- Unten zwei Reihen: MODELLE sind das Gehirn, APPS das Fenster, in dem
-  ihr mit ihnen redet. ChatGPT ist die App, das Modell darin heißt z. B.
-  GPT-5.6. Copilot von Microsoft ist auch eine App — darin arbeiten vor
-  allem GPT-Modelle. Le Chat ist die App von Mistral, einem Anbieter aus
-  Frankreich. Claude und Gemini heißen als App und als Modell gleich
-- Die Namen hinter dem Punkt sind Varianten: größer und klüger oder
-  kleiner und schneller
-- Llama (Meta), Mistral und DeepSeek gibt es auch zum Herunterladen — die
-  laufen dann sogar auf dem eigenen Rechner
-- Dieses Wort "Modell" kommt ab jetzt immer wieder vor
+Hinter ChatGPT & Co. steckt ein Large Language Model, kurz LLM, auf Deutsch
+ein großes Sprachmodell. Die drei Wörter beschreiben, was es ist:
+
+- **Large:** Es hat mehr Text gelesen, als ein Mensch in tausend Leben lesen
+  könnte.
+- **Language:** Dabei hat es gelernt, wie Sprache funktioniert — Grammatik,
+  Fakten, Stil, sogar Programmiersprachen.
+- **Model:** Im Kern macht es etwas erstaunlich Einfaches. Es sagt vorher,
+  welches Wort als Nächstes kommt, hängt das Wort an und macht weiter — Wort
+  für Wort.
+
+Rechts könnt ihr das selbst ausprobieren: Wie geht der Satz weiter? Die
+meisten tippen auf Bäcker oder Training, genau wie das Modell. Mond ist
+möglich, aber sehr unwahrscheinlich. Die Zahlen auf der Folie sind
+ausgedacht und dienen nur der Veranschaulichung.
+
+Unten stehen zwei Reihen. Die Modelle sind das Gehirn, die Apps das Fenster,
+in dem ihr mit ihnen redet. ChatGPT ist die App, das Modell darin heißt zum
+Beispiel GPT-5.6. Copilot von Microsoft ist ebenfalls eine App, darin
+arbeiten vor allem GPT-Modelle. Le Chat ist die App von Mistral, einem
+Anbieter aus Frankreich. Claude und Gemini heißen als App und als Modell
+gleich.
+
+Die Namen hinter einem Modell, etwa Sol, Terra und Luna bei GPT-5.6, sind
+Varianten: größer und klüger oder kleiner und schneller. Llama (von Meta),
+Mistral und DeepSeek gibt es auch zum Herunterladen, sie laufen dann sogar
+auf dem eigenen Rechner.
+
+Das Wort „Modell“ kommt im weiteren Verlauf immer wieder vor.
 -->
 
 ---
@@ -298,27 +308,31 @@ clicks: 2
 </style>
 
 <!--
-- DAS ist der Paradigmenwechsel den LLMs gebracht haben
-- Früher: Nur wer programmieren konnte, konnte digitale Systeme steuern
-- Heute: Natürliche Sprache reicht — LLMs sind der "Dolmetscher"
-- Bezug zu den Demos: Die Agenten verstehen deutsche Aufträge
-- Mit → durch die drei Beispiele blättern; die Punkte unten zeigen, wo wir
-  stehen. Nach dem dritten geht es zur nächsten Folie
-- Beispiel 1, Daten: Knopf "Und wenn es komplizierter wird?" zeigt 25
-  Zeilen TypeScript, die Primzahlen aus einem Zahlenstrom sammeln — gegen
-  zwei Sätze an einen Agenten. Nicht vorlesen, nur wirken lassen.
-  Schließen mit Klick daneben oder Esc. (Genau diese Aufgabe hat bei den
-  Counting Agents der Primzahl-Agent.)
-- Beispiel 2, Skizze: Früher ein 3D-Programm wie Blender oder Code wie
-  hier (OpenSCAD: ein Quader mit einem Zylinder obendrauf — von einer
-  Lok ist das noch weit entfernt). Heute: Foto der Skizze an das LLM,
-  dazu ein Satz. Heraus kommt eine Datei für den 3D-Drucker. Die Sprache
-  ist nicht mehr nur Text — das Modell versteht auch Bilder
-- Beispiel 3, App: Früher HTML und JavaScript, hier nur ein einziger
-  Antwortknopf. Heute: Notizen abfotografieren, einen Satz dazu — fertig
-  ist ein Quiz im Browser. Frage ans Publikum: "Wer hat so was schon
-  mal gemacht?"
-- "Aber es gibt noch ein Problem..."
+Die großen Sprachmodelle haben grundlegend verändert, wie Menschen digitale
+Systeme steuern. Früher konnte das nur, wer programmieren konnte. Heute
+reicht natürliche Sprache, das LLM übernimmt die Rolle des Dolmetschers.
+Darauf bauen auch die Demos auf: Die Agenten dort bekommen ihre Aufträge auf
+Deutsch.
+
+Die Folie zeigt drei Beispiele nacheinander, die Punkte unten zeigen,
+welches gerade zu sehen ist.
+
+**Daten abfragen:** Hinter dem Knopf „Und wenn es komplizierter wird?“
+stecken 25 Zeilen TypeScript, die Primzahlen aus einem Zahlenstrom sammeln.
+Einem Agenten genügen dafür zwei Sätze. Genau diese Aufgabe hat in der Demo
+„The Counting Agents“ der Primzahl-Agent.
+
+**Skizze → 3D-Modell:** Früher brauchte man ein 3D-Programm wie Blender oder
+Code wie den auf der Folie. Er ist in OpenSCAD geschrieben und beschreibt
+einen Quader mit einem Zylinder obendrauf — von einer Lok ist das noch weit
+entfernt. Heute reichen ein Foto der Skizze und ein Satz dazu, heraus kommt
+eine Datei für den 3D-Drucker. Die Sprache ist dabei nicht mehr nur Text,
+das Modell versteht auch Bilder.
+
+**Notizen → Quiz-App:** Früher brauchte man HTML und JavaScript, und der
+Code auf der Folie ergibt gerade einmal einen einzigen Antwortknopf. Heute
+fotografiert man seine Notizen ab, schreibt einen Satz dazu, und fertig ist
+ein Quiz im Browser.
 -->
 
 ---
@@ -332,8 +346,8 @@ aktiv: 1
 ---
 
 <!--
-- Jetzt: Was ist der Unterschied?
-- Einfach erklärt, ohne Technik-Jargon
+Der erste Teil klärt, was einen KI-Agenten von einem Chatbot wie ChatGPT
+unterscheidet — einfach erklärt, ohne Fachjargon.
 -->
 
 ---
@@ -346,10 +360,9 @@ hideInToc: true
 Wofür nutzt **ihr** <br>ChatGPT & Co.?
 
 <!--
-- Antworten zurufen lassen und sammeln, noch nicht kommentieren
-- Erwartet: Hausaufgaben, Texte schreiben, Fragen beantworten, Übersetzen,
-  Ideen sammeln
-- Nachhaken, falls es stockt: Referat, Bewerbung, Lernen für eine Klausur
+Typische Antworten sind Hausaufgaben, Texte schreiben, Fragen beantworten,
+Übersetzen und Ideen sammeln, oft auch ein Referat, eine Bewerbung oder das
+Lernen für eine Klausur. Die nächste Folie sortiert sie.
 -->
 
 ---
@@ -378,13 +391,11 @@ class: text-xl
 </div>
 
 <!--
-- Mit den Zurufen abgleichen: Was davon wurde genannt? Was fehlt?
-- Kurz halten, das kennen alle
-- Dann fragen: "Fällt euch was auf?" — kurz warten, dann per Klick den
-  Merksatz aufdecken
-- Pointe: Bei allem, was ihr genannt habt, schreibt ChatGPT eine Antwort.
-  Abgeben, abschicken, einbauen — das macht ihr
-- Überleitung: "Warum ist das so? Schauen wir uns die Grenzen an."
+Die vier Karten fassen zusammen, wofür die meisten ChatGPT nutzen.
+
+Interessant ist, was alle vier gemeinsam haben: ChatGPT schreibt eine
+Antwort. Abgeben, abschicken, einbauen — das macht ihr danach selbst. Warum
+das so ist, zeigen die Grenzen auf der nächsten Folie.
 -->
 
 ---
@@ -413,14 +424,17 @@ class: text-xl
 </div>
 
 <!--
-- Kernpunkt: Nicht "ChatGPT kann nichts", sondern: Es arbeitet in seinem
-  eigenen Fenster, Frage für Frage, und ihr seid die Brücke zur echten Welt
-- Wer einwirft "ChatGPT kann doch Dateien machen / im Web suchen / Code
-  ausführen": stimmt! Genau das ist der Merksatz unten — die Anbieter bauen
-  Werkzeuge ein, die Chatbots wachsen in Richtung Agent
-- Der Unterschied liegt nicht im Wissen, sondern darin, wer den nächsten
-  Schritt macht und wie weit die Hände reichen
-- "Stellt euch vor, ihr ruft einen Experten an..."
+Der Kern dieser Folie: ChatGPT kann durchaus etwas, aber es arbeitet in
+seinem eigenen Fenster, Frage für Frage, und ihr seid die Brücke zur echten
+Welt.
+
+Der Einwand liegt nahe, dass ChatGPT doch Dateien erzeugen, im Web suchen
+oder Code ausführen kann. Das stimmt, und genau das meint der Hinweis unten:
+Die Anbieter bauen laufend Werkzeuge ein, die Chatbots wachsen in Richtung
+Agent.
+
+Der Unterschied liegt also nicht im Wissen, sondern darin, wer den nächsten
+Schritt macht und wie weit die Hände reichen.
 -->
 
 ---
@@ -436,26 +450,20 @@ class: text-l
 </div>
 
 <!--
-- "Wer kennt's?" — Referat, Hausaufgabe, Bewerbung: Absatz rüber in
-  ChatGPT, Antwort zurück ins Dokument, nächster Absatz, wieder rüber …
-- IHR tragt die Informationen zwischen Dokument und Chat hin und her
+Kaum ein Referat entsteht heute ganz ohne ChatGPT. Meist läuft es so: Ihr
+kopiert einen Absatz in den Chat, holt die Antwort zurück ins Dokument und
+macht mit dem nächsten Absatz weiter. Die Informationen zwischen Dokument
+und Chat tragt dabei ihr hin und her.
 
-[click] Modell einblenden:
+[click] Hinter ChatGPT steckt ein Modell, das Sprachmodell aus dem ersten
+Teil. ChatGPT selbst ist nur die App drumherum: Sie nimmt eure Eingabe,
+schickt sie an das Modell und zeigt die Antwort an, bei jedem Absatz aufs
+Neue. Diese App ist schon ein kleiner Rahmen um das Modell, ein Agent
+bekommt später einen deutlich größeren.
 
-- Dahinter steckt eigentlich ein Modell — das LLM von vorhin
-- ChatGPT selbst ist nur die App: Sie nimmt eure Eingabe, schickt sie an
-  das Modell und zeigt dessen Antwort an. Das passiert automatisch, bei
-  jedem Absatz aufs Neue
-- Merken für später: Die App ist schon ein kleiner Rahmen um das Modell.
-  Ein Agent bekommt einen größeren
-
-[click] Merksatz einblenden:
-
-- Das Modell kennt nur, was ihr ihm gebt — nicht das ganze Referat, nicht
-  die Aufgabenstellung, nicht eure Quellen
-- Irgendwann nervt das. Die Frage ist: Geht das auch ohne uns als
-  Zwischenhändler?
-- Überleitung: "Genau da kommen Agenten ins Spiel."
+[click] Das Modell kennt nur, was ihr ihm gebt: den einen Absatz, nicht das
+ganze Referat, nicht die Aufgabenstellung, nicht eure Quellen. Genau hier
+setzen Agenten an, denn sie holen sich selbst, was sie brauchen.
 -->
 
 ---
@@ -486,9 +494,34 @@ class: text-xl
 </style>
 
 <!--
-- Analogie ist der Schlüssel zum Verständnis
-- Chatbot = passiver Berater, Agent = aktiver Macher
-- "Und wie macht der Agent das? Schauen wir einem bei der Arbeit zu."
+Die Analogie fasst den Unterschied zusammen: Ein Chatbot ist ein passiver
+Berater, ein Agent ein aktiver Macher. Beide wissen viel, aber nur der
+Experte im Büro legt selbst Hand an.
+-->
+
+---
+rubrik: Vom Chatbot zum KI-Agenten
+titel: Wie arbeitet ein KI-Agent?
+untertitel: 'Der Agent-Kreislauf: Denken, Handeln, Prüfen'
+class: text-l
+---
+
+<div class="thm-center">
+  <AgentKreislauf />
+</div>
+
+<!--
+Ein Chatbot gibt eine Antwort. Ein Agent arbeitet iterativ: Er dreht Runde
+um Runde, bis die Aufgabe erledigt ist.
+
+Aufs Referat übertragen heißt das: den Auftrag lesen (Verstehen), überlegen,
+was zu tun ist (Planen), die Datei lesen und schreiben (Handeln), das
+Ergebnis ansehen und entscheiden, ob es fertig ist oder noch eine Runde
+braucht (Prüfen).
+
+Man kann sich das vorstellen wie bei einem Praktikanten: Ihr gebt ihm eine
+Aufgabe, und er arbeitet sie eigenständig ab. Wie das bei einem echten
+Agenten aussieht, zeigt die nächste Folie am Referat von vorhin.
 -->
 
 ---
@@ -504,46 +537,52 @@ clicks: 10
 </div>
 
 <!--
-- Dasselbe Referat wie beim Copy & Paste vorhin — aber jetzt mit einem
-  Agenten. Zehn Klicks, ein Auftrag. Die Zeile unten sagt, was gerade
-  passiert; im Harness leuchtet auf, was es dafür braucht
-- Das Modell kennt ihr schon. Neu ist der grüne Kasten in der Mitte, das
-  HARNESS: alles, was um das Modell herum gebaut ist. Was genau drinsteckt,
-  sortieren wir auf der nächsten Folie — jetzt erst mal zuschauen
+Es geht um dasselbe Referat wie beim Copy & Paste, diesmal erledigt die
+Arbeit ein Agent. In zehn Schritten läuft ein Auftrag einmal durch. Die
+Zeile unten sagt, was gerade passiert, und im Harness leuchtet auf, was
+dafür gebraucht wird.
 
-[click] Ihr gebt den Auftrag, ein einziges Mal
+Das Modell kennt ihr schon. Neu ist der grüne Kasten in der Mitte, das
+Harness: alles, was um das Modell herum gebaut ist. Was genau darin steckt,
+sortiert die nächste Folie. Die Schleife im Harness ist der Kreislauf von
+der Folie davor, sie zählt die Runden mit.
+
+[click] Ihr gebt den Auftrag, ein einziges Mal.
 
 [click] Das Harness packt alles zusammen und schickt es ans Modell: euren
-Auftrag, seine Anweisungen (Rolle, Aufgabe) und die Liste der Werkzeuge,
-die es gibt. Schleife: Runde 1
+Auftrag, seine Anweisungen (Rolle und Aufgabe) und die Liste der Werkzeuge,
+die es gibt. Die Schleife steht auf Runde 1.
 
-[click] Wichtigster Moment: Das Modell kann nichts anfassen. Es schreibt nur
-auf, welches Werkzeug es braucht — "Datei lesen, bitte". Das kommt ins
-Gedächtnis
+[click] Das ist der wichtigste Moment: Das Modell kann nichts anfassen. Es
+schreibt nur auf, welches Werkzeug es braucht, hier „Datei lesen“. Dieser
+Wunsch kommt ins Gedächtnis.
 
-[click] Das Harness prüft an den Leitplanken: Darf der Agent das? Ja — dann
-führt es das Werkzeug aus und liest das Referat
+[click] Das Harness prüft an den Leitplanken, ob der Agent das darf. Lesen
+ist erlaubt, also führt es das Werkzeug aus und liest das Referat. Das ist
+ein anderes Prüfen als im Kreislauf: Die Leitplanken prüfen vorher, ob ein
+Werkzeug erlaubt ist. Im Kreislauf prüft das Modell hinterher, ob das
+Ergebnis passt.
 
-[click] Das Ergebnis geht zurück ans Modell — und alles andere noch einmal:
-Anweisungen, Werkzeuge, der ganze bisherige Verlauf. Das Modell selbst
-merkt sich nichts, es bekommt jedes Mal alles neu. Deshalb leuchten die
-Anweisungen wieder auf. Runde 2
+[click] Das Ergebnis geht zurück ans Modell, und alles andere geht noch
+einmal mit: Anweisungen, Werkzeuge und der ganze bisherige Verlauf. Das
+Modell selbst merkt sich nichts, es bekommt jedes Mal alles neu. Deshalb
+leuchten die Anweisungen wieder auf. Das ist Runde 2.
 
-[click] Jetzt kennt es den Text und schreibt den neuen Absatz — wieder als
-Wunsch an ein Werkzeug
+[click] Jetzt kennt das Modell den Text und schreibt den neuen Absatz,
+wieder als Wunsch an ein Werkzeug.
 
-[click] Leitplanken: Schreiben ist erlaubt. Absatz 3 im Referat wird grün
+[click] Auch Schreiben ist laut den Leitplanken erlaubt. Absatz 3 im Referat
+wird neu geschrieben und färbt sich grün.
 
-[click] Runde 3: "Hat geklappt" — und wieder geht alles mit ans Modell
+[click] In Runde 3 geht die Rückmeldung, dass gespeichert wurde, ans Modell,
+und wieder geht alles andere mit.
 
-[click] Das Modell braucht kein Werkzeug mehr und meldet: fertig. Daran
-erkennt das Harness, dass die Schleife zu Ende ist
+[click] Das Modell prüft: Das Ergebnis passt, es braucht kein Werkzeug mehr
+und meldet, dass es fertig ist. Daran erkennt das Harness, dass die Schleife
+zu Ende ist.
 
-[click] Das Ergebnis geht an euch. Vergleich mit vorhin: Da wart IHR die
-Brücke zwischen Chat und Dokument, jetzt ist es das Harness
-
-- Überleitung: "Was war da eigentlich alles beteiligt? Sortieren wir das
-  mal."
+[click] Das Ergebnis geht an euch. Beim Copy & Paste wart ihr die Brücke
+zwischen Chat und Dokument, jetzt ist es das Harness.
 -->
 
 ---
@@ -554,53 +593,42 @@ class: text-l
 
 <div class="thm-center thm-gruppe">
   <AgentAnatomie />
+
+  <Callout v-click icon="wrench"><strong>Das Harness macht den Unterschied.</strong> Ein mittelmäßiges Modell mit gutem Harness schlägt oft ein besseres Modell mit schlechtem Harness.</Callout>
 </div>
 
 <!--
-- Zwei Teile: Das MODELL (das Sprachmodell, z. B. GPT oder Claude) ist das
-  Gehirn — es denkt, plant und entscheidet
-- Das HARNESS (engl. Geschirr, wie beim Pferd: Das Pferd hat die Kraft,
-  das Geschirr macht sie nutzbar) ist alles drumherum. Zwei Seiten:
-- Links die WERKZEUGE — Hände und Augen: Dateien lesen und schreiben,
-  Programme starten, im Web suchen
-- Rechts die STEUERUNG — was das Harness selbst leistet, alles eben
-  schon aufgeleuchtet:
-  - Schleife: die Runden von eben. Ruft das Modell immer wieder auf,
-    führt aus, was es sich wünscht, und gibt ihm das Ergebnis zurück — bis
-    die Aufgabe fertig ist
-  - Anweisungen: Rolle und Aufgabe, in unseren Demos eine Textdatei
-  - Gedächtnis: der Verlauf, und wenn er zu lang wird, eine Zusammenfassung
-  - Leitplanken: was der Agent ohne Nachfrage darf und was nicht
-- Entscheiden tut immer das Modell, das Harness führt aus
-- Fun Fact: Ein mittelmäßiges Modell mit gutem Harness schlägt oft ein
-  besseres Modell mit schlechtem Harness
-- Rückbezug auf "Die Grenze verschwimmt": Die Anbieter bauen ihren
-  Chatbots Stück für Stück ein größeres Harness
-- Überleitung: "Und von weitem betrachtet? Da folgt der Agent einem
-  ganz einfachen Muster."
--->
+Ein KI-Agent besteht aus zwei Teilen. Das Modell, also das Sprachmodell wie
+GPT oder Claude, ist das Gehirn: Es denkt, plant und entscheidet.
 
----
-rubrik: Vom Chatbot zum KI-Agenten
-titel: Wie arbeitet ein KI-Agent?
-untertitel: 'Der Agent-Kreislauf: Denken, Handeln, Prüfen'
-class: text-l
----
+Das Harness ist alles drumherum. Das englische Wort bedeutet Geschirr, wie
+beim Pferd: Das Pferd hat die Kraft, das Geschirr macht sie nutzbar. Das
+Harness hat zwei Seiten.
 
-<div class="thm-center">
-  <AgentKreislauf />
-</div>
+Links stehen die Werkzeuge, die Hände und Augen des Agenten: Dateien lesen
+und schreiben, Programme starten, im Web suchen.
 
-<!--
-- Von weitem betrachtet: dieselbe Schleife wie eben, als einfaches Muster
-- Ein Chatbot gibt EINE Antwort. Ein Agent arbeitet ITERATIV.
-- Rückbezug aufs Referat: Auftrag lesen (Verstehen), überlegen, was zu tun
-  ist (Planen), Datei lesen und schreiben (Handeln), das Ergebnis ansehen
-  und entscheiden: fertig oder noch eine Runde (Prüfen)
-- Nicht verwechseln mit den Leitplanken: Die prüfen VORHER, ob ein Werkzeug
-  erlaubt ist. Hier prüft das Modell HINTERHER, ob das Ergebnis passt
-- Analogie Praktikant: Ihr gebt ihm eine Aufgabe, er arbeitet eigenständig
-- Überleitung: "Und warum reden gerade alle über Agenten?"
+Rechts steht die Steuerung, also das, was das Harness selbst leistet. Alle
+vier Bausteine haben auf der Folie davor schon aufgeleuchtet:
+
+- **Schleife:** die Runden von eben. Sie ruft das Modell immer wieder auf,
+  führt aus, was es sich wünscht, und gibt ihm das Ergebnis zurück, bis die
+  Aufgabe fertig ist.
+- **Anweisungen:** Rolle und Aufgabe des Agenten, in unseren Demos eine
+  Textdatei.
+- **Gedächtnis:** der Verlauf, und wenn er zu lang wird, eine
+  Zusammenfassung davon.
+- **Leitplanken:** was der Agent ohne Nachfrage darf und was nicht.
+
+Entscheiden tut immer das Modell, das Harness führt aus.
+
+[click] Ein mittelmäßiges Modell mit gutem Harness schlägt oft ein besseres
+Modell mit schlechtem Harness. Das Modell ist wichtig, aber erst das Harness
+macht daraus einen Agenten, der etwas erledigt.
+
+Das erklärt auch den Hinweis „Die Grenze verschwimmt“ auf der Folie zu den
+Grenzen von ChatGPT: Die Anbieter bauen ihren Chatbots Stück für Stück ein
+größeres Harness.
 -->
 
 ---
@@ -626,11 +654,15 @@ class: text-xl
 </div>
 
 <!--
-- Ausblick in die Arbeitswelt der Schüler
-- Assistenz -> Autonomie: Der Shift der gerade passiert
-- Skalierbarkeit: 100 Agenten für Marktforschung, Kundenservice, Buchhaltung
-- Selbstkorrektur: Fehlertoleranz durch Iteration (wie beim Agent-Kreislauf)
-- "Und jetzt schauen wir uns das in der Praxis an!"
+Die drei Karten geben einen Ausblick auf die Arbeitswelt, in der ihr einmal
+arbeiten werdet.
+
+- **Von Assistenz zu Autonomie:** Das ist der Wandel, der gerade passiert.
+  KI hilft nicht mehr nur beim Schreiben, sondern erledigt ganze Abläufe.
+- **Skalierbarkeit:** Ein Unternehmen kann viele Agenten gleichzeitig
+  einsetzen, etwa in Marktforschung, Kundenservice oder Buchhaltung.
+- **Selbstkorrektur:** Fehler sind nicht das Ende. Ein Agent prüft sein
+  Ergebnis und bessert in der nächsten Runde nach, wie im Agent-Kreislauf.
 -->
 
 ---
@@ -644,7 +676,8 @@ aktiv: 2
 ---
 
 <!--
-- Jetzt: Agenten live — die heute ausgewählte Demo (oder zwei)
+Im zweiten Teil arbeiten Agenten live. Gezeigt wird eine der Demos, manchmal
+auch zwei.
 -->
 
 ---
@@ -662,10 +695,10 @@ hideInToc: true
 <div class="thm-note">Karte anklicken, um in die Demo zu springen. Von jeder Demo-Folie führt „Demos“ unten in der Mitte hierher zurück.</div>
 
 <!--
-- Heute eine Demo, manchmal zwei — Karte anklicken, um hineinzuspringen
-- Am Ende jeder Demo: "Noch eine Demo" führt hierher zurück, "Was nehmen wir
-  mit?" (oder einfach →) weiter zum Schluss
-- Alternative: die Klasse abstimmen lassen, welche Demo sie sehen will
+Im Vortrag wird hier die Demo ausgewählt. In der Web-App führt ein Klick auf
+eine Karte in die Demo. Am Ende jeder Demo geht es mit „Noch eine Demo“
+hierher zurück oder mit „Was nehmen wir mit?“ weiter zum Schluss. Im PDF
+folgen die drei Demos einfach nacheinander.
 -->
 
 ---
@@ -698,8 +731,8 @@ routeAlias: nach-demos
 ---
 
 <!--
-- Übergang zu den Kern-Learnings
-- Erst der Rückblick, der für alle Demos gilt, dann der Blick nach vorn
+Der letzte Teil fasst zuerst zusammen, was für alle Demos gilt, und schaut
+dann nach vorn: Was heißt das für euch?
 -->
 
 ---
@@ -738,28 +771,35 @@ class: text-l
 </style>
 
 <!--
-- Kurz zurückschauen, egal welche Demo wir heute gesehen haben
-- Oben der rote Faden: LLM -> Chatbot -> Agent. Das Modell ist immer
-  dasselbe Gehirn — was sich ändert, ist, was drumherum gebaut ist: erst ein
-  Chatfenster, dann ein ganzes Harness mit Werkzeugen und Schleife
-- Der Auftrag ist Text: Niemand hat programmiert, was die Agenten sagen oder
-  tun. Es stand in einer Textdatei, auf Deutsch
-- Agenten im Team: In der Demo waren es mehrere, jeder mit seiner Rolle —
-  zusammen ergibt sich etwas, das keiner allein gemacht hätte
-- Fleißig, nicht fehlerfrei: Fehler sind uns begegnet, und sie klingen
-  genauso sicher wie die richtigen Antworten (Halluzination). Beispiel je
-  nach Demo:
-  - Ship It!: fragwürdige Zahlen in der Preiskalkulation
-  - Counting Agents: rote Kachel — falsche Primzahl, selbstbewusst
-    eingesammelt; das Dashboard rechnet nach und fällt darauf nicht rein
-  - Agent Party: überzeugend klingende, aber erfundene Größenordnungen
-- Falls Zeit ist, zwei weitere Haken:
-  - Kosten: Agenten verbrauchen viele Tokens, die Währung der KI (Counting
-    Agents: ~90 Anfragen pro Minute — nur fürs Zählen)
-  - Datenschutz: Was an einen KI-Dienst geht, verlässt das Haus (Ship It! /
-    Counting Agents: Modell in der Cloud; Agent Party: lokales Modell in
-    LM Studio als Alternative)
-- Überleitung: "Was heißt das jetzt für euch?"
+Dieser Rückblick gilt für jede der Demos.
+
+Oben steht der rote Faden: LLM, Chatbot, Agent. Das Modell ist immer
+dasselbe Gehirn. Was sich ändert, ist, was drumherum gebaut ist: erst ein
+Chatfenster, dann ein ganzes Harness mit Werkzeugen und Schleife.
+
+**Der Auftrag ist Text:** Niemand hat programmiert, was die Agenten sagen
+oder tun. Es stand in einer Textdatei, auf Deutsch.
+
+**Agenten im Team:** In jeder Demo arbeiten mehrere Agenten, jeder mit
+seiner Rolle. Zusammen ergibt sich etwas, das keiner allein gemacht hätte.
+
+**Fleißig, nicht fehlerfrei:** Agenten machen Fehler, und die klingen
+genauso sicher wie die richtigen Antworten. Man spricht von Halluzination.
+Beispiele aus den Demos:
+
+- Ship It!: fragwürdige Zahlen in der Preiskalkulation.
+- The Counting Agents: eine rote Kachel, weil ein Agent eine falsche
+  Primzahl selbstbewusst eingesammelt hat. Das Dashboard rechnet nach und
+  fällt darauf nicht herein.
+- Agent Party: überzeugend klingende, aber erfundene Größenordnungen.
+
+Dazu kommen zwei weitere Haken:
+
+- **Kosten:** Agenten verbrauchen viele Tokens, die Währung der KI. Die
+  Counting Agents stellen rund 90 Anfragen pro Minute, nur fürs Zählen.
+- **Datenschutz:** Was an einen KI-Dienst geht, verlässt das Haus. Ship It!
+  und The Counting Agents nutzen ein Modell in der Cloud, Agent Party kann
+  alternativ mit einem lokalen Modell in LM Studio laufen.
 -->
 
 ---
@@ -788,22 +828,25 @@ class: text-l
 </div>
 
 <!--
-- Niemand weiß, wie die Arbeitswelt in zehn Jahren genau aussieht. Aber
-  eins ist absehbar: Mit KI-Agenten umgehen zu können, wird so normal wie
-  heute der Umgang mit dem Smartphone
-- Drei Fähigkeiten zeichnen sich ab:
-- Erkennen: Nicht alles eignet sich. Gut: Aufgaben mit klarem Ziel, die man
-  in Schritte zerlegen und überprüfen kann. Schlecht: Entscheidungen, für
-  die jemand geradestehen muss, oder wo niemand sagen kann, was "gut" ist
-- Spezifizieren: Aus "Ich hätte gern irgendwas" wird ein Auftrag — Ziel,
-  Rahmen, Anforderungen. Wie bei einer neuen Kollegin, die euch nicht
-  fragen kann, was ihr gemeint habt
-- Prüfbar machen: Erinnert euch an den Agent-Kreislauf. Der letzte Schritt
-  war Prüfen. Prüfen kann ein Agent aber nur, wenn er weiß, WOGEGEN. Wer
-  ein klares Ziel vorgibt, bekommt einen Agenten, der so lange nachbessert,
-  bis es erreicht ist — ohne dass ein Mensch jedes Zwischenergebnis ansieht
-- Das ist der Unterschied zwischen Prompting ("Frag mal") und Beauftragen
-- Überleitung: "Klingt abstrakt? Probieren wir es aus."
+Niemand weiß, wie die Arbeitswelt in zehn Jahren genau aussieht. Eines ist
+aber absehbar: Mit KI-Agenten umgehen zu können, wird so normal wie heute
+der Umgang mit dem Smartphone. Drei Fähigkeiten zeichnen sich ab.
+
+**Erkennen:** Nicht jede Aufgabe eignet sich. Gut geeignet sind Aufgaben mit
+klarem Ziel, die man in Schritte zerlegen und überprüfen kann. Schlecht
+geeignet sind Entscheidungen, für die jemand geradestehen muss, oder
+Aufgaben, bei denen niemand sagen kann, was „gut“ ist.
+
+**Spezifizieren:** Aus „Ich hätte gern irgendwas“ wird ein Auftrag mit Ziel,
+Rahmen und Anforderungen. Das ist wie bei einer neuen Kollegin, die euch
+nicht fragen kann, was ihr gemeint habt.
+
+**Prüfbar machen:** Der letzte Schritt im Agent-Kreislauf war das Prüfen.
+Prüfen kann ein Agent aber nur, wenn er weiß, wogegen. Wer ein klares Ziel
+vorgibt, bekommt einen Agenten, der so lange nachbessert, bis es erreicht
+ist — ohne dass ein Mensch jedes Zwischenergebnis ansieht.
+
+Das ist der Unterschied zwischen Prompting („Frag mal“) und Beauftragen.
 -->
 
 ---
@@ -814,14 +857,14 @@ hideInToc: true
 Welche Aufgabe würdet **ihr** einem Agenten geben — und woran merkt er, dass er **fertig** ist?
 
 <!--
-- Kurz sammeln, 2–3 Antworten reichen
-- Erster Teil trainiert "Erkennen", zweiter Teil "Prüfbar machen" — der ist
-  schwerer, und genau darum geht es
-- Bei einer Antwort nachhaken: "Woran genau erkennt der Agent, dass das
-  gut ist?" Meist wird die Antwort dann erst konkret
-- Falls es stockt: Klassenfahrt planen, Lernplan für die Abiprüfungen,
-  Ferienjob finden, Geburtstagsparty organisieren
-- Überleitung: "Schauen wir uns ein Beispiel an."
+Die Frage hat zwei Teile. Der erste übt das Erkennen: Welche Aufgabe eignet
+sich überhaupt für einen Agenten? Der zweite übt das Prüfbarmachen, und der
+ist schwerer: Woran genau erkennt der Agent, dass sein Ergebnis gut ist? Oft
+wird eine Idee erst durch diese Frage konkret.
+
+Mögliche Aufgaben sind eine Klassenfahrt planen, einen Lernplan für die
+Abiprüfungen aufstellen, einen Ferienjob finden oder eine Geburtstagsparty
+organisieren. Die nächste Folie spielt das an der Klassenfahrt durch.
 -->
 
 ---
@@ -881,18 +924,22 @@ class: text-xl
 </style>
 
 <!--
-- Links, wie wir mit Chatbots reden: ein Satz, der Rest ist Raterei. Das
-  Ergebnis ist irgendwas — und ob es passt, merkt ihr erst hinterher
-- Rechts ein Auftrag, mit dem ein Agent arbeiten kann:
-  - Ziel: was am Ende herauskommen soll
-  - Rahmen: die Anforderungen, die nicht verhandelbar sind
-  - Fertig, wenn: das Prüfkriterium. Das kann der Agent selbst nachprüfen —
-    Links aufrufen, Preise zusammenrechnen, mit dem Budget vergleichen. Liegt
-    ein Ort drüber, sucht er einen neuen
-- Genau das ist der Agent-Kreislauf: Handeln, Prüfen, nochmal — bis das Ziel
-  erreicht ist
-- Beachten: Der Auftrag rechts ist nicht länger, weil er höflicher ist,
-  sondern weil jemand vorher nachgedacht hat, was er eigentlich will
+Links steht, wie wir meist mit Chatbots reden: ein Satz, der Rest ist
+Raterei. Heraus kommt irgendwas, und ob es passt, merkt ihr erst hinterher.
+
+Rechts steht ein Auftrag, mit dem ein Agent arbeiten kann:
+
+- **Ziel:** was am Ende herauskommen soll.
+- **Rahmen:** die Anforderungen, die nicht verhandelbar sind.
+- **Fertig, wenn:** das Prüfkriterium. Das kann der Agent selbst nachprüfen,
+  indem er Links aufruft, Preise zusammenrechnet und mit dem Budget
+  vergleicht. Liegt ein Ort darüber, sucht er einen neuen.
+
+Das ist genau der Agent-Kreislauf: handeln, prüfen, noch einmal — bis das
+Ziel erreicht ist.
+
+Der Auftrag rechts ist übrigens nicht länger, weil er höflicher ist, sondern
+weil vorher jemand darüber nachgedacht hat, was er eigentlich will.
 -->
 
 ---
@@ -907,14 +954,15 @@ Beauftragen und prüfen kann nur, wer **selbst versteht**, worum es geht.
 <span class="st-note">Wissen und Urteilsvermögen werden wichtiger, nicht unwichtiger.</span>
 
 <!--
-- Naheliegende Frage: Wenn Agenten so viel können — wozu dann noch Mathe,
-  Deutsch, BWL, Programmieren lernen?
-- Antwort: Einen guten Auftrag schreibt nur, wer weiß, was "gut" in diesem
-  Fach heißt. Und einen Fehler bemerkt nur, wer es besser weiß — die Fehler
-  der Agenten klingen genauso überzeugend wie die richtigen Antworten
-- Die Verantwortung bleibt beim Menschen. "Das hat die KI gemacht" zählt
-  nicht als Ausrede — nicht in der Schule, nicht im Job
-- Kurz wirken lassen
+Die Frage liegt nahe: Wenn Agenten so viel können, wozu dann noch Mathe,
+Deutsch, BWL oder Programmieren lernen?
+
+Einen guten Auftrag schreibt nur, wer weiß, was „gut“ in diesem Fach heißt.
+Und einen Fehler bemerkt nur, wer es besser weiß, denn die Fehler der
+Agenten klingen genauso überzeugend wie die richtigen Antworten.
+
+Die Verantwortung bleibt beim Menschen. „Das hat die KI gemacht“ zählt nicht
+als Ausrede, weder in der Schule noch im Job.
 -->
 
 
@@ -941,10 +989,10 @@ dunkel: true
 </div>
 
 <!--
-- Kurzer Studien-Teaser, nicht zu werblich
-- Wirtschaftsinformatik verbindet beide Welten
-- StudiumPlus als Option erwähnen
-- "Wenn euch das heute gefallen hat, könnt ihr sowas auch studieren!"
+Wenn euch diese Vorlesung gefallen hat: So etwas kann man bei StudiumPlus
+dual studieren. Die Wirtschaftsinformatik verbindet beide Welten,
+Betriebswirtschaft und IT. Die Links auf den Karten führen zu den beiden
+Studiengängen.
 -->
 
 ---
@@ -1015,17 +1063,15 @@ rubrik: Noch Fragen?
 </div>
 
 <!--
-- Offene Fragerunde
-- Ggf. nochmal Dashboard zeigen wenn Fragen zur Demo kommen
-- Visitenkarten / Kontaktdaten bereithalten
-- Diskussionsfragen (falls Zeit):
-  - "Verändert KI eure zukünftigen Berufe? Wie?"
-  - "Was kann KI gut — und was wird sie nie können?"
-  - "Wem gehören die Ergebnisse, die eine KI erstellt?"
-- Offene Diskussion, 5-8 Minuten
-- Keine "richtige" Antwort — es geht ums Nachdenken
-- Bei Frage 1: Berufe verändern sich, aber verschwinden selten komplett
-- Bei Frage 2: Kreativität, Empathie, ethische Entscheidungen
-- Bei Frage 3: Urheberrecht, wer ist verantwortlich?
-- Schüler zum Sprechen ermutigen
+Zum Weiterdenken drei Fragen, auf die es keine richtige Antwort gibt — es
+geht ums Nachdenken:
+
+- **Verändert KI eure zukünftigen Berufe? Wie?** Berufe verändern sich,
+  verschwinden aber selten komplett.
+- **Was kann KI gut — und was wird sie nie können?** Denkt dabei an
+  Kreativität, Empathie und ethische Entscheidungen.
+- **Wem gehören die Ergebnisse, die eine KI erstellt?** Hier geht es um
+  Urheberrecht und darum, wer verantwortlich ist.
+
+Die QR-Codes führen zu den Folien und zum Quellcode der Demos.
 -->

@@ -47,7 +47,7 @@ Daraus folgen Regeln:
 - **Reflexion ist zweigeteilt.** Die Bewertung („was haben wir gesehen?") ist
   demo-spezifisch und steht im Block. Der Rückblick („Das haben wir heute
   gesehen") ist gemeinsam; neue Demos tragen ihre Beispiele in dessen
-  Sprecher-Notizen ein, nicht als eigene Folie.
+  Notizen ein, nicht als eigene Folie.
 - **Blöcke sind unabhängig voneinander.** Kein Block verweist auf einen
   anderen — welche gezeigt werden und in welcher Reihenfolge, wechselt.
 
@@ -55,6 +55,18 @@ Der Export enthält immer alle Demos. Die Navigation lässt sich nur im
 laufenden Dev-Server prüfen: von der Übersicht in jede Demo springen, bis zum
 Ende und über das Ende hinaus blättern, rückwärts aus der Demo heraus, den
 Link „Demos" anklicken.
+
+## Notizen
+
+Die Notizen unter den Folien (HTML-Kommentar am Ende der Folie) sind keine
+Sprechernotizen, sondern für Zuhörende, die die Präsentation später allein
+durchgehen: zusätzliche und weiterführende Erklärung zur Folie.
+
+- Ganze Sätze in kurzen Absätzen, Ansprache „ihr" wie auf den Folien.
+- Keine Regieanweisungen, keine Überleitungen, kein vorgegebener Sprechtext,
+  keine Bedienhinweise zu den Demos.
+- `[click]`-Marken bleiben: Der Absatz dahinter erklärt, was mit diesem Klick
+  erscheint. Ihre Zahl folgt den Klicks der Folie.
 
 ## Design-System
 
