@@ -581,6 +581,8 @@ class: text-l
 
 <div class="thm-center thm-gruppe">
   <AgentAnatomie />
+
+  <Callout v-click icon="wrench"><strong>Das Harness macht den Unterschied.</strong> Ein mittelmäßiges Modell mit gutem Harness schlägt oft ein besseres Modell mit schlechtem Harness.</Callout>
 </div>
 
 <!--
@@ -599,8 +601,12 @@ class: text-l
   - Gedächtnis: der Verlauf, und wenn er zu lang wird, eine Zusammenfassung
   - Leitplanken: was der Agent ohne Nachfrage darf und was nicht
 - Entscheiden tut immer das Modell, das Harness führt aus
-- Fun Fact: Ein mittelmäßiges Modell mit gutem Harness schlägt oft ein
-  besseres Modell mit schlechtem Harness
+
+[click] Merksatz einblenden:
+
+- Ein mittelmäßiges Modell mit gutem Harness schlägt oft ein besseres
+  Modell mit schlechtem Harness. Das Modell ist wichtig, aber erst das
+  Harness macht daraus einen Agenten, der etwas erledigt
 - Rückbezug auf "Die Grenze verschwimmt": Die Anbieter bauen ihren
   Chatbots Stück für Stück ein größeres Harness
 - Überleitung: "Und warum reden gerade alle über Agenten?"
