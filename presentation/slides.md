@@ -592,11 +592,13 @@ class: text-l
 </div>
 
 <!--
-- DAS ist der zentrale Unterschied: die Feedback-Schleife
+- Von weitem betrachtet: dieselbe Schleife wie eben, als einfaches Muster
 - Ein Chatbot gibt EINE Antwort. Ein Agent arbeitet ITERATIV.
 - Rückbezug aufs Referat: Auftrag lesen (Verstehen), überlegen, was zu tun
-  ist (Planen), Datei lesen und schreiben (Handeln), "gespeichert ✓"
-  (Prüfen) — und bei Bedarf noch eine Runde
+  ist (Planen), Datei lesen und schreiben (Handeln), das Ergebnis ansehen
+  und entscheiden: fertig oder noch eine Runde (Prüfen)
+- Nicht verwechseln mit den Leitplanken: Die prüfen VORHER, ob ein Werkzeug
+  erlaubt ist. Hier prüft das Modell HINTERHER, ob das Ergebnis passt
 - Analogie Praktikant: Ihr gebt ihm eine Aufgabe, er arbeitet eigenständig
 - Überleitung: "Und warum reden gerade alle über Agenten?"
 -->

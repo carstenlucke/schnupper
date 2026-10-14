@@ -116,7 +116,9 @@ const steuerung = computed(() => [
     icon: 'refresh-cw',
     name: 'Schleife',
     an: aktiv('zumModell'),
-    info: runde.value ? `Runde ${runde.value}` : 'wartet auf einen Auftrag',
+    info: runde.value
+      ? `Runde ${runde.value}`
+      : aktiv('auftrag') ? 'Auftrag ist da' : 'wartet auf einen Auftrag',
   },
   {
     icon: 'file-text',
@@ -178,7 +180,7 @@ const fertig = computed(() => n.value === schritte.length - 1)
       <ThmIcon name="brain" box :size="2.6" />
       <div class="ad-modell-titel">Modell</div>
       <div class="ad-modell-text">denkt und entscheidet</div>
-      <div class="ad-denkt" :class="{ an: aktiv('vomModell') }">denkt nach <i /><i /><i /></div>
+      <div class="ad-denkt" :class="{ an: aktiv('zumModell') }">denkt nach <i /><i /><i /></div>
     </div>
 
     <!-- Zwischen Modell und Harness -->
