@@ -12,7 +12,7 @@
   Idee aus dem TecDay-Vortrag (Folie „Agent = Model + Harness“). Die
   Auswahl folgt den üblichen Bausteinen eines Agent Harness (Schleife,
   Werkzeuge, Anweisungen, Gedächtnis/Kontext, Leitplanken); das Prüfen
-  zeigt die folgende Folie mit dem Agent-Kreislauf.
+  zeigt die Folie mit dem Agent-Kreislauf davor.
 -->
 <script setup lang="ts">
 import { werkzeuge, steuerung as baustein } from './harness'
