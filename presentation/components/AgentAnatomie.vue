@@ -15,17 +15,13 @@
   zeigt die folgende Folie mit dem Agent-Kreislauf.
 -->
 <script setup lang="ts">
-const werkzeuge = [
-  { icon: 'eye', text: 'Dateien lesen' },
-  { icon: 'pen-line', text: 'Dateien schreiben' },
-  { icon: 'square-terminal', text: 'Programme starten' },
-  { icon: 'globe', text: 'Im Web suchen' },
-]
+import { werkzeuge, steuerung as baustein } from './harness'
+
 const steuerung = [
-  { icon: 'refresh-cw', text: 'Schleife', info: 'fragt das Modell immer wieder' },
-  { icon: 'file-text', text: 'Anweisungen', info: 'Rolle und Aufgabe' },
-  { icon: 'notebook-pen', text: 'Gedächtnis', info: 'Verlauf und Notizen' },
-  { icon: 'shield-check', text: 'Leitplanken', info: 'was erlaubt ist' },
+  { ...baustein.schleife, info: 'fragt das Modell immer wieder' },
+  { ...baustein.anweisungen, info: 'Rolle und Aufgabe' },
+  { ...baustein.gedaechtnis, info: 'Verlauf und Notizen' },
+  { ...baustein.leitplanken, info: 'was erlaubt ist' },
 ]
 </script>
 
@@ -57,9 +53,9 @@ const steuerung = [
 
       <div class="an-gruppe">
         <div class="an-gruppe-titel">Steuerung · der Rahmen</div>
-        <div v-for="f in steuerung" :key="f.text" class="an-steuerung">
+        <div v-for="f in steuerung" :key="f.name" class="an-steuerung">
           <ThmIcon :name="f.icon" box :size="1.6" />
-          <span><strong>{{ f.text }}</strong> <em>{{ f.info }}</em></span>
+          <span><strong>{{ f.name }}</strong> <em>{{ f.info }}</em></span>
         </div>
       </div>
     </div>

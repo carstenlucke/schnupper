@@ -19,6 +19,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useSlideContext } from '@slidev/client'
+import { werkzeuge, steuerung as baustein } from './harness'
 
 type Pfeil = 'auftrag' | 'ergebnis' | 'zumModell' | 'vomModell' | 'zumWerkzeug' | 'vomWerkzeug'
 
@@ -111,41 +112,43 @@ const eintraege = computed(() => zaehleEintraege(bisher.value))
 const maxRunden = zaehleRunden(schritte)
 const maxEintraege = zaehleEintraege(schritte)
 
-const steuerung = computed(() => [
+/* Wie ein Baustein seinen Stand zeigt: als Text, als Rundenzähler oder
+   als Leiste der Einträge im Gedächtnis */
+interface Baustein {
+  icon: string
+  name: string
+  an: boolean
+  art: 'text' | 'runden' | 'verlauf'
+  info?: string
+}
+
+const steuerung = computed((): Baustein[] => [
   {
-    icon: 'refresh-cw',
-    name: 'Schleife',
+    ...baustein.schleife,
     an: aktiv('zumModell'),
+    art: runde.value ? 'runden' : 'text',
     info: runde.value
       ? `Runde ${runde.value}`
       : aktiv('auftrag') ? 'Auftrag ist da' : 'wartet auf einen Auftrag',
   },
   {
-    icon: 'file-text',
-    name: 'Anweisungen',
+    ...baustein.anweisungen,
     an: !!s.value.anweisungen,
+    art: 'text',
     info: s.value.anweisungen ? 'gehen mit ans Modell' : 'Rolle und Aufgabe',
   },
   {
-    icon: 'notebook-pen',
-    name: 'Gedächtnis',
+    ...baustein.gedaechtnis,
     an: merkt.some(aktiv),
-    info: '',
+    art: 'verlauf',
   },
   {
-    icon: 'shield-check',
-    name: 'Leitplanken',
+    ...baustein.leitplanken,
     an: !!s.value.werkzeug,
+    art: 'text',
     info: s.value.werkzeug ? `„Datei ${s.value.werkzeug}“ ist erlaubt ✓` : 'was erlaubt ist',
   },
 ])
-
-const werkzeuge = [
-  { id: 'lesen', icon: 'eye', text: 'Dateien lesen' },
-  { id: 'schreiben', icon: 'pen-line', text: 'Dateien schreiben' },
-  { id: 'starten', icon: 'square-terminal', text: 'Programme starten' },
-  { id: 'web', icon: 'globe', text: 'Im Web suchen' },
-]
 
 const modellAktiv = computed(() => aktiv('zumModell') || aktiv('vomModell'))
 const liest = computed(() => s.value.werkzeug === 'lesen')
@@ -206,10 +209,10 @@ const fertig = computed(() => n.value === schritte.length - 1)
         <ThmIcon :name="b.icon" box :ton="b.an ? 'gruen' : 'grau'" :size="1.5" />
         <span class="ad-baustein-text">
           <strong>{{ b.name }}</strong>
-          <span v-if="b.name === 'Gedächtnis'" class="ad-verlauf">
+          <span v-if="b.art === 'verlauf'" class="ad-verlauf">
             <i v-for="k in maxEintraege" :key="k" :class="{ voll: k <= eintraege }" />
           </span>
-          <span v-else-if="b.name === 'Schleife' && runde" class="ad-runden">
+          <span v-else-if="b.art === 'runden'" class="ad-runden">
             {{ b.info }}
             <i v-for="k in maxRunden" :key="k" :class="{ voll: k <= runde }" />
           </span>
