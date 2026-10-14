@@ -117,6 +117,7 @@ einsetzen.
 | `<QuestionItem>` | Einzelne Frage, für Folien mit mehreren Fragen |
 | `.thm-flow` + `<FlowArrow>` | Karten nebeneinander mit Pfeil oder `text="vs."` dazwischen |
 | `.thm-sample` (`.sprache`) | Beispiel in einer Karte: Code bzw. Satz in Alltagssprache |
+| `<Fenster>` + `.thm-dok` | Programmfenster als Skizze: Leiste mit drei Punkten und `titel`, Slot `leiste` rechts daneben; `kompakt` für enge Diagramme. Ein Dokument darin als `.thm-dok` mit `.thm-zeile` (`titel`, `kurz`), Hervorhebungen setzt die Folie selbst. In `<CopyPasteSchleife>` und `<AgentDurchlauf>` |
 | `.thm-center` | Inhalt vertikal mittig statt gestreckt — für Folien mit wenig Text |
 | `class: text-l` | Folienweit größere Schrift, für dünn besetzte Folien; zieht auch `.thm-note` und `<QuestionItem>` mit |
 | `class: text-xl` | Noch größer, für Folien mit wenig Text, die die Fläche füllen sollen (Einstieg); zieht auch `.thm-lead`, `.thm-note`, `<QuestionItem>` und den Text von `layout: statement` mit `zitat: false` mit |
@@ -125,6 +126,7 @@ einsetzen.
 | `<NaechstesWort>` | Wie ein LLM schreibt: angefangener Satz, darunter die möglichen nächsten Wörter mit (ausgedachter) Wahrscheinlichkeit |
 | `<CopyPasteSchleife>` | Alltag mit Chatbots: Chatfenster, ihr, Dokument; Texte wandern per Copy & Paste hin und her. Auf Klick 1 (fest in der Komponente) gleitet das Bild nach rechts und links erscheint das Modell hinter der App; weitere Klicks auf der Folie ab 2 zählen |
 | `<AgentAnatomie>` | KI-Agent = Modell + Harness: Gleichung, darunter das Modell im Rahmen des Harness — links die Werkzeuge, rechts die Steuerung (Schleife, Anweisungen, Gedächtnis, Leitplanken) |
+| `<AgentDurchlauf>` | Ein Auftrag einmal durch den Agenten, Gegenstück zu `<CopyPasteSchleife>` (dasselbe Referat): Modell, Harness mit den vier Bausteinen aus `<AgentAnatomie>`, Werkzeuge und Referat, oben ihr. Pro Klick läuft eine Nachricht über einen Pfeil, im Harness leuchtet auf, was sie braucht; unten eine Erklärzeile, nach dem letzten Schritt Merksatz. Die Folie braucht `clicks: 10`. Icons und Namen von Bausteinen und Werkzeugen teilt sie mit `<AgentAnatomie>` über `components/harness.ts` |
 | `<AgentAbhaengigkeiten>` | Wer wartet auf wen bei Ship It!; Kanten nach `AGENT_PATHS` in `ship-it/server.py` |
 | `<DemoUebersicht>` | Karten der Übersichtsfolie, springen auf `demo-<id>` |
 | `<DemoEnde>` | Abschlussfolie eines Demo-Blocks: zur Übersicht oder weiter |

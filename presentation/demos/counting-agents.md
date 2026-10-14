@@ -66,7 +66,7 @@ untertitel: Jeder bekommt genau die Werkzeuge, die seine Aufgabe braucht — nic
 </div>
 
 <!--
-- Rückbezug auf "Was macht aus einem Modell einen Agenten?": Im Harness
+- Rückbezug auf "Aufbau eines KI-Agenten": Im Harness
   links die Werkzeuge — hier sieht man, dass jeder Agent andere bekommt
 - Alle fünf nutzen dasselbe Modell. Verschieden sind Aufgabe und
   Werkzeugkasten — und die Aufgabe entscheidet, welche Werkzeuge ein Agent

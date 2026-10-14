@@ -488,31 +488,67 @@ class: text-xl
 <!--
 - Analogie ist der Schlüssel zum Verständnis
 - Chatbot = passiver Berater, Agent = aktiver Macher
-- "Und wie macht der Agent das? Dazu gibt es ein einfaches Prinzip..."
+- "Und wie macht der Agent das? Schauen wir einem bei der Arbeit zu."
 -->
 
 ---
 rubrik: Vom Chatbot zum KI-Agenten
-titel: Wie arbeitet ein KI-Agent?
-untertitel: 'Der Agent-Kreislauf: Denken, Handeln, Prüfen'
+titel: Ein Agent bei der Arbeit
+untertitel: Wie Harness, Modell und Werkzeuge zusammenspielen
 class: text-l
+clicks: 10
 ---
 
 <div class="thm-center">
-  <AgentKreislauf />
+  <AgentDurchlauf />
 </div>
 
 <!--
-- DAS ist der zentrale Unterschied: die Feedback-Schleife
-- Ein Chatbot gibt EINE Antwort. Ein Agent arbeitet ITERATIV.
-- Analogie Praktikant: Ihr gebt ihm eine Aufgabe, er arbeitet eigenständig
-- Überleitung: "Aber wie wird aus einem Sprachmodell so ein Agent? Was steckt
-  da drin?"
+- Dasselbe Referat wie beim Copy & Paste vorhin — aber jetzt mit einem
+  Agenten. Zehn Klicks, ein Auftrag. Die Zeile unten sagt, was gerade
+  passiert; im Harness leuchtet auf, was es dafür braucht
+- Das Modell kennt ihr schon. Neu ist der grüne Kasten in der Mitte, das
+  HARNESS: alles, was um das Modell herum gebaut ist. Was genau drinsteckt,
+  sortieren wir auf der nächsten Folie — jetzt erst mal zuschauen
+
+[click] Ihr gebt den Auftrag, ein einziges Mal
+
+[click] Das Harness packt alles zusammen und schickt es ans Modell: euren
+Auftrag, seine Anweisungen (Rolle, Aufgabe) und die Liste der Werkzeuge,
+die es gibt. Schleife: Runde 1
+
+[click] Wichtigster Moment: Das Modell kann nichts anfassen. Es schreibt nur
+auf, welches Werkzeug es braucht — "Datei lesen, bitte". Das kommt ins
+Gedächtnis
+
+[click] Das Harness prüft an den Leitplanken: Darf der Agent das? Ja — dann
+führt es das Werkzeug aus und liest das Referat
+
+[click] Das Ergebnis geht zurück ans Modell — und alles andere noch einmal:
+Anweisungen, Werkzeuge, der ganze bisherige Verlauf. Das Modell selbst
+merkt sich nichts, es bekommt jedes Mal alles neu. Deshalb leuchten die
+Anweisungen wieder auf. Runde 2
+
+[click] Jetzt kennt es den Text und schreibt den neuen Absatz — wieder als
+Wunsch an ein Werkzeug
+
+[click] Leitplanken: Schreiben ist erlaubt. Absatz 3 im Referat wird grün
+
+[click] Runde 3: "Hat geklappt" — und wieder geht alles mit ans Modell
+
+[click] Das Modell braucht kein Werkzeug mehr und meldet: fertig. Daran
+erkennt das Harness, dass die Schleife zu Ende ist
+
+[click] Das Ergebnis geht an euch. Vergleich mit vorhin: Da wart IHR die
+Brücke zwischen Chat und Dokument, jetzt ist es das Harness
+
+- Überleitung: "Was war da eigentlich alles beteiligt? Sortieren wir das
+  mal."
 -->
 
 ---
 rubrik: Vom Chatbot zum KI-Agenten
-titel: Was macht aus einem Modell einen Agenten?
+titel: Aufbau eines KI-Agenten
 class: text-l
 ---
 
@@ -527,8 +563,9 @@ class: text-l
   das Geschirr macht sie nutzbar) ist alles drumherum. Zwei Seiten:
 - Links die WERKZEUGE — Hände und Augen: Dateien lesen und schreiben,
   Programme starten, im Web suchen
-- Rechts die STEUERUNG — was das Harness selbst leistet:
-  - Schleife: der Kreislauf von eben. Ruft das Modell immer wieder auf,
+- Rechts die STEUERUNG — was das Harness selbst leistet, alles eben
+  schon aufgeleuchtet:
+  - Schleife: die Runden von eben. Ruft das Modell immer wieder auf,
     führt aus, was es sich wünscht, und gibt ihm das Ergebnis zurück — bis
     die Aufgabe fertig ist
   - Anweisungen: Rolle und Aufgabe, in unseren Demos eine Textdatei
@@ -539,6 +576,30 @@ class: text-l
   besseres Modell mit schlechtem Harness
 - Rückbezug auf "Die Grenze verschwimmt": Die Anbieter bauen ihren
   Chatbots Stück für Stück ein größeres Harness
+- Überleitung: "Und von weitem betrachtet? Da folgt der Agent einem
+  ganz einfachen Muster."
+-->
+
+---
+rubrik: Vom Chatbot zum KI-Agenten
+titel: Wie arbeitet ein KI-Agent?
+untertitel: 'Der Agent-Kreislauf: Denken, Handeln, Prüfen'
+class: text-l
+---
+
+<div class="thm-center">
+  <AgentKreislauf />
+</div>
+
+<!--
+- Von weitem betrachtet: dieselbe Schleife wie eben, als einfaches Muster
+- Ein Chatbot gibt EINE Antwort. Ein Agent arbeitet ITERATIV.
+- Rückbezug aufs Referat: Auftrag lesen (Verstehen), überlegen, was zu tun
+  ist (Planen), Datei lesen und schreiben (Handeln), das Ergebnis ansehen
+  und entscheiden: fertig oder noch eine Runde (Prüfen)
+- Nicht verwechseln mit den Leitplanken: Die prüfen VORHER, ob ein Werkzeug
+  erlaubt ist. Hier prüft das Modell HINTERHER, ob das Ergebnis passt
+- Analogie Praktikant: Ihr gebt ihm eine Aufgabe, er arbeitet eigenständig
 - Überleitung: "Und warum reden gerade alle über Agenten?"
 -->
 
