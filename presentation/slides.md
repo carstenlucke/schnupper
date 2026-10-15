@@ -441,29 +441,39 @@ Schritt macht und wie weit die Hände reichen.
 rubrik: Vom Chatbot zum KI-Agenten
 titel: 'Der Alltag mit Chatbots: Copy & Paste'
 class: text-l
+clicks: 5
 ---
 
-<div class="thm-center thm-gruppe">
+<div class="thm-center">
   <CopyPasteSchleife />
-
-  <Callout v-click="2" icon="user"><strong>Ihr seid die Brücke.</strong> Das Modell sieht nur den Schnipsel, den ihr hineinkopiert — nicht eure ganze Arbeit.</Callout>
 </div>
 
 <!--
 Kaum ein Referat entsteht heute ganz ohne ChatGPT. Meist läuft es so: Ihr
 kopiert einen Absatz in den Chat, holt die Antwort zurück ins Dokument und
-macht mit dem nächsten Absatz weiter. Die Informationen zwischen Dokument
-und Chat tragt dabei ihr hin und her.
+macht mit dem nächsten Absatz weiter. In fünf Schritten läuft ein Absatz
+einmal durch, die Zeile unten sagt, was gerade passiert.
+
+[click] Ihr markiert Absatz 3 im Referat, kopiert ihn und fügt ihn in den
+Chat ein. Die Informationen zwischen Dokument und Chat tragt dabei ihr hin
+und her.
 
 [click] Hinter ChatGPT steckt ein Modell, das Sprachmodell aus dem ersten
-Teil. ChatGPT selbst ist nur die App drumherum: Sie nimmt eure Eingabe,
-schickt sie an das Modell und zeigt die Antwort an, bei jedem Absatz aufs
-Neue. Diese App ist schon ein kleiner Rahmen um das Modell, ein Agent
-bekommt später einen deutlich größeren.
+Teil. ChatGPT selbst ist nur die App drumherum: Sie nimmt eure Eingabe und
+schickt sie an das Modell, bei jedem Absatz aufs Neue. Diese App ist schon
+ein kleiner Rahmen um das Modell, ein Agent bekommt später einen deutlich
+größeren.
 
-[click] Das Modell kennt nur, was ihr ihm gebt: den einen Absatz, nicht das
-ganze Referat, nicht die Aufgabenstellung, nicht eure Quellen. Genau hier
-setzen Agenten an, denn sie holen sich selbst, was sie brauchen.
+[click] Das Modell schreibt eine bessere Fassung, und die App zeigt sie im
+Chat an.
+
+[click] Ihr kopiert die Antwort zurück ins Referat. Absatz 3 ist jetzt neu
+und färbt sich grün.
+
+[click] Mit dem nächsten Absatz geht alles von vorn los. Das Modell kennt
+nur, was ihr ihm gebt: den einen Absatz, nicht das ganze Referat, nicht die
+Aufgabenstellung, nicht eure Quellen. Genau hier setzen Agenten an, denn sie
+holen sich selbst, was sie brauchen.
 -->
 
 ---
