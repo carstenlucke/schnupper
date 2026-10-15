@@ -231,18 +231,9 @@ const fertig = computed(() => n.value === schritte.length - 1)
     </div>
 
     <!-- Unten: was gerade passiert -->
-    <div class="ad-text" :class="{ fertig }">
-      <template v-if="fertig">
-        <ThmIcon name="check" ton="weiss" :size="1.35" />
-        <span><strong>Jetzt ist das Harness die Brücke.</strong> Ihr gebt den Auftrag und bekommt das Ergebnis — kein Copy &amp; Paste dazwischen.</span>
-      </template>
-      <template v-else>
-        <span class="ad-nr">{{ n ? `${n} / ${schritte.length - 1}` : 'Start' }}</span>
-        <Transition name="ad-wechsel" mode="out-in">
-          <span :key="n">{{ s.text }}</span>
-        </Transition>
-      </template>
-    </div>
+    <SchrittZeile class="ad-text" :schritt="n" :schritte="schritte.length - 1" :text="s.text" :fertig="fertig">
+      <strong>Jetzt ist das Harness die Brücke.</strong> Ihr gebt den Auftrag und bekommt das Ergebnis — kein Copy &amp; Paste dazwischen.
+    </SchrittZeile>
   </div>
 </template>
 
@@ -494,44 +485,5 @@ const fertig = computed(() => n.value === schritte.length - 1)
 
 /* ---- Erklärzeile, am Ende Merksatz ---- */
 
-.ad-text {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  min-height: 3.1rem;
-  margin-top: 1.1rem;
-  padding: 0.55rem 1.1rem;
-  background: var(--thm-grey-50);
-  border-left: 0.25rem solid var(--thm-green-500);
-  font-size: 1.05em;
-  line-height: var(--lh-snug);
-  color: var(--text-strong);
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-.ad-text.fertig {
-  background: var(--thm-green-500);
-  color: var(--white);
-}
-
-.ad-text.fertig strong { color: inherit; }
-
-.ad-nr {
-  flex: none;
-  min-width: 3.2rem;
-  font-size: 0.72em;
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--thm-green-700);
-}
-
-/* ---- Wechsel einer Nachricht ---- */
-
-.ad-wechsel-enter-active,
-.ad-wechsel-leave-active { transition: opacity 0.2s ease; }
-
-.ad-wechsel-enter-from,
-.ad-wechsel-leave-to { opacity: 0; }
+.ad-text { grid-column: 1 / -1; }
 </style>

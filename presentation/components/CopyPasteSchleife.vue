@@ -142,18 +142,9 @@ const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
     </div>
 
     <!-- Unten: was gerade passiert -->
-    <div class="cp-text" :class="{ fertig }">
-      <template v-if="fertig">
-        <ThmIcon name="user" ton="weiss" :size="1.35" />
-        <span><strong>Ihr seid die Brücke.</strong> Das Modell sieht nur den Schnipsel, den ihr hineinkopiert — nicht eure ganze Arbeit.</span>
-      </template>
-      <template v-else>
-        <span class="cp-nr">{{ n ? `${n} / ${schritte.length - 1}` : 'Start' }}</span>
-        <Transition name="cp-wechsel" mode="out-in">
-          <span :key="n">{{ s.text }}</span>
-        </Transition>
-      </template>
-    </div>
+    <SchrittZeile class="cp-text" :schritt="n" :schritte="schritte.length - 1" :text="s.text" :fertig="fertig" icon="user">
+      <strong>Ihr seid die Brücke.</strong> Das Modell sieht nur den Schnipsel, den ihr hineinkopiert — nicht eure ganze Arbeit.
+    </SchrittZeile>
   </div>
 </template>
 
@@ -360,43 +351,5 @@ const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
 
 /* ---- Erklärzeile, am Ende Merksatz ---- */
 
-.cp-text {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  min-height: 3.1rem;
-  margin-top: 1.1rem;
-  padding: 0.55rem 1.1rem;
-  background: var(--thm-grey-50);
-  border-left: 0.25rem solid var(--thm-green-500);
-  font-size: 0.9rem;
-  line-height: var(--lh-snug);
-  color: var(--text-strong);
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-.cp-text.fertig {
-  background: var(--thm-green-500);
-  color: var(--white);
-}
-
-.cp-text.fertig strong { color: inherit; }
-
-.cp-nr {
-  flex: none;
-  min-width: 3.2rem;
-  font-size: 0.72em;
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--thm-green-700);
-}
-
-/* ---- Wechsel einer Nachricht ---- */
-
-.cp-wechsel-enter-active,
-.cp-wechsel-leave-active { transition: opacity 0.2s ease; }
-
-.cp-wechsel-enter-from,
-.cp-wechsel-leave-to { opacity: 0; }
+.cp-text { font-size: 0.9rem; }
 </style>

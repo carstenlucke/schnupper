@@ -597,6 +597,53 @@ zwischen Chat und Dokument, jetzt ist es das Harness.
 
 ---
 rubrik: Vom Chatbot zum KI-Agenten
+titel: Vom Absatz zum ganzen Referat
+untertitel: Ein größerer Auftrag, Runde für Runde
+class: text-l
+clicks: 6
+---
+
+<div class="thm-center">
+  <GrosserAuftrag />
+</div>
+
+<!--
+Einen Absatz verbessern ist für einen Agenten eine kleine Aufgabe: drei
+Runden, dann ist er fertig. Agenten können aber deutlich mehr. Hier bekommt
+er einen größeren Auftrag zum selben Referat: Fakten prüfen, Zahlen
+aktualisieren, Quellen ergänzen. Jedes Kästchen ist eine Runde, also eine
+Anfrage ans Modell, und seine Farbe zeigt, welches Werkzeug sich das Modell
+darin wünscht. Die Zahlen sind ausgedacht, liegen für so einen Auftrag aber
+in einer realistischen Größenordnung.
+
+[click] Verstehen: Der Agent liest euer Referat und die Aufgabenstellung.
+Ohne diese beiden Runden wüsste er nicht, was überhaupt zu prüfen ist.
+
+[click] Recherchieren: Für jede Zahl im Referat sucht er im Web und liest
+die Seiten, die er findet. Das sind die meisten Runden. Hier zeigt sich
+auch das Gedächtnis: Bei so vielen gelesenen Seiten wird der Verlauf lang,
+und das Harness fasst ihn bei Bedarf zusammen.
+
+[click] Korrigieren: Wo eine Zahl nicht mehr stimmt, liest er den Absatz
+und schreibt ihn neu, genau wie auf der Folie davor, nur mehrmals
+hintereinander.
+
+[click] Quellen ergänzen: Zu jeder Zahl kommt ein Beleg, am Ende ein
+Quellenverzeichnis.
+
+[click] Kontrolle: Mit einem kleinen Programm testet er, ob alle Links noch
+funktionieren, und liest das Referat ein letztes Mal. Das ist das Prüfen
+aus dem Kreislauf. Erst dann meldet das Modell, dass es fertig ist.
+
+[click] Die beiden markierten Runden habt ihr vorhin Schritt für Schritt
+gesehen. Der große Auftrag besteht aus demselben Ablauf, nur viel öfter.
+Ihr gebt trotzdem nur einmal den Auftrag und bekommt einmal das Ergebnis.
+Was der Agent herausfindet, solltet ihr trotzdem selbst prüfen, vor allem
+die Quellen.
+-->
+
+---
+rubrik: Vom Chatbot zum KI-Agenten
 titel: Aufbau eines KI-Agenten
 class: text-l
 ---
@@ -619,9 +666,9 @@ Links stehen die Werkzeuge, die Hände und Augen des Agenten: Dateien lesen
 und schreiben, Programme starten, im Web suchen.
 
 Rechts steht die Steuerung, also das, was das Harness selbst leistet. Alle
-vier Bausteine haben auf der Folie davor schon aufgeleuchtet:
+vier Bausteine haben bei „Ein Agent bei der Arbeit“ schon aufgeleuchtet:
 
-- **Schleife:** die Runden von eben. Sie ruft das Modell immer wieder auf,
+- **Schleife:** die Runden, ob drei oder dreißig. Sie ruft das Modell immer wieder auf,
   führt aus, was es sich wünscht, und gibt ihm das Ergebnis zurück, bis die
   Aufgabe fertig ist.
 - **Anweisungen:** Rolle und Aufgabe des Agenten, in unseren Demos eine

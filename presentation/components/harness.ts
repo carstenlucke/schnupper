@@ -1,8 +1,9 @@
 /*
   Die Bausteine des Harness an einer Stelle: <AgentAnatomie> stellt sie
-  vor, <AgentDurchlauf> zeigt sie bei der Arbeit. Beide Folien laufen
-  direkt nacheinander und müssen dieselben Icons und Namen zeigen. Den
-  Text unter dem Namen setzt jede Komponente selbst.
+  vor, <AgentDurchlauf> zeigt sie bei der Arbeit, <GrosserAuftrag> färbt
+  seine Runden nach den Werkzeugen. Die Folien laufen kurz nacheinander
+  und müssen dieselben Icons und Namen zeigen. Den Text unter dem Namen
+  setzt jede Komponente selbst.
 */
 
 export const werkzeuge = [
