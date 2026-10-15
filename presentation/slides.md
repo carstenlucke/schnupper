@@ -472,7 +472,8 @@ nachzählen.
 [click] Ihr kopiert die Antwort zurück ins Referat. Absatz 3 ist jetzt neu
 und färbt sich grün.
 
-[click] Mit dem nächsten Absatz geht alles von vorn los. Das Modell kennt
+[click] Mit dem nächsten Absatz geht alles von vorn los: Im Chat steht
+dieselbe Bitte, diesmal mit Absatz 4. Das Modell kennt
 nur, was ihr ihm gebt: den einen Absatz, nicht das ganze Referat, nicht die
 Aufgabenstellung, nicht eure Quellen. Genau hier setzen Agenten an, denn sie
 holen sich selbst, was sie brauchen.

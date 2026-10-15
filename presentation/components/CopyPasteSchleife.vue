@@ -79,7 +79,8 @@ const ihrAktiv = computed(() => aktiv('rein') || aktiv('raus'))
 const fertig = computed(() => n.value === schritte.length - 1)
 
 /* Absatz 3 ist kopiert, bis die Antwort zurück im Referat steht; danach
-   ist er neu. Im letzten Schritt ist Absatz 4 an der Reihe. */
+   ist er neu. Im letzten Schritt ist Absatz 4 an der Reihe: Im Chat steht
+   dieselbe Bitte, nur mit Absatz 4, die alte Antwort ist weg. */
 const absatz3 = computed(() => (n.value >= 4 ? 'neu' : n.value >= 1 ? 'kopiert' : ''))
 const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
 </script>
@@ -103,8 +104,12 @@ const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
       <Fenster titel="ChatGPT" class="cp-fenster">
         <template #leiste><i class="cp-app">App</i></template>
         <div class="cp-chat">
-          <div class="cp-blase ich" :class="{ da: n >= 1 }">Kürze diesen Absatz auf unter 1000 Zeichen: <em>„Der Klimawandel ist …“</em></div>
-          <div class="cp-blase ki" :class="{ da: n >= 3 }">Gern! Hier ist eine kürzere Fassung:&nbsp;…</div>
+          <Transition name="cp-neu" mode="out-in">
+            <div :key="fertig ? 4 : 3" class="cp-blase ich" :class="{ da: n >= 1 }">
+              Kürze diesen Absatz auf unter 1000 Zeichen: <em>{{ fertig ? '„Besonders betroffen sind\u00a0…“' : '„Der Klimawandel ist\u00a0…“' }}</em>
+            </div>
+          </Transition>
+          <div class="cp-blase ki" :class="{ da: n >= 3 && !fertig }">Gern! Hier ist eine kürzere Fassung:&nbsp;…</div>
           <div class="cp-eingabe" />
         </div>
       </Fenster>
@@ -142,7 +147,7 @@ const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
     </div>
 
     <!-- Unten: was gerade passiert -->
-    <SchrittZeile class="cp-text" :schritt="n" :schritte="schritte.length - 1" :text="s.text" :fertig="fertig" icon="user">
+    <SchrittZeile class="cp-text" :schritt="n" :schritte="schritte.length - 2" :text="s.text" :fertig="fertig" icon="user">
       <strong>Ihr seid die Brücke.</strong> Das Modell sieht nur den Schnipsel, den ihr hineinkopiert — nicht eure ganze Arbeit.
     </SchrittZeile>
   </div>
@@ -211,6 +216,13 @@ const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
 .cp-blase.da {
   opacity: 1;
   transform: none;
+}
+
+/* Im letzten Schritt tauscht die eigene Blase ihren Absatz */
+.cp-blase.cp-neu-enter-from,
+.cp-blase.cp-neu-leave-to {
+  opacity: 0;
+  transform: translateY(0.4rem);
 }
 
 .cp-blase.ich {

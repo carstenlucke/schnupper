@@ -4,8 +4,12 @@
   Schritt, blendet der Text über. Mit `fertig` wird die Zeile zum
   grünen Merksatz-Band; den Merksatz gibt der Slot.
 
+  `schritte` zählt nur die Schritte mit Zähler. Der `fertig`-Schritt
+  danach zeigt den Merksatz und zählt nicht mit — so steht am Ende
+  „4 / 4“, nicht „4 / 5“.
+
   Verwendung:
-    <SchrittZeile :schritt="n" :schritte="5" :text="…" :fertig="n === 5" icon="user">
+    <SchrittZeile :schritt="n" :schritte="4" :text="…" :fertig="n === 5" icon="user">
       <strong>Ihr seid die Brücke.</strong> …
     </SchrittZeile>
 

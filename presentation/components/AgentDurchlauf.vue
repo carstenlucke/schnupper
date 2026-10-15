@@ -231,7 +231,7 @@ const fertig = computed(() => n.value === schritte.length - 1)
     </div>
 
     <!-- Unten: was gerade passiert -->
-    <SchrittZeile class="ad-text" :schritt="n" :schritte="schritte.length - 1" :text="s.text" :fertig="fertig">
+    <SchrittZeile class="ad-text" :schritt="n" :schritte="schritte.length - 2" :text="s.text" :fertig="fertig">
       <strong>Jetzt ist das Harness die Brücke.</strong> Ihr gebt den Auftrag und bekommt das Ergebnis — kein Copy &amp; Paste dazwischen.
     </SchrittZeile>
   </div>

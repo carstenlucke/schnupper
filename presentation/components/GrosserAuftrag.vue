@@ -40,7 +40,9 @@ interface Phase {
   runden: Runde[]
   /* Kästchen pro Zeile; höchstens zwei Zeilen */
   spalten: number
-  /* die beiden Runden, die <AgentDurchlauf> gezeigt hat */
+  /* die beiden Runden, die <AgentDurchlauf> gezeigt hat. Sie müssen
+     nebeneinander in der zweiten Zeile liegen: Die Beschriftung darunter
+     steht fest unter Zeile 2 und ist zwei Kästchen breit. */
   ausschnitt?: [number, number]
 }
 
@@ -214,7 +216,7 @@ const markiert = (p: Phase, k: number) =>
       </span>
     </div>
 
-    <SchrittZeile :schritt="n" :schritte="schritte" :text="text" :fertig="fertig" icon="refresh-cw">
+    <SchrittZeile :schritt="n" :schritte="schritte - 1" :text="text" :fertig="fertig" icon="refresh-cw">
       <strong>Dasselbe Prinzip, nur viel mehr Runden.</strong> Den Auftrag gebt ihr, prüfen müsst ihr selbst — vorher den Plan, am Ende den Bericht.
     </SchrittZeile>
   </div>
