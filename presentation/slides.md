@@ -451,8 +451,9 @@ clicks: 5
 <!--
 Kaum ein Referat entsteht heute ganz ohne ChatGPT. Meist läuft es so: Ihr
 kopiert einen Absatz in den Chat, holt die Antwort zurück ins Dokument und
-macht mit dem nächsten Absatz weiter. In fünf Schritten läuft ein Absatz
-einmal durch, die Zeile unten sagt, was gerade passiert.
+macht mit dem nächsten Absatz weiter. In vier Schritten läuft ein Absatz
+einmal durch, im fünften ist der nächste dran. Die Zeile unten sagt, was
+gerade passiert.
 
 [click] Ihr markiert Absatz 3 im Referat, kopiert ihn und fügt ihn in den
 Chat ein. Die Informationen zwischen Dokument und Chat tragt dabei ihr hin
@@ -555,8 +556,8 @@ dafür gebraucht wird.
 
 Das Modell kennt ihr schon. Neu ist der grüne Kasten in der Mitte, das
 Harness: alles, was um das Modell herum gebaut ist. Was genau darin steckt,
-sortiert die nächste Folie. Die Schleife im Harness ist der Kreislauf von
-der Folie davor, sie zählt die Runden mit.
+sortiert die Folie „Aufbau eines KI-Agenten“. Die Schleife im Harness ist
+der Kreislauf von der Folie davor, sie zählt die Runden mit.
 
 [click] Ihr gebt den Auftrag, ein einziges Mal.
 

@@ -30,7 +30,7 @@ import { useSlideContext } from '@slidev/client'
 import { werkzeuge } from './harness'
 
 /* 'aus': eine Korrektur, die ihr beim ersten Halt gestrichen habt */
-type Runde = 'lesen' | 'schreiben' | 'starten' | 'web' | 'fertig' | 'aus'
+type Runde = (typeof werkzeuge)[number]['id'] | 'fertig' | 'aus'
 
 interface Phase {
   art: 'phase'
@@ -120,7 +120,7 @@ const icon: Record<Runde, string> = {
 } as Record<Runde, string>
 
 const legende = [
-  ...werkzeuge.map(w => ({ id: w.id as Runde, text: w.text })),
+  ...werkzeuge.map((w): { id: Runde, text: string } => ({ id: w.id, text: w.text })),
   { id: 'fertig' as Runde, text: 'fertig' },
   { id: 'aus' as Runde, text: 'von euch gestrichen' },
 ]

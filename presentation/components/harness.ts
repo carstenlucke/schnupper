@@ -11,7 +11,7 @@ export const werkzeuge = [
   { id: 'schreiben', icon: 'pen-line', text: 'Dateien schreiben' },
   { id: 'starten', icon: 'square-terminal', text: 'Programme starten' },
   { id: 'web', icon: 'globe', text: 'Im Web suchen' },
-]
+] as const
 
 export const steuerung = {
   schleife: { icon: 'refresh-cw', name: 'Schleife' },
