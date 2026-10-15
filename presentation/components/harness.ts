@@ -16,6 +16,6 @@ export const werkzeuge = [
 export const steuerung = {
   schleife: { icon: 'refresh-cw', name: 'Schleife' },
   anweisungen: { icon: 'file-text', name: 'Anweisungen' },
-  gedaechtnis: { icon: 'notebook-pen', name: 'Gedächtnis' },
+  verlauf: { icon: 'notebook-pen', name: 'Verlauf' },
   leitplanken: { icon: 'shield-check', name: 'Leitplanken' },
 }

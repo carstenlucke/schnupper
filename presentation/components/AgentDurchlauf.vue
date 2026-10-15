@@ -9,7 +9,7 @@
   oben ihr. Jeder Klick schickt eine Nachricht über einen <LaufPfeil>; der
   aktive Pfeil wird grün, ein Punkt läuft darüber, die Nachricht steht
   daneben. Im Harness leuchtet auf, was gerade gebraucht wird: die
-  Schleife zählt die Runden, das Gedächtnis sammelt Einträge, die
+  Schleife zählt die Runden, der Verlauf sammelt Einträge, die
   Leitplanken prüfen jeden Werkzeugwunsch. Unten erklärt eine Zeile den
   Schritt; nach dem letzten wird sie zum Merksatz.
 
@@ -90,7 +90,7 @@ const ruhe: Record<Pfeil, string> = {
   vomWerkzeug: 'Ergebnis',
 }
 
-/* Was im Gedächtnis landet: euer Auftrag, jede Antwort des Modells,
+/* Was im Verlauf landet: euer Auftrag, jede Antwort des Modells,
    jedes Ergebnis eines Werkzeugs */
 const merkt: Pfeil[] = ['auftrag', 'vomModell', 'vomWerkzeug']
 
@@ -101,7 +101,7 @@ const s = computed(() => schritte[n.value])
 const aktiv = (p: Pfeil) => s.value.pfeile?.[p] !== undefined
 const text = (p: Pfeil) => s.value.pfeile?.[p] ?? ruhe[p]
 
-/* Runden zählen die Anfragen ans Modell, Einträge alles, was im Gedächtnis landet */
+/* Runden zählen die Anfragen ans Modell, Einträge alles, was im Verlauf landet */
 const zaehleRunden = (liste: Schritt[]) => liste.filter(x => x.pfeile?.zumModell).length
 const zaehleEintraege = (liste: Schritt[]) =>
   liste.reduce((summe, x) => summe + merkt.filter(p => x.pfeile?.[p]).length, 0)
@@ -113,7 +113,7 @@ const maxRunden = zaehleRunden(schritte)
 const maxEintraege = zaehleEintraege(schritte)
 
 /* Wie ein Baustein seinen Stand zeigt: als Text, als Rundenzähler oder
-   als Leiste der Einträge im Gedächtnis */
+   als Leiste der Einträge im Verlauf */
 interface Baustein {
   icon: string
   name: string
@@ -138,7 +138,7 @@ const steuerung = computed((): Baustein[] => [
     info: s.value.anweisungen ? 'gehen mit ans Modell' : 'Rolle und Aufgabe',
   },
   {
-    ...baustein.gedaechtnis,
+    ...baustein.verlauf,
     an: merkt.some(aktiv),
     art: 'verlauf',
   },

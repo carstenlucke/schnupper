@@ -566,7 +566,7 @@ die es gibt. Die Schleife steht auf Runde 1.
 
 [click] Das ist der wichtigste Moment: Das Modell kann nichts anfassen. Es
 schreibt nur auf, welches Werkzeug es braucht, hier „Datei lesen“. Dieser
-Wunsch kommt ins Gedächtnis.
+Wunsch kommt in den Verlauf.
 
 [click] Das Harness prüft an den Leitplanken, ob der Agent das darf. Lesen
 ist erlaubt, also führt es das Werkzeug aus und liest das Referat. Das ist
@@ -629,8 +629,8 @@ Ohne diese beiden Runden wüsste er nicht, was überhaupt zu prüfen ist.
 
 [click] Recherchieren: Für jede Zahl im Referat sucht er im Web und liest
 die Seiten, die er findet. Das sind die meisten Runden. Hier zeigt sich
-auch das Gedächtnis: Bei so vielen gelesenen Seiten wird der Verlauf lang,
-und das Harness fasst ihn bei Bedarf zusammen.
+auch der Verlauf: Bei so vielen gelesenen Seiten wird er lang, und das
+Harness fasst ihn bei Bedarf zusammen.
 
 [click] Bevor der Agent etwas am Referat ändert, hält die Schleife an und
 legt euch seinen Plan vor: Vier Zahlen sind seiner Meinung nach veraltet.
@@ -694,8 +694,9 @@ vier Bausteine haben bei „Ein Agent bei der Arbeit“ schon aufgeleuchtet:
   Aufgabe fertig ist.
 - **Anweisungen:** Rolle und Aufgabe des Agenten, in unseren Demos eine
   Textdatei.
-- **Gedächtnis:** der Verlauf, und wenn er zu lang wird, eine
-  Zusammenfassung davon.
+- **Verlauf:** Auftrag, Antworten des Modells und Ergebnisse der
+  Werkzeuge, und wenn er zu lang wird, eine Zusammenfassung davon. Ist
+  der Auftrag erledigt, ist auch der Verlauf weg.
 - **Leitplanken:** was der Agent ohne Nachfrage darf und was nicht.
 
 Entscheiden tut immer das Modell, das Harness führt aus.
