@@ -6,7 +6,7 @@
 
   Links das Modell, in der Mitte das Harness mit den vier Bausteinen der
   Steuerung aus <AgentAnatomie>, rechts die Werkzeuge und das Referat,
-  oben ihr. Jeder Klick schickt eine Nachricht über einen Pfeil; der
+  oben ihr. Jeder Klick schickt eine Nachricht über einen <LaufPfeil>; der
   aktive Pfeil wird grün, ein Punkt läuft darüber, die Nachricht steht
   daneben. Im Harness leuchtet auf, was gerade gebraucht wird: die
   Schleife zählt die Runden, das Gedächtnis sammelt Einträge, die
@@ -160,22 +160,12 @@ const fertig = computed(() => n.value === schritte.length - 1)
   <div class="ad">
     <!-- Oben: ihr, mit Auftrag hinein und Ergebnis heraus -->
     <div class="ad-oben">
-      <div class="ad-vpfeil runter" :class="{ aktiv: aktiv('auftrag') }">
-        <Transition name="ad-wechsel" mode="out-in">
-          <span :key="text('auftrag')" class="ad-nachricht links">{{ text('auftrag') }}</span>
-        </Transition>
-        <div class="ad-linie"><span class="ad-punkt" /></div>
-      </div>
+      <LaufPfeil richtung="runter" seite="links" :aktiv="aktiv('auftrag')" :text="text('auftrag')" />
       <div class="ad-ihr">
         <ThmIcon name="user" box :size="2" />
         <span>Ihr</span>
       </div>
-      <div class="ad-vpfeil hoch" :class="{ aktiv: aktiv('ergebnis') }">
-        <div class="ad-linie"><span class="ad-punkt" /></div>
-        <Transition name="ad-wechsel" mode="out-in">
-          <span :key="text('ergebnis')" class="ad-nachricht rechts">{{ text('ergebnis') }}</span>
-        </Transition>
-      </div>
+      <LaufPfeil richtung="hoch" seite="rechts" :aktiv="aktiv('ergebnis')" :text="text('ergebnis')" />
     </div>
 
     <!-- Links: das Modell -->
@@ -188,18 +178,8 @@ const fertig = computed(() => n.value === schritte.length - 1)
 
     <!-- Zwischen Modell und Harness -->
     <div class="ad-spalte">
-      <div class="ad-pfeil links oben" :class="{ aktiv: aktiv('zumModell') }">
-        <Transition name="ad-wechsel" mode="out-in">
-          <span :key="text('zumModell')" class="ad-nachricht">{{ text('zumModell') }}</span>
-        </Transition>
-        <div class="ad-linie"><span class="ad-punkt" /></div>
-      </div>
-      <div class="ad-pfeil rechts unten" :class="{ aktiv: aktiv('vomModell') }">
-        <div class="ad-linie"><span class="ad-punkt" /></div>
-        <Transition name="ad-wechsel" mode="out-in">
-          <span :key="text('vomModell')" class="ad-nachricht">{{ text('vomModell') }}</span>
-        </Transition>
-      </div>
+      <LaufPfeil richtung="links" :zeilen="3" :aktiv="aktiv('zumModell')" :text="text('zumModell')" />
+      <LaufPfeil richtung="rechts" seite="unten" :zeilen="3" :aktiv="aktiv('vomModell')" :text="text('vomModell')" />
     </div>
 
     <!-- Mitte: das Harness mit seiner Steuerung -->
@@ -223,18 +203,8 @@ const fertig = computed(() => n.value === schritte.length - 1)
 
     <!-- Zwischen Harness und Werkzeugen -->
     <div class="ad-spalte">
-      <div class="ad-pfeil rechts oben" :class="{ aktiv: aktiv('zumWerkzeug') }">
-        <Transition name="ad-wechsel" mode="out-in">
-          <span :key="text('zumWerkzeug')" class="ad-nachricht">{{ text('zumWerkzeug') }}</span>
-        </Transition>
-        <div class="ad-linie"><span class="ad-punkt" /></div>
-      </div>
-      <div class="ad-pfeil links unten" :class="{ aktiv: aktiv('vomWerkzeug') }">
-        <div class="ad-linie"><span class="ad-punkt" /></div>
-        <Transition name="ad-wechsel" mode="out-in">
-          <span :key="text('vomWerkzeug')" class="ad-nachricht">{{ text('vomWerkzeug') }}</span>
-        </Transition>
-      </div>
+      <LaufPfeil richtung="rechts" :zeilen="3" :aktiv="aktiv('zumWerkzeug')" :text="text('zumWerkzeug')" />
+      <LaufPfeil richtung="links" seite="unten" :zeilen="3" :aktiv="aktiv('vomWerkzeug')" :text="text('vomWerkzeug')" />
     </div>
 
     <!-- Rechts: Werkzeuge und das Referat -->
@@ -278,7 +248,6 @@ const fertig = computed(() => n.value === schritte.length - 1)
 
 <style scoped>
 .ad {
-  --punkt: 0.55rem;
   display: grid;
   grid-template-columns: 8rem 8.6rem minmax(0, 1fr) 8.6rem 9.6rem;
   grid-template-rows: auto auto auto;
@@ -289,89 +258,10 @@ const fertig = computed(() => n.value === schritte.length - 1)
 
 /* ---- Pfeile ---- */
 
-.ad-linie {
-  position: relative;
-  background: var(--thm-grey-300);
-  transition: background 0.3s ease;
-}
-
-.aktiv > .ad-linie { background: var(--thm-green-500); }
-
-/* Pfeilspitze */
-.ad-linie::after {
-  content: '';
-  position: absolute;
-  border: 0.38rem solid transparent;
-  transition: border-color 0.3s ease;
-}
-
-/* Laufender Punkt: die Nachricht unterwegs */
-.ad-punkt {
-  position: absolute;
-  width: var(--punkt);
-  height: var(--punkt);
-  border-radius: 50%;
-  background: var(--thm-green-700);
-  opacity: 0;
-}
-
-.aktiv .ad-punkt { opacity: 1; }
-
-.ad-pfeil {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.ad-pfeil .ad-linie { height: 2px; margin: 0 0.4rem; }
-.ad-pfeil .ad-punkt { top: 50%; margin-top: calc(var(--punkt) / -2); }
-
-.ad-pfeil.rechts .ad-linie::after { right: -0.4rem; top: -0.38rem; border-right: 0; border-left-width: 0.55rem; border-left-color: var(--thm-grey-300); }
-.ad-pfeil.links .ad-linie::after { left: -0.4rem; top: -0.38rem; border-left: 0; border-right-width: 0.55rem; border-right-color: var(--thm-grey-300); }
-.ad-pfeil.rechts.aktiv .ad-linie::after { border-left-color: var(--thm-green-500); }
-.ad-pfeil.links.aktiv .ad-linie::after { border-right-color: var(--thm-green-500); }
-
-.ad-pfeil.rechts.aktiv .ad-punkt { animation: ad-rechts 1.4s ease-in-out infinite; }
-.ad-pfeil.links.aktiv .ad-punkt { animation: ad-links 1.4s ease-in-out infinite; }
-
-@keyframes ad-rechts {
-  from { left: 0; }
-  to { left: calc(100% - var(--punkt)); }
-}
-
-@keyframes ad-links {
-  from { left: calc(100% - var(--punkt)); }
-  to { left: 0; }
-}
-
-/* Platz für bis zu drei Zeilen, damit beim Wechsel nichts springt */
-.ad-pfeil .ad-nachricht {
-  min-height: 3.3em;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  text-align: center;
-}
-
-.ad-pfeil.unten .ad-nachricht { align-items: flex-start; }
-
 .ad-spalte {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-.ad-nachricht {
-  font-size: 0.82em;
-  font-weight: var(--fw-semibold);
-  line-height: 1.25;
-  color: var(--thm-grey-400);
-  transition: color 0.3s ease;
-}
-
-.aktiv > .ad-nachricht,
-.aktiv > .ad-wechsel-enter-active {
-  color: var(--text-strong);
 }
 
 /* ---- Oben: ihr ---- */
@@ -392,49 +282,6 @@ const fertig = computed(() => n.value === schritte.length - 1)
   font-weight: var(--fw-bold);
   color: var(--text-strong);
 }
-
-.ad-vpfeil {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  width: 1rem;
-  height: 3rem;
-}
-
-.ad-vpfeil .ad-linie { width: 2px; height: calc(100% - 0.45rem); }
-.ad-vpfeil.runter .ad-linie { margin-bottom: auto; }
-.ad-vpfeil.hoch .ad-linie { margin-top: auto; }
-.ad-vpfeil .ad-punkt { left: 50%; margin-left: calc(var(--punkt) / -2); }
-
-.ad-vpfeil.runter .ad-linie::after { bottom: -0.45rem; left: -0.38rem; border-bottom: 0; border-top-width: 0.55rem; border-top-color: var(--thm-grey-300); }
-.ad-vpfeil.hoch .ad-linie::after { top: -0.45rem; left: -0.38rem; border-top: 0; border-bottom-width: 0.55rem; border-bottom-color: var(--thm-grey-300); }
-.ad-vpfeil.runter.aktiv .ad-linie::after { border-top-color: var(--thm-green-500); }
-.ad-vpfeil.hoch.aktiv .ad-linie::after { border-bottom-color: var(--thm-green-500); }
-
-.ad-vpfeil.runter.aktiv .ad-punkt { animation: ad-runter 1.4s ease-in-out infinite; }
-.ad-vpfeil.hoch.aktiv .ad-punkt { animation: ad-hoch 1.4s ease-in-out infinite; }
-
-@keyframes ad-runter {
-  from { top: 0; }
-  to { top: calc(100% - var(--punkt)); }
-}
-
-@keyframes ad-hoch {
-  from { top: calc(100% - var(--punkt)); }
-  to { top: 0; }
-}
-
-/* Die Nachricht steht neben dem Pfeil, nach außen weg vom Ihr-Block */
-.ad-vpfeil .ad-nachricht {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: max-content;
-  max-width: 13rem;
-}
-
-.ad-nachricht.links { right: 1.4rem; text-align: right; }
-.ad-nachricht.rechts { left: 1.4rem; text-align: left; }
 
 /* ---- Modell ---- */
 

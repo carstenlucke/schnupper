@@ -10,8 +10,8 @@
   und Farben im CD bleiben.
 
   Animiert wie das Gegenstück <AgentDurchlauf>: Jeder Klick schickt eine
-  Nachricht über einen Pfeil; der aktive Pfeil wird grün, ein Punkt läuft
-  darüber, die Nachricht steht daneben. Unten erklärt eine Zeile den
+  Nachricht über einen <LaufPfeil>; der aktive Pfeil wird grün, ein Punkt
+  läuft darüber, die Nachricht steht daneben. Unten erklärt eine Zeile den
   Schritt; nach dem letzten wird sie zum Merksatz.
 
   Mit dem zweiten Schritt erscheint links das Modell hinter dem
@@ -95,19 +95,9 @@ const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
       </div>
 
       <div class="cp-mitte cp-auto-spalte">
-        <div class="cp-pfeil links" :class="{ aktiv: aktiv('zumModell') }">
-          <Transition name="cp-wechsel" mode="out-in">
-            <span :key="text('zumModell')" class="cp-nachricht">{{ text('zumModell') }}</span>
-          </Transition>
-          <div class="cp-linie"><span class="cp-punkt" /></div>
-        </div>
+        <LaufPfeil richtung="links" class="cp-pfeil" :aktiv="aktiv('zumModell')" :text="text('zumModell')" />
         <div class="cp-auto">automatisch</div>
-        <div class="cp-pfeil rechts unten" :class="{ aktiv: aktiv('vomModell') }">
-          <div class="cp-linie"><span class="cp-punkt" /></div>
-          <Transition name="cp-wechsel" mode="out-in">
-            <span :key="text('vomModell')" class="cp-nachricht">{{ text('vomModell') }}</span>
-          </Transition>
-        </div>
+        <LaufPfeil richtung="rechts" seite="unten" class="cp-pfeil" :aktiv="aktiv('vomModell')" :text="text('vomModell')" />
       </div>
 
       <Fenster titel="ChatGPT" class="cp-fenster">
@@ -120,26 +110,16 @@ const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
       </Fenster>
 
       <div class="cp-mitte">
-        <div class="cp-pfeil links" :class="{ aktiv: aktiv('rein') }">
-          <Transition name="cp-wechsel" mode="out-in">
-            <span :key="text('rein')" class="cp-nachricht">
-              <ThmIcon name="clipboard-paste" :size="0.95" /> {{ text('rein') }}
-            </span>
-          </Transition>
-          <div class="cp-linie"><span class="cp-punkt" /></div>
-        </div>
+        <LaufPfeil richtung="links" class="cp-pfeil" :aktiv="aktiv('rein')" :text="text('rein')">
+          <ThmIcon name="clipboard-paste" :size="0.95" /> {{ text('rein') }}
+        </LaufPfeil>
         <div class="cp-ich">
           <ThmIcon name="user" box :ton="ihrAktiv ? 'gruen' : 'grau'" :size="3" />
           <span>Ihr</span>
         </div>
-        <div class="cp-pfeil rechts unten" :class="{ aktiv: aktiv('raus') }">
-          <div class="cp-linie"><span class="cp-punkt" /></div>
-          <Transition name="cp-wechsel" mode="out-in">
-            <span :key="text('raus')" class="cp-nachricht">
-              <ThmIcon name="clipboard-paste" :size="0.95" /> {{ text('raus') }}
-            </span>
-          </Transition>
-        </div>
+        <LaufPfeil richtung="rechts" seite="unten" class="cp-pfeil" :aktiv="aktiv('raus')" :text="text('raus')">
+          <ThmIcon name="clipboard-paste" :size="0.95" /> {{ text('raus') }}
+        </LaufPfeil>
       </div>
 
       <Fenster titel="Referat.docx" class="cp-fenster">
@@ -178,8 +158,6 @@ const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
 </template>
 
 <style scoped>
-.cp-rahmen { --punkt: 0.55rem; }
-
 .cp {
   display: grid;
   grid-template-columns: 7.5rem 5.5rem 1fr 10.5rem 1fr;
@@ -352,86 +330,10 @@ const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
   color: var(--thm-grey-400);
 }
 
-/* ---- Pfeile ---- */
-
+/* Pfeile füllen die Spalte; ihre Nachricht in 0.78rem */
 .cp-pfeil {
   align-self: stretch;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.cp-linie {
-  position: relative;
-  height: 2px;
-  margin: 0 0.4rem;
-  background: var(--thm-grey-300);
-  transition: background 0.3s ease;
-}
-
-.aktiv > .cp-linie { background: var(--thm-green-500); }
-
-/* Pfeilspitze */
-.cp-linie::after {
-  content: '';
-  position: absolute;
-  top: -0.38rem;
-  border: 0.38rem solid transparent;
-  transition: border-color 0.3s ease;
-}
-
-.cp-pfeil.rechts .cp-linie::after { right: -0.4rem; border-right: 0; border-left-width: 0.55rem; border-left-color: var(--thm-grey-300); }
-.cp-pfeil.links .cp-linie::after { left: -0.4rem; border-left: 0; border-right-width: 0.55rem; border-right-color: var(--thm-grey-300); }
-.cp-pfeil.rechts.aktiv .cp-linie::after { border-left-color: var(--thm-green-500); }
-.cp-pfeil.links.aktiv .cp-linie::after { border-right-color: var(--thm-green-500); }
-
-/* Laufender Punkt: die Nachricht unterwegs */
-.cp-punkt {
-  position: absolute;
-  top: 50%;
-  width: var(--punkt);
-  height: var(--punkt);
-  margin-top: calc(var(--punkt) / -2);
-  border-radius: 50%;
-  background: var(--thm-green-700);
-  opacity: 0;
-}
-
-.aktiv .cp-punkt { opacity: 1; }
-
-.cp-pfeil.rechts.aktiv .cp-punkt { animation: cp-rechts 1.4s ease-in-out infinite; }
-.cp-pfeil.links.aktiv .cp-punkt { animation: cp-links 1.4s ease-in-out infinite; }
-
-@keyframes cp-rechts {
-  from { left: 0; }
-  to { left: calc(100% - var(--punkt)); }
-}
-
-@keyframes cp-links {
-  from { left: calc(100% - var(--punkt)); }
-  to { left: 0; }
-}
-
-/* Platz für zwei Zeilen, damit beim Wechsel nichts springt */
-.cp-nachricht {
-  min-height: 2.5em;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 0.35rem;
-  text-align: center;
-  font-size: 0.78rem;
-  font-weight: var(--fw-semibold);
-  line-height: 1.25;
-  color: var(--thm-grey-400);
-  transition: color 0.3s ease;
-}
-
-.cp-pfeil.unten .cp-nachricht { align-items: flex-start; }
-
-.aktiv > .cp-nachricht,
-.aktiv > .cp-wechsel-enter-active {
-  color: var(--text-strong);
+  font-size: 0.95rem;
 }
 
 /* ---- Wiederholung ---- */
