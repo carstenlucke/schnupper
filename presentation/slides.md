@@ -604,7 +604,7 @@ rubrik: Vom Chatbot zum KI-Agenten
 titel: Vom Absatz zum ganzen Referat
 untertitel: Ein größerer Auftrag, Runde für Runde
 class: text-l
-clicks: 6
+clicks: 8
 ---
 
 <div class="thm-center">
@@ -620,6 +620,10 @@ Anfrage ans Modell, und seine Farbe zeigt, welches Werkzeug sich das Modell
 darin wünscht. Die Zahlen sind ausgedacht, liegen für so einen Auftrag aber
 in einer realistischen Größenordnung.
 
+Der Auftrag verlangt außerdem zwei Berichte: vorher, was der Agent ändern
+will, und am Ende, was er geändert hat. An diesen beiden Stellen seid ihr
+gefragt.
+
 [click] Verstehen: Der Agent liest euer Referat und die Aufgabenstellung.
 Ohne diese beiden Runden wüsste er nicht, was überhaupt zu prüfen ist.
 
@@ -628,22 +632,35 @@ die Seiten, die er findet. Das sind die meisten Runden. Hier zeigt sich
 auch das Gedächtnis: Bei so vielen gelesenen Seiten wird der Verlauf lang,
 und das Harness fasst ihn bei Bedarf zusammen.
 
-[click] Korrigieren: Wo eine Zahl nicht mehr stimmt, liest er den Absatz
-und schreibt ihn neu, genau wie auf der Folie davor, nur mehrmals
-hintereinander.
+[click] Bevor der Agent etwas am Referat ändert, hält die Schleife an und
+legt euch seinen Plan vor: Vier Zahlen sind seiner Meinung nach veraltet.
+Ihr wisst, dass eine davon stimmt, und streicht sie. So ein Halt ist eine
+Leitplanke: Ändern darf der Agent erst, wenn ihr zugestimmt habt. Je früher
+ihr eingreift, desto weniger muss hinterher zurückgenommen werden.
+
+[click] Korrigieren: Der Agent ersetzt nur die Zahlen, die ihr freigegeben
+habt, die gestrichene bleibt, wie sie ist. Jede Korrektur ist ein Paar aus
+Absatz lesen und Absatz schreiben, genau wie auf der Folie „Ein Agent bei
+der Arbeit“.
 
 [click] Quellen ergänzen: Zu jeder Zahl kommt ein Beleg, am Ende ein
 Quellenverzeichnis.
 
 [click] Kontrolle: Mit einem kleinen Programm testet er, ob alle Links noch
 funktionieren, und liest das Referat ein letztes Mal. Das ist das Prüfen
-aus dem Kreislauf. Erst dann meldet das Modell, dass es fertig ist.
+aus dem Kreislauf. Erst dann meldet das Modell, dass es fertig ist, und
+schreibt den Bericht, den ihr verlangt habt.
+
+[click] Am Ende prüft ihr: Was hat der Agent geändert, und stimmt das? Der
+Bericht macht das leichter, weil ihr nicht das ganze Referat neu lesen
+müsst, sondern gezielt nachsehen könnt, was sich geändert hat. Geprüft
+werden muss trotzdem, denn die Verantwortung für das Referat bleibt bei
+euch.
 
 [click] Die beiden markierten Runden habt ihr vorhin Schritt für Schritt
 gesehen. Der große Auftrag besteht aus demselben Ablauf, nur viel öfter.
-Ihr gebt trotzdem nur einmal den Auftrag und bekommt einmal das Ergebnis.
-Was der Agent herausfindet, solltet ihr trotzdem selbst prüfen, vor allem
-die Quellen.
+Wann ihr prüft, legt ihr mit dem Auftrag fest: vorher den Plan, am Ende den
+Bericht, oder beides.
 -->
 
 ---
