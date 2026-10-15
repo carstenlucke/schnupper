@@ -35,7 +35,7 @@ const schritte: Schritt[] = [
   { text: 'Ein Auftrag, Schritt für Schritt durch den Agenten.' },
   {
     text: 'Ihr gebt den Auftrag — einmal, in ganz normalem Deutsch.',
-    pfeile: { auftrag: '„Mach Absatz 3 in meinem Referat besser.“' },
+    pfeile: { auftrag: '„Kürze Absatz 3 in meinem Referat auf unter 1000 Zeichen.“' },
   },
   {
     text: 'Das Harness schickt den Auftrag ans Modell, dazu seine Anweisungen und die Liste der Werkzeuge.',
@@ -57,26 +57,26 @@ const schritte: Schritt[] = [
     anweisungen: true,
   },
   {
-    text: 'Jetzt kennt das Modell das Referat und schreibt einen besseren Absatz 3.',
-    pfeile: { vomModell: 'Bitte „Datei schreiben“: neuer Absatz 3' },
+    text: 'Jetzt kennt das Modell das Referat und schreibt Absatz 3 kürzer.',
+    pfeile: { vomModell: 'Bitte „Datei schreiben“: kürzerer Absatz 3' },
   },
   {
-    text: 'Wieder prüft das Harness — und speichert den neuen Absatz im Referat.',
+    text: 'Wieder prüft das Harness — und speichert den gekürzten Absatz im Referat.',
     pfeile: { zumWerkzeug: 'Datei schreiben' },
     werkzeug: 'schreiben',
   },
   {
-    text: 'Dritte Runde: Das Modell erfährt, dass es geklappt hat.',
-    pfeile: { vomWerkzeug: 'gespeichert ✓', zumModell: 'Anweisungen + Werkzeuge + Verlauf' },
+    text: 'Dritte Runde: Das Modell erfährt, dass gespeichert ist — und wie lang der Absatz jetzt ist.',
+    pfeile: { vomWerkzeug: 'gespeichert ✓ 870 Zeichen', zumModell: 'Anweisungen + Werkzeuge + Verlauf' },
     anweisungen: true,
   },
   {
-    text: 'Kein Werkzeug mehr nötig — das Modell meldet: fertig.',
-    pfeile: { vomModell: '„Fertig: Absatz 3 ist überarbeitet.“' },
+    text: 'Das Modell prüft: unter 1000 Zeichen, Ziel erreicht. Kein Werkzeug mehr nötig — es meldet: fertig.',
+    pfeile: { vomModell: '„Fertig: Absatz 3 hat jetzt 870 Zeichen.“' },
   },
   {
     text: '',
-    pfeile: { ergebnis: '„Absatz 3 ist überarbeitet.“' },
+    pfeile: { ergebnis: '„Gekürzt: 870 statt 1400\u00a0Zeichen.“' },
   },
 ]
 

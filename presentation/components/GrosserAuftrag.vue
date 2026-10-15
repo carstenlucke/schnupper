@@ -1,6 +1,6 @@
 <!--
   Das große Bild zu <AgentDurchlauf>: Dort lief ein kleiner Auftrag
-  (einen Absatz verbessern) in drei Runden durch den Agenten. Hier ein
+  (einen Absatz kürzen) in drei Runden durch den Agenten. Hier ein
   größerer — Fakten im Referat prüfen und Quellen ergänzen — in rund
   dreißig Runden. Jedes Kästchen ist eine Runde: eine Anfrage ans
   Modell, und das Werkzeug, das es sich darin wünscht. Die letzte Runde

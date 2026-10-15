@@ -35,7 +35,7 @@ interface Schritt {
 }
 
 const schritte: Schritt[] = [
-  { text: 'Absatz 3 im Referat soll besser werden — so, wie ihr es heute macht.' },
+  { text: 'Absatz 3 im Referat ist zu lang. So kürzt ihr ihn heute mit ChatGPT.' },
   {
     text: 'Ihr markiert Absatz 3, kopiert ihn und fügt ihn in den Chat ein.',
     pfeile: { rein: 'Absatz 3 reinkopieren' },
@@ -45,8 +45,8 @@ const schritte: Schritt[] = [
     pfeile: { zumModell: 'nur Absatz 3' },
   },
   {
-    text: 'Das Modell schreibt eine bessere Fassung, die App zeigt sie an.',
-    pfeile: { vomModell: 'neuer Absatz 3' },
+    text: 'Das Modell schreibt eine kürzere Fassung, die App zeigt sie an.',
+    pfeile: { vomModell: 'kürzerer Absatz 3' },
   },
   {
     text: 'Ihr kopiert die Antwort und fügt sie im Referat ein.',
@@ -103,8 +103,8 @@ const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
       <Fenster titel="ChatGPT" class="cp-fenster">
         <template #leiste><i class="cp-app">App</i></template>
         <div class="cp-chat">
-          <div class="cp-blase ich" :class="{ da: n >= 1 }">Mach diesen Absatz besser: <em>„Der Klimawandel ist …“</em></div>
-          <div class="cp-blase ki" :class="{ da: n >= 3 }">Gern! Hier ist eine verbesserte Fassung:&nbsp;…</div>
+          <div class="cp-blase ich" :class="{ da: n >= 1 }">Kürze diesen Absatz auf unter 1000 Zeichen: <em>„Der Klimawandel ist …“</em></div>
+          <div class="cp-blase ki" :class="{ da: n >= 3 }">Gern! Hier ist eine kürzere Fassung:&nbsp;…</div>
           <div class="cp-eingabe" />
         </div>
       </Fenster>

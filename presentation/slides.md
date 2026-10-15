@@ -464,8 +464,9 @@ schickt sie an das Modell, bei jedem Absatz aufs Neue. Diese App ist schon
 ein kleiner Rahmen um das Modell, ein Agent bekommt später einen deutlich
 größeren.
 
-[click] Das Modell schreibt eine bessere Fassung, und die App zeigt sie im
-Chat an.
+[click] Das Modell schreibt eine kürzere Fassung, und die App zeigt sie im
+Chat an. Ob sie wirklich unter 1000 Zeichen liegt, müsst ihr selbst
+nachzählen.
 
 [click] Ihr kopiert die Antwort zurück ins Referat. Absatz 3 ist jetzt neu
 und färbt sich grün.
@@ -578,18 +579,21 @@ einmal mit: Anweisungen, Werkzeuge und der ganze bisherige Verlauf. Das
 Modell selbst merkt sich nichts, es bekommt jedes Mal alles neu. Deshalb
 leuchten die Anweisungen wieder auf. Das ist Runde 2.
 
-[click] Jetzt kennt das Modell den Text und schreibt den neuen Absatz,
+[click] Jetzt kennt das Modell den Text und schreibt Absatz 3 kürzer,
 wieder als Wunsch an ein Werkzeug.
 
 [click] Auch Schreiben ist laut den Leitplanken erlaubt. Absatz 3 im Referat
-wird neu geschrieben und färbt sich grün.
+wird gekürzt und färbt sich grün.
 
-[click] In Runde 3 geht die Rückmeldung, dass gespeichert wurde, ans Modell,
-und wieder geht alles andere mit.
+[click] In Runde 3 geht die Rückmeldung ans Modell: gespeichert, und der
+Absatz hat jetzt 870 Zeichen. Wieder geht alles andere mit.
 
-[click] Das Modell prüft: Das Ergebnis passt, es braucht kein Werkzeug mehr
-und meldet, dass es fertig ist. Daran erkennt das Harness, dass die Schleife
-zu Ende ist.
+[click] Das Modell prüft das Ergebnis am Auftrag: unter 1000 Zeichen, das
+Ziel ist erreicht. Es braucht kein Werkzeug mehr und meldet, dass es fertig
+ist. Daran erkennt das Harness, dass die Schleife zu Ende ist. Das geht
+nur, weil der Auftrag sagt, woran man „fertig“ erkennt. Hätte er nur
+„mach den Absatz besser“ gelautet, müsste das Modell raten, wann es gut
+genug ist.
 
 [click] Das Ergebnis geht an euch. Beim Copy & Paste wart ihr die Brücke
 zwischen Chat und Dokument, jetzt ist es das Harness.
@@ -608,7 +612,7 @@ clicks: 6
 </div>
 
 <!--
-Einen Absatz verbessern ist für einen Agenten eine kleine Aufgabe: drei
+Einen Absatz kürzen ist für einen Agenten eine kleine Aufgabe: drei
 Runden, dann ist er fertig. Agenten können aber deutlich mehr. Hier bekommt
 er einen größeren Auftrag zum selben Referat: Fakten prüfen, Zahlen
 aktualisieren, Quellen ergänzen. Jedes Kästchen ist eine Runde, also eine
