@@ -6,12 +6,16 @@
   - Werkzeuge (links): die Hände und Augen — womit der Agent in die Welt
     greift.
   - Steuerung (rechts): was das Harness selbst leistet — die Schleife, die
-    das Modell immer wieder aufruft, die Anweisungen, das Gedächtnis und
+    das Modell immer wieder aufruft, die Anweisungen, der Verlauf und
     die Leitplanken.
+
+  Der Baustein heißt bewusst „Verlauf“ und nicht „Gedächtnis“: Gemeint
+  ist nur, was das Harness in jeder Runde ins Kontextfenster schickt,
+  kein Langzeitgedächtnis über den Auftrag hinaus.
 
   Idee aus dem TecDay-Vortrag (Folie „Agent = Model + Harness“). Die
   Auswahl folgt den üblichen Bausteinen eines Agent Harness (Schleife,
-  Werkzeuge, Anweisungen, Gedächtnis/Kontext, Leitplanken); das Prüfen
+  Werkzeuge, Anweisungen, Kontext, Leitplanken); das Prüfen
   zeigt die Folie mit dem Agent-Kreislauf davor.
 -->
 <script setup lang="ts">
@@ -20,7 +24,7 @@ import { werkzeuge, steuerung as baustein } from './harness'
 const steuerung = [
   { ...baustein.schleife, info: 'fragt das Modell immer wieder' },
   { ...baustein.anweisungen, info: 'Rolle und Aufgabe' },
-  { ...baustein.gedaechtnis, info: 'Verlauf und Notizen' },
+  { ...baustein.verlauf, info: 'Auftrag, Antworten, Ergebnisse' },
   { ...baustein.leitplanken, info: 'was erlaubt ist' },
 ]
 </script>

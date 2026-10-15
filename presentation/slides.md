@@ -441,29 +441,42 @@ Schritt macht und wie weit die Hände reichen.
 rubrik: Vom Chatbot zum KI-Agenten
 titel: 'Der Alltag mit Chatbots: Copy & Paste'
 class: text-l
+clicks: 5
 ---
 
-<div class="thm-center thm-gruppe">
+<div class="thm-center">
   <CopyPasteSchleife />
-
-  <Callout v-click="2" icon="user"><strong>Ihr seid die Brücke.</strong> Das Modell sieht nur den Schnipsel, den ihr hineinkopiert — nicht eure ganze Arbeit.</Callout>
 </div>
 
 <!--
 Kaum ein Referat entsteht heute ganz ohne ChatGPT. Meist läuft es so: Ihr
 kopiert einen Absatz in den Chat, holt die Antwort zurück ins Dokument und
-macht mit dem nächsten Absatz weiter. Die Informationen zwischen Dokument
-und Chat tragt dabei ihr hin und her.
+macht mit dem nächsten Absatz weiter. In vier Schritten läuft ein Absatz
+einmal durch, im fünften ist der nächste dran. Die Zeile unten sagt, was
+gerade passiert.
+
+[click] Ihr markiert Absatz 3 im Referat, kopiert ihn und fügt ihn in den
+Chat ein. Die Informationen zwischen Dokument und Chat tragt dabei ihr hin
+und her.
 
 [click] Hinter ChatGPT steckt ein Modell, das Sprachmodell aus dem ersten
-Teil. ChatGPT selbst ist nur die App drumherum: Sie nimmt eure Eingabe,
-schickt sie an das Modell und zeigt die Antwort an, bei jedem Absatz aufs
-Neue. Diese App ist schon ein kleiner Rahmen um das Modell, ein Agent
-bekommt später einen deutlich größeren.
+Teil. ChatGPT selbst ist nur die App drumherum: Sie nimmt eure Eingabe und
+schickt sie an das Modell, bei jedem Absatz aufs Neue. Diese App ist schon
+ein kleiner Rahmen um das Modell, ein Agent bekommt später einen deutlich
+größeren.
 
-[click] Das Modell kennt nur, was ihr ihm gebt: den einen Absatz, nicht das
-ganze Referat, nicht die Aufgabenstellung, nicht eure Quellen. Genau hier
-setzen Agenten an, denn sie holen sich selbst, was sie brauchen.
+[click] Das Modell schreibt eine kürzere Fassung, und die App zeigt sie im
+Chat an. Ob sie wirklich unter 1000 Zeichen liegt, müsst ihr selbst
+nachzählen.
+
+[click] Ihr kopiert die Antwort zurück ins Referat. Absatz 3 ist jetzt neu
+und färbt sich grün.
+
+[click] Mit dem nächsten Absatz geht alles von vorn los: Im Chat steht
+dieselbe Bitte, diesmal mit Absatz 4. Das Modell kennt
+nur, was ihr ihm gebt: den einen Absatz, nicht das ganze Referat, nicht die
+Aufgabenstellung, nicht eure Quellen. Genau hier setzen Agenten an, denn sie
+holen sich selbst, was sie brauchen.
 -->
 
 ---
@@ -544,8 +557,8 @@ dafür gebraucht wird.
 
 Das Modell kennt ihr schon. Neu ist der grüne Kasten in der Mitte, das
 Harness: alles, was um das Modell herum gebaut ist. Was genau darin steckt,
-sortiert die nächste Folie. Die Schleife im Harness ist der Kreislauf von
-der Folie davor, sie zählt die Runden mit.
+sortiert die Folie „Aufbau eines KI-Agenten“. Die Schleife im Harness ist
+der Kreislauf von der Folie davor, sie zählt die Runden mit.
 
 [click] Ihr gebt den Auftrag, ein einziges Mal.
 
@@ -555,7 +568,7 @@ die es gibt. Die Schleife steht auf Runde 1.
 
 [click] Das ist der wichtigste Moment: Das Modell kann nichts anfassen. Es
 schreibt nur auf, welches Werkzeug es braucht, hier „Datei lesen“. Dieser
-Wunsch kommt ins Gedächtnis.
+Wunsch kommt in den Verlauf.
 
 [click] Das Harness prüft an den Leitplanken, ob der Agent das darf. Lesen
 ist erlaubt, also führt es das Werkzeug aus und liest das Referat. Das ist
@@ -568,21 +581,88 @@ einmal mit: Anweisungen, Werkzeuge und der ganze bisherige Verlauf. Das
 Modell selbst merkt sich nichts, es bekommt jedes Mal alles neu. Deshalb
 leuchten die Anweisungen wieder auf. Das ist Runde 2.
 
-[click] Jetzt kennt das Modell den Text und schreibt den neuen Absatz,
+[click] Jetzt kennt das Modell den Text und schreibt Absatz 3 kürzer,
 wieder als Wunsch an ein Werkzeug.
 
 [click] Auch Schreiben ist laut den Leitplanken erlaubt. Absatz 3 im Referat
-wird neu geschrieben und färbt sich grün.
+wird gekürzt und färbt sich grün.
 
-[click] In Runde 3 geht die Rückmeldung, dass gespeichert wurde, ans Modell,
-und wieder geht alles andere mit.
+[click] In Runde 3 geht die Rückmeldung ans Modell: gespeichert, und der
+Absatz hat jetzt 870 Zeichen. Wieder geht alles andere mit.
 
-[click] Das Modell prüft: Das Ergebnis passt, es braucht kein Werkzeug mehr
-und meldet, dass es fertig ist. Daran erkennt das Harness, dass die Schleife
-zu Ende ist.
+[click] Das Modell prüft das Ergebnis am Auftrag: unter 1000 Zeichen, das
+Ziel ist erreicht. Es braucht kein Werkzeug mehr und meldet, dass es fertig
+ist. Daran erkennt das Harness, dass die Schleife zu Ende ist. Das geht
+nur, weil der Auftrag sagt, woran man „fertig“ erkennt. Hätte er nur
+„mach den Absatz besser“ gelautet, müsste das Modell raten, wann es gut
+genug ist.
 
 [click] Das Ergebnis geht an euch. Beim Copy & Paste wart ihr die Brücke
 zwischen Chat und Dokument, jetzt ist es das Harness.
+-->
+
+---
+rubrik: Vom Chatbot zum KI-Agenten
+titel: Vom Absatz zum ganzen Referat
+untertitel: Ein größerer Auftrag, Runde für Runde
+class: text-l
+clicks: 8
+---
+
+<div class="thm-center">
+  <GrosserAuftrag />
+</div>
+
+<!--
+Einen Absatz kürzen ist für einen Agenten eine kleine Aufgabe: drei
+Runden, dann ist er fertig. Agenten können aber deutlich mehr. Hier bekommt
+er einen größeren Auftrag zum selben Referat: Fakten prüfen, Zahlen
+aktualisieren, Quellen ergänzen. Jedes Kästchen ist eine Runde, also eine
+Anfrage ans Modell, und seine Farbe zeigt, welches Werkzeug sich das Modell
+darin wünscht. Die Zahlen sind ausgedacht, liegen für so einen Auftrag aber
+in einer realistischen Größenordnung.
+
+Der Auftrag verlangt außerdem zwei Berichte: vorher, was der Agent ändern
+will, und am Ende, was er geändert hat. An diesen beiden Stellen seid ihr
+gefragt.
+
+[click] Verstehen: Der Agent liest euer Referat und die Aufgabenstellung.
+Ohne diese beiden Runden wüsste er nicht, was überhaupt zu prüfen ist.
+
+[click] Recherchieren: Für jede Zahl im Referat sucht er im Web und liest
+die Seiten, die er findet. Das sind die meisten Runden. Hier zeigt sich
+auch der Verlauf: Bei so vielen gelesenen Seiten wird er lang, und das
+Harness fasst ihn bei Bedarf zusammen.
+
+[click] Bevor der Agent etwas am Referat ändert, hält die Schleife an und
+legt euch seinen Plan vor: Vier Zahlen sind seiner Meinung nach veraltet.
+Ihr wisst, dass eine davon stimmt, und streicht sie. So ein Halt ist eine
+Leitplanke: Ändern darf der Agent erst, wenn ihr zugestimmt habt. Je früher
+ihr eingreift, desto weniger muss hinterher zurückgenommen werden.
+
+[click] Korrigieren: Der Agent ersetzt nur die Zahlen, die ihr freigegeben
+habt, die gestrichene bleibt, wie sie ist. Jede Korrektur ist ein Paar aus
+Absatz lesen und Absatz schreiben, genau wie auf der Folie „Ein Agent bei
+der Arbeit“.
+
+[click] Quellen ergänzen: Zu jeder Zahl kommt ein Beleg, am Ende ein
+Quellenverzeichnis.
+
+[click] Kontrolle: Mit einem kleinen Programm testet er, ob alle Links noch
+funktionieren, und liest das Referat ein letztes Mal. Das ist das Prüfen
+aus dem Kreislauf. Erst dann meldet das Modell, dass es fertig ist, und
+schreibt den Bericht, den ihr verlangt habt.
+
+[click] Am Ende prüft ihr: Was hat der Agent geändert, und stimmt das? Der
+Bericht macht das leichter, weil ihr nicht das ganze Referat neu lesen
+müsst, sondern gezielt nachsehen könnt, was sich geändert hat. Geprüft
+werden muss trotzdem, denn die Verantwortung für das Referat bleibt bei
+euch.
+
+[click] Die beiden markierten Runden habt ihr vorhin Schritt für Schritt
+gesehen. Der große Auftrag besteht aus demselben Ablauf, nur viel öfter.
+Wann ihr prüft, legt ihr mit dem Auftrag fest: vorher den Plan, am Ende den
+Bericht, oder beides.
 -->
 
 ---
@@ -609,15 +689,16 @@ Links stehen die Werkzeuge, die Hände und Augen des Agenten: Dateien lesen
 und schreiben, Programme starten, im Web suchen.
 
 Rechts steht die Steuerung, also das, was das Harness selbst leistet. Alle
-vier Bausteine haben auf der Folie davor schon aufgeleuchtet:
+vier Bausteine haben bei „Ein Agent bei der Arbeit“ schon aufgeleuchtet:
 
-- **Schleife:** die Runden von eben. Sie ruft das Modell immer wieder auf,
+- **Schleife:** die Runden, ob drei oder dreißig. Sie ruft das Modell immer wieder auf,
   führt aus, was es sich wünscht, und gibt ihm das Ergebnis zurück, bis die
   Aufgabe fertig ist.
 - **Anweisungen:** Rolle und Aufgabe des Agenten, in unseren Demos eine
   Textdatei.
-- **Gedächtnis:** der Verlauf, und wenn er zu lang wird, eine
-  Zusammenfassung davon.
+- **Verlauf:** Auftrag, Antworten des Modells und Ergebnisse der
+  Werkzeuge, und wenn er zu lang wird, eine Zusammenfassung davon. Ist
+  der Auftrag erledigt, ist auch der Verlauf weg.
 - **Leitplanken:** was der Agent ohne Nachfrage darf und was nicht.
 
 Entscheiden tut immer das Modell, das Harness führt aus.
