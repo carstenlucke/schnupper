@@ -242,7 +242,22 @@ Das Wort „Modell“ kommt im weiteren Verlauf immer wieder vor.
 -->
 
 ---
-rubrik: Einstieg
+layout: agenda
+punkte:
+  - Vom Chatbot zum KI-Agenten
+  - Agenten live erleben
+  - Was nehmen wir mit?
+icons: [bot, circle-play, target]
+aktiv: 1
+---
+
+<!--
+Der erste Teil klärt, was einen KI-Agenten von einem Chatbot wie ChatGPT
+unterscheidet — einfach erklärt, ohne Fachjargon.
+-->
+
+---
+rubrik: Vom Chatbot zum KI-Agenten
 titel: 'Die große Veränderung: Vom Code zur Sprache'
 class: text-xl
 clicks: 2
@@ -333,21 +348,6 @@ das Modell versteht auch Bilder.
 Code auf der Folie ergibt gerade einmal einen einzigen Antwortknopf. Heute
 fotografiert man seine Notizen ab, schreibt einen Satz dazu, und fertig ist
 ein Quiz im Browser.
--->
-
----
-layout: agenda
-punkte:
-  - Vom Chatbot zum KI-Agenten
-  - Agenten live erleben
-  - Was nehmen wir mit?
-icons: [bot, circle-play, target]
-aktiv: 1
----
-
-<!--
-Der erste Teil klärt, was einen KI-Agenten von einem Chatbot wie ChatGPT
-unterscheidet — einfach erklärt, ohne Fachjargon.
 -->
 
 ---
