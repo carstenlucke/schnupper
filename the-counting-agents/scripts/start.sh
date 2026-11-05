@@ -173,7 +173,7 @@ aufbau_tui() {
     fi
 
     if [[ $IM_HINTERGRUND -eq 0 ]]; then
-        herdr_tab_zeigen "$TAB_ID"
+        herdr tab focus "$TAB_ID" >/dev/null
     fi
 }
 
@@ -182,10 +182,9 @@ aufbau_tui() {
 # einen neuen Tab sofort und fokussiert jedes neue Pane — am Ende wird der
 # Fokus deshalb gezielt gesetzt.
 aufbau_app() {
-    local space tab_json pane_counter
-    space="$(herdr_app_eigenes_label herdr.space)"
+    local tab_json pane_counter
     tab_json=$(herdr-app do tab.new \
-        "{\"name\":\"$HERDR_DEMO_TAB_LABEL\",\"space\":\"$space\",\"folder\":\"$PROJECT_DIR\",\"argv\":$(herdr_app_argv env "AGENT_SPEED=$AGENT_SPEED" "$RUN_AGENT" counter)}")
+        "{\"name\":$(herdr_app_json "$HERDR_DEMO_TAB_LABEL"),\"space\":\"$HERDR_APP_SPACE\",\"folder\":$(herdr_app_json "$PROJECT_DIR"),\"argv\":$(herdr_app_argv env "AGENT_SPEED=$AGENT_SPEED" "$RUN_AGENT" counter)}")
     TAB_ID=$(printf '%s' "$tab_json" | herdr_field tab)
     local term_counter
     term_counter=$(printf '%s' "$tab_json" | herdr_field terminal)
@@ -194,15 +193,24 @@ aufbau_app() {
         pane_counter=$(herdr_app_pane_von "$term_counter")
     fi
 
-    [[ -n "$TAB_ID" && -n "$pane_counter" ]] || { echo "Fehler: Herdr-Tab konnte nicht angelegt werden."; exit 1; }
+    if [[ -z "$TAB_ID" || -z "$pane_counter" ]]; then
+        # Ein halb angelegter Tab bliebe sonst mit laufendem Counter stehen
+        [[ -n "$TAB_ID" ]] && { herdr_tab_schliessen "$TAB_ID" || true; }
+        echo "Fehler: Herdr-Tab konnte nicht angelegt werden."
+        exit 1
+    fi
 
     # Untere Hälfte: odd | even | prime (prime rechts mit halber Breite)
     local pane_odd pane_control
     pane_odd=$(herdr_app_split "$pane_counter" down "$PROJECT_DIR" env "AGENT_SPEED=$AGENT_SPEED" "$RUN_AGENT" odd)
+    # Ohne Pane-ID teilte die App das gerade fokussierte Pane — das Layout
+    # geriete durcheinander. Lieber gleich abbrechen.
+    [[ -n "$pane_odd" ]] || { herdr_tab_schliessen "$TAB_ID" || true; echo "Fehler: Pane konnte nicht geteilt werden."; exit 1; }
     herdr_app_split "$pane_odd" right "$PROJECT_DIR" env "AGENT_SPEED=$AGENT_SPEED" "$RUN_AGENT" prime >/dev/null
     herdr_app_split "$pane_odd" right "$PROJECT_DIR" env "AGENT_SPEED=$AGENT_SPEED" "$RUN_AGENT" even  >/dev/null
     # Obere Hälfte: counter | control, darunter rechts das Dashboard
     pane_control=$(herdr_app_split "$pane_counter" right "$PROJECT_DIR" "$RUN_CONTROL")
+    [[ -n "$pane_control" ]] || { herdr_tab_schliessen "$TAB_ID" || true; echo "Fehler: Pane konnte nicht geteilt werden."; exit 1; }
     if [[ $MIT_DASHBOARD -eq 1 ]]; then
         herdr_app_split "$pane_control" down "$PROJECT_DIR" "$DASHBOARD" "$DASHBOARD_PORT" >/dev/null
     fi

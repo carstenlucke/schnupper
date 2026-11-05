@@ -23,6 +23,8 @@ HERDR_DEMO_TAB_LABEL="${HERDR_DEMO_TAB_LABEL:-Counting Agents (pi)}"
 
 # tui oder app — gesetzt von herdr_require
 HERDR_MODUS=""
+# App: Space des eigenen Terminals — ebenfalls von herdr_require gesetzt
+HERDR_APP_SPACE=""
 
 # Prüft, ob wir in einem Herdr-Pane laufen, und setzt HERDR_MODUS.
 # Die TUI wird zuerst geprüft: Läuft sie in einem Terminal der App, ist sie
@@ -41,7 +43,8 @@ herdr_require() {
             echo "Fehler: herdr-app oder hc fehlt (beide liegen der Herdr-App bei)."
             return 1
         }
-        if [[ -z "$(herdr_app_eigenes_label herdr.space)" ]]; then
+        HERDR_APP_SPACE="$(herdr_app_eigenes_label herdr.space)"
+        if [[ -z "$HERDR_APP_SPACE" ]]; then
             echo "Fehler: Dieses Terminal gehört zu keinem Space der Herdr-App."
             echo "        In einem Tab der Herdr-App erneut aufrufen."
             return 1
@@ -92,7 +95,7 @@ herdr_demo_tab_id() {
         # aus. Jeder Space und jeder Tab beginnt mit "id", gleich danach folgt
         # "name". Gesucht ist ein Tab (tb…) mit dem Demo-Label in unserem Space.
         herdr-app ls 2>/dev/null \
-            | awk -v space="$(herdr_app_eigenes_label herdr.space)" \
+            | awk -v space="$HERDR_APP_SPACE" \
                   -v label="\"name\": \"$HERDR_DEMO_TAB_LABEL\"" '
                 /"id": "sp/ { split($0, f, "\""); in_space = (f[4] == space) }
                 /"id": "tb/ { split($0, f, "\""); tab = f[4]; next }
@@ -112,15 +115,6 @@ herdr_tab_schliessen() {
     fi
 }
 
-# Holt einen Tab in den Vordergrund.
-herdr_tab_zeigen() {
-    if [[ "$HERDR_MODUS" == tui ]]; then
-        herdr tab focus "$1" >/dev/null
-    else
-        herdr-app do tab.select --id "$1" >/dev/null
-    fi
-}
-
 # --- Nur TUI ---
 
 # Teilt ein Pane und gibt die ID des neuen Panes aus.
@@ -132,14 +126,21 @@ herdr_split() {
 
 # --- Nur App ---
 
+# Gibt einen Text als JSON-String aus, samt Anführungszeichen.
+# Usage: herdr_app_json <text>
+herdr_app_json() {
+    local text="$1"
+    text="${text//\\/\\\\}"
+    text="${text//\"/\\\"}"
+    printf '"%s"' "$text"
+}
+
 # Wandelt Argumente in ein JSON-Array, wie herdr-app es für argv erwartet.
 # Usage: herdr_app_argv <programm> [argument]...
 herdr_app_argv() {
     local json="" arg
     for arg in "$@"; do
-        arg="${arg//\\/\\\\}"
-        arg="${arg//\"/\\\"}"
-        json+="${json:+,}\"$arg\""
+        json+="${json:+,}$(herdr_app_json "$arg")"
     done
     printf '[%s]' "$json"
 }
@@ -167,9 +168,17 @@ herdr_app_split() {
 }
 
 # Liefert die Pane-ID, in der ein Terminal der App angezeigt wird.
+# Ein frisch angelegtes Terminal taucht in `herdr-app ls` womöglich erst einen
+# Augenblick später auf — darum ein paar Versuche.
 # Usage: herdr_app_pane_von <terminal-id>
 herdr_app_pane_von() {
-    herdr-app ls 2>/dev/null \
-        | grep -A1 -F "\"terminal\": \"$1\"" \
-        | herdr_field pane
+    local pane="" versuch
+    for versuch in 1 2 3 4 5; do
+        pane=$(herdr-app ls 2>/dev/null \
+            | grep -A1 -F "\"terminal\": \"$1\"" \
+            | herdr_field pane || true)
+        [[ -n "$pane" ]] && break
+        sleep 0.2
+    done
+    printf '%s' "$pane"
 }
