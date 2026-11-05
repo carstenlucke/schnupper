@@ -313,6 +313,11 @@ pi --mode json --no-session -nt -nc -ns -np -ne \
 `stdin=subprocess.DEVNULL` ist **Pflicht**: pi liest die Standardeingabe sonst
 mit in den Auftrag ein und wartet für immer auf ihr Ende.
 
+Unter Windows ersetzt `pi_programm()` das `pi` durch `node <…>/cli.js`: npm
+legt dort nur den Starter `pi.cmd` an, den Popen nicht findet und über den
+cmd.exe die Zeilenumbrüche im Rollentext verlöre. Das gilt für alle pi-Aufrufe
+des Servers, auch für `pi --list-models`.
+
 Drei Aufrufarten, derselbe Code:
 
 1. **Party-Beitrag** — Systemprompt ist der Rollentext, der Prompt enthält

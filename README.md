@@ -81,6 +81,56 @@ Herdr-Session — außerhalb davon werden sie übersprungen, der Rest startet
 trotzdem. Ctrl+C beendet alles wieder, ein zweites Ctrl+C sofort und ohne
 Warten.
 
+## Unter Windows
+
+Die Startskripte sind Bash-Skripte und laufen unter Windows in **Git Bash**
+(Git for Windows). Erprobt mit Windows 11, Python 3.11, Node 24 und Herdr 0.9.5.
+Einmal einzurichten:
+
+- **Git Bash in Windows Terminal öffnen**, nicht im eigenen Git-Bash-Fenster
+  (mintty). Dort fehlt Programmen wie `pi` und `herdr` ein echtes Terminal —
+  sie starten nicht oder bleiben stehen. Fehlt in Windows Terminal das Profil
+  „Git Bash", lässt es sich in den Einstellungen mit
+  `C:\Program Files\Git\bin\bash.exe -i -l` als Befehlszeile anlegen.
+- **`python3` bereitstellen.** Die Skripte rufen `python3` auf, unter Windows
+  heißt Python aber `python`. Ein kleines Skript `~/bin/python3` hilft — Git
+  Bash nimmt `~/bin` von selbst in den Suchpfad auf:
+
+  ```bash
+  mkdir -p ~/bin
+  printf '#!/usr/bin/env bash\nexec "/c/Program Files/Python311/python.exe" "$@"\n' > ~/bin/python3
+  python3 --version   # mindestens 3.10
+  ```
+
+  Den Pfad auf die eigene Python-Installation anpassen. Ein bloßes
+  `exec python` reicht nur, wenn `python` sicher auf Python ≥ 3.10 zeigt — ist
+  etwa Conda aktiv, ist es oft dessen ältere Version.
+- **Herdr auf Git Bash umstellen** (nur für die Counting Agents). Neue Panes
+  starten unter Windows sonst in PowerShell, die Demo schreibt aber
+  Bash-Befehle hinein. In `%APPDATA%\herdr\config.toml`:
+
+  ```toml
+  [terminal]
+  default_shell = 'C:\Program Files\Git\bin\bash.exe'
+  shell_mode = "login"
+  ```
+
+  Danach `herdr server stop` und Herdr neu starten; bestehende Panes bleiben
+  sonst, wie sie sind.
+
+pi selbst braucht keine Sonderbehandlung: ship-it und agent-party starten es
+unter Windows direkt mit node, weil der npm-Starter `pi.cmd` aus Python heraus
+nicht zuverlässig aufrufbar ist.
+
+Nicht unter Windows verfügbar:
+
+- `--force` bei `start.sh` und `start-all.sh` — es braucht `lsof`, das Git
+  Bash nicht mitbringt. Ein belegter Port fällt dann erst beim Serverstart auf;
+  den alten Prozess im Task-Manager beenden.
+- `the-counting-agents/scripts/test-tools.mjs` und `dev-typen.sh` setzen
+  Unix-Symlinks voraus. Beide sind nur Hilfen vor dem Vortrag, die Demo selbst
+  läuft ohne sie.
+
 ## Aufbau
 
 Jedes Projekt ist eigenständig: eigenes README, eigene Konfiguration, eigene

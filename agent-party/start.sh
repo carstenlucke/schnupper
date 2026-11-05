@@ -28,7 +28,9 @@ fi
 mkdir -p partys
 
 echo "Agent Party startet auf http://localhost:$PORT"
-python3 server.py &
+# UTF-8 auch dann, wenn die Ausgabe in eine Datei geht (start-all.sh → logs/):
+# Windows nähme sonst cp1252, und der Server bräche beim ersten „→“ ab.
+PYTHONUTF8=1 python3 server.py &
 SERVER_PID=$!
 
 # Browser öffnen (plattformabhängig)

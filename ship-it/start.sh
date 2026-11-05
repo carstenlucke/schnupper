@@ -27,7 +27,9 @@ mkdir -p projekte
 
 # Server starten
 echo "Starting Ship It! Dashboard on http://localhost:8000"
-python3 server.py &
+# UTF-8 auch dann, wenn die Ausgabe in eine Datei geht (start-all.sh → logs/):
+# Windows nähme sonst cp1252, und der Server bräche beim ersten „→“ ab.
+PYTHONUTF8=1 python3 server.py &
 SERVER_PID=$!
 
 # Browser öffnen (plattformabhängig)
