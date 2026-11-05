@@ -62,7 +62,13 @@ herdr_require() {
 # Verträgt Leerzeichen nach dem Doppelpunkt, wie sie herdr-app ausgibt.
 # Usage: herdr_field <feldname>   (JSON kommt über stdin)
 herdr_field() {
-    sed -n "s/.*\"$1\": *\"\([^\"]*\)\".*/\1/p" | head -1
+    # Punkte im Namen (herdr.space) wörtlich nehmen, nicht als „beliebiges Zeichen"
+    local feld="${1//./\\.}"
+    # grep -o holt jedes Vorkommen einzeln — head nimmt dann wirklich das erste.
+    # Ohne Treffer bleibt die Ausgabe leer, ohne dass pipefail das Skript beendet.
+    { grep -o "\"$feld\": *\"[^\"]*\"" || true; } \
+        | head -1 \
+        | sed 's/^"[^"]*": *"//; s/"$//'
 }
 
 # App: Ein Label des eigenen Terminals, etwa herdr.space oder herdr.tab.

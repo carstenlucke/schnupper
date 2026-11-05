@@ -174,6 +174,14 @@ aufbau_tui() {
 
     if [[ $IM_HINTERGRUND -eq 0 ]]; then
         herdr tab focus "$TAB_ID" >/dev/null
+    else
+        # Die Teilung mit --focus oben kann den neuen Tab nach vorn holen —
+        # zurück in den Tab, aus dem start.sh gerufen wurde
+        local eigener_tab
+        eigener_tab="$(herdr_eigener_tab)"
+        if [[ -n "$eigener_tab" ]]; then
+            herdr tab focus "$eigener_tab" >/dev/null 2>&1 || true
+        fi
     fi
 }
 
