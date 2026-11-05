@@ -81,7 +81,8 @@ die Verzeichnisse, die man tatsächlich bearbeitet.
 
 ## Voraussetzungen
 
-- [Herdr](https://herdr.dev) — die Demo läuft in einem Herdr-Tab
+- [Herdr](https://herdr.dev) — die Demo läuft in einem Herdr-Tab, wahlweise in
+  der Herdr-App (`herdr-app` und `hc` im `PATH`) oder in der Herdr-TUI (`herdr`)
 - [pi](https://pi.dev) — die Agenten-Laufzeit (`pi --version`)
 - Ein Modell, das pi erreichen kann. Voreingestellt ist
   `openai-codex/gpt-5.6-luna` (ChatGPT-Abo, in pi einmalig per `/login`
@@ -145,11 +146,19 @@ Das legt den Tab „Counting Agents (pi)" an, startet in den fünf oberen Panes 
 einen Agenten und im Streifen darunter das Dashboard, das sich von selbst im
 Browser öffnet. Der Fokus landet auf der Steuerung.
 
+Ob es in der Herdr-App oder in der Herdr-TUI läuft, erkennt das Skript selbst.
+Die App teilt Panes nur zur Hälfte und kennt keine Pane-Namen; der Tab sieht
+dort deshalb etwas anders aus: oben links der Counter, oben rechts Steuerung
+und Dashboard übereinander, unten odd, even und prime, wobei prime die halbe
+Breite bekommt. `./scripts/start.sh --im-hintergrund` lässt den aufrufenden
+Tab vorne (so ruft `start-all.sh` es auf).
+
 | Befehl | Wirkung |
 |---|---|
 | `./scripts/start.sh` | Tab anlegen, Agenten und Dashboard starten |
 | `./scripts/start.sh --ohne-dashboard` | Nur die fünf Agenten-Panes |
 | `./scripts/start.sh --speed 1.5` | Anderthalbfaches Tempo, `0.5` halbes |
+| `./scripts/start.sh --im-hintergrund` | Aufrufenden Tab vorne lassen |
 | `./scripts/stop.sh` | Alle stoppen, Tab schließen |
 | `./scripts/reset.sh` | Bus und Zustand leeren |
 | `./scripts/reset.sh --restart` | Leeren und neu starten (nimmt `--speed` mit) |

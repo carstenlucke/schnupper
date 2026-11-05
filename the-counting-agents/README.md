@@ -80,7 +80,8 @@ directories you actually edit.
 
 ## Requirements
 
-- [Herdr](https://herdr.dev) — the demo runs in a Herdr tab
+- [Herdr](https://herdr.dev) — the demo runs in a Herdr tab, either in the
+  Herdr app (`herdr-app` and `hc` on the `PATH`) or in the Herdr TUI (`herdr`)
 - [pi](https://pi.dev) — the agent runtime (`pi --version`)
 - A model pi can reach. The default is `openai-codex/gpt-5.6-luna` (ChatGPT
   subscription, set up once in pi via `/login`). `pi --list-models` shows what
@@ -143,11 +144,19 @@ This creates the tab "Counting Agents (pi)", starts an agent in each of the five
 upper panes and, in the strip below them, the dashboard, which opens in the
 browser by itself. Focus lands on the steering pane.
 
+The script detects on its own whether it runs in the Herdr app or in the Herdr
+TUI. The app can only split panes in half and has no pane names, so the tab
+looks a little different there: counter at the top left, steering and
+dashboard stacked at the top right, odd, even and prime below, with prime
+taking half the width. `./scripts/start.sh --im-hintergrund` keeps the calling
+tab in front (used by `start-all.sh`).
+
 | Command | Effect |
 |---|---|
 | `./scripts/start.sh` | Create tab, start agents and dashboard |
 | `./scripts/start.sh --ohne-dashboard` | The five agent panes only |
 | `./scripts/start.sh --speed 1.5` | One-and-a-half times the pace, `0.5` half |
+| `./scripts/start.sh --im-hintergrund` | Keep the calling tab in front |
 | `./scripts/stop.sh` | Stop everything, close tab |
 | `./scripts/reset.sh` | Clear bus and state |
 | `./scripts/reset.sh --restart` | Clear and restart (passes `--speed` through) |
