@@ -172,16 +172,13 @@ aufbau_tui() {
         herdr pane run "$pane_dashboard" "$DASHBOARD $DASHBOARD_PORT" >/dev/null
     fi
 
+    # Der Fokus ist Komfort: Scheitert er, läuft die Demo trotzdem.
     if [[ $IM_HINTERGRUND -eq 0 ]]; then
-        herdr tab focus "$TAB_ID" >/dev/null
-    else
+        herdr tab focus "$TAB_ID" >/dev/null 2>&1 || true
+    elif [[ -n "$EIGENER_TAB" ]]; then
         # Die Teilung mit --focus oben kann den neuen Tab nach vorn holen —
         # zurück in den Tab, aus dem start.sh gerufen wurde
-        local eigener_tab
-        eigener_tab="$(herdr_eigener_tab)"
-        if [[ -n "$eigener_tab" ]]; then
-            herdr tab focus "$eigener_tab" >/dev/null 2>&1 || true
-        fi
+        herdr tab focus "$EIGENER_TAB" >/dev/null 2>&1 || true
     fi
 }
 
@@ -194,40 +191,47 @@ aufbau_app() {
     tab_json=$(herdr-app do tab.new \
         "{\"name\":$(herdr_app_json "$HERDR_DEMO_TAB_LABEL"),\"space\":\"$HERDR_APP_SPACE\",\"folder\":$(herdr_app_json "$PROJECT_DIR"),\"argv\":$(herdr_app_argv env "AGENT_SPEED=$AGENT_SPEED" "$RUN_AGENT" counter)}")
     TAB_ID=$(printf '%s' "$tab_json" | herdr_field tab)
+    [[ -n "$TAB_ID" ]] || { echo "Fehler: Herdr-Tab konnte nicht angelegt werden."; exit 1; }
+
+    # Ab hier steht ein Tab mit laufendem Counter. Bricht der Aufbau ab — über
+    # einen der Fehlerzweige unten oder weil set -e bei einem gescheiterten
+    # herdr-app-Aufruf greift —, schließt der Trap ihn wieder, statt ihn halb
+    # fertig stehen zu lassen.
+    trap 'echo "Halb angelegter Demo-Tab wird wieder geschlossen."; herdr_tab_schliessen "$TAB_ID" || true' EXIT
+
     local term_counter
     term_counter=$(printf '%s' "$tab_json" | herdr_field terminal)
     pane_counter=""
     if [[ -n "$term_counter" ]]; then
         pane_counter=$(herdr_app_pane_von "$term_counter")
     fi
-
-    if [[ -z "$TAB_ID" || -z "$pane_counter" ]]; then
-        # Ein halb angelegter Tab bliebe sonst mit laufendem Counter stehen
-        [[ -n "$TAB_ID" ]] && { herdr_tab_schliessen "$TAB_ID" || true; }
-        echo "Fehler: Herdr-Tab konnte nicht angelegt werden."
-        exit 1
-    fi
+    [[ -n "$pane_counter" ]] || { echo "Fehler: Herdr-Tab konnte nicht angelegt werden."; exit 1; }
 
     # Untere Hälfte: odd | even | prime (prime rechts mit halber Breite)
     local pane_odd pane_control
     pane_odd=$(herdr_app_split "$pane_counter" down "$PROJECT_DIR" env "AGENT_SPEED=$AGENT_SPEED" "$RUN_AGENT" odd)
     # Ohne Pane-ID teilte die App das gerade fokussierte Pane — das Layout
     # geriete durcheinander. Lieber gleich abbrechen.
-    [[ -n "$pane_odd" ]] || { herdr_tab_schliessen "$TAB_ID" || true; echo "Fehler: Pane konnte nicht geteilt werden."; exit 1; }
+    [[ -n "$pane_odd" ]] || { echo "Fehler: Pane konnte nicht geteilt werden."; exit 1; }
     herdr_app_split "$pane_odd" right "$PROJECT_DIR" env "AGENT_SPEED=$AGENT_SPEED" "$RUN_AGENT" prime >/dev/null
     herdr_app_split "$pane_odd" right "$PROJECT_DIR" env "AGENT_SPEED=$AGENT_SPEED" "$RUN_AGENT" even  >/dev/null
     # Obere Hälfte: counter | control, darunter rechts das Dashboard
     pane_control=$(herdr_app_split "$pane_counter" right "$PROJECT_DIR" "$RUN_CONTROL")
-    [[ -n "$pane_control" ]] || { herdr_tab_schliessen "$TAB_ID" || true; echo "Fehler: Pane konnte nicht geteilt werden."; exit 1; }
+    [[ -n "$pane_control" ]] || { echo "Fehler: Pane konnte nicht geteilt werden."; exit 1; }
     if [[ $MIT_DASHBOARD -eq 1 ]]; then
         herdr_app_split "$pane_control" down "$PROJECT_DIR" "$DASHBOARD" "$DASHBOARD_PORT" >/dev/null
     fi
 
+    # Der Tab steht vollständig — ab hier nichts mehr wegräumen
+    trap - EXIT
+
+    # Der Fokus ist Komfort: Scheitert er, läuft die Demo trotzdem, und
+    # start.sh darf deshalb nicht als gescheitert gelten.
     if [[ $IM_HINTERGRUND -eq 0 ]]; then
-        herdr-app do pane.focus --pane "$pane_control" >/dev/null
+        herdr-app do pane.focus --pane "$pane_control" >/dev/null 2>&1 || true
     else
         # Zurück in den Tab und das Pane, aus dem start.sh gerufen wurde
-        herdr-app do pane.focus --terminal "$HC_TERMINAL_ID" >/dev/null
+        herdr-app do pane.focus --terminal "$HC_TERMINAL_ID" >/dev/null 2>&1 || true
     fi
 }
 

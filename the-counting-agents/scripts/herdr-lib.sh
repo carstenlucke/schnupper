@@ -23,8 +23,11 @@ HERDR_DEMO_TAB_LABEL="${HERDR_DEMO_TAB_LABEL:-Counting Agents (pi)}"
 
 # tui oder app — gesetzt von herdr_require
 HERDR_MODUS=""
-# App: Space des eigenen Terminals — ebenfalls von herdr_require gesetzt
+# App: Space und Tab des eigenen Terminals — ebenfalls von herdr_require
+# gesetzt, aus dessen Labels herdr.space / herdr.tab. Die App vergibt beide an
+# jedes Terminal, das sie in einem Tab zeigt.
 HERDR_APP_SPACE=""
+HERDR_APP_TAB=""
 
 # Prüft, ob wir in einem Herdr-Pane laufen, und setzt HERDR_MODUS.
 # Die TUI wird zuerst geprüft: Läuft sie in einem Terminal der App, ist sie
@@ -43,7 +46,11 @@ herdr_require() {
             echo "Fehler: herdr-app oder hc fehlt (beide liegen der Herdr-App bei)."
             return 1
         }
-        HERDR_APP_SPACE="$(herdr_app_eigenes_label herdr.space)"
+        # Beide Labels stehen in derselben Antwort — einmal fragen genügt
+        local terminal_json
+        terminal_json="$(hc get "$HC_TERMINAL_ID" --json 2>/dev/null || true)"
+        HERDR_APP_SPACE="$(printf '%s' "$terminal_json" | herdr_field herdr.space)"
+        HERDR_APP_TAB="$(printf '%s' "$terminal_json" | herdr_field herdr.tab)"
         if [[ -z "$HERDR_APP_SPACE" ]]; then
             echo "Fehler: Dieses Terminal gehört zu keinem Space der Herdr-App."
             echo "        In einem Tab der Herdr-App erneut aufrufen."
@@ -71,18 +78,12 @@ herdr_field() {
         | sed 's/^"[^"]*": *"//; s/"$//'
 }
 
-# App: Ein Label des eigenen Terminals, etwa herdr.space oder herdr.tab.
-# Die App vergibt beide an jedes Terminal, das sie in einem Tab zeigt.
-herdr_app_eigenes_label() {
-    hc get "$HC_TERMINAL_ID" --json 2>/dev/null | herdr_field "$1"
-}
-
 # Liefert die Tab-ID, in der dieses Skript selbst läuft.
 herdr_eigener_tab() {
     if [[ "$HERDR_MODUS" == tui ]]; then
         printf '%s' "${HERDR_TAB_ID:-}"
     else
-        herdr_app_eigenes_label herdr.tab
+        printf '%s' "$HERDR_APP_TAB"
     fi
 }
 
@@ -138,6 +139,10 @@ herdr_app_json() {
     local text="$1"
     text="${text//\\/\\\\}"
     text="${text//\"/\\\"}"
+    # Steuerzeichen dürfen in JSON-Strings nicht roh stehen
+    text="${text//$'\n'/\\n}"
+    text="${text//$'\r'/\\r}"
+    text="${text//$'\t'/\\t}"
     printf '"%s"' "$text"
 }
 
