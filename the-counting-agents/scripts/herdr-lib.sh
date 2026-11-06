@@ -78,6 +78,21 @@ herdr_field() {
         | sed 's/^"[^"]*": *"//; s/"$//'
 }
 
+# Gibt einen Text als JSON-String aus, samt Anführungszeichen — so, wie ihn
+# Herdr in seinen Antworten schreibt. Dient zum Senden an die App und zum
+# Wiederfinden des Demo-Tabs in beiden Modi.
+# Usage: herdr_json <text>
+herdr_json() {
+    local text="$1"
+    text="${text//\\/\\\\}"
+    text="${text//\"/\\\"}"
+    # Steuerzeichen dürfen in JSON-Strings nicht roh stehen
+    text="${text//$'\n'/\\n}"
+    text="${text//$'\r'/\\r}"
+    text="${text//$'\t'/\\t}"
+    printf '"%s"' "$text"
+}
+
 # Liefert die Tab-ID, in der dieses Skript selbst läuft.
 herdr_eigener_tab() {
     if [[ "$HERDR_MODUS" == tui ]]; then
@@ -90,23 +105,29 @@ herdr_eigener_tab() {
 # Liefert die Tab-ID des Demo-Tabs im aktuellen Workspace bzw. Space
 # (leer, wenn keiner existiert).
 herdr_demo_tab_id() {
+    # Beide Modi liefern das Label als JSON-String, mit maskierten " und \ —
+    # verglichen wird deshalb mit der maskierten Fassung, wie beim Anlegen.
+    local label_json
+    label_json="$(herdr_json "$HERDR_DEMO_TAB_LABEL")"
     if [[ "$HERDR_MODUS" == tui ]]; then
         # `|| true`: ohne Treffer liefert grep 1 — das ist hier kein Fehler
         herdr tab list --workspace "$HERDR_WORKSPACE_ID" 2>/dev/null \
             | tr '{' '\n' \
-            | grep -F "\"label\":\"$HERDR_DEMO_TAB_LABEL\"" \
+            | grep -F "\"label\":$label_json" \
             | sed -n 's/.*"tab_id":"\([^"]*\)".*/\1/p' \
             | head -1 || true
     else
         # `herdr-app ls` gibt Spaces > Tabs > Terminals als eingerücktes JSON
         # aus. Jeder Space und jeder Tab beginnt mit "id", gleich danach folgt
         # "name". Gesucht ist ein Tab (tb…) mit dem Demo-Label in unserem Space.
+        # Das Label kommt über die Umgebung statt über -v: awk -v würde aus
+        # \" wieder " machen und die Maskierung zunichtemachen.
         herdr-app ls 2>/dev/null \
-            | awk -v space="$HERDR_APP_SPACE" \
-                  -v label="\"name\": \"$HERDR_DEMO_TAB_LABEL\"" '
+            | HERDR_LABEL_ZEILE="\"name\": $label_json" \
+              awk -v space="$HERDR_APP_SPACE" '
                 /"id": "sp/ { split($0, f, "\""); in_space = (f[4] == space) }
                 /"id": "tb/ { split($0, f, "\""); tab = f[4]; next }
-                index($0, label) && in_space && tab != "" { print tab; exit }
+                index($0, ENVIRON["HERDR_LABEL_ZEILE"]) && in_space && tab != "" { print tab; exit }
                 { tab = "" }
             ' || true
     fi
@@ -133,25 +154,12 @@ herdr_split() {
 
 # --- Nur App ---
 
-# Gibt einen Text als JSON-String aus, samt Anführungszeichen.
-# Usage: herdr_app_json <text>
-herdr_app_json() {
-    local text="$1"
-    text="${text//\\/\\\\}"
-    text="${text//\"/\\\"}"
-    # Steuerzeichen dürfen in JSON-Strings nicht roh stehen
-    text="${text//$'\n'/\\n}"
-    text="${text//$'\r'/\\r}"
-    text="${text//$'\t'/\\t}"
-    printf '"%s"' "$text"
-}
-
 # Wandelt Argumente in ein JSON-Array, wie herdr-app es für argv erwartet.
 # Usage: herdr_app_argv <programm> [argument]...
 herdr_app_argv() {
     local json="" arg
     for arg in "$@"; do
-        json+="${json:+,}$(herdr_app_json "$arg")"
+        json+="${json:+,}$(herdr_json "$arg")"
     done
     printf '[%s]' "$json"
 }

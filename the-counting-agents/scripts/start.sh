@@ -189,7 +189,7 @@ aufbau_tui() {
 aufbau_app() {
     local tab_json pane_counter
     tab_json=$(herdr-app do tab.new \
-        "{\"name\":$(herdr_app_json "$HERDR_DEMO_TAB_LABEL"),\"space\":\"$HERDR_APP_SPACE\",\"folder\":$(herdr_app_json "$PROJECT_DIR"),\"argv\":$(herdr_app_argv env "AGENT_SPEED=$AGENT_SPEED" "$RUN_AGENT" counter)}")
+        "{\"name\":$(herdr_json "$HERDR_DEMO_TAB_LABEL"),\"space\":\"$HERDR_APP_SPACE\",\"folder\":$(herdr_json "$PROJECT_DIR"),\"argv\":$(herdr_app_argv env "AGENT_SPEED=$AGENT_SPEED" "$RUN_AGENT" counter)}")
     TAB_ID=$(printf '%s' "$tab_json" | herdr_field tab)
     [[ -n "$TAB_ID" ]] || { echo "Fehler: Herdr-Tab konnte nicht angelegt werden."; exit 1; }
 
