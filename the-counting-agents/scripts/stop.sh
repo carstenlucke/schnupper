@@ -38,7 +38,9 @@ fi
 
 TAB_ID="$(herdr_demo_tab_id)"
 if [[ -n "$TAB_ID" ]]; then
-    herdr tab close "$TAB_ID" >/dev/null 2>&1 \
+    # Steht dieses Skript selbst im Demo-Tab (Taste q im Steuerungs-Pane),
+    # endet es mit dem Tab — die Meldung kommt dann nicht mehr an.
+    herdr_tab_schliessen "$TAB_ID" \
         && echo "Herdr-Tab '$HERDR_DEMO_TAB_LABEL' ($TAB_ID) geschlossen." \
         || echo "Herdr-Tab '$TAB_ID' konnte nicht geschlossen werden."
 else

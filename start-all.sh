@@ -124,13 +124,10 @@ trap aufraeumen INT TERM
 
 # --- Counting Agents: legen ihren eigenen Herdr-Tab an und kehren sofort zurück ---
 echo "▶ the-counting-agents startet …"
-if (cd "$ROOT_DIR/the-counting-agents" && ./scripts/start.sh); then
+# --im-hintergrund: Dieser Tab bleibt vorne, damit die Übersicht unten
+# sichtbar bleibt und Ctrl+C an der richtigen Stelle landet.
+if (cd "$ROOT_DIR/the-counting-agents" && ./scripts/start.sh --im-hintergrund); then
     COUNTING_GESTARTET=1
-    # start.sh holt den Demo-Tab nach vorn — zurück hierher, damit die
-    # Übersicht unten sichtbar bleibt und Ctrl+C an der richtigen Stelle landet.
-    if [[ -n "${HERDR_TAB_ID:-}" ]]; then
-        herdr tab focus "$HERDR_TAB_ID" >/dev/null 2>&1 || true
-    fi
 else
     echo "⚠ the-counting-agents übersprungen (siehe Meldung oben)."
 fi

@@ -3,7 +3,8 @@
 **The Counting Agents (pi)** — Terminal-Demo für eine Schnuppervorlesung, mit
 der **pi CLI**, **eigenen Werkzeugen** (Custom Tools) und einem **Modell in der
 Cloud**. Fünf Agenten koordinieren sich über dateibasierte Event-Logs in einem
-[Herdr](https://herdr.dev)-Tab, darunter ein Dashboard für den Beamer.
+[Herdr](https://herdr.dev)-Tab, darunter ein Dashboard für den Beamer. Läuft in
+der Herdr-App wie in der Herdr-TUI (siehe [Herdr: App und TUI](#herdr-app-und-tui)).
 
 ## Worum es geht: eigene Werkzeuge
 
@@ -42,6 +43,7 @@ Aus einem Herdr-Pane heraus, im Projektverzeichnis:
 | `./scripts/start.sh` | Tab anlegen, fünf Agenten und Dashboard starten |
 | `./scripts/start.sh --ohne-dashboard` | Nur die fünf Agenten-Panes |
 | `./scripts/start.sh --speed 1.5` | Anderthalbfaches Tempo, `0.5` halbes |
+| `./scripts/start.sh --im-hintergrund` | Aufrufenden Tab vorne lassen (für `start-all.sh`) |
 | `./scripts/stop.sh` | Alle stoppen, Tab schließen |
 | `./scripts/reset.sh [--restart]` | Bus und Zustand leeren, optional neu starten |
 
@@ -150,7 +152,7 @@ Nachdenken, nicht am Intervall.
 | `run-agent.sh <name>` | Schleifenwrapper: Frontmatter lesen, pi aufrufen |
 | `run-control.sh` | Interaktives Steuermenü |
 | `agents-lib.sh` | `load_env`, `agent_meta`, `agent_interval`, `run_pi` — per `source` |
-| `herdr-lib.sh` | Helfer für die Herdr-CLI |
+| `herdr-lib.sh` | Helfer für Herdr, App wie TUI (siehe unten) |
 | `dashboard.py` | Dashboard-Server für den Beamer |
 | `dashboard-probelauf.py` | Simulator für die Generalprobe ohne Modell |
 | `test-tools.mjs` | Werkzeuge ohne Modell prüfen |
@@ -175,6 +177,31 @@ fragen — ein pausierter Agent soll nichts kosten. Der Wachhund
 (`COUNTING_AGENTS_TIMEOUT`, Standard 60s) killt erst das pi-Kind, dann die
 Subshell; andernfalls schreibt ein Nachzügler Minuten später einen überholten
 Stand in den Bus.
+
+## Herdr: App und TUI
+
+`herdr_require` in `herdr-lib.sh` erkennt, worin das Skript läuft, und setzt
+`HERDR_MODUS`:
+
+| Modus | Erkennung | Kommandozeilen |
+|---|---|---|
+| `tui` | `HERDR_ENV=1` und `HERDR_WORKSPACE_ID` | `herdr tab …`, `herdr pane …` |
+| `app` | `HC_TERMINAL_ID` | `herdr-app do …` fürs Fenster, `hc get` für die eigenen Labels |
+
+Die TUI wird zuerst geprüft — läuft sie in einem Terminal der App, ist sie die
+innere. `start.sh` baut den Tab je Modus in einer eigenen Funktion
+(`aufbau_tui`, `aufbau_app`), weil die App weniger kann:
+
+- **Kein Teilungsverhältnis**, `pane.split` halbiert immer. Daher das andere
+  Layout (Kommentar im Kopf von `start.sh`).
+- **Keine Pane-Namen.** Der Kopf eines Panes zeigt Programm und Ordner; welcher
+  Agent dort läuft, sagt dessen erste Ausgabezeile.
+- **`pane.split` startet `argv` nackt** — ohne Login-Shell, also ohne den PATH
+  mit `pi`, und nicht im Projektordner. `herdr_app_split` wickelt den Aufruf
+  deshalb in die Login-Shell, wechselt in den Ordner und lässt die Shell nach
+  dem Ende offen. `tab.new` macht das von sich aus.
+- Space und Tab des aufrufenden Terminals stehen in dessen Labels
+  `herdr.space` / `herdr.tab` (`hc get $HC_TERMINAL_ID`).
 
 ## Dashboard
 
