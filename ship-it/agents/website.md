@@ -1,6 +1,6 @@
 ---
 description: Landingpage – erstellt eine responsive One-Page-Website für das Produkt
-model: openai-codex/gpt-6.1-terra
+model: openai-codex/gpt-6.1-sol
 thinking: medium
 tools: read,write,bash,webfetch
 skills: frontend-design,popular-web-designs
