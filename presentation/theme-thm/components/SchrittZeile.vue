@@ -13,7 +13,7 @@
       <strong>Ihr seid die Brücke.</strong> …
     </SchrittZeile>
 
-  In <CopyPasteSchleife>, <AgentDurchlauf> und <GrosserAuftrag>.
+  In <CopyPasteSchleife>, <AgentDurchlauf>, <GrosserAuftrag> und <AgentAnatomie>.
 -->
 <script setup lang="ts">
 withDefaults(defineProps<{

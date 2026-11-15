@@ -13,8 +13,10 @@
   darunter sagt das auch.
 
   Mit `schrittweise` baut sich das Bild Klick für Klick auf: zuerst
-  Gleichung und Modell, dann der Rahmen des Harness, die Werkzeuge und
-  die vier Bausteine der Steuerung einzeln. Unten erklärt eine
+  Gleichung und Modell, der Rahmen des Harness steht nur gestrichelt als
+  Platzhalter da. Mit Klick 1 bekommt er grüne Fläche, durchgezogenen
+  Rand und Etikett, danach kommen die Werkzeuge und die vier Bausteine
+  der Steuerung einzeln. Unten erklärt eine
   <SchrittZeile>, was gerade dazukommt; nach dem letzten Baustein wird sie
   zum Merksatz. Die Folie braucht dann `clicks: 7` und keinen eigenen
   Callout. Ohne `schrittweise` steht alles sofort da.
@@ -86,7 +88,7 @@ const jetzt = (schritt: number) => !!props.schrittweise && n.value === schritt
         </div>
         <div class="an-werkzeug mehr">
           <ThmIcon name="plug" ton="grau" :size="0.9" />
-          <span><strong>und viele mehr:</strong> E-Mail, Kalender, Datenbanken …</span>
+          <span><strong>und viele mehr:</strong> E-Mail, Kalender …</span>
         </div>
       </div>
 
@@ -155,10 +157,12 @@ const jetzt = (schritt: number) => !!props.schrittweise && n.value === schritt
 
 .an-op { color: var(--thm-green-600); font-size: 1.2em; }
 
+/* minmax(0, 1fr) statt 1fr: Sonst bestimmt der breiteste Inhalt die
+   Mindestbreite seiner Spalte, und das Modell rutscht aus der Mitte. */
 .an-harness {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 2rem;
   padding: 1.5rem 2rem 1.1rem;
@@ -177,7 +181,7 @@ const jetzt = (schritt: number) => !!props.schrittweise && n.value === schritt
 .an-teilbild {
   opacity: 0;
   translate: 0 0.3rem;
-  transition: opacity 0.35s ease, translate 0.35s ease, background 0.3s ease;
+  transition: opacity 0.35s ease, translate 0.35s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .an-teilbild.da { opacity: 1; translate: 0 0; }
@@ -186,9 +190,9 @@ const jetzt = (schritt: number) => !!props.schrittweise && n.value === schritt
 .an-etikett.an-teilbild { translate: 0 -0.3rem; }
 .an-etikett.an-teilbild.da { translate: 0 0; }
 
-/* Mit der Erklärzeile ist weniger Luft zwischen Bild und Zeile nötig */
-/* Platz für den zweizeiligen Merksatz von Anfang an: Beim letzten Klick
-   springt sonst das ganze Bild nach oben. */
+/* Weniger Luft zwischen Bild und Erklärzeile; Platz für den zweizeiligen
+   Merksatz von Anfang an, sonst springt beim letzten Klick das ganze Bild
+   nach oben. */
 .an .an-zeile { margin-top: -1rem; min-height: 4.3rem; }
 
 .an-etikett {
@@ -239,7 +243,6 @@ const jetzt = (schritt: number) => !!props.schrittweise && n.value === schritt
   gap: 0.5rem;
   padding: 0.2rem 0.8rem;
   background: transparent;
-  white-space: nowrap;
   border-color: var(--thm-grey-200);
   font-size: 0.72em;
   font-weight: var(--fw-regular);

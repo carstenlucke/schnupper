@@ -23,7 +23,7 @@
   `harness.ts`, damit sie zu <AgentDurchlauf> und <AgentAnatomie> passen.
 
   Geblättert wird mit den Klicks der Folie: Die Folie braucht
-  `clicks: 8` (fünf Phasen und zwei Halte, dann Ring und Merksatz).
+  `clicks: 8` (fünf Phasen und zwei Halte, dann Rahmen und Merksatz).
 -->
 <script setup lang="ts">
 import { computed } from 'vue'
@@ -41,10 +41,12 @@ interface Phase {
   runden: Runde[]
   /* Kästchen pro Zeile; höchstens zwei Zeilen */
   spalten: number
-  /* die beiden Runden, die <AgentDurchlauf> gezeigt hat. Sie müssen
-     nebeneinander in der zweiten Zeile liegen: Die Beschriftung darunter
-     steht fest unter Zeile 2 und ist zwei Kästchen breit. */
-  ausschnitt?: [number, number]
+  /* Index (ab 0) der ersten der beiden Runden, die <AgentDurchlauf>
+     gezeigt hat; die zweite ist das Kästchen rechts daneben. Rahmen und
+     Beschriftung sind fest zwei Kästchen breit, die Beschriftung steht
+     fest unter Zeile 2: Das Paar muss in der zweiten Zeile beginnen,
+     nicht in deren letzter Spalte. */
+  ausschnitt?: number
 }
 
 /* Ein Halt: Der Agent legt etwas vor, ihr antwortet */
@@ -89,7 +91,7 @@ const abschnitte: Abschnitt[] = [
     erklaerung: 'Er ersetzt nur, was ihr freigegeben habt: Absatz lesen, Absatz schreiben. Nr. 3 bleibt, wie sie ist.',
     runden: ['lesen', 'schreiben', 'lesen', 'schreiben', 'aus', 'aus', 'lesen', 'schreiben'],
     spalten: 4,
-    ausschnitt: [6, 7],
+    ausschnitt: 6,
   },
   {
     art: 'phase',
@@ -196,16 +198,16 @@ const text = computed(() =>
             </span>
             <!-- ein Rahmen um beide Runden, nicht je einer pro Kästchen -->
             <span
-              v-if="a.ausschnitt"
+              v-if="a.ausschnitt !== undefined"
               class="ga-rahmen"
               :class="{ da: fertig }"
-              :style="{ '--x': a.ausschnitt[0] % a.spalten, '--y': Math.floor(a.ausschnitt[0] / a.spalten) }"
+              :style="{ '--x': a.ausschnitt % a.spalten, '--y': Math.floor(a.ausschnitt / a.spalten) }"
             />
             <span
-              v-if="a.ausschnitt"
+              v-if="a.ausschnitt !== undefined"
               class="ga-ausschnitt"
               :class="{ da: fertig }"
-              :style="{ gridColumn: `${a.ausschnitt[0] % a.spalten + 1} / span 2` }"
+              :style="{ gridColumn: `${a.ausschnitt % a.spalten + 1} / span 2` }"
             >wie beim Absatz kürzen</span>
           </div>
         </div>
@@ -382,7 +384,7 @@ const text = computed(() =>
   color: var(--text-strong);
 }
 
-/* Zwei Zeilen Kästchen, darunter Platz für den Strich */
+/* Zwei Zeilen Kästchen, darunter Platz für die Beschriftung des Rahmens */
 .ga-runden {
   display: grid;
   grid-template-columns: repeat(var(--spalten), var(--kaestchen));
