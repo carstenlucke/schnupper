@@ -109,11 +109,11 @@ class: text-l
 <div class="thm-center thm-gruppe">
 <div class="thm-cols thm-cols-2 llm-oben">
   <div class="llm-begriffe">
-    <div class="llm-begriff"><span class="llm-buchstabe">L</span><div><strong>Large</strong> <em>groß</em><br>hat riesige Mengen Text gelesen: Bücher, Websites, Chats</div></div>
-    <div class="llm-begriff"><span class="llm-buchstabe">L</span><div><strong>Language</strong> <em>Sprache</em><br>hat dabei gelernt, wie Sprache funktioniert</div></div>
-    <div class="llm-begriff"><span class="llm-buchstabe">M</span><div><strong>Model</strong> <em>Modell</em><br>sagt vorher, welches Wort als Nächstes kommt</div></div>
+    <div class="llm-begriff"><span class="llm-buchstabe">L</span><div><strong>Large</strong> <em>groß</em><br>Milliarden Parameter, trainiert auf Billionen Tokens</div></div>
+    <div class="llm-begriff"><span class="llm-buchstabe">L</span><div><strong>Language</strong> <em>Sprache</em><br>zerlegt Text in Tokens, Wörter oder Wortteile: <span class="llm-tokens"><span>Schn</span><span>upper</span><span>vor</span><span>les</span><span>ung</span></span></div></div>
+    <div class="llm-begriff"><span class="llm-buchstabe">M</span><div><strong>Model</strong> <em>Modell</em><br>berechnet für jedes mögliche nächste Token eine Wahrscheinlichkeit</div></div>
   </div>
-  <NaechstesWort />
+  <NaechstesWort token />
 </div>
 
 <div class="llm-modelle">
@@ -137,6 +137,13 @@ class: text-l
 </div>
 </div>
 
+<InfoTafel wort="tokens" titel="Tokens in Wirklichkeit">
+Im Beispiel ist jedes Wort ein Token, das hält es übersichtlich. Ein echter Tokenizer zerlegt den Satz feiner — hier der von GPT-4o:
+<div class="tok-echt"><span>Nach</span><span><i>␣</i>der</span><span><i>␣</i>Vor</span><span>les</span><span>ung</span><span><i>␣</i>gehe</span><span><i>␣</i>ich</span><span><i>␣</i>noch</span><span><i>␣</i>schnell</span><span><i>␣</i>zum</span></div>
+Aus 8 Wörtern werden 10 Tokens, das Leerzeichen gehört meist zum folgenden Token. Auch die Kandidaten sind nicht immer ein Token: <span class="tok-echt"><span><i>␣</i>Training</span></span>, <span class="tok-echt"><span><i>␣</i>Arzt</span></span> und <span class="tok-echt"><span><i>␣</i>Mond</span></span> sind je eines, <span class="tok-echt"><span><i>␣</i>Super</span><span>markt</span></span> sind zwei, <span class="tok-echt"><span><i>␣</i>B</span><span>ä</span><span>cker</span></span> drei. Vorhergesagt wird also zunächst nur <span class="tok-echt"><span><i>␣</i>B</span></span> — „Bäcker“ entsteht erst in drei Schritten.
+<p class="tok-quelle">Zerlegung mit o200k_base, dem Tokenizer von GPT-4o. Andere Modelle zerlegen anders.</p>
+</InfoTafel>
+
 <style>
 .llm-oben { flex: none; align-items: center; gap: 2.4rem; }
 
@@ -156,6 +163,25 @@ class: text-l
 
 .llm-begriff strong { color: var(--text-strong); font-size: 1.1em; }
 .llm-begriff em { font-style: normal; color: var(--thm-green-700); margin-left: 0.3rem; }
+
+/* Zerlegung in Tokens, abwechselnd hinterlegt */
+.llm-tokens { white-space: nowrap; }
+
+.llm-tokens span {
+  padding: 0 0.2rem;
+  background: var(--thm-green-100);
+  color: var(--text-strong);
+}
+
+.llm-tokens span:nth-child(even) { background: var(--thm-grey-100); }
+
+/* Echte Zerlegung in der Infotafel, ␣ = Leerzeichen */
+.tok-echt { display: inline-flex; flex-wrap: wrap; row-gap: 0.3rem; font-weight: var(--fw-semibold); color: var(--text-strong); }
+div.tok-echt { display: flex; margin: 0 0 0.8rem; font-size: 1.15em; }
+.tok-echt > span { padding: 0 0.15rem; background: var(--thm-green-100); }
+.tok-echt > span:nth-child(even) { background: var(--thm-grey-100); }
+.tok-echt i { font-style: normal; font-weight: normal; color: var(--thm-grey-400); }
+.tok-quelle { font-size: 0.8em; color: var(--thm-grey-500); }
 
 .llm-buchstabe {
   flex: none;
@@ -211,20 +237,43 @@ class: text-l
 
 <!--
 Hinter ChatGPT & Co. steckt ein Large Language Model, kurz LLM, auf Deutsch
-ein großes Sprachmodell. Die drei Wörter beschreiben, was es ist:
+ein großes Sprachmodell. Die drei Wörter beschreiben, was es ist.
 
-- **Large:** Es hat mehr Text gelesen, als ein Mensch in tausend Leben lesen
-  könnte.
-- **Language:** Dabei hat es gelernt, wie Sprache funktioniert — Grammatik,
-  Fakten, Stil, sogar Programmiersprachen.
-- **Model:** Im Kern macht es etwas erstaunlich Einfaches. Es sagt vorher,
-  welches Wort als Nächstes kommt, hängt das Wort an und macht weiter — Wort
-  für Wort.
+**Large:** Ein Modell besteht aus Milliarden von Zahlen, den Parametern.
+Beim Training werden sie so lange verstellt, bis das Modell gut vorhersagt.
+Trainiert wird auf Billionen Tokens — mehr Text, als ein Mensch in tausend
+Leben lesen könnte.
 
-Rechts könnt ihr das selbst ausprobieren: Wie geht der Satz weiter? Die
-meisten tippen auf Bäcker oder Training, genau wie das Modell. Mond ist
-möglich, aber sehr unwahrscheinlich. Die Zahlen auf der Folie sind
-ausgedacht und dienen nur der Veranschaulichung.
+**Language:** Ein Modell sieht keine Buchstaben und keine ganzen Wörter,
+sondern Tokens. Häufige Wörter sind ein einziges Token, seltene werden in
+Teile zerlegt. Wie genau ein Wort zerlegt wird, hängt vom Modell ab. Die
+Zerlegung von „Schnuppervorlesung“ auf der Folie stammt vom Tokenizer von
+GPT-4o (o200k_base), so wie das Wort mitten im Satz steht, also mit einem
+Leerzeichen davor. Die Teile folgen dabei nicht den Silben: „upper“ ist
+einfach ein Stück Text, das im Training oft vorkam.
+
+**Model:** Im Kern macht das Modell etwas erstaunlich Einfaches. Für jedes
+Token, das es kennt, berechnet es eine Wahrscheinlichkeit, dass es als
+Nächstes kommt. Mathematisch ist das eine bedingte Wahrscheinlichkeit:
+P(nächstes Token | Text davor), gelesen „Wahrscheinlichkeit des nächsten
+Tokens, gegeben den Text davor“. Dann wird ein Token ausgewählt, angehängt,
+und das Ganze beginnt von vorn — Token für Token.
+
+Rechts steht ein Beispiel. Der Satz ist bereits in Tokens zerlegt, darunter
+stehen die wahrscheinlichsten Fortsetzungen. Die Zahlen sind ausgedacht und
+dienen nur der Veranschaulichung. Sie ergeben zusammen nicht 100 %, weil der
+Rest sich auf alle anderen Tokens verteilt. Weil das Modell nicht immer das
+wahrscheinlichste Token nimmt, sondern zieht, kann dieselbe Frage zu
+unterschiedlichen Antworten führen.
+
+Im Beispiel ist der Einfachheit halber jedes Wort ein Token. Ein echter
+Tokenizer zerlegt feiner; der von GPT-4o (o200k_base) macht aus den 8
+Wörtern des Satzes 10 Tokens: „Nach“, „ der“, „ Vor“, „les“, „ung“,
+„ gehe“, „ ich“, „ noch“, „ schnell“, „ zum“. Das Leerzeichen gehört meist
+zum folgenden Token. Auch die Kandidaten sind nicht immer ein Token:
+„ Training“, „ Arzt“ und „ Mond“ sind je eines, „ Super|markt“ sind zwei,
+„ B|ä|cker“ drei. Vorhergesagt wird also zunächst nur „ B“; „Bäcker“
+entsteht erst in drei Schritten. Andere Modelle zerlegen anders.
 
 Unten stehen zwei Reihen. Die Modelle sind das Gehirn, die Apps das Fenster,
 in dem ihr mit ihnen redet. ChatGPT ist die App, das Modell darin heißt zum

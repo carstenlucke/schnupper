@@ -1,0 +1,128 @@
+<!--
+  Infotafel, die sich über die Folie legt — für eine Begriffserklärung, die
+  nicht dauerhaft auf der Folie stehen soll. Geöffnet wird sie über ein
+  Wort im Folientext:
+
+    … in Tokens <span data-info="tokens">zerlegt</span> …
+
+    <InfoTafel wort="tokens" titel="Tokens in Wirklichkeit">
+
+    Text der Tafel.
+
+    </InfoTafel>
+
+  Das Wort kann auch in einer Komponente stehen (so „Wort = Token“ in
+  <NaechstesWort token>); es muss nur auf derselben Folie liegen.
+
+  Ein Klick auf das Wort öffnet die Tafel, ein Klick auf die Tafel oder
+  erneut auf das Wort schließt sie; beim Verlassen der Folie schließt sie
+  von selbst. Die Folie scheint blass durch. Im Export erscheint die Tafel
+  nicht, und das Wort steht dort als gewöhnlicher Text — der Inhalt gehört
+  deshalb auch in die Foliennotiz.
+
+  Das Aussehen des Worts (`.info-wort`) steht in `styles/slides.css`, weil
+  es auch in Text anderer Komponenten greifen muss.
+
+  Übernommen aus dem Theme der Softwaretechnik-Vorlesung, dort zusätzlich
+  mit eigener Schaltfläche (`knopf`) und eingebettet in Abbildungen; hier
+  nur der Auslöser über ein Wort.
+-->
+<script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onSlideLeave, useNav } from '@slidev/client'
+
+const props = defineProps<{ titel: string; wort: string }>()
+
+const { isPrintMode } = useNav()
+const offen = ref(false)
+const anker = ref<HTMLElement>()
+
+onSlideLeave(() => { offen.value = false })
+
+/* Auslösewörter derselben Folie — in der Referentenansicht steht die Folie
+   mehrfach im Dokument, jede Tafel hört nur auf ihre eigene. */
+const folie = () => anker.value?.closest('.slidev-layout')
+const woerter = () => [...(folie()?.querySelectorAll<HTMLElement>(`[data-info="${props.wort}"]`) ?? [])]
+
+function aufKlick(e: MouseEvent) {
+  const ziel = (e.target as HTMLElement).closest?.(`[data-info="${props.wort}"]`)
+  if (!ziel || ziel.closest('.slidev-layout') !== folie()) return
+  e.stopPropagation()
+  offen.value = !offen.value
+}
+
+/* Erscheint das Wort erst nach der Tafel oder setzt eine Komponente ihren
+   Inhalt neu, trägt der Beobachter die Auszeichnung nach. */
+function auszeichnen() {
+  woerter().forEach((w) => {
+    w.classList.add('info-wort')
+    w.classList.toggle('aktiv', offen.value)
+    w.title = props.titel
+  })
+}
+const beobachter = new MutationObserver(auszeichnen)
+
+onMounted(() => {
+  if (isPrintMode.value) return
+  auszeichnen()
+  const f = folie()
+  if (f) beobachter.observe(f, { childList: true, subtree: true })
+  document.addEventListener('click', aufKlick, true)
+})
+onBeforeUnmount(() => {
+  beobachter.disconnect()
+  document.removeEventListener('click', aufKlick, true)
+})
+watch(offen, auszeichnen)
+</script>
+
+<template>
+  <span ref="anker" hidden />
+  <div v-if="!isPrintMode && offen" class="info-tafel" @click.stop="offen = false">
+    <div class="info-tafel-blatt">
+      <div class="info-tafel-kopf">
+        <ThmIcon name="info" box :size="1.7" />{{ titel }}<ThmIcon name="x" ton="grau" :size="1.1" class="info-tafel-zu" />
+      </div>
+      <slot />
+    </div>
+  </div>
+</template>
+
+<style scoped>
+/* Liegt über der Folie, die blass durchscheint; die Fußzeile bleibt frei */
+.info-tafel {
+  position: absolute;
+  inset: 0 0 var(--footer-h) 0;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--white) 78%, transparent);
+  cursor: pointer;
+  z-index: 20;
+}
+
+.info-tafel-blatt {
+  width: 66%;
+  padding: 1.1rem 1.4rem 1.2rem;
+  background: var(--white);
+  border-left: 0.3rem solid var(--thm-green-500);
+  box-shadow: 0 0.5rem 2rem color-mix(in srgb, var(--thm-grey-900) 22%, transparent);
+  color: var(--text-body);
+  font-size: 0.98rem;
+  line-height: var(--lh-snug);
+}
+
+.info-tafel-blatt :deep(p) { margin: 0 0 0.7rem; }
+.info-tafel-blatt :deep(p:last-child) { margin-bottom: 0; }
+
+.info-tafel-kopf {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+  color: var(--text-strong);
+  font-size: 1.15rem;
+  font-weight: var(--fw-bold);
+}
+
+.info-tafel-zu { margin-left: auto; }
+</style>

@@ -312,3 +312,37 @@
 
 .thm-lockup.hell .lk-strich { background: rgba(255, 255, 255, 0.45); }
 
+
+/* ---- Wort im Folientext, das eine Infotafel öffnet (<InfoTafel wort>) ----
+   Kleine Schaltfläche mit „i“, in den Textfluss gesetzt. Die Klasse vergibt
+   die Komponente — im Export bleibt das Wort gewöhnlicher Text. */
+.info-wort {
+  padding: 0.05em 0.35em;
+  border-radius: var(--radius-icon);
+  background: var(--thm-grey-100);
+  color: var(--thm-grey-700);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.info-wort::after {
+  content: 'i';
+  display: inline-grid;
+  place-items: center;
+  width: 1.15em;
+  height: 1.15em;
+  margin-left: 0.35em;
+  border-radius: 50%;
+  background: var(--thm-green-500);
+  color: var(--white);
+  font-size: 0.72em;
+  font-weight: var(--fw-bold);
+  vertical-align: 0.12em;
+}
+
+.info-wort:hover { background: var(--thm-grey-200); }
+
+.info-wort.aktiv { background: var(--thm-green-500); color: var(--white); }
+.info-wort.aktiv::after { background: var(--white); color: var(--thm-green-600); }
