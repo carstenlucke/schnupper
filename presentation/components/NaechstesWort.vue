@@ -10,8 +10,12 @@
   Mit `token` in der Fachsprache: der Satz in Tokens zerlegt, über der
   Liste P(nächstes Token | Text davor) und der Hinweis, dass die Werte
   ausgedacht sind. Vereinfacht ist dabei ein Wort ein Token; „Wort = Token“
-  trägt `data-info="tokens"`, eine `<InfoTafel wort="tokens">` auf der Folie
-  kann dort die echte Zerlegung zeigen.
+  ist ein Knopf mit `data-info="tokens"`, eine `<InfoTafel wort="tokens">`
+  auf der Folie kann dort die echte Zerlegung zeigen.
+
+  Satz und Kandidaten stehen auch in der Infotafel und der Notiz der
+  LLM-Folie in `slides.md` (dort mit der echten Zerlegung) — wer sie hier
+  ändert, zieht beides mit.
 -->
 <script setup lang="ts">
 defineProps<{ token?: boolean }>()
@@ -24,26 +28,25 @@ const woerter = [
   { wort: 'Arzt', p: 9 },
   { wort: 'Mond', p: 0.01 },
 ]
-/* Das letzte Wort bleibt mit der Lücke auf einer Zeile */
 const tokens = anfang.split(' ')
-const vorne = anfang.slice(0, anfang.lastIndexOf(' '))
-const letztes = anfang.slice(anfang.lastIndexOf(' ') + 1)
+/* Das letzte Wort bleibt mit der Lücke auf einer Zeile */
+const vorne = tokens.slice(0, -1).join(' ')
+const letztes = tokens.at(-1)
 const max = Math.max(...woerter.map(w => w.p))
 const prozent = (p: number) => (p < 1 ? '< 1 %' : `${p} %`)
 </script>
 
 <template>
   <div class="nw">
-    <div v-if="token" class="nw-satz nw-tokens">
-      <span v-for="(t, i) in tokens.slice(0, -1)" :key="i" class="nw-token">{{ t }}</span>
-      <span class="nw-ende"><span class="nw-token">{{ tokens.at(-1) }}</span><span class="nw-luecke">…</span></span>
-    </div>
+    <TokenKette v-if="token" block class="nw-satz" :teile="tokens">
+      <template #ende><span class="nw-luecke nach-token">…</span></template>
+    </TokenKette>
     <div v-else class="nw-satz">
       {{ vorne }} <span class="nw-ende">{{ letztes }} <span class="nw-luecke">…</span></span>
     </div>
     <div v-if="token" class="nw-formel">
-      <span><i>P</i>( nächstes Token <span class="nw-strich">|</span> Text davor )</span>
-      <span class="nw-hinweis"><span data-info="tokens">Wort = Token</span> · Werte ausgedacht</span>
+      <span class="nw-ausdruck"><i>P</i>( nächstes Token <span class="nw-strich">|</span> Text davor )</span>
+      <span class="nw-hinweis"><button type="button" data-info="tokens">Wort = Token</button> · Werte ausgedacht</span>
     </div>
     <div class="nw-liste">
       <div v-for="(w, i) in woerter" :key="w.wort" class="nw-zeile" :class="{ erstes: i === 0 }">
@@ -75,32 +78,19 @@ const prozent = (p: number) => (p < 1 ? '< 1 %' : `${p} %`)
 
 .nw-ende { white-space: nowrap; }
 
-/* Tokens wie in einem Tokenizer-Werkzeug: abwechselnd hinterlegt */
-.nw-tokens {
-  display: flex;
-  flex-wrap: wrap;
-  row-gap: 0.3rem;
-}
-
-.nw-token {
-  padding: 0 0.15rem;
-  background: var(--thm-green-100);
-}
-
-.nw-token:nth-child(even),
-.nw-ende .nw-token { background: var(--thm-grey-100); }
-
-.nw-tokens .nw-luecke { margin-left: 0.35rem; }
+.nw-luecke.nach-token { margin-left: 0.35rem; }
 
 .nw-formel {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 0.8rem;
-  white-space: nowrap;
+  flex-wrap: wrap;
+  gap: 0 0.8rem;
   font-size: 0.8em;
   color: var(--thm-grey-500);
 }
+
+.nw-ausdruck { white-space: nowrap; }
 
 .nw-formel i {
   font-family: Georgia, 'Times New Roman', serif;

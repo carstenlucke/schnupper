@@ -110,7 +110,7 @@ class: text-l
 <div class="thm-cols thm-cols-2 llm-oben">
   <div class="llm-begriffe">
     <div class="llm-begriff"><span class="llm-buchstabe">L</span><div><strong>Large</strong> <em>groß</em><br>Milliarden Parameter, trainiert auf Billionen Tokens</div></div>
-    <div class="llm-begriff"><span class="llm-buchstabe">L</span><div><strong>Language</strong> <em>Sprache</em><br>zerlegt Text in Tokens, Wörter oder Wortteile: <span class="llm-tokens"><span>Schn</span><span>upper</span><span>vor</span><span>les</span><span>ung</span></span></div></div>
+    <div class="llm-begriff"><span class="llm-buchstabe">L</span><div><strong>Language</strong> <em>Sprache</em><br>zerlegt Text in Tokens, Wörter oder Wortteile: <TokenKette legende :teile="[' Schn', 'upper', 'vor', 'les', 'ung']" /></div></div>
     <div class="llm-begriff"><span class="llm-buchstabe">M</span><div><strong>Model</strong> <em>Modell</em><br>berechnet für jedes mögliche nächste Token eine Wahrscheinlichkeit</div></div>
   </div>
   <NaechstesWort token />
@@ -138,10 +138,15 @@ class: text-l
 </div>
 
 <InfoTafel wort="tokens" titel="Tokens in Wirklichkeit">
+
 Im Beispiel ist jedes Wort ein Token, das hält es übersichtlich. Ein echter Tokenizer zerlegt den Satz feiner — hier der von GPT-4o:
-<div class="tok-echt"><span>Nach</span><span><i>␣</i>der</span><span><i>␣</i>Vor</span><span>les</span><span>ung</span><span><i>␣</i>gehe</span><span><i>␣</i>ich</span><span><i>␣</i>noch</span><span><i>␣</i>schnell</span><span><i>␣</i>zum</span></div>
-Aus 8 Wörtern werden 10 Tokens, das Leerzeichen gehört meist zum folgenden Token. Auch die Kandidaten sind nicht immer ein Token: <span class="tok-echt"><span><i>␣</i>Training</span></span>, <span class="tok-echt"><span><i>␣</i>Arzt</span></span> und <span class="tok-echt"><span><i>␣</i>Mond</span></span> sind je eines, <span class="tok-echt"><span><i>␣</i>Super</span><span>markt</span></span> sind zwei, <span class="tok-echt"><span><i>␣</i>B</span><span>ä</span><span>cker</span></span> drei. Vorhergesagt wird also zunächst nur <span class="tok-echt"><span><i>␣</i>B</span></span> — „Bäcker“ entsteht erst in drei Schritten.
+
+<TokenKette block class="tok-satz" :teile="['Nach', ' der', ' Vor', 'les', 'ung', ' gehe', ' ich', ' noch', ' schnell', ' zum']" />
+
+Aus 8 Wörtern werden 10 Tokens, das Leerzeichen <TokenKette :teile="[' ']" /> gehört meist zum folgenden Token. Auch die Kandidaten sind nicht immer ein Token: <TokenKette :teile="[' Training']" />, <TokenKette :teile="[' Arzt']" /> und <TokenKette :teile="[' Mond']" /> sind je eines, <TokenKette :teile="[' Super', 'markt']" /> sind zwei, <TokenKette :teile="[' B', 'ä', 'cker']" /> drei. Vorhergesagt wird also zunächst nur <TokenKette :teile="[' B']" /> — „Bäcker“ entsteht erst in drei Schritten.
+
 <p class="tok-quelle">Zerlegung mit o200k_base, dem Tokenizer von GPT-4o. Andere Modelle zerlegen anders.</p>
+
 </InfoTafel>
 
 <style>
@@ -164,23 +169,8 @@ Aus 8 Wörtern werden 10 Tokens, das Leerzeichen gehört meist zum folgenden Tok
 .llm-begriff strong { color: var(--text-strong); font-size: 1.1em; }
 .llm-begriff em { font-style: normal; color: var(--thm-green-700); margin-left: 0.3rem; }
 
-/* Zerlegung in Tokens, abwechselnd hinterlegt */
-.llm-tokens { white-space: nowrap; }
-
-.llm-tokens span {
-  padding: 0 0.2rem;
-  background: var(--thm-green-100);
-  color: var(--text-strong);
-}
-
-.llm-tokens span:nth-child(even) { background: var(--thm-grey-100); }
-
-/* Echte Zerlegung in der Infotafel, ␣ = Leerzeichen */
-.tok-echt { display: inline-flex; flex-wrap: wrap; row-gap: 0.3rem; font-weight: var(--fw-semibold); color: var(--text-strong); }
-div.tok-echt { display: flex; margin: 0 0 0.8rem; font-size: 1.15em; }
-.tok-echt > span { padding: 0 0.15rem; background: var(--thm-green-100); }
-.tok-echt > span:nth-child(even) { background: var(--thm-grey-100); }
-.tok-echt i { font-style: normal; font-weight: normal; color: var(--thm-grey-400); }
+/* Echte Zerlegung in der Infotafel */
+.tok-satz { margin: 0 0 0.7rem; font-size: 1.15em; }
 .tok-quelle { font-size: 0.8em; color: var(--thm-grey-500); }
 
 .llm-buchstabe {

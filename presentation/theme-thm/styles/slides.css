@@ -315,7 +315,19 @@
 
 /* ---- Wort im Folientext, das eine Infotafel öffnet (<InfoTafel wort>) ----
    Kleine Schaltfläche mit „i“, in den Textfluss gesetzt. Die Klasse vergibt
-   die Komponente — im Export bleibt das Wort gewöhnlicher Text. */
+   die Komponente — im Export bleibt das Wort gewöhnlicher Text. Dafür setzt
+   der erste Block die Vorgaben des Browsers für einen Knopf als Auslöser
+   zurück, ohne Spezifität, damit `.info-wort` gewinnt. */
+:where(button[data-info]) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: inherit;
+}
+
 .info-wort {
   padding: 0.05em 0.35em;
   border-radius: var(--radius-icon);
@@ -343,6 +355,11 @@
 }
 
 .info-wort:hover { background: var(--thm-grey-200); }
+
+.info-wort:focus-visible {
+  outline: 0.15rem solid var(--thm-green-600);
+  outline-offset: 0.1rem;
+}
 
 .info-wort.aktiv { background: var(--thm-green-500); color: var(--white); }
 .info-wort.aktiv::after { background: var(--white); color: var(--thm-green-600); }

@@ -3,7 +3,7 @@
   nicht dauerhaft auf der Folie stehen soll. Geöffnet wird sie über ein
   Wort im Folientext:
 
-    … in Tokens <span data-info="tokens">zerlegt</span> …
+    … in Tokens <button type="button" data-info="tokens">zerlegt</button> …
 
     <InfoTafel wort="tokens" titel="Tokens in Wirklichkeit">
 
@@ -12,11 +12,16 @@
     </InfoTafel>
 
   Das Wort kann auch in einer Komponente stehen (so „Wort = Token“ in
-  <NaechstesWort token>); es muss nur auf derselben Folie liegen.
+  <NaechstesWort token>); es muss nur auf derselben Folie liegen. Ein
+  `<span data-info>` funktioniert mit der Maus ebenso, der Knopf lässt sich
+  zusätzlich mit Tab und Enter bedienen.
 
-  Ein Klick auf das Wort öffnet die Tafel, ein Klick auf die Tafel oder
-  erneut auf das Wort schließt sie; beim Verlassen der Folie schließt sie
-  von selbst. Die Folie scheint blass durch. Im Export erscheint die Tafel
+  Ein Klick auf das Wort öffnet die Tafel, ein Klick auf die Tafel, erneut
+  auf das Wort oder Escape schließt sie; beim Verlassen der Folie schließt
+  sie von selbst. Die Folie scheint blass durch. Referentenansicht und
+  Publikumsfenster öffnen und schließen die Tafel gemeinsam (über einen
+  BroadcastChannel, also im selben Browser) — Slidev selbst gleicht nur
+  Folie und Klicks ab. Im Export erscheint die Tafel
   nicht, und das Wort steht dort als gewöhnlicher Text — der Inhalt gehört
   deshalb auch in die Foliennotiz.
 
@@ -29,11 +34,12 @@
 -->
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { onSlideLeave, useNav } from '@slidev/client'
+import { onSlideLeave, useNav, useSlideContext } from '@slidev/client'
 
 const props = defineProps<{ titel: string; wort: string }>()
 
 const { isPrintMode } = useNav()
+const { $page } = useSlideContext()
 const offen = ref(false)
 const anker = ref<HTMLElement>()
 
@@ -49,6 +55,35 @@ function aufKlick(e: MouseEvent) {
   if (!ziel || ziel.closest('.slidev-layout') !== folie()) return
   e.stopPropagation()
   offen.value = !offen.value
+  /* Nach einem Mausklick den Fokus abgeben, sonst blättert die Leertaste
+     nicht weiter; mit der Tastatur geöffnet (detail 0) bleibt er stehen. */
+  if (e.detail > 0) (ziel as HTMLElement).blur?.()
+}
+
+function taste(e: KeyboardEvent) {
+  if (e.key === 'Escape') offen.value = false
+}
+
+/* Gleichlauf mit den anderen Fenstern derselben Präsentation. Jede
+   Nachricht trägt Folie und Wort; eine Tafel übernimmt nur ihre eigene.
+   Eine Tafel, die neu erscheint, fragt nach dem aktuellen Stand. */
+interface Nachricht { seite: number; wort: string; offen?: boolean; frage?: boolean }
+let kanal: BroadcastChannel | undefined
+let empfangen = false
+
+function senden(n: Partial<Nachricht>) {
+  kanal?.postMessage({ seite: $page.value, wort: props.wort, ...n })
+}
+
+function aufNachricht({ data: n }: MessageEvent<Nachricht>) {
+  if (n.seite !== $page.value || n.wort !== props.wort) return
+  if (n.frage) {
+    if (offen.value) senden({ offen: true })
+  }
+  else if (n.offen !== undefined && n.offen !== offen.value) {
+    empfangen = true
+    offen.value = n.offen
+  }
 }
 
 /* Erscheint das Wort erst nach der Tafel oder setzt eine Komponente ihren
@@ -68,12 +103,24 @@ onMounted(() => {
   const f = folie()
   if (f) beobachter.observe(f, { childList: true, subtree: true })
   document.addEventListener('click', aufKlick, true)
+  kanal = new BroadcastChannel('thm-infotafel')
+  kanal.addEventListener('message', aufNachricht)
+  senden({ frage: true })
 })
 onBeforeUnmount(() => {
   beobachter.disconnect()
   document.removeEventListener('click', aufKlick, true)
+  window.removeEventListener('keydown', taste)
+  kanal?.close()
 })
-watch(offen, auszeichnen)
+watch(offen, (o) => {
+  auszeichnen()
+  if (o) window.addEventListener('keydown', taste)
+  else window.removeEventListener('keydown', taste)
+  /* Was von einem anderen Fenster kam, nicht zurückschicken */
+  if (empfangen) empfangen = false
+  else senden({ offen: o })
+})
 </script>
 
 <template>
