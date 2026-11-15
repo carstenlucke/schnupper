@@ -108,8 +108,9 @@ Wechsel zu den **Counting Agents**
 <!--
 In der Demo läuft jeder Agent in einem eigenen Fenster, sodass jeder
 Handgriff sichtbar ist. Die Übersicht zeigt das Zahlenband und wie weit
-jeder Agent zurückliegt. Eine rote Kachel markiert eine Zahl, die der
-Primzahl-Agent falsch eingeordnet hat.
+jeder Agent zurückliegt. Eine rote Kachel markiert eine Zahl, die ein
+Sammler eingesammelt hat, obwohl sie nicht zu ihm gehört — meist eine Zahl,
+die der Primzahl-Agent für prim hält, obwohl sie es nicht ist.
 -->
 
 ---
@@ -137,9 +138,14 @@ nach. Jeder seiner Durchläufe dauert etwas länger als beim Zähler, und der
 Abstand wächst. Gleicher Takt heißt also nicht gleiches Tempo: Nachdenken
 kostet Zeit.
 
-**Die rote Kachel:** Das Modell hat eine Zahl für eine Primzahl gehalten,
-die keine ist. Typisch sind Zahlen, die prim aussehen, etwa 51 = 3·17,
-57 = 3·19 oder 91 = 7·13. Das Modell rechnet nicht, es schätzt, was
+**Die rote Kachel:** Rot wird eine Zahl, die ein Sammler eingesammelt hat,
+obwohl sie nicht zu ihm gehört. Meist ist es der Primzahl-Agent, der eine
+Zahl für prim hält, die keine ist. Typisch sind Zahlen, die prim aussehen,
+etwa 51 = 3·17, 57 = 3·19, 87 = 3·29 oder 91 = 7·13. Weil er hinterherhinkt,
+erreicht er sie erst nach einigen Minuten. Seltener sortiert der Sammler für
+ungerade oder gerade Zahlen falsch ein. Übersieht der Primzahl-Agent
+dagegen eine echte Primzahl, wird nichts rot: Der Ring an ihrer Kachel
+bleibt nur hohl, statt sich zu füllen. Das Modell rechnet nicht, es schätzt, was
 plausibel klingt — wie auf der Folie „Was steckt hinter ChatGPT & Co.?“:
 das wahrscheinlichste nächste Wort. Gab es keine rote Kachel, ist es
 diesmal gut gegangen, aber ohne Garantie. Dass die Kachel rot wird, liegt
