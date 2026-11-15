@@ -118,11 +118,12 @@ cp .env.example .env
 | Bild | Quality | Größe | Tokens | Kosten (ca.) |
 |------|---------|-------|--------|-------------|
 | Logo (Marketing) | low | 1024x1024 | 824 Output | ~$0.025 |
-| Instagram-Bild (Social Media) | low | 1024x1024 | 824 Output + 1024 Input (Logo als Referenz) | ~$0.033 |
+| Instagram-Bild (Social Media), Logo liegt vor | low | 1024x1024 | 824 Output + 1024 Input (Logo als Referenz) | ~$0.033 |
+| Instagram-Bild (Social Media), noch kein Logo | low | 1024x1024 | 824 Output | ~$0.025 |
 
-**Pro Projekt (alle Bilder):** ~$0.06
+**Pro Projekt (Logo, danach Instagram-Bild mit Logo als Referenz):** ~$0.06
 
-Gemessen im November 2026 über das Feld `usage` der API-Antwort, zu $30 pro 1 Mio. Output- und $8 pro 1 Mio. Input-Bildtokens; die Textanteile der Prompts kosten Bruchteile eines Cents. Die Zahl der Output-Tokens hängt bei `quality: "low"` und 1024x1024 weder vom Motiv noch von `complexity` ab. Für eine Vorlesung mit ~10 Projekten: **rund $0.60 Gesamtkosten**.
+Gemessen im November 2026 über das Feld `usage` der API-Antwort, zu $30 pro 1 Mio. Output- und $8 pro 1 Mio. Input-Bildtokens; die Textanteile der Prompts kosten Bruchteile eines Cents. Die Zahl der Output-Tokens hängt bei `quality: "low"` und 1024x1024 nicht vom Motiv ab. Für eine Vorlesung mit ~10 Projekten: **rund $0.60 Gesamtkosten**.
 
 ## Präsentation
 
