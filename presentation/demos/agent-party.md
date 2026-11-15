@@ -216,7 +216,7 @@ hideInToc: true
 <div class="thm-stack">
   <QuestionItem>Wer hat euch am meisten <strong>überzeugt</strong> — und warum?</QuestionItem>
   <QuestionItem>Ein Satz im Profil geändert — <strong>was hat sich gedreht</strong>?</QuestionItem>
-  <QuestionItem>Wer hat bestimmt, was die KI <strong>„meint“</strong>?</QuestionItem>
+  <QuestionItem>Wer hält die <strong>Fäden</strong> in der Hand — die KI oder wer das Profil schreibt?</QuestionItem>
   <QuestionItem>Ehrlich: Waren das überhaupt <strong>Agenten</strong>?</QuestionItem>
 </div>
 
