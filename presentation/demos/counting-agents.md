@@ -10,9 +10,9 @@ class: text-xl
 
 <CardGrid :cols="5">
   <Card icon="list-ordered" titel="Zähler">Erzeugt fortlaufend Zahlen: 1, 2, 3 …</Card>
-  <Card icon="filter" titel="Ungerade">Sammelt die ungeraden Zahlen ein</Card>
-  <Card icon="filter" titel="Gerade">Sammelt die geraden Zahlen ein</Card>
-  <Card icon="brain" titel="Primzahlen">Prüft jede Zahl&nbsp;— und denkt dabei nach</Card>
+  <Card icon="filter" titel="Ungerade">Sammelt die Zahlen ein und prüft jede: ungerade?</Card>
+  <Card icon="filter" titel="Gerade">Sammelt die Zahlen ein und prüft jede: gerade?</Card>
+  <Card icon="filter" titel="Primzahlen">Sammelt die Zahlen ein und prüft jede: Primzahl?</Card>
   <Card icon="sliders-horizontal" titel="Steuerung">Pausiert, setzt fort, startet neu</Card>
 </CardGrid>
 </div>
@@ -93,25 +93,6 @@ Primzahl-Agenten zum Beispiel in `agents/prime.md`.
 -->
 
 ---
-rubrik: The Counting Agents · Live-Demo
-titel: Eure Vorhersage
-untertitel: Bevor es losgeht — was glaubt ihr?
-class: text-xl
-hideInToc: true
----
-
-<div class="thm-center thm-stack">
-  <QuestionItem>Alle Agenten haben <strong>denselben Takt</strong>. Laufen sie im Gleichschritt?</QuestionItem>
-  <QuestionItem>Wer wird am weitesten <strong>hinterherhinken</strong> — und warum?</QuestionItem>
-  <QuestionItem>Macht die KI beim <strong>Primzahlen-Prüfen</strong> Fehler?</QuestionItem>
-</div>
-
-<!--
-Die Antworten zeigt die Demo. Aufgelöst werden die Fragen auf der Folie
-„Was haben wir gesehen?“ am Ende dieses Blocks.
--->
-
----
 layout: statement
 rubrik: The Counting Agents · Live-Demo
 titel: Los geht's!
@@ -134,7 +115,7 @@ Primzahl-Agent falsch eingeordnet hat.
 ---
 rubrik: The Counting Agents · Bewertung
 titel: Was haben wir gesehen?
-untertitel: Zurück zu euren Vorhersagen.
+untertitel: Ein Blick zurück auf die Demo.
 hideInToc: true
 ---
 
