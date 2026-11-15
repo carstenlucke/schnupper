@@ -684,7 +684,7 @@ def start_agent(
 # Bildgenerierung (OpenAI, Modell per SHIP_IT_IMAGE_MODEL)
 # ---------------------------------------------------------------------------
 
-IMAGE_MODEL_DEFAULT = "gpt-image-2.5-sunburst"
+IMAGE_MODEL_DEFAULT = "gpt-image-2.6-sunburst"
 
 
 def image_model() -> str:

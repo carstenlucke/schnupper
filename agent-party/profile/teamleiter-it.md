@@ -1,7 +1,7 @@
 ---
 name: Teamleiter IT
 beschreibung: Stellt die fachlichen Fragen und hakt nach, was hinter einer Antwort steckt
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 thinking: medium
 farbe: blau
 ---

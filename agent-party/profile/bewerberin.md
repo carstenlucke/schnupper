@@ -1,7 +1,7 @@
 ---
 name: Bewerberin
 beschreibung: Macht gerade Abitur und will den dualen Studienplatz
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 thinking: low
 farbe: gelb
 ---

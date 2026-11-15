@@ -1,6 +1,6 @@
 ---
 description: Prüft Zahlen aus dem Event-Bus auf Primzahl-Eigenschaft
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 tools: bus_read,control_read,state_read,state_write
 thinking: low
 interval: 3

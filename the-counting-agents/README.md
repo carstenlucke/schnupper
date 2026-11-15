@@ -83,7 +83,7 @@ directories you actually edit.
 - [Herdr](https://herdr.dev) — the demo runs in a Herdr tab, either in the
   Herdr app (`herdr-app` and `hc` on the `PATH`) or in the Herdr TUI (`herdr`)
 - [pi](https://pi.dev) — the agent runtime (`pi --version`)
-- A model pi can reach. The default is `openai-codex/gpt-5.6-luna` (ChatGPT
+- A model pi can reach. The default is `openai-codex/gpt-6.1-terra` (ChatGPT
   subscription, set up once in pi via `/login`). `pi --list-models` shows what
   else is available.
 
@@ -96,7 +96,7 @@ cp .env.example .env
 One line in the `.env` matters:
 
 ```
-COUNTING_AGENTS_MODEL=openai-codex/gpt-5.6-luna
+COUNTING_AGENTS_MODEL=openai-codex/gpt-6.1-terra
 ```
 
 It overrides the `model:` entry in the agent files and applies to all five at
@@ -284,7 +284,7 @@ A text file. That's all.
 ```markdown
 ---
 description: Erzeugt fortlaufende Zahlen und stellt sie in den Event-Bus
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 tools: bus_publish,control_read,state_read,state_write
 thinking: off
 interval: 3

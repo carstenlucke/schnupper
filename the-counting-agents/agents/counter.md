@@ -1,6 +1,6 @@
 ---
 description: Zählt fortlaufend und stellt jede Zahl in den Event-Bus
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 tools: bus_publish,control_read,state_read,state_write
 thinking: off
 interval: 3

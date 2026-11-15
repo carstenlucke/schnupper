@@ -1,7 +1,7 @@
 ---
 name: Ethikerin
 beschreibung: Fragt, wer profitiert und wer die Rechnung zahlt
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 thinking: medium
 farbe: blau
 ---

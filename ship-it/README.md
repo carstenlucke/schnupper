@@ -14,7 +14,7 @@ Live-Demo für eine Schnuppervorlesung bei StudiumPlus (90 Min, 12. Klasse FOS).
 
 - Python 3 (keine externen Dependencies)
 - [pi CLI](https://pi.dev) installiert (`npm install -g @earendil-works/pi-coding-agent`) und einmal per `/login` angemeldet
-- ChatGPT Plus Abo – alle Agenten nutzen `openai-codex/gpt-5.6-luna` über diesen Zugang (für alle zugleich änderbar über `SHIP_IT_MODEL` in `.env`)
+- ChatGPT Plus Abo – alle Agenten nutzen `openai-codex/gpt-6.1-terra` über diesen Zugang (für alle zugleich änderbar über `SHIP_IT_MODEL` in `.env`)
 - Für die KI-Bildgenerierung zusätzlich ein `OPENAI_API_KEY` in `.env` (siehe [Einrichtung](#ki-bildgenerierung))
 
 ## Ablauf
@@ -104,7 +104,7 @@ ship-it/
 
 ## KI-Bildgenerierung
 
-Marketing- und Social-Media-Agent können auf Knopfdruck Bilder generieren (Logo bzw. Instagram-Post). Die Bildgenerierung nutzt die OpenAI API, voreingestellt mit `gpt-image-2.5-sunburst` (änderbar über `SHIP_IT_IMAGE_MODEL` in `.env`). Liegt schon ein Logo des Marketing-Agenten vor, bekommt das Instagram-Bild es als Referenzbild mit – taucht ein Logo im Bild auf, ist es dieses und kein neu erfundenes.
+Marketing- und Social-Media-Agent können auf Knopfdruck Bilder generieren (Logo bzw. Instagram-Post). Die Bildgenerierung nutzt die OpenAI API, voreingestellt mit `gpt-image-2.6-sunburst` (änderbar über `SHIP_IT_IMAGE_MODEL` in `.env`). Liegt schon ein Logo des Marketing-Agenten vor, bekommt das Instagram-Bild es als Referenzbild mit – taucht ein Logo im Bild auf, ist es dieses und kein neu erfundenes.
 
 ### Einrichtung
 
@@ -113,16 +113,17 @@ cp .env.example .env
 # OPENAI_API_KEY in .env eintragen
 ```
 
-### Kosten pro Bild (gpt-image-2.5-sunburst, Stand September 2026)
+### Kosten pro Bild (gpt-image-2.6-sunburst, Stand November 2026)
 
-| Bild | Quality | Größe | Kosten (ca.) |
-|------|---------|-------|-------------|
-| Logo (Marketing) | low | 1024x1024 | ~$0.01 |
-| Instagram-Bild (Social Media) | low | 1024x1024 | ~$0.01 |
+| Bild | Quality | Größe | Tokens | Kosten (ca.) |
+|------|---------|-------|--------|-------------|
+| Logo (Marketing) | low | 1024x1024 | 824 Output | ~$0.025 |
+| Instagram-Bild (Social Media), Logo liegt vor | low | 1024x1024 | 824 Output + 1024 Input (Logo als Referenz) | ~$0.033 |
+| Instagram-Bild (Social Media), noch kein Logo | low | 1024x1024 | 824 Output | ~$0.025 |
 
-**Pro Projekt (alle Bilder):** ~$0.02
+**Pro Projekt (Logo, danach Instagram-Bild mit Logo als Referenz):** ~$0.06
 
-Die Kosten sind Token-basiert und variieren je nach Prompt-Länge und Bildkomplexität. Bei `quality: "low"` und 1024x1024 liegt der Output-Preis bei ca. $0.006–0.01/Bild. Für eine Vorlesung mit ~10 Projekten: **unter $0.50 Gesamtkosten**.
+Gemessen im November 2026 über das Feld `usage` der API-Antwort, zu $30 pro 1 Mio. Output- und $8 pro 1 Mio. Input-Bildtokens; die Textanteile der Prompts kosten Bruchteile eines Cents. Die Zahl der Output-Tokens hängt bei `quality: "low"` und 1024x1024 weder vom Motiv noch von `complexity` ab (der Server sendet das Feld nicht, die API nimmt dann `high`). Für eine Vorlesung mit ~10 Projekten: **rund $0.60 Gesamtkosten**.
 
 ## Präsentation
 

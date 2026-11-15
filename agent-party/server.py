@@ -73,7 +73,7 @@ def _load_dotenv():
 _load_dotenv()
 
 STANDARD_MODELL = (
-    os.environ.get("AGENT_PARTY_STANDARD_MODELL") or "openai-codex/gpt-5.6-luna"
+    os.environ.get("AGENT_PARTY_STANDARD_MODELL") or "openai-codex/gpt-6.1-terra"
 )
 
 

@@ -1,7 +1,7 @@
 ---
 name: Personalreferentin
 beschreibung: Führt Vorstellungsgespräche: Lebenslauf, Eignung, Soft Skills
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 thinking: medium
 farbe: gruen
 ---

@@ -1,6 +1,6 @@
 ---
 description: Preiskalkulation – berechnet Kosten, Margen und empfiehlt Preisstrategie
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 thinking: medium
 tools: read,write,bash,webfetch
 ---
