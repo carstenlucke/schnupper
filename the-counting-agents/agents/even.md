@@ -1,6 +1,6 @@
 ---
 description: Sammelt die geraden Zahlen aus dem Event-Bus
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 tools: bus_read,control_read,state_read,state_write
 thinking: off
 interval: 3

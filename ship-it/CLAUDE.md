@@ -81,7 +81,7 @@ pi-Aufruf, der Text darunter wird zum Systemprompt.
 ```markdown
 ---
 description: Zielgruppenanalyse – identifiziert Personas, Marktsegmente und Kaufkraft
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 thinking: medium
 tools: read,write,bash,webfetch
 skills: popular-web-designs

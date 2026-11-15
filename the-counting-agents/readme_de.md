@@ -85,7 +85,7 @@ die Verzeichnisse, die man tatsächlich bearbeitet.
   der Herdr-App (`herdr-app` und `hc` im `PATH`) oder in der Herdr-TUI (`herdr`)
 - [pi](https://pi.dev) — die Agenten-Laufzeit (`pi --version`)
 - Ein Modell, das pi erreichen kann. Voreingestellt ist
-  `openai-codex/gpt-5.6-luna` (ChatGPT-Abo, in pi einmalig per `/login`
+  `openai-codex/gpt-6.1-terra` (ChatGPT-Abo, in pi einmalig per `/login`
   eingerichtet). Was sonst zur Verfügung steht, zeigt `pi --list-models`.
 
 ## Einrichten
@@ -97,7 +97,7 @@ cp .env.example .env
 In der `.env` steht eine Zeile, auf die es ankommt:
 
 ```
-COUNTING_AGENTS_MODEL=openai-codex/gpt-5.6-luna
+COUNTING_AGENTS_MODEL=openai-codex/gpt-6.1-terra
 ```
 
 Sie schlägt den `model:`-Eintrag in den Agentendateien und gilt für alle fünf
@@ -293,7 +293,7 @@ Eine Textdatei. Mehr nicht.
 ```markdown
 ---
 description: Erzeugt fortlaufende Zahlen und stellt sie in den Event-Bus
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 tools: bus_publish,control_read,state_read,state_write
 thinking: off
 interval: 3

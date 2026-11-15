@@ -220,7 +220,7 @@ darunter wird zum Systemprompt.
 ---
 name: Skeptische Ökonomin
 beschreibung: Rechnet jede Idee auf Kosten und Nutzen herunter
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 thinking: low
 farbe: hellblau
 ---

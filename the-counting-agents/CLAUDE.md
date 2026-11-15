@@ -81,7 +81,7 @@ pi hat **kein eingebautes Agenten-Konzept**. Ein Agent ist eine Markdown-Datei;
 ```markdown
 ---
 description: Erzeugt fortlaufende Zahlen und stellt sie in den Event-Bus
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 tools: bus_publish,control_read,state_read,state_write
 thinking: off
 interval: 3
@@ -125,7 +125,7 @@ leert sie zu Beginn. Hintergrund:
 
 `COUNTING_AGENTS_MODEL` in der `.env` **schlägt den `model:`-Eintrag aller
 Agenten zugleich** — der Weg, im Hörsaal den Anbieter zu wechseln, wenn einer
-bremst. Voreinstellung `openai-codex/gpt-5.6-luna`.
+bremst. Voreinstellung `openai-codex/gpt-6.1-terra`.
 
 - Steht dort ein `tensorx-schnupper/...`-Modell, braucht es zusätzlich
   `SCHNUPPER_TENSORX_API_KEY`. Das ist **bewusst ein eigener, vom global in pi

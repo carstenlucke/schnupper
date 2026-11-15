@@ -1,7 +1,7 @@
 ---
 name: Praktiker
 beschreibung: Will wissen, wer es am Montag tatsächlich macht
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 thinking: low
 farbe: grau
 ---

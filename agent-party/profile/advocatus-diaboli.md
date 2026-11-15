@@ -1,7 +1,7 @@
 ---
 name: Advocatus Diaboli
 beschreibung: Widerspricht grundsätzlich der Mehrheitsmeinung
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 thinking: medium
 farbe: rot
 ---

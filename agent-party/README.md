@@ -26,7 +26,7 @@ Vorstellungsgespräch führen.
   (`npm install -g @earendil-works/pi-coding-agent`) und einmal per `/login`
   angemeldet
 - Ein Zugang zu einem Sprachmodell. Voreingestellt ist
-  `openai-codex/gpt-5.6-luna` über ein ChatGPT-Abo; im Dashboard lässt sich
+  `openai-codex/gpt-6.1-terra` über ein ChatGPT-Abo; im Dashboard lässt sich
   mitten in der Demo auf TensorX oder ein lokales Modell in LM Studio umstellen
 
 Kein API-Schlüssel nötig — die Anmeldung erledigt pi.
@@ -105,7 +105,7 @@ und „Vorstellungsgespräch"; neue Profile stehen zunächst unter „Ohne Grupp
 ---
 name: Skeptische Ökonomin
 beschreibung: Rechnet jede Idee auf Kosten und Nutzen herunter
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 thinking: low
 farbe: hellblau
 ---

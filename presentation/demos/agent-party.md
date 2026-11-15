@@ -134,7 +134,7 @@ class: text-xl
 <div class="thm-flow">
   <Card icon="cog" icon-ton="grau" titel="Oben: die Technik" kompakt>
     Welches Modell, wie viel Nachdenken, welche Farbe.
-    <div class="thm-sample">model: gpt-5.6-luna<br>thinking: low<br>farbe: hellblau</div>
+    <div class="thm-sample">model: gpt-6.1-terra<br>thinking: low<br>farbe: hellblau</div>
   </Card>
   <FlowArrow />
   <Card icon="pen-line" titel="Darunter: die Rolle" tone="tint" kompakt>

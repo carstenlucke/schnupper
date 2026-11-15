@@ -1,6 +1,6 @@
 ---
 description: Zeigt den Zustand aller Agenten und schickt Steuerbefehle
-model: openai-codex/gpt-5.6-luna
+model: openai-codex/gpt-6.1-terra
 tools: state_read,bus_read,control_send
 thinking: off
 ---

@@ -91,7 +91,7 @@ const absatz4 = computed(() => (fertig.value ? 'kopiert' : ''))
       <div class="cp-modell" :class="{ aktiv: modellAktiv }">
         <ThmIcon name="brain" box :size="2.4" />
         <div class="cp-modell-titel">Modell</div>
-        <div class="cp-modell-text">das LLM, <span class="nw">z.&nbsp;B. GPT-5.6</span></div>
+        <div class="cp-modell-text">das LLM, <span class="nw">z.&nbsp;B. GPT-6.1</span></div>
         <div class="cp-denkt" :class="{ an: aktiv('zumModell') }">denkt nach <i /><i /><i /></div>
       </div>
 

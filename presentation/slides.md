@@ -119,7 +119,7 @@ class: text-l
 <div class="llm-modelle">
   <span class="llm-label">Modelle</span>
   <div class="llm-reihe">
-    <span class="llm-familie"><strong>GPT-5.6</strong> Sol · Terra · Luna</span>
+    <span class="llm-familie"><strong>GPT-6.1</strong> Sol · Terra</span>
     <span class="llm-familie"><strong>Claude</strong> Opus · Fable · Mythos</span>
     <span class="llm-familie"><strong>Gemini</strong></span>
     <span class="llm-familie"><strong>Mistral</strong></span>
@@ -228,12 +228,12 @@ ausgedacht und dienen nur der Veranschaulichung.
 
 Unten stehen zwei Reihen. Die Modelle sind das Gehirn, die Apps das Fenster,
 in dem ihr mit ihnen redet. ChatGPT ist die App, das Modell darin heißt zum
-Beispiel GPT-5.6. Copilot von Microsoft ist ebenfalls eine App, darin
+Beispiel GPT-6.1. Copilot von Microsoft ist ebenfalls eine App, darin
 arbeiten vor allem GPT-Modelle. Le Chat ist die App von Mistral, einem
 Anbieter aus Frankreich. Claude und Gemini heißen als App und als Modell
 gleich.
 
-Die Namen hinter einem Modell, etwa Sol, Terra und Luna bei GPT-5.6, sind
+Die Namen hinter einem Modell, etwa Sol und Terra bei GPT-6.1, sind
 Varianten: größer und klüger oder kleiner und schneller. Llama (von Meta),
 Mistral und DeepSeek gibt es auch zum Herunterladen, sie laufen dann sogar
 auf dem eigenen Rechner.
