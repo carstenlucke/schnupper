@@ -14,7 +14,7 @@ Live-Demo für eine Schnuppervorlesung bei StudiumPlus (90 Min, 12. Klasse FOS).
 
 - Python 3 (keine externen Dependencies)
 - [pi CLI](https://pi.dev) installiert (`npm install -g @earendil-works/pi-coding-agent`) und einmal per `/login` angemeldet
-- ChatGPT Plus Abo – alle Agenten nutzen `openai-codex/gpt-6.1-terra` über diesen Zugang (für alle zugleich änderbar über `SHIP_IT_MODEL` in `.env`)
+- ChatGPT Plus Abo – die Agenten nutzen über diesen Zugang `openai-codex/gpt-6.1-terra`, der Website-Agent `openai-codex/gpt-6.1-sol` (je Agent im `model:`-Eintrag von `agents/<name>.md`; `SHIP_IT_MODEL` in `.env` gilt nur für Agenten ohne diesen Eintrag)
 - Für die KI-Bildgenerierung zusätzlich ein `OPENAI_API_KEY` in `.env` (siehe [Einrichtung](#ki-bildgenerierung))
 
 ## Ablauf

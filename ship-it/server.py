@@ -335,9 +335,9 @@ def read_agent(agent: str) -> tuple[dict, str, str] | None:
 
 
 def agent_model(meta: dict) -> str:
-    """Das Modell, mit dem ein Agent tatsächlich läuft: SHIP_IT_MODEL aus der
-    .env schlägt den `model:`-Eintrag – für alle Agenten zugleich."""
-    return os.environ.get("SHIP_IT_MODEL") or meta.get("model", "")
+    """Das Modell, mit dem ein Agent tatsächlich läuft: der `model:`-Eintrag
+    seiner Datei. Nur wo der fehlt, gilt SHIP_IT_MODEL aus der .env."""
+    return meta.get("model") or os.environ.get("SHIP_IT_MODEL", "")
 
 
 def _liste(wert: str) -> list[str]:

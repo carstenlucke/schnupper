@@ -13,16 +13,17 @@
   Halte zählen nicht als Runden; die Schleife wartet dort auf euch.
 
   Pro Klick kommt ein Abschnitt dazu, die Kästchen laufen nacheinander
-  ein, oben zählt die Schleife mit. Im letzten Schritt markiert ein Ring
-  zwei Runden beim Korrigieren: Absatz lesen, Absatz schreiben — das,
-  was <AgentDurchlauf> Schritt für Schritt gezeigt hat.
+  ein, oben zählt die Schleife mit. Im letzten Schritt rahmt ein
+  gemeinsamer Rahmen zwei Runden beim Korrigieren ein: Absatz lesen,
+  Absatz schreiben — dasselbe Paar, mit dem <AgentDurchlauf> Absatz 3
+  gekürzt hat.
 
   Die Rundenzahlen sind ausgedacht, liegen für so einen Auftrag aber in
   einer realistischen Größenordnung. Werkzeuge und Icons kommen aus
   `harness.ts`, damit sie zu <AgentDurchlauf> und <AgentAnatomie> passen.
 
   Geblättert wird mit den Klicks der Folie: Die Folie braucht
-  `clicks: 8` (fünf Phasen und zwei Halte, dann Ring und Merksatz).
+  `clicks: 8` (fünf Phasen und zwei Halte, dann Rahmen und Merksatz).
 -->
 <script setup lang="ts">
 import { computed } from 'vue'
@@ -40,10 +41,12 @@ interface Phase {
   runden: Runde[]
   /* Kästchen pro Zeile; höchstens zwei Zeilen */
   spalten: number
-  /* die beiden Runden, die <AgentDurchlauf> gezeigt hat. Sie müssen
-     nebeneinander in der zweiten Zeile liegen: Die Beschriftung darunter
-     steht fest unter Zeile 2 und ist zwei Kästchen breit. */
-  ausschnitt?: [number, number]
+  /* Index (ab 0) der ersten der beiden Runden, die <AgentDurchlauf>
+     gezeigt hat; die zweite ist das Kästchen rechts daneben. Rahmen und
+     Beschriftung sind fest zwei Kästchen breit, die Beschriftung steht
+     fest unter Zeile 2: Das Paar muss in der zweiten Zeile beginnen,
+     nicht in deren letzter Spalte. */
+  ausschnitt?: number
 }
 
 /* Ein Halt: Der Agent legt etwas vor, ihr antwortet */
@@ -88,7 +91,7 @@ const abschnitte: Abschnitt[] = [
     erklaerung: 'Er ersetzt nur, was ihr freigegeben habt: Absatz lesen, Absatz schreiben. Nr. 3 bleibt, wie sie ist.',
     runden: ['lesen', 'schreiben', 'lesen', 'schreiben', 'aus', 'aus', 'lesen', 'schreiben'],
     spalten: 4,
-    ausschnitt: [6, 7],
+    ausschnitt: 6,
   },
   {
     art: 'phase',
@@ -149,8 +152,6 @@ const text = computed(() =>
     : abschnitte[n.value - 1]?.erklaerung ?? '',
 )
 
-const markiert = (p: Phase, k: number) =>
-  fertig.value && !!p.ausschnitt && k >= p.ausschnitt[0] && k <= p.ausschnitt[1]
 </script>
 
 <template>
@@ -190,17 +191,24 @@ const markiert = (p: Phase, k: number) =>
               v-for="(r, k) in a.runden"
               :key="k"
               class="ga-runde"
-              :class="[r, { da: da(i), markiert: markiert(a, k) }]"
+              :class="[r, { da: da(i) }]"
               :style="{ transitionDelay: da(i) ? `${k * 60}ms` : '0ms' }"
             >
               <ThmIcon :name="icon[r]" :ton="r === 'aus' ? 'grau' : 'weiss'" :size="0.85" />
             </span>
+            <!-- ein Rahmen um beide Runden, nicht je einer pro Kästchen -->
             <span
-              v-if="a.ausschnitt"
+              v-if="a.ausschnitt !== undefined"
+              class="ga-rahmen"
+              :class="{ da: fertig }"
+              :style="{ '--x': a.ausschnitt % a.spalten, '--y': Math.floor(a.ausschnitt / a.spalten) }"
+            />
+            <span
+              v-if="a.ausschnitt !== undefined"
               class="ga-ausschnitt"
               :class="{ da: fertig }"
-              :style="{ gridColumn: `${a.ausschnitt[0] % a.spalten + 1} / span 2` }"
-            >eben Schritt für Schritt</span>
+              :style="{ gridColumn: `${a.ausschnitt % a.spalten + 1} / span 2` }"
+            >wie beim Absatz kürzen</span>
           </div>
         </div>
       </template>
@@ -376,7 +384,7 @@ const markiert = (p: Phase, k: number) =>
   color: var(--text-strong);
 }
 
-/* Zwei Zeilen Kästchen, darunter Platz für den Strich */
+/* Zwei Zeilen Kästchen, darunter Platz für die Beschriftung des Rahmens */
 .ga-runden {
   display: grid;
   grid-template-columns: repeat(var(--spalten), var(--kaestchen));
@@ -391,7 +399,7 @@ const markiert = (p: Phase, k: number) =>
   height: var(--kaestchen);
   border: 1px dashed var(--thm-grey-200);
   border-radius: var(--radius-icon);
-  transition: background 0.25s ease, border-color 0.25s ease, outline-color 0.3s ease;
+  transition: background 0.25s ease, border-color 0.25s ease;
 }
 
 .ga-runde :deep(.thm-icon) {
@@ -411,17 +419,32 @@ const markiert = (p: Phase, k: number) =>
 .ga-runde.da.fertig { background: var(--thm-green-800); }
 .ga-runde.da.aus { border: 1px dashed var(--thm-grey-300); }
 
-.ga-runde.markiert {
-  outline: 2px solid var(--thm-green-700);
-  outline-offset: 2px;
+.ga-runden { position: relative; }
+
+/* Gemeinsamer Rahmen um die beiden Runden von vorhin. Absolut gesetzt,
+   damit er die automatische Platzierung der Kästchen nicht verschiebt;
+   --x und --y sind Spalte und Zeile des ersten Kästchens. */
+.ga-rahmen {
+  --rand: 0.2rem;
+  position: absolute;
+  left: calc(var(--x) * (var(--kaestchen) + var(--luecke)) - var(--rand));
+  top: calc(var(--y) * (var(--kaestchen) + var(--luecke)) - var(--rand));
+  width: calc(2 * var(--kaestchen) + var(--luecke) + 2 * var(--rand));
+  height: calc(var(--kaestchen) + 2 * var(--rand));
+  box-sizing: border-box;
+  border: 2px solid var(--thm-green-700);
+  border-radius: calc(var(--radius-icon) + var(--rand));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-/* Strich unter den beiden Runden von eben */
+.ga-rahmen.da { opacity: 1; }
+
+/* Beschriftung unter dem Rahmen */
 .ga-ausschnitt {
   grid-row: 3;
-  margin-top: 0.35rem;
-  padding-top: 0.25rem;
-  border-top: 2px solid var(--thm-green-700);
+  margin: 0.2rem 0 0 -0.2rem;
   font-size: 0.72em;
   font-weight: var(--fw-bold);
   line-height: 1.1;

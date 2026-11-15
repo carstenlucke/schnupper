@@ -93,7 +93,7 @@ keine Kommentare – der Parser in `read_agent()` liest `schlüssel: wert`.
 
 | Feld | Wird zu |
 |---|---|
-| `model` | `--model` (außer `SHIP_IT_MODEL` in `.env` ist gesetzt) |
+| `model` | `--model`; fehlt der Eintrag, gilt `SHIP_IT_MODEL` aus `.env` |
 | `thinking` | `--thinking` (`off`, `minimal`, `low`, `medium`, `high`, `xhigh`) |
 | `tools` | `--tools` – Allowlist, andere Werkzeuge gibt es für den Agenten nicht |
 | `skills` | optional; je Name ein `--skill .pi/skills/<name>` |
@@ -124,8 +124,9 @@ Systemprompts definieren Rolle und Output-Format, aber **keine konkreten Dateipf
 
 ## Konfiguration
 
-- Modell je Agent im Frontmatter; `SHIP_IT_MODEL` in `.env` schlägt alle
-  zugleich – der Weg, im Hörsaal den Anbieter zu wechseln. Die Anmeldung beim
+- Modell je Agent im Frontmatter. `SHIP_IT_MODEL` in `.env` ist nur der
+  Fallback für Agenten ohne `model:`-Eintrag und überstimmt keine
+  Agentendatei; den Anbieter wechselt man in den Agentendateien. Die Anmeldung beim
   Anbieter erledigt pi selbst (`pi` → `/login`); in `.env` steht nur der
   `OPENAI_API_KEY` für die Bildgenerierung. Das Bildmodell
   ist `gpt-image-2.6-sunburst`, änderbar über `SHIP_IT_IMAGE_MODEL`
