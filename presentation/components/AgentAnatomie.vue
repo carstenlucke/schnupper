@@ -9,6 +9,16 @@
     das Modell immer wieder aufruft, die Anweisungen, der Verlauf und
     die Leitplanken.
 
+  Die vier Werkzeuge sind nur Beispiele; ein Chip „und viele mehr“
+  darunter sagt das auch.
+
+  Mit `schrittweise` baut sich das Bild Klick für Klick auf: zuerst
+  Gleichung und Modell, dann der Rahmen des Harness, die Werkzeuge und
+  die vier Bausteine der Steuerung einzeln. Unten erklärt eine
+  <SchrittZeile>, was gerade dazukommt; nach dem letzten Baustein wird sie
+  zum Merksatz. Die Folie braucht dann `clicks: 7` und keinen eigenen
+  Callout. Ohne `schrittweise` steht alles sofort da.
+
   Der Baustein heißt bewusst „Verlauf“ und nicht „Gedächtnis“: Gemeint
   ist nur, was das Harness in jeder Runde ins Kontextfenster schickt,
   kein Langzeitgedächtnis über den Auftrag hinaus.
@@ -19,14 +29,41 @@
   zeigt die Folie mit dem Agent-Kreislauf davor.
 -->
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useSlideContext } from '@slidev/client'
 import { werkzeuge, steuerung as baustein } from './harness'
 
+const props = defineProps<{ schrittweise?: boolean }>()
+
+/* `schritt`: mit welchem Klick der Baustein erscheint (nur schrittweise) */
 const steuerung = [
-  { ...baustein.schleife, info: 'fragt das Modell immer wieder' },
-  { ...baustein.anweisungen, info: 'Rolle und Aufgabe' },
-  { ...baustein.verlauf, info: 'Auftrag, Antworten, Ergebnisse' },
-  { ...baustein.leitplanken, info: 'was erlaubt ist' },
+  { ...baustein.schleife, info: 'fragt das Modell immer wieder', schritt: 3 },
+  { ...baustein.anweisungen, info: 'Rolle und Aufgabe', schritt: 4 },
+  { ...baustein.verlauf, info: 'Auftrag, Antworten, Ergebnisse', schritt: 5 },
+  { ...baustein.leitplanken, info: 'was erlaubt ist', schritt: 6 },
 ]
+
+/* Was unten in der Erklärzeile steht; Index = Klick */
+const erklaerung = [
+  'Ein KI-Agent hat zwei Teile. In der Mitte das Modell: das Gehirn, es denkt, plant und entscheidet.',
+  'Um das Modell herum liegt das Harness: alles, was aus dem Modell einen Agenten macht.',
+  'Werkzeuge sind Hände und Augen, damit greift der Agent in die Welt. Diese vier sind nur Beispiele.',
+  'Die Schleife fragt das Modell immer wieder, Runde für Runde, bis die Aufgabe erledigt ist.',
+  'Die Anweisungen legen Rolle und Aufgabe fest. Sie gehen in jeder Runde mit.',
+  'Der Verlauf sammelt Auftrag, Antworten und Ergebnisse. Das Modell selbst merkt sich nichts.',
+  'Die Leitplanken legen fest, was der Agent ohne Nachfrage darf und was nicht.',
+]
+const schritte = erklaerung.length
+
+const { $clicks } = useSlideContext()
+const n = computed(() =>
+  props.schrittweise ? Math.min(Math.max($clicks.value, 0), schritte) : schritte,
+)
+const fertig = computed(() => n.value === schritte)
+
+/* Ohne `schrittweise` ist alles da und nichts hervorgehoben */
+const da = (schritt: number) => n.value >= schritt
+const jetzt = (schritt: number) => !!props.schrittweise && n.value === schritt
 </script>
 
 <template>
@@ -39,13 +76,17 @@ const steuerung = [
       <span class="an-teil gruen"><ThmIcon name="wrench" ton="weiss" :size="1.3" /> Harness</span>
     </div>
 
-    <div class="an-harness">
-      <div class="an-etikett">Harness · alles um das Modell herum</div>
+    <div class="an-harness" :class="{ da: da(1) }">
+      <div class="an-etikett an-teilbild" :class="{ da: da(1) }">Harness · alles um das Modell herum</div>
 
-      <div class="an-gruppe">
+      <div class="an-gruppe an-teilbild" :class="{ da: da(2) }">
         <div class="an-gruppe-titel">Werkzeuge · Hände und Augen</div>
         <div v-for="f in werkzeuge" :key="f.text" class="an-werkzeug">
           <ThmIcon :name="f.icon" :size="1.05" /> {{ f.text }}
+        </div>
+        <div class="an-werkzeug mehr">
+          <ThmIcon name="plug" ton="grau" :size="0.9" />
+          <span><strong>und viele mehr:</strong> E-Mail, Kalender, Datenbanken …</span>
         </div>
       </div>
 
@@ -56,13 +97,30 @@ const steuerung = [
       </div>
 
       <div class="an-gruppe">
-        <div class="an-gruppe-titel">Steuerung · der Rahmen</div>
-        <div v-for="f in steuerung" :key="f.name" class="an-steuerung">
+        <div class="an-gruppe-titel an-teilbild" :class="{ da: da(3) }">Steuerung · der Rahmen</div>
+        <div
+          v-for="f in steuerung"
+          :key="f.name"
+          class="an-steuerung an-teilbild"
+          :class="{ da: da(f.schritt), jetzt: jetzt(f.schritt) }"
+        >
           <ThmIcon :name="f.icon" box :size="1.6" />
           <span><strong>{{ f.name }}</strong> <em>{{ f.info }}</em></span>
         </div>
       </div>
     </div>
+
+    <SchrittZeile
+      v-if="schrittweise"
+      class="an-zeile"
+      :schritt="n"
+      :schritte="schritte - 1"
+      :text="erklaerung[n] ?? ''"
+      :fertig="fertig"
+      icon="wrench"
+    >
+      <strong>Das Harness macht den Unterschied.</strong> Ein mittelmäßiges Modell mit gutem Harness schlägt oft ein besseres Modell mit schlechtem Harness.
+    </SchrittZeile>
   </div>
 </template>
 
@@ -104,9 +162,34 @@ const steuerung = [
   align-items: center;
   gap: 2rem;
   padding: 1.5rem 2rem 1.1rem;
+  background: transparent;
+  border: 2px dashed var(--thm-grey-200);
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+.an-harness.da {
   background: var(--thm-green-50);
   border: 2px solid var(--thm-green-500);
 }
+
+/* Schrittweise: Teile, die noch nicht dran sind, sind unsichtbar, nehmen
+   aber schon ihren Platz ein — so springt beim Aufbau nichts. */
+.an-teilbild {
+  opacity: 0;
+  translate: 0 0.3rem;
+  transition: opacity 0.35s ease, translate 0.35s ease, background 0.3s ease;
+}
+
+.an-teilbild.da { opacity: 1; translate: 0 0; }
+
+/* Etikett: sitzt per transform auf der Rahmenkante, translate kommt dazu */
+.an-etikett.an-teilbild { translate: 0 -0.3rem; }
+.an-etikett.an-teilbild.da { translate: 0 0; }
+
+/* Mit der Erklärzeile ist weniger Luft zwischen Bild und Zeile nötig */
+/* Platz für den zweizeiligen Merksatz von Anfang an: Beim letzten Klick
+   springt sonst das ganze Bild nach oben. */
+.an .an-zeile { margin-top: -1rem; min-height: 4.3rem; }
 
 .an-etikett {
   position: absolute;
@@ -126,7 +209,7 @@ const steuerung = [
 .an-gruppe {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
 .an-gruppe-titel {
@@ -143,7 +226,7 @@ const steuerung = [
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  padding: 0.42rem 0.8rem;
+  padding: 0.32rem 0.8rem;
   background: var(--white);
   border: 1px dashed var(--thm-grey-300);
   font-size: 0.88em;
@@ -151,14 +234,41 @@ const steuerung = [
   color: var(--text-strong);
 }
 
-/* Steuerung: Bausteine des Harness selbst, mit grünem Icon-Quadrat */
+/* Am Ende der Werkzeuge: Die vier oben sind nur eine Auswahl */
+.an-werkzeug.mehr {
+  gap: 0.5rem;
+  padding: 0.2rem 0.8rem;
+  background: transparent;
+  white-space: nowrap;
+  border-color: var(--thm-grey-200);
+  font-size: 0.72em;
+  font-weight: var(--fw-regular);
+  line-height: 1.2;
+  color: var(--thm-grey-500);
+}
+
+.an-werkzeug.mehr strong {
+  margin-right: 0.25rem;
+  font-weight: var(--fw-bold);
+  color: var(--text-strong);
+}
+
+/* Steuerung: Bausteine des Harness selbst, mit grünem Icon-Quadrat.
+   Polster mit negativem Rand, damit die Hervorhebung nichts verschiebt. */
 .an-steuerung {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  margin: -0.25rem -0.5rem;
+  padding: 0.25rem 0.5rem;
   font-size: 0.88em;
   line-height: 1.2;
   color: var(--text-strong);
+}
+
+.an-steuerung.jetzt {
+  background: var(--white);
+  box-shadow: 0 0.2rem 0.8rem rgba(34, 44, 49, 0.08);
 }
 
 .an-steuerung strong { font-weight: var(--fw-bold); }

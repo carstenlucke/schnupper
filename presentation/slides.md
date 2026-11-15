@@ -659,8 +659,9 @@ müsst, sondern gezielt nachsehen könnt, was sich geändert hat. Geprüft
 werden muss trotzdem, denn die Verantwortung für das Referat bleibt bei
 euch.
 
-[click] Die beiden markierten Runden habt ihr vorhin Schritt für Schritt
-gesehen. Der große Auftrag besteht aus demselben Ablauf, nur viel öfter.
+[click] Die beiden eingerahmten Runden kennt ihr vom Absatz kürzen auf der
+Folie „Ein Agent bei der Arbeit“: erst lesen, dann schreiben. Der große
+Auftrag besteht aus demselben Ablauf, nur viel öfter.
 Wann ihr prüft, legt ihr mit dem Auftrag fest: vorher den Plan, am Ende den
 Bericht, oder beides.
 -->
@@ -669,39 +670,43 @@ Bericht, oder beides.
 rubrik: Vom Chatbot zum KI-Agenten
 titel: Aufbau eines KI-Agenten
 class: text-l
+clicks: 7
 ---
 
-<div class="thm-center thm-gruppe">
-  <AgentAnatomie />
-
-  <Callout v-click icon="wrench"><strong>Das Harness macht den Unterschied.</strong> Ein mittelmäßiges Modell mit gutem Harness schlägt oft ein besseres Modell mit schlechtem Harness.</Callout>
+<div class="thm-center">
+  <AgentAnatomie schrittweise />
 </div>
 
 <!--
 Ein KI-Agent besteht aus zwei Teilen. Das Modell, also das Sprachmodell wie
 GPT oder Claude, ist das Gehirn: Es denkt, plant und entscheidet.
 
-Das Harness ist alles drumherum. Das englische Wort bedeutet Geschirr, wie
-beim Pferd: Das Pferd hat die Kraft, das Geschirr macht sie nutzbar. Das
-Harness hat zwei Seiten.
+[click] Das Harness ist alles drumherum. Das englische Wort bedeutet
+Geschirr, wie beim Pferd: Das Pferd hat die Kraft, das Geschirr macht sie
+nutzbar. Das Harness hat zwei Seiten, links die Werkzeuge, rechts die
+Steuerung.
 
-Links stehen die Werkzeuge, die Hände und Augen des Agenten: Dateien lesen
-und schreiben, Programme starten, im Web suchen.
+[click] Die Werkzeuge sind die Hände und Augen des Agenten: Dateien lesen
+und schreiben, Programme starten, im Web suchen. Das sind nur Beispiele.
+Ein Agent kann auch E-Mails schreiben, Termine eintragen oder in einer
+Datenbank nachsehen. Welche Werkzeuge er hat, legt fest, wer das Harness
+baut.
 
-Rechts steht die Steuerung, also das, was das Harness selbst leistet. Alle
-vier Bausteine haben bei „Ein Agent bei der Arbeit“ schon aufgeleuchtet:
+[click] Ab hier geht es um die Steuerung, also um das, was das Harness
+selbst leistet. Alle vier Bausteine haben bei „Ein Agent bei der Arbeit“
+schon aufgeleuchtet. Die Schleife zählt die Runden, ob drei oder dreißig.
+Sie ruft das Modell immer wieder auf, führt aus, was es sich wünscht, und
+gibt ihm das Ergebnis zurück, bis die Aufgabe fertig ist.
 
-- **Schleife:** die Runden, ob drei oder dreißig. Sie ruft das Modell immer wieder auf,
-  führt aus, was es sich wünscht, und gibt ihm das Ergebnis zurück, bis die
-  Aufgabe fertig ist.
-- **Anweisungen:** Rolle und Aufgabe des Agenten, in unseren Demos eine
-  Textdatei.
-- **Verlauf:** Auftrag, Antworten des Modells und Ergebnisse der
-  Werkzeuge, und wenn er zu lang wird, eine Zusammenfassung davon. Ist
-  der Auftrag erledigt, ist auch der Verlauf weg.
-- **Leitplanken:** was der Agent ohne Nachfrage darf und was nicht.
+[click] Die Anweisungen beschreiben Rolle und Aufgabe des Agenten, in
+unseren Demos steht das in einer Textdatei.
 
-Entscheiden tut immer das Modell, das Harness führt aus.
+[click] Der Verlauf enthält den Auftrag, die Antworten des Modells und die
+Ergebnisse der Werkzeuge, und wenn er zu lang wird, eine Zusammenfassung
+davon. Ist der Auftrag erledigt, ist auch der Verlauf weg.
+
+[click] Die Leitplanken legen fest, was der Agent ohne Nachfrage darf und
+was nicht. Entscheiden tut immer das Modell, das Harness führt aus.
 
 [click] Ein mittelmäßiges Modell mit gutem Harness schlägt oft ein besseres
 Modell mit schlechtem Harness. Das Modell ist wichtig, aber erst das Harness
@@ -721,13 +726,13 @@ class: text-xl
 <div class="thm-center thm-gruppe">
 <CardGrid :cols="3">
   <Card icon="trending-up" titel="Von Assistenz zu Autonomie" kompakt>
-    Heute: „KI hilft mir beim Schreiben.“<br>Morgen: <strong>„KI erledigt den Prozess.“</strong>
+    Bisher hilft KI vor allem beim Schreiben. Agenten <strong>erledigen ganze Abläufe</strong> — vom Auftrag bis zum fertigen Ergebnis.
+  </Card>
+  <Card icon="refresh-cw" titel="Selbstkorrektur" kompakt>
+    Agenten <strong>prüfen ihre Ergebnisse</strong> selbst und bessern nach, bevor sie euch das Ergebnis vorlegen.
   </Card>
   <Card icon="copy" titel="Skalierbarkeit" kompakt>
     Ein Unternehmen kann <strong>100 digitale Agenten</strong> gleichzeitig arbeiten lassen — rund um die Uhr.
-  </Card>
-  <Card icon="refresh-cw" titel="Selbstkorrektur" kompakt>
-    Agenten <strong>prüfen ihre Ergebnisse</strong> und verbessern sich selbst — ohne dass jemand eingreifen muss.
   </Card>
 </CardGrid>
 
@@ -740,10 +745,10 @@ arbeiten werdet.
 
 - **Von Assistenz zu Autonomie:** Das ist der Wandel, der gerade passiert.
   KI hilft nicht mehr nur beim Schreiben, sondern erledigt ganze Abläufe.
-- **Skalierbarkeit:** Ein Unternehmen kann viele Agenten gleichzeitig
-  einsetzen, etwa in Marktforschung, Kundenservice oder Buchhaltung.
 - **Selbstkorrektur:** Fehler sind nicht das Ende. Ein Agent prüft sein
   Ergebnis und bessert in der nächsten Runde nach, wie im Agent-Kreislauf.
+- **Skalierbarkeit:** Ein Unternehmen kann viele Agenten gleichzeitig
+  einsetzen, etwa in Marktforschung, Kundenservice oder Buchhaltung.
 -->
 
 ---
