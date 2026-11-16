@@ -379,7 +379,7 @@ def modelle_lesen() -> list[dict]:
     modelle: list[dict] = []
     try:
         ergebnis = subprocess.run(
-            ["pi", "--list-models"],
+            pi_programm() + ["--list-models"],
             capture_output=True, text=True, timeout=15,
             encoding="utf-8", errors="replace",
         )
@@ -643,6 +643,27 @@ def baue_fazit_prompt(sitzung: dict, profile: list[dict],
 # pi-Anbindung
 # ============================================================================
 
+def pi_programm() -> list[str]:
+    """Womit pi gestartet wird: überall `pi`, unter Windows node direkt.
+
+    Unter Windows legt npm für pi nur den Starter `pi.cmd` an. Popen findet
+    ihn nicht, und über cmd.exe gingen die Zeilenumbrüche im Systemprompt
+    verloren. Deshalb startet der Server dort die CLI selbst mit node. Fehlt
+    pi, bleibt es bei `pi` – der Aufruf scheitert dann mit OSError wie auf
+    jedem anderen System.
+    """
+    if os.name != "nt":
+        return ["pi"]
+    starter = shutil.which("pi.cmd")
+    if not starter:
+        return ["pi"]
+    cli = os.path.join(
+        os.path.dirname(starter), "node_modules", "@earendil-works",
+        "pi-coding-agent", "dist", "bundle", "cli.js",
+    )
+    return ["node", cli]
+
+
 def baue_pi_befehl(system_prompt: str, prompt: str,
                    modell: str = "", thinking: str = "") -> list[str]:
     """Den pi-Aufruf zusammensetzen.
@@ -655,8 +676,8 @@ def baue_pi_befehl(system_prompt: str, prompt: str,
            oder Extensions. Die Demo läuft auf jedem Rechner gleich.
     --mode json – statt -p, damit die Denkschritte live sichtbar werden.
     """
-    cmd = ["pi", "--mode", "json", "--no-session",
-           "-nt", "-nc", "-ns", "-np", "-ne"]
+    cmd = pi_programm() + ["--mode", "json", "--no-session",
+                           "-nt", "-nc", "-ns", "-np", "-ne"]
 
     # AGENT_PARTY_MODEL schlägt alles andere — der Hebel für den Hörsaal.
     modell = os.environ.get("AGENT_PARTY_MODEL") or modell or STANDARD_MODELL

@@ -345,6 +345,27 @@ def _liste(wert: str) -> list[str]:
     return [teil.strip() for teil in wert.split(",") if teil.strip()]
 
 
+def _pi_programm() -> list[str]:
+    """Womit pi gestartet wird: überall `pi`, unter Windows node direkt.
+
+    Unter Windows legt npm für pi nur den Starter `pi.cmd` an. Popen findet
+    ihn nicht, und über cmd.exe gingen die Zeilenumbrüche im Systemprompt
+    verloren. Deshalb startet ship-it dort die CLI selbst mit node. Fehlt pi,
+    bleibt es bei `pi` – Popen meldet dann FileNotFoundError, und das
+    Dashboard zeigt den Installationshinweis.
+    """
+    if os.name != "nt":
+        return ["pi"]
+    starter = shutil.which("pi.cmd")
+    if not starter:
+        return ["pi"]
+    cli = os.path.join(
+        os.path.dirname(starter), "node_modules", "@earendil-works",
+        "pi-coding-agent", "dist", "bundle", "cli.js",
+    )
+    return ["node", cli]
+
+
 def build_pi_command(meta: dict, system_prompt: str, prompt: str) -> list[str]:
     """Baue den pi-Aufruf für einen Agenten aus seinem Frontmatter.
 
@@ -361,7 +382,7 @@ def build_pi_command(meta: dict, system_prompt: str, prompt: str) -> list[str]:
                     global auf dem Rechner installiert ist
       --tools       genau die Werkzeuge aus dem Frontmatter, keine weiteren
     """
-    cmd = ["pi", "--mode", "json", "--no-session", "-nc", "-ns", "-np", "-ne"]
+    cmd = _pi_programm() + ["--mode", "json", "--no-session", "-nc", "-ns", "-np", "-ne"]
     if os.path.isdir(PI_EXTENSIONS_DIR):
         for name in sorted(os.listdir(PI_EXTENSIONS_DIR)):
             if name.endswith(".ts"):

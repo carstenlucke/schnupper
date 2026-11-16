@@ -76,7 +76,10 @@ Kalkulation (sofort) ─────┤
 
 pi hat **kein eingebautes Agenten-Konzept**. Ein Agent ist eine Markdown-Datei;
 `build_pi_command()` in `server.py` liest das Frontmatter und baut daraus den
-pi-Aufruf, der Text darunter wird zum Systemprompt.
+pi-Aufruf, der Text darunter wird zum Systemprompt. Unter Windows startet
+`_pi_programm()` die pi-CLI direkt mit node statt über `pi`: npm legt dort nur
+den Starter `pi.cmd` an, den Popen nicht findet und über den cmd.exe die
+Zeilenumbrüche im Systemprompt verlöre.
 
 ```markdown
 ---
