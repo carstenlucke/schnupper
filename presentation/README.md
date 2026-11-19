@@ -123,7 +123,7 @@ für jede Demo das passende Beispiel für Fehler, Kosten und Datenschutz.
 | Datei / Ordner | Inhalt |
 |---|---|
 | `slides.md` | Gemeinsamer Handlungsstrang mit der Übersicht der Demos; Notizen als HTML-Kommentare |
-| `demos/` | Ein Foliensatz je Demo: Vorstellung, Aufbau, Mitmachfrage, Übergang, Bewertung |
+| `demos/` | Ein Foliensatz je Demo: Vorstellung, Aufbau, Mitmachfrage (sofern das Publikum etwas einbringt), Übergang, Bewertung |
 | `setup/main.ts` | Blättern an den Rändern der Demos: am Ende weiter zum Schluss, rückwärts zur Übersicht |
 | `slide-bottom.vue` | Der Link „Demos" in der Fußzeile jeder Demo-Folie |
 | `theme-thm/` | Lokales Slidev-Theme nach dem Design-System „THM & StudiumPlus": Layouts, Karten, Farben, Logos |

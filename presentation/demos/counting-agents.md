@@ -21,9 +21,6 @@ class: text-xl
 Zählen kann jeder Taschenrechner, darum geht es in dieser Demo nicht. Die
 Aufgabe ist so einfach gewählt, damit ihr den Agenten bei der Arbeit
 zuschauen könnt: Wer wartet auf wen, wer hinkt hinterher, wer macht Fehler?
-
-Der Primzahl-Agent ist als einziger so eingestellt, dass er „nachdenken“
-darf. Das wirkt sich in der Demo sichtbar aus.
 -->
 
 ---
@@ -36,7 +33,7 @@ untertitel: Gar nicht direkt — sie legen Nachrichten in gemeinsame Dateien.
   <CountingBus />
 </div>
 
-<Callout icon="info"><strong>Jede Datei ist wie ein schwarzes Brett:</strong> Einer hängt etwas aus, die anderen lesen nach — jeder in seinem eigenen Takt.</Callout>
+<Callout icon="info"><strong>Jede Datei ist wie ein schwarzes Brett:</strong> Einer hängt etwas aus, die anderen lesen nach — jeder in seinem eigenen Tempo.</Callout>
 
 <style>
 .bus-rahmen {
@@ -121,40 +118,43 @@ hideInToc: true
 ---
 
 <div class="thm-stack">
-  <QuestionItem>Warum hinkt der <strong>Primzahl-Agent</strong> hinterher, obwohl alle denselben Takt haben?</QuestionItem>
+  <QuestionItem>Zähler und Sammler machen nach jedem Durchlauf <strong>dieselbe Pause</strong>. Warum hinkt der <strong>Primzahl-Agent</strong> trotzdem hinterher?</QuestionItem>
   <QuestionItem>Gab es eine <strong>rote Kachel</strong>? Was ist da passiert?</QuestionItem>
   <QuestionItem>Rund <strong>90 Anfragen pro Minute</strong> an die KI — nur fürs Zählen. Lohnt sich das?</QuestionItem>
   <QuestionItem>Ehrlich: Braucht man für diese Aufgabe <strong>überhaupt eine KI</strong>?</QuestionItem>
 </div>
 
 <!--
-**Warum hinkt der Primzahl-Agent hinterher?** Alle Agenten haben denselben
-Takt von drei Sekunden. Der Takt ist aber nur die Pause zwischen zwei
-Durchläufen. Wie lange ein Durchlauf selbst dauert, hängt davon ab, was das
-Modell darin zu tun hat. Die Sammler für ungerade und gerade Zahlen nehmen
-alles Neue auf einmal auf und holen so jeden Rückstand wieder auf. Der
-Primzahl-Agent darf pro Durchlauf nur eine Zahl prüfen und denkt dabei
-nach. Jeder seiner Durchläufe dauert etwas länger als beim Zähler, und der
-Abstand wächst. Gleicher Takt heißt also nicht gleiches Tempo: Nachdenken
-kostet Zeit.
+**Warum hinkt der Primzahl-Agent hinterher?** Zähler und Sammler machen nach
+jedem Durchlauf dieselbe Pause von standardmäßig drei Sekunden. Wie lange
+ein Durchlauf selbst dauert, hängt davon ab, was das Modell darin zu tun
+hat. Die Sammler für ungerade und gerade Zahlen nehmen alles Neue auf einmal
+auf und holen so jeden Rückstand wieder auf. Der Primzahl-Agent darf pro
+Durchlauf nur eine Zahl prüfen und denkt dabei nach. Jeder seiner Durchläufe
+dauert etwas länger als beim Zähler, und der Abstand wächst. Gleiche Pause
+heißt also nicht gleiches Tempo: Nachdenken kostet Zeit.
 
 **Die rote Kachel:** Rot wird eine Zahl, die ein Sammler eingesammelt hat,
 obwohl sie nicht zu ihm gehört. Meist ist es der Primzahl-Agent, der eine
 Zahl für prim hält, die keine ist. Typisch sind Zahlen, die prim aussehen,
-etwa 51 = 3·17, 57 = 3·19, 87 = 3·29 oder 91 = 7·13. Weil er hinterherhinkt,
-erreicht er sie erst nach einigen Minuten. Seltener sortiert der Sammler für
-ungerade oder gerade Zahlen falsch ein. Übersieht der Primzahl-Agent
-dagegen eine echte Primzahl, wird nichts rot: Der Ring an ihrer Kachel
-bleibt nur hohl, statt sich zu füllen. Das Modell rechnet nicht, es schätzt, was
-plausibel klingt — wie auf der Folie „Was steckt hinter ChatGPT & Co.?“:
-das wahrscheinlichste nächste Wort. Gab es keine rote Kachel, ist es
-diesmal gut gegangen, aber ohne Garantie. Dass die Kachel rot wird, liegt
-am Dashboard: Es rechnet selbst nach. Das ist eine automatische Prüfung,
-kein Mensch muss jede Zahl kontrollieren.
+etwa 51 = 3·17, 57 = 3·19, 87 = 3·29 oder 91 = 7·13. Weil er pro Durchlauf
+nur eine Zahl prüft, erreicht er sie erst spät: Bei rund zehn Sekunden pro
+Durchlauf plus drei Sekunden Pause ist er nach etwa elf Minuten bei der 51
+und nach etwa zwanzig bei der 91; die tatsächliche Dauer schwankt. Seltener
+sortiert der Sammler für ungerade oder gerade Zahlen falsch ein. Übersieht
+der Primzahl-Agent dagegen eine echte Primzahl, wird dadurch nichts rot: Der
+Ring an ihrer Kachel bleibt hohl, obwohl der Agent schon weiter ist. Das
+Modell rechnet nicht, es schätzt, was plausibel klingt — wie auf der Folie
+„Was steckt hinter ChatGPT & Co.?“: das wahrscheinlichste nächste Wort. Gab
+es keine rote Kachel, hat diesmal kein Sammler eine fremde Zahl eingesammelt
+— übersehene Primzahlen kann es trotzdem geben, und eine Garantie gibt es
+ohnehin nicht. Dass die Kachel rot wird, liegt am Dashboard: Es rechnet
+selbst nach. Das ist eine automatische Prüfung, kein Mensch muss jede Zahl
+kontrollieren.
 
 **90 Anfragen pro Minute:** Ein Durchlauf besteht aus etwa fünf Anfragen an
 das Modell, eine pro Werkzeug plus die Antwort. Er dauert rund zehn
-Sekunden, dazu kommen drei Sekunden Takt — macht gut vier Durchläufe pro
+Sekunden, dazu kommen drei Sekunden Pause — macht gut vier Durchläufe pro
 Minute. Vier Agenten mit je fünf Anfragen und etwa 4,5 Durchläufen ergeben
 rund 90 Anfragen pro Minute. Jede Anfrage kostet Geld, Strom und Zeit.
 Manche Anbieter erlauben nur 60 Anfragen pro Minute, dann bricht die Demo
