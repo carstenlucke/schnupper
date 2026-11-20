@@ -15,7 +15,7 @@ const knoten = [
   { id: 'zahlen', titel: 'Zahlen-Datei', icon: 'file-text', x: 312, y: 100, datei: true },
   { id: 'odd', titel: 'Ungerade', icon: 'filter', x: 584, y: 20 },
   { id: 'even', titel: 'Gerade', icon: 'filter', x: 584, y: 100 },
-  { id: 'prime', titel: 'Primzahlen', icon: 'brain', x: 584, y: 180 },
+  { id: 'prime', titel: 'Primzahlen', icon: 'filter', x: 584, y: 180 },
   { id: 'control', titel: 'Steuerung', icon: 'sliders-horizontal', x: 40, y: 270, start: true },
   { id: 'befehle', titel: 'Befehls-Datei', icon: 'file-text', x: 312, y: 270, datei: true },
 ]

@@ -43,7 +43,10 @@ Daraus folgen Regeln:
   „Los geht's!" mit Adresse, Bewertung, Abschlussfolie. Im Aufbau darf eine
   Motivationsfolie mit einem Fundstück stehen (Agent Party: ein
   LinkedIn-Beitrag, direkt nach der Vorstellung). Rubriken `<Demo>`,
-  `<Demo> · Live-Demo`, `<Demo> · Bewertung`.
+  `<Demo> · Live-Demo`, `<Demo> · Bewertung`. Die Mitmachfrage holt einen
+  Beitrag des Publikums in die Demo (Ship It: das Produkt, Agent Party: Rolle
+  und Thema). Wo die Demo ohne Eingabe läuft, entfällt sie: The Counting
+  Agents hat keine.
 - **Reflexion ist zweigeteilt.** Die Bewertung („was haben wir gesehen?") ist
   demo-spezifisch und steht im Block. Der Rückblick („Das haben wir heute
   gesehen") ist gemeinsam; neue Demos tragen ihre Beispiele in dessen
